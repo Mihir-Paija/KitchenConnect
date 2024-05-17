@@ -9,10 +9,10 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import InputBox from "../components/forms/inputBox";
-import SubmitButton from "../components/forms/submitButton";
+import InputBox from "../../components/forms/inputBox";
+import SubmitButton from "../../components/forms/submitButton";
 
-const SignupScreen = () => {
+const SignupScreen = ({ navigation }) => {
   //states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,7 +74,16 @@ const SignupScreen = () => {
           loading={loading}
         />
 
-        {/* <Text>{JSON.stringify({ name, email, password, phone }, null, 4)}</Text> */}
+        <Text style={styles.loginNavText}>
+          Already have an account?
+          <Text
+            style={styles.loginNav}
+            onPress={() => navigation.navigate("Login")}
+          >
+            {" "}
+            Login{" "}
+          </Text>
+        </Text>
       </View>
     </View>
   );
@@ -112,5 +121,12 @@ const styles = StyleSheet.create({
     width: "90%",
     marginTop: 315,
     marginBottom: 10,
+  },
+  loginNavText: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+  loginNav: {
+    color: "#ffa500",
   },
 });
