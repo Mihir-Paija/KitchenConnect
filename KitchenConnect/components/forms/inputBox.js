@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
     borderRadius: screenWidth * 0.04,
     borderWidth: 1,
     paddingLeft: screenWidth * 0.05,
-    fontSize: screenWidth * 0.04, // 16
+    fontSize: screenWidth * 0.045, // 16
     justifyContent: "center",
+    fontFamily: "NunitoRegular",
   },
 });

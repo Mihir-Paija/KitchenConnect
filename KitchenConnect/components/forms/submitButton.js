@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: "#fff",
-    fontSize: screenWidth * 0.05,
-    fontWeight: "bold",
+    fontSize: screenWidth * 0.055,
+    fontFamily: "NunitoBold",
     textAlign: "center",
   },
 });

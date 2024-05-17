@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: ScreenHeight * 0.01,
   },
   loginNavText: {
+    fontFamily: "NunitoRegular",
     fontSize: screenWidth * 0.045, // 18
     textAlign: "center",
   },

@@ -12,14 +12,15 @@ const authAdStyles = StyleSheet.create({
     alignContent: "center",
   },
   title: {
-    fontSize: screenWidth * 0.08,
-    fontWeight: "bold",
+    fontFamily: "NunitoExtraBold",
+    fontSize: screenWidth * 0.085,
   },
   subtitle: {
+    fontFamily: "NunitoRegular",
     alignItems: "center",
     textAlign: "center",
     marginTop: "3%",
-    fontSize: screenWidth * 0.035,
+    fontSize: screenWidth * 0.045,
   },
 });
 

@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   },
   signupNavText: {
     fontSize: screenWidth * 0.045,
+    fontFamily: "NunitoRegular",
     textAlign: "center",
   },
   signupNav: {
