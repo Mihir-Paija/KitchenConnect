@@ -1,16 +1,21 @@
 import {
   StyleSheet,
   View,
+  Dimensions,
   Text,
-  Image,
-  TextInput,
-  Button,
-  TouchableOpacity,
   Alert,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import InputBox from "../../components/forms/inputBox";
 import SubmitButton from "../../components/forms/submitButton";
+import authAdStyles from "../../styles/authAd";
+import activeScreenStyles from "../../styles/activeScreen";
+
+const screenWidth = Dimensions.get("window").width;
+const ScreenHeight = Dimensions.get("window").height;
 
 const LoginScreen = ({ navigation }) => {
   //states
@@ -36,83 +41,68 @@ const LoginScreen = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Join KitchenConnect</Text>
-        <Text style={styles.subtitle}>Tasty Meals Just A Click Away</Text>
-      </View>
-      <View style={styles.formContainer}>
-        <InputBox
-          input="Email"
-          keyboardType="email-address"
-          autoComplete="email"
-          value={email}
-          setValue={setEmail}
-        />
-
-        <InputBox
-          input="Password"
-          secureTextEntry={true}
-          autoComplete="password"
-          value={password}
-          setValue={setPassword}
-        />
-
-        <SubmitButton
-          btnTitle={"Login"}
-          handleSubmitBtn={handleLogin}
-          loading={loading}
-        />
-
-        <Text style={styles.signupNavText}>
-          Didn't have an account?
-          <Text
-            style={styles.signupNav}
-            onPress={() => navigation.navigate("Signup")}
-          >
-            {" "}
-            SignUp{" "}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <SafeAreaView style={activeScreenStyles.screen}>
+        <View style={authAdStyles.header}>
+          <Text style={authAdStyles.title}>Join KitchenConnect</Text>
+          <Text style={authAdStyles.subtitle}>
+            Tasty Meals Just A Click Away
           </Text>
-        </Text>
-      </View>
-    </View>
+        </View>
+        <View style={styles.formContainer}>
+          <InputBox
+            input="Email"
+            keyboardType="email-address"
+            autoComplete="email"
+            value={email}
+            setValue={setEmail}
+          />
+
+          <InputBox
+            input="Password"
+            secureTextEntry={true}
+            autoComplete="password"
+            value={password}
+            setValue={setPassword}
+          />
+
+          <SubmitButton
+            btnTitle={"Login"}
+            handleSubmitBtn={handleLogin}
+            loading={loading}
+          />
+
+          <Text style={styles.signupNavText}>
+            Didn't have an account?
+            <Text
+              style={styles.signupNav}
+              onPress={() => navigation.navigate("Signup")}
+            >
+              {" "}
+              SignUp{" "}
+            </Text>
+          </Text>
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  header: {
-    position: "absolute",
-    backgroundColor: "#fff",
-    top: 115,
-    alignContent: "center",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    alignItems: "center",
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 14,
-  },
   formContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    width: "90%",
-    marginTop: 315,
-    marginBottom: 10,
+    // backgroundColor: "#fff",
+    width: screenWidth * 0.9,
+    top: ScreenHeight * 0.4,
   },
   signupNavText: {
-    fontSize: 18,
+    fontSize: screenWidth * 0.045,
     textAlign: "center",
   },
   signupNav: {

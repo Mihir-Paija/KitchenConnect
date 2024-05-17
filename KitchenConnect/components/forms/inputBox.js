@@ -1,5 +1,8 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Dimensions, View, TextInput } from "react-native";
 import React from "react";
+
+const screenWidth = Dimensions.get("window").width;
+const ScreenHeight = Dimensions.get("window").height;
 
 const InputBox = ({
   input,
@@ -9,6 +12,7 @@ const InputBox = ({
   value,
   setValue,
 }) => {
+  // console.log(Dimensions.get("window"));
   return (
     <View>
       {/* <Text style={styles.fieldLabel}>Name</Text> */}
@@ -30,12 +34,13 @@ export default InputBox;
 
 const styles = StyleSheet.create({
   inputBox: {
-    height: 40,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 10,
+    height: ScreenHeight * 0.05,
+    marginTop: ScreenHeight * 0.01, //10
+    marginBottom: ScreenHeight * 0.01,
+    borderRadius: screenWidth * 0.04,
     borderWidth: 1,
-    paddingLeft: 20,
-    fontSize: 16,
+    paddingLeft: screenWidth * 0.05,
+    fontSize: screenWidth * 0.04, // 16
+    justifyContent: "center",
   },
 });
