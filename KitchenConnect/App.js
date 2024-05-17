@@ -1,20 +1,8 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { useFonts } from "expo-font";
+import WelcomeScreen from "./screens/welcomeScreen";
+import SignupScreen from "./screens/signupScreen";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>This is Kitchen Connect</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <SignupScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
