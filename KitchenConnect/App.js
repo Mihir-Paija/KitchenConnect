@@ -1,10 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AuthNavigator from "./navigations/authNavigator";
+import AuthNavigator from "./navigations/customer/authNavigator";
 
 import React, { useEffect, useState } from "react";
-import LoadinScreen from "./screens/loadinScreen";
-import WelcomeScreen from "./screens/welcomeScreen";
+import LoadingScreen from "./screens/shared/loadingScreen";
+import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
 
 const Stack = createNativeStackNavigator();
@@ -25,6 +25,6 @@ export default function App() {
       </NavigationContainer>
     );
   } else {
-    return <LoadinScreen />;
+    return <LoadingScreen />;
   }
 }

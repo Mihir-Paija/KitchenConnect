@@ -9,10 +9,10 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useState } from "react";
-import InputBox from "../../components/forms/inputBox";
-import SubmitButton from "../../components/forms/submitButton";
-import authAdStyles from "../../styles/authAd";
-import activeScreenStyles from "../../styles/activeScreen";
+import InputBox from "../../../components/shared/forms/inputBox";
+import SubmitButton from "../../../components/shared/forms/submitButton";
+import authAdStyles from "../../../styles/shared/authAd";
+import activeScreenStyles from "../../../styles/shared/activeScreen";
 
 const screenWidth = Dimensions.get("window").width;
 const ScreenHeight = Dimensions.get("window").height;
