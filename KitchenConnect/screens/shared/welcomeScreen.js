@@ -16,7 +16,7 @@ const WelcomeScreen = ({ navigation }) => {
         useNativeDriver: true,
       }).start(() => {
         // After animation, navigate to the main app screen
-        navigation.replace("AuthNavigator");
+        navigation.replace("Choose");
       });
     });
   }, []);

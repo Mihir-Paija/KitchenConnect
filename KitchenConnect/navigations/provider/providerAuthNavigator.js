@@ -1,11 +1,13 @@
 import React from "react";
-import SignupScreen from "../../screens/customer/auth/signupScreen";
-import LoginScreen from "../../screens/customer/auth/loginScreen";
+import SignupScreen from "@/screens/shared/auth/signupScreen";
+import LoginScreen from "@/screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 
 const authStack = createStackNavigator();
 
-const AuthNavigator = () => {
+const ProviderAuthNavigator = ({route}) => {
+  const {type} = route.params
+
   return (
     <authStack.Navigator
       initialRouteName="Login"
@@ -23,6 +25,8 @@ const AuthNavigator = () => {
         name="Login"
         component={LoginScreen}
         options={{ presentation: "transparentModal" }}
+        initialParams={{type: type}}
+
       />
       <authStack.Screen
         name="Signup"
@@ -33,4 +37,4 @@ const AuthNavigator = () => {
   );
 };
 
-export default AuthNavigator;
+export default ProviderAuthNavigator;
