@@ -16,7 +16,7 @@ const customerSchema = Schema(
     mobile: {
       type: String,
       required: [true, "Please enter Mobile Number"],
-      unique: [true, "This mobile number is already exist"],
+      // unique: [true, "This mobile number is already exist"],
     },
 
     password: {

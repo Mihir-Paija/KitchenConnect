@@ -16,6 +16,7 @@ import activeScreenStyles from "@/styles/shared/activeScreen";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { loginCustomer } from "../../../utils/customerApi";
 
 const LoginScreen = ({ navigation, route }) => {
   //states
@@ -34,30 +35,28 @@ const LoginScreen = ({ navigation, route }) => {
         return;
       } else {
         setLoading(false);
+        const bodyData = {
+          email,
+          password,
+        };
         if (type === "customer") {
-          const { data } = await axios.post(
-            "http://192.168.0.115:5000/KitchenConnect/api/customer/login/",
-            {
-              email,
-              password,
-            }
-          );
-          await AsyncStorage.setItem("@auth", JSON.stringify(data));
+          const responseData = await loginCustomer(bodyData);
+          await AsyncStorage.setItem("@auth", JSON.stringify(bodyData));
           getLocalStorageData();
-          alert(data && data.message);
+          alert(responseData && responseData.message);
         }
-        console.log("login data => " + JSON.stringify({ email, password }));
+        console.log("login data => " + JSON.stringify(bodyData));
       }
     } catch (error) {
-      alert(error.response.data.message);
+      Alert.alert(error.message || "An error occurred");
       setLoading(false);
       console.log(error);
     }
   };
   //temp function for local storage
   const getLocalStorageData = async () => {
-    let data = await AsyncStorage.getItem("@auth");
-    console.log("local storage : ", data);
+    let _data = await AsyncStorage.getItem("@auth");
+    console.log("local storage : ", _data);
   };
   return (
     <TouchableWithoutFeedback

@@ -13,8 +13,8 @@ import InputBox from "@/components/shared/forms/inputBox";
 import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
-import axios from "axios";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { signupCustomer } from "../../../utils/customerApi";
 
 const SignupScreen = ({ navigation, route }) => {
   //states
@@ -39,26 +39,15 @@ const SignupScreen = ({ navigation, route }) => {
         return;
       } else {
         setLoading(false);
+        const bodyData = { name, email, mobile, password };
         if (type === "customer") {
-          const { data } = await axios.post(
-            "http://192.168.0.115:5000/KitchenConnect/api/customer/signup/",
-            {
-              name,
-              email,
-              mobile,
-              password,
-            }
-          );
-          alert(data && data.message);
+          const responseData = await signupCustomer(bodyData);
+          alert(responseData && responseData.message);
         }
-
-        console.log(
-          "register data => " +
-            JSON.stringify({ name, email, mobile, password })
-        );
+        console.log("register data => " + JSON.stringify(bodyData));
       }
     } catch (error) {
-      alert(error.response.data.message);
+      Alert.alert(error.message || "An error occurred");
       setLoading(false);
       console.log(error);
     }
@@ -85,7 +74,7 @@ const SignupScreen = ({ navigation, route }) => {
           />
           <InputBox
             input="Mobile No."
-            keyboardType="mobile-pad"
+            keyboardType="phone-pad"
             value={mobile}
             setValue={setmobile}
           />
