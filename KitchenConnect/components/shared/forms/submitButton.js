@@ -7,12 +7,11 @@ import {
 } from "react-native";
 import React from "react";
 
-const screenWidth = Dimensions.get("window").width;
-const ScreenHeight = Dimensions.get("window").height;
+import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const SubmitButton = ({ btnTitle, handleSubmitBtn, loading }) => {
+const SubmitButton = ({ btnTitle, handleSubmitBtn, loading, style }) => {
   return (
-    <TouchableOpacity style={styles.submitButton} onPress={handleSubmitBtn}>
+    <TouchableOpacity style={[styles.submitButton, style]} onPress={handleSubmitBtn}>
       <Text style={styles.submitText}>
         {loading ? "Please Wait..." : btnTitle}
       </Text>
@@ -25,17 +24,17 @@ export default SubmitButton;
 const styles = StyleSheet.create({
   submitButton: {
     backgroundColor: "#ffa500",
-    height: ScreenHeight * 0.055,
-    borderRadius: screenWidth * 0.1,
+    borderRadius: windowWidth * 0.1,
     justifyContent: "center",
-    marginBottom: ScreenHeight * 0.02,
-    marginTop: ScreenHeight * 0.02,
-    width: screenWidth * 0.8,
+    marginBottom: windowHeight * 0.02,
+    marginTop: windowHeight * 0.015,
+    width: windowWidth * 0.75,
+    height: windowHeight * 0.06,
     alignSelf: "center",
   },
   submitText: {
     color: "#fff",
-    fontSize: screenWidth * 0.055,
+    fontSize: windowWidth * 0.055,
     fontFamily: "NunitoBold",
     textAlign: "center",
   },

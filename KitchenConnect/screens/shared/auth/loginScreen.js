@@ -1,43 +1,40 @@
 import {
   StyleSheet,
   View,
+  Dimensions,
   Text,
   Alert,
   SafeAreaView,
-  Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
 import React, { useState } from "react";
-import InputBox from "../../../components/shared/forms/inputBox";
-import SubmitButton from "../../../components/shared/forms/submitButton";
-import authAdStyles from "../../../styles/shared/authAd";
-import activeScreenStyles from "../../../styles/shared/activeScreen";
+import InputBox from "@/components/shared/forms/inputBox";
+import SubmitButton from "@/components/shared/forms/submitButton";
+import authAdStyles from "@/styles/shared/authAd"
+import activeScreenStyles from "@/styles/shared/activeScreen";
 
-const screenWidth = Dimensions.get("window").width;
-const ScreenHeight = Dimensions.get("window").height;
+import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const SignupScreen = ({ navigation }) => {
+
+const LoginScreen = ({ navigation, route }) => {
   //states
-  const [name, setName] = useState("");
+  const {type} = route.params
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
   //functions
-  const handleSignup = () => {
+  const handleLogin = () => {
     try {
       setLoading(true);
-      if (!name || !email || !phone || !password) {
+      if (!email || !password) {
         Alert.alert("Please Fill All Fields");
         setLoading(false);
         return;
       } else {
         setLoading(false);
-        console.log(
-          "register data => " + JSON.stringify({ name, email, phone, password })
-        );
+        console.log("login data => " + JSON.stringify({ email, password }));
       }
     } catch (error) {
       setLoading(false);
@@ -52,13 +49,9 @@ const SignupScreen = ({ navigation }) => {
     >
       <SafeAreaView style={activeScreenStyles.screen}>
         <View style={authAdStyles.header}>
-          <Text style={authAdStyles.title}>Join KitchenConnect</Text>
-          <Text style={authAdStyles.subtitle}>
-            Tasty Meals Just A Click Away
-          </Text>
+          <Text style={authAdStyles.title}>Welcome Back</Text>
         </View>
         <View style={styles.formContainer}>
-          <InputBox input="Name" value={name} setValue={setName} />
           <InputBox
             input="Email"
             keyboardType="email-address"
@@ -66,12 +59,7 @@ const SignupScreen = ({ navigation }) => {
             value={email}
             setValue={setEmail}
           />
-          <InputBox
-            input="Mobile No."
-            keyboardType="phone-pad"
-            value={phone}
-            setValue={setPhone}
-          />
+
           <InputBox
             input="Password"
             secureTextEntry={true}
@@ -81,19 +69,19 @@ const SignupScreen = ({ navigation }) => {
           />
 
           <SubmitButton
-            btnTitle={"SignUp"}
-            handleSubmitBtn={handleSignup}
+            btnTitle={"Login"}
+            handleSubmitBtn={handleLogin}
             loading={loading}
           />
 
-          <Text style={styles.loginNavText}>
-            Already have an account?
+          <Text style={styles.signupNavText}>
+            New To Kitchen Connect? 
             <Text
-              style={styles.loginNav}
-              onPress={() => navigation.navigate("Login")}
+              style={styles.signupNav}
+              onPress={() => navigation.navigate("Signup", {type: type})}
             >
               {" "}
-              Login{" "}
+              SignUp{" "}
             </Text>
           </Text>
         </View>
@@ -102,22 +90,21 @@ const SignupScreen = ({ navigation }) => {
   );
 };
 
-export default SignupScreen;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    // backgroundColor: "#ffff",
-    width: screenWidth * 0.9,
-    top: ScreenHeight * 0.4,
-    marginBottom: ScreenHeight * 0.01,
+    // backgroundColor: "#fff",
+    width: windowWidth * 0.9,
+    top: windowHeight * 0.4,
   },
-  loginNavText: {
+  signupNavText: {
+    fontSize: windowWidth * 0.035,
     fontFamily: "NunitoRegular",
-    fontSize: screenWidth * 0.045, // 18
     textAlign: "center",
   },
-  loginNav: {
+  signupNav: {
     color: "#ffa500",
   },
 });
