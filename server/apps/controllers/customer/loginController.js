@@ -1,7 +1,8 @@
 import Joi from "joi";
 import customer from "../../models/customerModel.js";
-import Bcrypt from "bcrypt";
+import { comparePassword } from "../../utils/bcrypt.js";
 import { signJwt, maxAge } from "../../utils/jwt.js";
+import loginJoiValidate from "../../utils/validations/customer/loginValidation.js";
 
 const loginGet = (req, res) => {
   res.status(200).json({ message: "you can login" });
@@ -10,15 +11,10 @@ const loginGet = (req, res) => {
 const loginPost = async (req, res) => {
   try {
     //01. check req.body
-    //define joi schema
-    const schema = Joi.object({
-      email: Joi.string().email().required(),
-      password: Joi.string().min(6).max(13).required(),
-    });
 
-    //validate req.body with Joi schema
-    const value = await schema.validateAsync(req.body);
-    // console.log("value", value);
+    //validate req.body
+    const valid = await loginJoiValidate(req.body);
+    // console.log("valid", valid);
 
     const { email, password } = req.body;
 
@@ -32,7 +28,7 @@ const loginPost = async (req, res) => {
     }
 
     //03.compare password
-    const auth = await Bcrypt.compare(password, Customer.password);
+    const auth = await comparePassword(password, Customer.password);
 
     if (!auth) {
       return res.status(400).json({

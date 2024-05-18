@@ -1,7 +1,6 @@
-import Joi from "joi";
 import customer from "../../models/customerModel.js";
-import Bcrypt from "bcrypt";
-
+import { hashPassword } from "../../utils/bcrypt.js";
+import signupJoiValidate from "../../utils/validations/customer/signupValidation.js";
 const signupGet = (req, res) => {
   res.status(200).json({ message: "you can signup" });
 };
@@ -11,20 +10,12 @@ const signupPost = async (req, res) => {
     // console.log(req.body);
 
     /* 01. check if req.body is in required form using joi */
-    //define joi schema
-    const schema = Joi.object({
-      userName: Joi.string().required(),
-      email: Joi.string().email().required(),
-      mobile: Joi.string(),
-      password: Joi.string().min(6).max(13).required(),
-      //   city: Joi.string(),
-    });
 
     //validate req.body
-    const value = await schema.validateAsync(req.body);
-    // console.log("value", value);
+    const valid = await signupJoiValidate(req.body);
+    // console.log("valid", valid);
 
-    const { email, password, userName, mobile } = req.body;
+    const { email, password, name, mobile } = req.body;
 
     /*02. check if email address already exist*/
     const user_exist = await customer.findOne({ email });
@@ -39,13 +30,11 @@ const signupPost = async (req, res) => {
     }
 
     //03. Hash password before save into DB
-    const saltRound = 10;
-    const salt = await Bcrypt.genSalt(saltRound);
-    const hash_password = await Bcrypt.hash(password, salt);
+    const hash_password = await hashPassword(password);
 
     //04.create customer data to store in DB
     const userData = {
-      userName,
+      name,
       email,
       mobile,
       password: hash_password,

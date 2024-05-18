@@ -11,21 +11,21 @@ import {
 import React, { useState } from "react";
 import InputBox from "@/components/shared/forms/inputBox";
 import SubmitButton from "@/components/shared/forms/submitButton";
-import authAdStyles from "@/styles/shared/authAd"
+import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
-
-import {windowWidth, windowHeight} from '@/utils/dimensions'
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { windowWidth, windowHeight } from "@/utils/dimensions";
 
 const LoginScreen = ({ navigation, route }) => {
   //states
-  const {type} = route.params
+  const { type } = route.params;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   //functions
-  const handleLogin = () => {
+  const handleLogin = async () => {
     try {
       setLoading(true);
       if (!email || !password) {
@@ -34,12 +34,30 @@ const LoginScreen = ({ navigation, route }) => {
         return;
       } else {
         setLoading(false);
+        if (type === "customer") {
+          const { data } = await axios.post(
+            "http://192.168.0.115:5000/KitchenConnect/api/customer/login/",
+            {
+              email,
+              password,
+            }
+          );
+          await AsyncStorage.setItem("@auth", JSON.stringify(data));
+          getLocalStorageData();
+          alert(data && data.message);
+        }
         console.log("login data => " + JSON.stringify({ email, password }));
       }
     } catch (error) {
+      alert(error.response.data.message);
       setLoading(false);
       console.log(error);
     }
+  };
+  //temp function for local storage
+  const getLocalStorageData = async () => {
+    let data = await AsyncStorage.getItem("@auth");
+    console.log("local storage : ", data);
   };
   return (
     <TouchableWithoutFeedback
@@ -75,10 +93,10 @@ const LoginScreen = ({ navigation, route }) => {
           />
 
           <Text style={styles.signupNavText}>
-            New To Kitchen Connect? 
+            New To Kitchen Connect?
             <Text
               style={styles.signupNav}
-              onPress={() => navigation.navigate("Signup", {type: type})}
+              onPress={() => navigation.navigate("Signup", { type: type })}
             >
               {" "}
               SignUp{" "}

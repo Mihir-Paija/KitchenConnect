@@ -2,9 +2,9 @@ import { Schema, model } from "mongoose";
 
 const customerSchema = Schema(
   {
-    userName: {
+    name: {
       type: String,
-      required: [true, "Please enter userName"],
+      required: [true, "Please enter name"],
     },
 
     email: {
