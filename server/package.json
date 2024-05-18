@@ -2,18 +2,20 @@
   "name": "server",
   "version": "1.0.0",
   "description": "This is BackEnd server for KitchenConnect",
-  "main": "apps/index.js",
+  "main": "apps/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node apps/index.js",
-    "dev": "nodemon apps/index.js"
+    "start": "node apps/server.js",
+    "dev": "nodemon apps/server.js"
   },
   "author": "TeamPhoenix",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mongodb": "^6.6.2",
+    "mongoose": "^8.4.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
