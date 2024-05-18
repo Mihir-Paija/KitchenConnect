@@ -11,21 +11,22 @@ import {
 import React, { useState } from "react";
 import InputBox from "@/components/shared/forms/inputBox";
 import SubmitButton from "@/components/shared/forms/submitButton";
-import authAdStyles from "@/styles/shared/authAd"
+import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
-
-import {windowWidth, windowHeight} from '@/utils/dimensions'
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { loginCustomer } from "../../../utils/customerApi";
 
 const LoginScreen = ({ navigation, route }) => {
   //states
-  const {type} = route.params
+  const { type } = route.params;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   //functions
-  const handleLogin = () => {
+  const handleLogin = async () => {
     try {
       setLoading(true);
       if (!email || !password) {
@@ -34,12 +35,28 @@ const LoginScreen = ({ navigation, route }) => {
         return;
       } else {
         setLoading(false);
-        console.log("login data => " + JSON.stringify({ email, password }));
+        const bodyData = {
+          email,
+          password,
+        };
+        if (type === "customer") {
+          const responseData = await loginCustomer(bodyData);
+          await AsyncStorage.setItem("@auth", JSON.stringify(bodyData));
+          getLocalStorageData();
+          alert(responseData && responseData.message);
+        }
+        console.log("login data => " + JSON.stringify(bodyData));
       }
     } catch (error) {
+      Alert.alert(error.message || "An error occurred");
       setLoading(false);
       console.log(error);
     }
+  };
+  //temp function for local storage
+  const getLocalStorageData = async () => {
+    let _data = await AsyncStorage.getItem("@auth");
+    console.log("local storage : ", _data);
   };
   return (
     <TouchableWithoutFeedback
@@ -75,10 +92,10 @@ const LoginScreen = ({ navigation, route }) => {
           />
 
           <Text style={styles.signupNavText}>
-            New To Kitchen Connect? 
+            New To Kitchen Connect?
             <Text
               style={styles.signupNav}
-              onPress={() => navigation.navigate("Signup", {type: type})}
+              onPress={() => navigation.navigate("Signup", { type: type })}
             >
               {" "}
               SignUp{" "}
