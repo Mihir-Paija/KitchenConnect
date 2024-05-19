@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputBox from "@/components/shared/forms/inputBox";
 import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
@@ -17,8 +17,12 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { loginCustomer } from "../../../utils/customerApi";
+import { AuthContext } from "../../../context/authContext";
 
 const LoginScreen = ({ navigation, route }) => {
+  //global states
+  const [authState, setAuthState] = useContext(AuthContext);
+
   //states
   const { type } = route.params;
   const [email, setEmail] = useState("");
@@ -41,9 +45,16 @@ const LoginScreen = ({ navigation, route }) => {
         };
         if (type === "customer") {
           const responseData = await loginCustomer(bodyData);
-          await AsyncStorage.setItem("@auth", JSON.stringify(bodyData));
+          setAuthState({
+            authToken: responseData.authToken,
+          });
+          await AsyncStorage.setItem(
+            "@auth",
+            JSON.stringify(responseData.authToken)
+          );
           getLocalStorageData();
-          alert(responseData && responseData.message);
+          // alert(responseData && responseData.message);
+          navigation.navigate("Home");
         }
         console.log("login data => " + JSON.stringify(bodyData));
       }
@@ -55,8 +66,15 @@ const LoginScreen = ({ navigation, route }) => {
   };
   //temp function for local storage
   const getLocalStorageData = async () => {
-    let _data = await AsyncStorage.getItem("@auth");
-    console.log("local storage : ", _data);
+    try {
+      let localStorageData = await AsyncStorage.getItem("@auth");
+      if (localStorageData) {
+        let authData = JSON.parse(localStorageData);
+        console.log("Local storage => ", authData);
+      }
+    } catch (e) {
+      console.log("Error loading local storage data:", e);
+    }
   };
   return (
     <TouchableWithoutFeedback

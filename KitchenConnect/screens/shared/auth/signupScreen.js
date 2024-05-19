@@ -42,7 +42,8 @@ const SignupScreen = ({ navigation, route }) => {
         const bodyData = { name, email, mobile, password };
         if (type === "customer") {
           const responseData = await signupCustomer(bodyData);
-          alert(responseData && responseData.message);
+          // alert(responseData && responseData.message);
+          navigation.navigate("Login", { type: type });
         }
         console.log("register data => " + JSON.stringify(bodyData));
       }
