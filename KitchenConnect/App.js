@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -6,40 +6,37 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Choose from "./screens/shared/choosingScreen";
 import CustomerAuthNavigator from "./navigations/customer/customerAuthNavigator";
 import ProviderAuthNavigator from "./navigations/admin/providerAuthNavigator";
-
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
-import { AuthProvider } from "./context/authContext";
-
-const Stack = createNativeStackNavigator();
+import { CustomerAuthProvider } from "./context/authContext";
+import { UserTypeProvider } from "./context/userTypeContext";
+import WelcomeNavigator from "./navigations/welcomeNavigator";
 
 export default function App() {
+  //global states
+  // const { authCustomerState } = useContext(CustomerAuthContext);
+  // const { userType } = useContext(UserTypeContext);
+
+  //states
   const [isAppReady, setIsAppReady] = useState(false);
+
+  //first render
   useEffect(() => {
     loadFonts().then(() => setIsAppReady(true));
   }, []);
 
-  if (isAppReady) {
-    return (
-      <NavigationContainer>
-        <AuthProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="Choose" component={Choose} />
-            <Stack.Screen
-              name="CustomerAuthNavigator"
-              component={CustomerAuthNavigator}
-            />
-            <Stack.Screen
-              name="ProviderAuthNavigator"
-              component={ProviderAuthNavigator}
-            />
-          </Stack.Navigator>
-        </AuthProvider>
-      </NavigationContainer>
-    );
-  } else {
+  if (!isAppReady) {
     return <LoadingScreen />;
   }
+
+  return (
+    <CustomerAuthProvider>
+      <UserTypeProvider>
+        <NavigationContainer>
+          <WelcomeNavigator />
+        </NavigationContainer>
+      </UserTypeProvider>
+    </CustomerAuthProvider>
+  );
 }

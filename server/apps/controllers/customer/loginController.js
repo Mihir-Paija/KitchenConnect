@@ -48,7 +48,7 @@ const loginPost = async (req, res) => {
 
     return res.status(200).json({
       message: "Logged in successfully",
-      authToken: jwtToken,
+      authCustomerToken: jwtToken,
     });
   } catch (err) {
     console.log(err.message);
