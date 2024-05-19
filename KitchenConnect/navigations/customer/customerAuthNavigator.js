@@ -2,11 +2,12 @@ import React from "react";
 import SignupScreen from "@/screens/shared/auth/signupScreen";
 import LoginScreen from "@/screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
+import HomeScreen from "../../screens/customer/homeScreen";
 
 const authStack = createStackNavigator();
 
-const CustomerAuthNavigator = ({route}) => {
-  const {type} = route.params
+const CustomerAuthNavigator = ({ route }) => {
+  const { type } = route.params;
   return (
     <authStack.Navigator
       initialRouteName="Login"
@@ -30,6 +31,12 @@ const CustomerAuthNavigator = ({route}) => {
         name="Signup"
         component={SignupScreen}
         options={{ presentation: "transparentModal" }}
+      />
+      <authStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ presentation: "transparentModal" }}
+        initialParams={{ type: type }}
       />
     </authStack.Navigator>
   );

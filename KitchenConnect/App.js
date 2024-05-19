@@ -10,6 +10,7 @@ import ProviderAuthNavigator from "./navigations/admin/providerAuthNavigator";
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
+import { AuthProvider } from "./context/authContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,18 +23,20 @@ export default function App() {
   if (isAppReady) {
     return (
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Choose" component={Choose} />
-          <Stack.Screen
-            name="CustomerAuthNavigator"
-            component={CustomerAuthNavigator}
-          />
-          <Stack.Screen
-            name="ProviderAuthNavigator"
-            component={ProviderAuthNavigator}
-          />
-        </Stack.Navigator>
+        <AuthProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="Choose" component={Choose} />
+            <Stack.Screen
+              name="CustomerAuthNavigator"
+              component={CustomerAuthNavigator}
+            />
+            <Stack.Screen
+              name="ProviderAuthNavigator"
+              component={ProviderAuthNavigator}
+            />
+          </Stack.Navigator>
+        </AuthProvider>
       </NavigationContainer>
     );
   } else {

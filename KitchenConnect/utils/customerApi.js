@@ -4,7 +4,7 @@ import { API_BASE_URL } from "@env";
 export const signupCustomer = async (bodyData) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}KitchenConnect/api/customer/signup/`,
+      `${API_BASE_URL}/customer/signup/`,
       bodyData
     );
     return response.data;
