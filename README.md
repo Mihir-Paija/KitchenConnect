@@ -1,1 +1,3 @@
 # KitchenConnect
+
+Through this cross-platform application, we aim to create a central hub for tiffin services. An online marketplace where local tiffin sellers can easily list their offerings, including menus and pricing. They could offer pay-and-eat or subscriptions (monthly, quarterly). On the other side, customers can browse through the nearby tiffin services. They could see their menus, read the reviews, and choose something that suits them. Through this system, we wish to help tiffin services expand their reach and give consumers more options to experience the goodness of home-cooked meals.
