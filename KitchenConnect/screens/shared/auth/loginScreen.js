@@ -48,6 +48,7 @@ const LoginScreen = ({ navigation }) => {
         if (userType === "customer") {
           const responseData = await loginCustomer(bodyData);
           setAuthCustomerState({
+            authCustomerReady: true,
             authCustomerToken: responseData.authCustomerToken,
           });
           await AsyncStorage.setItem(

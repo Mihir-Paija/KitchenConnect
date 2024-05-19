@@ -6,14 +6,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Choose from "./screens/shared/choosingScreen";
 import CustomerAuthNavigator from "./navigations/customer/customerAuthNavigator";
 import ProviderAuthNavigator from "./navigations/admin/providerAuthNavigator";
-
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
 import { CustomerAuthProvider } from "./context/authContext";
 import { UserTypeProvider } from "./context/userTypeContext";
-
-const Stack = createNativeStackNavigator();
+import WelcomeNavigator from "./navigations/welcomeNavigator";
 
 export default function App() {
   //global states
@@ -33,23 +31,12 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <CustomerAuthProvider>
-        <UserTypeProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="Choose" component={Choose} />
-            <Stack.Screen
-              name="CustomerAuthNavigator"
-              component={CustomerAuthNavigator}
-            />
-            <Stack.Screen
-              name="ProviderAuthNavigator"
-              component={ProviderAuthNavigator}
-            />
-          </Stack.Navigator>
-        </UserTypeProvider>
-      </CustomerAuthProvider>
-    </NavigationContainer>
+    <CustomerAuthProvider>
+      <UserTypeProvider>
+        <NavigationContainer>
+          <WelcomeNavigator />
+        </NavigationContainer>
+      </UserTypeProvider>
+    </CustomerAuthProvider>
   );
 }
