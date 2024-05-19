@@ -1,19 +1,17 @@
 import React, { useContext } from "react";
-import SignupScreen from "@/screens/shared/auth/signupScreen";
-import LoginScreen from "@/screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
 import { UserTypeContext } from "../../context/userTypeContext";
 
-const authStack = createStackNavigator();
+const homeStack = createStackNavigator();
 
-const CustomerAuthNavigator = () => {
+const CustomerHomeCustomerNavigator = ({ route }) => {
   //global states
   const [userType] = useContext(UserTypeContext);
 
   return (
-    <authStack.Navigator
-      initialRouteName="Login"
+    <homeStack.Navigator
+      initialRouteName="HomeCustomer"
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
@@ -24,23 +22,13 @@ const CustomerAuthNavigator = () => {
         },
       }}
     >
-      <authStack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ presentation: "transparentModal" }}
-      />
-      <authStack.Screen
-        name="Signup"
-        component={SignupScreen}
-        options={{ presentation: "transparentModal" }}
-      />
-      <authStack.Screen
+      <homeStack.Screen
         name="HomeCustomer"
         component={HomeCustomerScreen}
         options={{ presentation: "transparentModal" }}
       />
-    </authStack.Navigator>
+    </homeStack.Navigator>
   );
 };
 
-export default CustomerAuthNavigator;
+export default CustomerHomeCustomerNavigator;

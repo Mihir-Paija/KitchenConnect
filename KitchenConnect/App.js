@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -10,20 +10,32 @@ import ProviderAuthNavigator from "./navigations/admin/providerAuthNavigator";
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
-import { AuthProvider } from "./context/authContext";
+import { CustomerAuthProvider } from "./context/authContext";
+import { UserTypeProvider } from "./context/userTypeContext";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  //global states
+  // const { authCustomerState } = useContext(CustomerAuthContext);
+  // const { userType } = useContext(UserTypeContext);
+
+  //states
   const [isAppReady, setIsAppReady] = useState(false);
+
+  //first render
   useEffect(() => {
     loadFonts().then(() => setIsAppReady(true));
   }, []);
 
-  if (isAppReady) {
-    return (
-      <NavigationContainer>
-        <AuthProvider>
+  if (!isAppReady) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <NavigationContainer>
+      <CustomerAuthProvider>
+        <UserTypeProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="Choose" component={Choose} />
@@ -36,10 +48,8 @@ export default function App() {
               component={ProviderAuthNavigator}
             />
           </Stack.Navigator>
-        </AuthProvider>
-      </NavigationContainer>
-    );
-  } else {
-    return <LoadingScreen />;
-  }
+        </UserTypeProvider>
+      </CustomerAuthProvider>
+    </NavigationContainer>
+  );
 }

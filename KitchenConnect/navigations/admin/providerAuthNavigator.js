@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import SignupScreen from "@/screens/shared/auth/signupScreen";
 import LoginScreen from "@/screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
+import { UserTypeContext } from "../../context/userTypeContext";
 
 const authStack = createStackNavigator();
 
-const ProviderAuthNavigator = ({route}) => {
-  const {type} = route.params
+const ProviderAuthNavigator = () => {
+  //global states
+  const [userType] = useContext(UserTypeContext);
 
   return (
     <authStack.Navigator
@@ -25,8 +27,6 @@ const ProviderAuthNavigator = ({route}) => {
         name="Login"
         component={LoginScreen}
         options={{ presentation: "transparentModal" }}
-        initialParams={{type: type}}
-
       />
       <authStack.Screen
         name="Signup"

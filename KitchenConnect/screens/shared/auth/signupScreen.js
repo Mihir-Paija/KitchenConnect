@@ -8,26 +8,30 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputBox from "@/components/shared/forms/inputBox";
 import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { signupCustomer } from "../../../utils/customerApi";
+import { UserTypeContext } from "../../../context/userTypeContext";
 
-const SignupScreen = ({ navigation, route }) => {
+const SignupScreen = ({ navigation }) => {
+  //global states
+  const [userType] = useContext(UserTypeContext);
+
   //states
-  const { type } = route.params;
+
   // console.log(type);
-  var subtitles;
+  var subtitle;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mobile, setmobile] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (type == "customer") subtitle = "Tasty Meals Just A Click Away";
+  if (userType == "customer") subtitle = "Tasty Meals Just A Click Away";
   else subtitle = "Expand Your Business";
   //functions
   const handleSignup = async () => {
@@ -40,12 +44,12 @@ const SignupScreen = ({ navigation, route }) => {
       } else {
         setLoading(false);
         const bodyData = { name, email, mobile, password };
-        if (type === "customer") {
+        if (userType === "customer") {
           const responseData = await signupCustomer(bodyData);
           // alert(responseData && responseData.message);
-          navigation.navigate("Login", { type: type });
+          navigation.navigate("Login");
+          console.log("Customer register data => " + JSON.stringify(bodyData));
         }
-        console.log("register data => " + JSON.stringify(bodyData));
       }
     } catch (error) {
       Alert.alert(error.message || "An error occurred");
@@ -97,7 +101,7 @@ const SignupScreen = ({ navigation, route }) => {
             Already have an account?
             <Text
               style={styles.loginNav}
-              onPress={() => navigation.navigate("Login", { type: type })}
+              onPress={() => navigation.navigate("Login")}
             >
               {" "}
               Login{" "}

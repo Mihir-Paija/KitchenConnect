@@ -17,14 +17,16 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { loginCustomer } from "../../../utils/customerApi";
-import { AuthContext } from "../../../context/authContext";
+import { CustomerAuthContext } from "../../../context/authContext";
+import { UserTypeContext } from "../../../context/userTypeContext";
 
-const LoginScreen = ({ navigation, route }) => {
+const LoginScreen = ({ navigation }) => {
   //global states
-  const [authState, setAuthState] = useContext(AuthContext);
+  const [authCustomerState, setAuthCustomerState] =
+    useContext(CustomerAuthContext);
+  const [userType] = useContext(UserTypeContext);
 
   //states
-  const { type } = route.params;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,20 +45,21 @@ const LoginScreen = ({ navigation, route }) => {
           email,
           password,
         };
-        if (type === "customer") {
+        if (userType === "customer") {
           const responseData = await loginCustomer(bodyData);
-          setAuthState({
-            authToken: responseData.authToken,
+          setAuthCustomerState({
+            authCustomerToken: responseData.authCustomerToken,
           });
           await AsyncStorage.setItem(
-            "@auth",
-            JSON.stringify(responseData.authToken)
+            "@authCustomer",
+            JSON.stringify(responseData.authCustomerToken)
           );
           getLocalStorageData();
           // alert(responseData && responseData.message);
-          navigation.navigate("Home");
+          navigation.navigate("HomeCustomer");
+          console.log("Customer login data => " + JSON.stringify(bodyData));
+        } else {
         }
-        console.log("login data => " + JSON.stringify(bodyData));
       }
     } catch (error) {
       Alert.alert(error.message || "An error occurred");
@@ -67,7 +70,7 @@ const LoginScreen = ({ navigation, route }) => {
   //temp function for local storage
   const getLocalStorageData = async () => {
     try {
-      let localStorageData = await AsyncStorage.getItem("@auth");
+      let localStorageData = await AsyncStorage.getItem("@authCustomer");
       if (localStorageData) {
         let authData = JSON.parse(localStorageData);
         console.log("Local storage => ", authData);
@@ -113,7 +116,7 @@ const LoginScreen = ({ navigation, route }) => {
             New To Kitchen Connect?
             <Text
               style={styles.signupNav}
-              onPress={() => navigation.navigate("Signup", { type: type })}
+              onPress={() => navigation.navigate("Signup")}
             >
               {" "}
               SignUp{" "}
