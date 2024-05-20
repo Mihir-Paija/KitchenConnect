@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import SignupScreen from "@/screens/customer/signupScreen";
-import LoginScreen from "@/screens/shared/auth/loginScreen";
-import LoadingScreen from "@/screens/shared/loadingScreen";
+import SignupScreen from "@screens/customer/signupScreen";
+import LoginScreen from "@screens/shared/auth/loginScreen";
+import LoadingScreen from "@screens/shared/loadingScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
 import { CustomerAuthContext } from "../../context/authContext";

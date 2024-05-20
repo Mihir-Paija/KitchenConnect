@@ -9,17 +9,17 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import InputBox from "@/components/shared/forms/inputBox";
-import SubmitButton from "@/components/shared/forms/submitButton";
-import authAdStyles from "@/styles/shared/authAd";
-import activeScreenStyles from "@/styles/shared/activeScreen";
-import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { signupProvider } from "@/utils/providerAPI";
-import { UserTypeContext } from "@/context/userTypeContext";
+import InputBox from "@components/shared/forms/inputBox";
+import SubmitButton from "@components/shared/forms/submitButton";
+import authAdStyles from "@styles/shared/authAd";
+import activeScreenStyles from "@styles/shared/activeScreen";
+import { windowWidth, windowHeight } from "@utils/dimensions";
+import { signupProvider } from "@utils/providerAPI";
+import { UserTypeContext } from "@context/userTypeContext";
 
 const SignupScreen = ({ navigation }) => {
   //states
-  const [userType] = useContext(UserTypeContext)
+  const [userType] = useContext(UserTypeContext);
   // console.log(type);
   var subtitles;
   const [name, setName] = useState("");
@@ -27,9 +27,8 @@ const SignupScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [mobile, setMobile] = useState("");
   const [city, setCity] = useState("");
-  const [businessName, setBusinessName] = useState("")
+  const [businessName, setBusinessName] = useState("");
   const [loading, setLoading] = useState(false);
-
 
   //functions
   const handleSignup = async () => {
@@ -67,11 +66,7 @@ const SignupScreen = ({ navigation }) => {
           <Text style={authAdStyles.subtitle}>Expand Your Business</Text>
         </View>
         <View style={styles.formContainer}>
-          <InputBox
-            input="Name"
-            value={name}
-            setValue={setName}
-          />
+          <InputBox input="Name" value={name} setValue={setName} />
           <InputBox
             input="Email"
             keyboardType="email-address"
@@ -97,11 +92,7 @@ const SignupScreen = ({ navigation }) => {
             value={mobile}
             setValue={setMobile}
           />
-          <InputBox
-            input="City"
-            value={city}
-            setValue={setCity}
-          />
+          <InputBox input="City" value={city} setValue={setCity} />
           <SubmitButton
             btnTitle={"SignUp"}
             handleSubmitBtn={handleSignup}

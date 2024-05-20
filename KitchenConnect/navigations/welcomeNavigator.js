@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import LoginScreen from "@/screens/shared/auth/loginScreen";
+import LoginScreen from "@screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../screens/customer/homeCustomerScreen";
 import { UserTypeContext } from "../context/userTypeContext";
