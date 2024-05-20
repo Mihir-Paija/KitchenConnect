@@ -26,6 +26,7 @@ module.exports = function (api) {
             "@navigations": "./navigations",
             "@context": "./context",
             "@styles": "./styles",
+            "@": "./"
           },
         },
       ],

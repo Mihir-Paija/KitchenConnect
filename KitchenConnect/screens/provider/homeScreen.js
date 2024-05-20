@@ -1,16 +1,42 @@
-import { StyleSheet, Text, View, SafeAreaView, BackHandler } from "react-native";
-import React, { useContext } from "react";
+import { StyleSheet, Text, View, SafeAreaView, BackHandler, Alert } from "react-native";
+import React, { useContext, useEffect } from "react";
 //import { AuthContext } from "../../context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import SubmitButton from '@/components/shared/forms/submitButton'
 import LogoutButton from "@/components/shared/logoutButton";
 import {windowHeight} from '@/utils/dimensions'
-import { logoutProvider } from "../../utils/providerAPI";
+import { logoutProvider } from "@/utils/providerAPI";
 import { AuthContext } from "@/context/authContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({navigation}) => {
   const [authState, setAuthState] = useContext(AuthContext);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Exit!",
+        "Are You Sure You Want To Exit?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleLogout = async() =>{
     try {

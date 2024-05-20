@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, BackHandler} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, BackHandler, Alert} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
@@ -12,6 +12,33 @@ import { logoutCustomer } from "@/utils/customerApi";
 const HomeCustomerScreen = ({navigation}) => {
   //const [authCustomerState, setAuthCustomerState] = useContext(CustomerAuthContext);
   const [authState, setAuthState] = useContext(AuthContext)
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Exit!",
+        "Are You Sure You Want To Exit?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
 
   const handleLogout = async () => {
     try {
@@ -39,8 +66,10 @@ const HomeCustomerScreen = ({navigation}) => {
     }
   };
 
+
+
   return (
-    <View style={activeScreenStyles.screen}>
+    <SafeAreaView style={activeScreenStyles.screen}>
       {authState.authToken ? (
         <>
           <Text>HomeCustomerScreen</Text>

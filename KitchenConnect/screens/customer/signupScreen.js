@@ -11,8 +11,8 @@ import {
 import React, { useState, useContext } from "react";
 import InputBox from "@components/shared/forms/inputBox";
 import SubmitButton from "@components/shared/forms/submitButton";
-import authAdStyles from "@styles/shared/authAd";
-import activeScreenStyles from "@styles/shared/activeScreen";
+import authAdStyles from "@/styles/shared/authAd";
+import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@utils/dimensions";
 import { signupCustomer } from "@utils/customerApi";
 import { UserTypeContext } from "@context/userTypeContext";
