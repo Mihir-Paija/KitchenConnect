@@ -1,7 +1,7 @@
 import { StyleSheet, Text, SafeAreaView, View } from "react-native";
 import React, { useContext } from "react";
 import { CustomerAuthContext } from "../../context/authContext";
-import activeScreenStyles from "@/styles/shared/activeScreen";
+import activeScreenStyles from "@styles/shared/activeScreen";
 import FooterMenu from "../../components/shared/menu/footerMenu";
 
 const HomeCustomerScreen = () => {

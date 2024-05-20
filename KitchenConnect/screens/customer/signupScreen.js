@@ -9,13 +9,13 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useState, useContext } from "react";
-import InputBox from "@/components/shared/forms/inputBox";
-import SubmitButton from "@/components/shared/forms/submitButton";
-import authAdStyles from "@/styles/shared/authAd";
-import activeScreenStyles from "@/styles/shared/activeScreen";
-import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { signupCustomer } from "@/utils/customerApi";
-import { UserTypeContext } from "@/context/userTypeContext";
+import InputBox from "@components/shared/forms/inputBox";
+import SubmitButton from "@components/shared/forms/submitButton";
+import authAdStyles from "@styles/shared/authAd";
+import activeScreenStyles from "@styles/shared/activeScreen";
+import { windowWidth, windowHeight } from "@utils/dimensions";
+import { signupCustomer } from "@utils/customerApi";
+import { UserTypeContext } from "@context/userTypeContext";
 
 const SignupScreen = ({ navigation }) => {
   //global states
@@ -64,7 +64,9 @@ const SignupScreen = ({ navigation }) => {
       <SafeAreaView style={activeScreenStyles.screen}>
         <View style={authAdStyles.header}>
           <Text style={authAdStyles.title}>Join KitchenConnect</Text>
-          <Text style={authAdStyles.subtitle}>Tasty Meals Just A Click Away</Text>
+          <Text style={authAdStyles.subtitle}>
+            Tasty Meals Just A Click Away
+          </Text>
         </View>
         <View style={styles.formContainer}>
           <InputBox input="Name" value={name} setValue={setName} />

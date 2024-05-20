@@ -7,11 +7,14 @@ import {
 } from "react-native";
 import React from "react";
 
-import {windowWidth, windowHeight} from '@/utils/dimensions'
+import { windowWidth, windowHeight } from "@utils/dimensions";
 
 const SubmitButton = ({ btnTitle, handleSubmitBtn, loading, style }) => {
   return (
-    <TouchableOpacity style={[styles.submitButton, style]} onPress={handleSubmitBtn}>
+    <TouchableOpacity
+      style={[styles.submitButton, style]}
+      onPress={handleSubmitBtn}
+    >
       <Text style={styles.submitText}>
         {loading ? "Please Wait..." : btnTitle}
       </Text>
