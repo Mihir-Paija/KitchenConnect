@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { windowWidth, windowHeight } from "@utils/dimensions";
 import { UserTypeContext } from "../../context/userTypeContext";
 import SubmitButton from "@/components/shared/forms/submitButton";
 import activeScreenStyles from "@/styles/shared/activeScreen";

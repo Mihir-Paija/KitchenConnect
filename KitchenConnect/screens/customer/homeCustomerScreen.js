@@ -53,7 +53,7 @@ const HomeCustomerScreen = ({navigation}) => {
       ) : (
         <Text>You are not authorized to access this screen.</Text>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

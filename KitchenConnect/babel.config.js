@@ -14,6 +14,21 @@ module.exports = function (api) {
           allowUndefined: true,
         },
       ],
+      [
+        "module-resolver",
+        {
+          root: ["./"],
+          alias: {
+            "@assets": "./assets",
+            "@components": "./components",
+            "@screens": "./screens",
+            "@utils": "./utils",
+            "@navigations": "./navigations",
+            "@context": "./context",
+            "@styles": "./styles",
+          },
+        },
+      ],
     ],
   };
 };
