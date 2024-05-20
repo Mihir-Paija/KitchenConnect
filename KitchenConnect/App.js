@@ -9,7 +9,8 @@ import ProviderAuthNavigator from "./navigations/provider/providerAuthNavigator"
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
-import { CustomerAuthProvider } from "./context/authContext";
+import { CustomerAuthProvider } from "./context/customerAuthContext";
+import {AuthProvider} from "./context/authContext";
 import { UserTypeProvider } from "./context/userTypeContext";
 import WelcomeNavigator from "./navigations/welcomeNavigator";
 
@@ -31,12 +32,20 @@ export default function App() {
   }
 
   return (
-    <CustomerAuthProvider>
+    /*<CustomerAuthProvider>
       <UserTypeProvider>
         <NavigationContainer>
           <WelcomeNavigator />
         </NavigationContainer>
       </UserTypeProvider>
-    </CustomerAuthProvider>
+    </CustomerAuthProvider> */
+
+    <AuthProvider>
+      <UserTypeProvider>
+        <NavigationContainer>
+          <WelcomeNavigator />
+        </NavigationContainer>
+      </UserTypeProvider>
+    </AuthProvider>
   );
 }

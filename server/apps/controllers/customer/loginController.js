@@ -48,7 +48,7 @@ const loginPost = async (req, res) => {
 
     return res.status(200).json({
       message: "Logged in successfully",
-      authCustomerToken: jwtToken,
+      authToken: jwtToken,
     });
   } catch (err) {
     console.log(err.message);
@@ -59,4 +59,19 @@ const loginPost = async (req, res) => {
   }
 };
 
-export { loginGet, loginPost };
+const logoutGet = async(req, res) =>{
+	try{
+		res.clearCookie('jwt')
+	
+		return res.status(200).send({
+			message: `Logout Successful`
+		})
+	}catch(error){
+		console.log('Error in logging out provider\n' + error)
+		return res.status(500).send({
+			message: 'Internal Server Error'
+		})
+	}
+}
+
+export { loginGet, loginPost, logoutGet };

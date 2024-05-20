@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import LoginScreen from "@screens/shared/auth/loginScreen";
+import LoginScreen from "@/screens/shared/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../screens/customer/homeCustomerScreen";
 import { UserTypeContext } from "../context/userTypeContext";
@@ -7,6 +7,8 @@ import CustomerAuthNavigator from "./customer/customerAuthNavigator";
 import ProviderAuthNavigator from "./provider/providerAuthNavigator";
 import WelcomeScreen from "../screens/shared/welcomeScreen";
 import Choose from "../screens/shared/choosingScreen";
+import AuthRedirect from "../screens/shared/authRedirectScreen";
+
 
 const welcomeStack = createStackNavigator();
 
@@ -33,6 +35,7 @@ const WelcomeNavigator = () => {
         component={Choose}
         options={{ presentation: "transparentModal" }}
       />
+      <welcomeStack.Screen name = "Check" component={AuthRedirect} />
       <welcomeStack.Screen
         name="CustomerAuthNavigator"
         component={CustomerAuthNavigator}

@@ -16,12 +16,22 @@ export const signupCustomer = async (bodyData) => {
 export const loginCustomer = async (bodyData) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}KitchenConnect/api/customer/login/`,
+      `${API_BASE_URL}/customer/login/`,
       bodyData
     );
     return response.data;
   } catch (error) {
     // console.log(error);
     throw error.response.data;
+  }
+};
+
+export const logoutCustomer = async() => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/customer/logout`);
+    return response
+    }
+   catch (error) {
+    console.error('Error logging out:', error);
   }
 };

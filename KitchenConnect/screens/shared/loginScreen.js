@@ -14,18 +14,24 @@ import SubmitButton from "@components/shared/forms/submitButton";
 import authAdStyles from "@styles/shared/authAd";
 import activeScreenStyles from "@styles/shared/activeScreen";
 
+import InputBox from "@components/shared/forms/inputBox";
+import SubmitButton from "@components/shared/forms/submitButton";
+import authAdStyles from "@styles/shared/authAd";
+import activeScreenStyles from "@styles/shared/activeScreen";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { windowWidth, windowHeight } from "@utils/dimensions";
-import { loginCustomer } from "../../../utils/customerApi";
-import { CustomerAuthContext } from "../../../context/authContext";
-import { UserTypeContext } from "../../../context/userTypeContext";
-import { loginProvider } from "../../../utils/providerAPI";
+import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { loginCustomer } from "../../utils/customerApi";
+import { CustomerAuthContext } from "../../context/customerAuthContext";
+import { AuthContext } from "@/context/authContext";
+import { UserTypeContext } from "../../context/userTypeContext";
+import { loginProvider } from "@/utils/providerAPI";
 
 const LoginScreen = ({ navigation }) => {
   //global states
-  const [authCustomerState, setAuthCustomerState] =
-    useContext(CustomerAuthContext);
+  //const [authCustomerState, setAuthCustomerState] =useContext(CustomerAuthContext);
   const [userType] = useContext(UserTypeContext);
+  const [authState, setAuthState] = useContext(AuthContext)
 
   //states
   const [email, setEmail] = useState("");
@@ -33,6 +39,22 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   //functions
+  const setAuth = async (responseData, bodyData) => {
+    const newAuthState = {
+      authReady: true,
+      authToken: responseData.authToken,
+      authType: userType,
+    };
+  
+    setAuthState(newAuthState);
+  
+    try {
+      await AsyncStorage.setItem("@auth", JSON.stringify(newAuthState));
+      console.log("Auth state saved to AsyncStorage:", newAuthState);
+    } catch (error) {
+      console.error("Error saving auth state to AsyncStorage:", error);
+    }
+  };
   const handleLogin = async () => {
     try {
       setLoading(true);
@@ -48,30 +70,24 @@ const LoginScreen = ({ navigation }) => {
         };
         if (userType === "customer") {
           const responseData = await loginCustomer(bodyData);
-          setAuthCustomerState({
-            authCustomerReady: true,
-            authCustomerToken: responseData.authCustomerToken,
-          });
-          await AsyncStorage.setItem(
-            "@authCustomer",
-            JSON.stringify(responseData.authCustomerToken)
-          );
-          getLocalStorageData();
-          // alert(responseData && responseData.message);
+          setAuth(responseData, bodyData)
+          // setAuthCustomerState({
+          //   authCustomerReady: true,
+          //   authCustomerToken: responseData.authCustomerToken,
+          // });
+          // await AsyncStorage.setItem(
+          //   "@authCustomer",
+          //   JSON.stringify(responseData.authCustomerToken)
+          // );
+          // getLocalStorageData();
+          // // alert(responseData && responseData.message);
           navigation.navigate("HomeCustomer");
           console.log("Customer login data => " + JSON.stringify(bodyData));
-        } else {
+        } 
+        else if(userType === "provider")
+        {
           const responseData = await loginProvider(bodyData);
-          setAuthCustomerState({
-            authCustomerReady: true,
-            authCustomerToken: responseData.authCustomerToken,
-          });
-          await AsyncStorage.setItem(
-            "@authCustomer",
-            JSON.stringify(responseData.authCustomerToken)
-          );
-          getLocalStorageData();
-          // alert(responseData && responseData.message);
+          setAuth(responseData, bodyData)
           navigation.navigate("Provider Home");
           console.log("Provider login data => " + JSON.stringify(bodyData));
         }

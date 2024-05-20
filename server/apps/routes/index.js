@@ -10,6 +10,9 @@ router.use("/customer/signup", signupCustomerRouter);
 import loginCustomerRouter from "./customer/loginRouter.js";
 router.use("/customer/login", loginCustomerRouter);
 
+import { logoutCustomerRouter } from "./customer/logoutRouter.js";
+router.use("/customer/logout", logoutCustomerRouter);
+
 router.use('/provider', providerAuthRouter);
 
 export default router;
