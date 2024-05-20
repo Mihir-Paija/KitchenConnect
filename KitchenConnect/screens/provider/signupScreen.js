@@ -45,7 +45,7 @@ const SignupScreen = ({ navigation }) => {
         if (userType === "provider") {
           const responseData = await signupProvider(bodyData);
           Alert.alert("SignUp Successful! Please Login");
-          navigation.navigate("Login", { type: type });
+          navigation.navigate("Login");
         }
         console.log("register data => " + JSON.stringify(bodyData));
       }

@@ -1,28 +1,32 @@
 import React, { useContext } from "react";
 import SignupScreen from "@/screens/customer/signupScreen";
-import LoginScreen from "@/screens/shared/auth/loginScreen";
+import LoginScreen from "@/screens/shared/loginScreen";
 import LoadingScreen from "@/screens/shared/loadingScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
-import { CustomerAuthContext } from "../../context/authContext";
+import { CustomerAuthContext } from "../../context/customerAuthContext";
+import { AuthContext } from "@/context/authContext";
+import Choose from "@/screens/shared/choosingScreen";
 
 const authStack = createStackNavigator();
 
 const CustomerAuthNavigator = () => {
   //global states
-  const [authCustomerState] = useContext(CustomerAuthContext);
-  if (!authCustomerState.authCustomerReady) {
-    return <LoadingScreen />;
-  }
-  // console.log("Auth State in Navigator:", authCustomerState);
+  // const [authCustomerState] = useContext(CustomerAuthContext);
+  const [authState] = useContext(AuthContext)
+  // if (!authCustomerState.authCustomerReady) {
+  //   return <LoadingScreen />;
+  // }
+ // console.log("Auth State in Customer Navigator:", authState);
 
   return (
     <authStack.Navigator
       initialRouteName={
-        authCustomerState.authCustomerReady &&
-        authCustomerState.authCustomerToken
-          ? "HomeCustomer"
-          : "Login"
+        /* authCustomerState.authCustomerReady &&
+         authCustomerState.authCustomerToken
+           ? "HomeCustomer"
+           : "Login" */
+        authState.authReady && authState.authToken ? "HomeCustomer" : "Login"
       }
       screenOptions={{
         headerShown: false,
@@ -34,7 +38,7 @@ const CustomerAuthNavigator = () => {
         },
       }}
     >
-      {!authCustomerState.authCustomerToken ? (
+      {!authState.authToken ? (
         <>
           <authStack.Screen
             name="Login"
@@ -46,6 +50,8 @@ const CustomerAuthNavigator = () => {
             component={SignupScreen}
             options={{ presentation: "transparentModal" }}
           />
+
+
         </>
       ) : (
         <authStack.Screen

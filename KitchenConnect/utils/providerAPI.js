@@ -26,3 +26,13 @@ export const loginProvider = async (bodyData) => {
     throw error.response.data;
   }
 };
+
+export const logoutProvider = async() =>{
+  try {
+    const response = await axios.get(`${API_BASE_URL}/provider/logout`);
+    return response
+  } catch (error) {
+    console.error('Error logging out:', error);
+  }
+};
+

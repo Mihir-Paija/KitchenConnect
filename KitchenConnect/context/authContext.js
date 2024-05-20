@@ -1,56 +1,66 @@
 import React, { createContext, useState, useEffect, Children } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserTypeContext } from "./userTypeContext";
 
 //context
-export const CustomerAuthContext = createContext();
+export const AuthContext = createContext();
 
 //provider
-export const CustomerAuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   //global state
-  const [authCustomerState, setAuthCustomerState] = useState({
-    authCustomerReady: false,
-    authCustomerToken: "",
+  const [authState, setAuthState] = useState({
+    authReady: false,
+    authToken: "",
+    authType: "",
   });
 
   //intial local  storage data
   useEffect(() => {
     const loadLocalStorageData = async () => {
       try {
-        let localStorageData = await AsyncStorage.getItem("@authCustomer");
+        let localStorageData = await AsyncStorage.getItem("@auth");
         console.log(
-          "Local data storage @authCustomer initially => ",
-          localStorageData
-        );
+            "Local data storage @auth initially => ",
+            localStorageData
+          );
         if (localStorageData) {
           let authData = JSON.parse(localStorageData);
-          console.log("authData ", authData);
-          setAuthCustomerState((prevState) => ({
+          setAuthState({
+            authReady: authData.authReady,
+            authToken: authData.authToken,
+            authType: authData.authType
+     
+          });
+        } else {
+          setAuthState((prevState) => ({
             ...prevState,
-            authCustomerReady: true,
-            authCustomerToken: authData,
+            authReady: true,
           }));
-          // console.log("Global Auth state intially => ", authCustomerState);
+        }
+        // console.log("Global Auth state intially => ", authCustomerState);
           // console.log(
           //   "Local data storage @authCustomer intially  => ",
           //   localStorageData
           // );
-        }
-      } catch (e) {
-        console.log("Error loading local storage data:", e);
-        setAuthCustomerState((prevState) => ({
+
+      //  console.log("Context ", authState)
+      } catch (error) {
+        console.log("Error loading local storage data:", error);
+        setAuthState((prevState) => ({
           ...prevState,
-          authCustomerReady: true, // Set isLoading to false in case of error
+          authReady: true, 
         }));
       }
     };
+
     loadLocalStorageData();
-  }, []);
+  }, []); 
 
   return (
-    <CustomerAuthContext.Provider
-      value={[authCustomerState, setAuthCustomerState]}
+    <AuthContext.Provider
+      value={[authState, setAuthState]}
     >
       {children}
-    </CustomerAuthContext.Provider>
+    </AuthContext.Provider>
   );
 };

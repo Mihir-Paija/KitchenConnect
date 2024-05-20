@@ -19,7 +19,7 @@ export const providerLoginGet = async(req, res) =>{
 
 export const providerLoginPost = async(req, res) =>{
 	try{
-	 const valid = await providerLoginJoiValidation(req.body);
+	 //const valid = await providerLoginJoiValidation(req.body);
 	 const {email, password} = req.body;
 
 	 const user = await provider.findOne({ email });
@@ -55,5 +55,20 @@ export const providerLoginPost = async(req, res) =>{
 	 	return res.status(500).send({
 	 		message: "Internal Server Error"
 	 	})
+	}
+}
+
+export const providerLogoutGet = async(req, res) =>{
+	try{
+		res.clearCookie('Welcome')
+		
+		return res.status(200).send({
+			message: `Logout Successful`
+		})
+	}catch(error){
+		console.log('Error in logging out provider\n' + error)
+		return res.status(500).send({
+			message: 'Internal Server Error'
+		})
 	}
 }

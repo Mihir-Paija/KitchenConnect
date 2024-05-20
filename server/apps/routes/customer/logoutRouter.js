@@ -2,10 +2,9 @@ import { Router } from "express";
 const router = Router();
 
 import {
-  loginGet,
-  loginPost,
+    logoutGet
 } from "../../controllers/customer/loginController.js";
-router.route("/").get(loginGet).post(loginPost);
 
+router.route('/').get(logoutGet)
 
-export default router;
+export {router as logoutCustomerRouter}

@@ -10,10 +10,12 @@ import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { UserTypeContext } from "../../context/userTypeContext";
 import SubmitButton from "@/components/shared/forms/submitButton";
 import activeScreenStyles from "@/styles/shared/activeScreen";
+import { AuthContext } from "@/context/authContext";
 
 const Choose = ({ navigation }) => {
   //global states
   const [userType, setUserType] = useContext(UserTypeContext);
+  const [authState] = useContext(AuthContext)
 
   //states
   const [loading, setLoading] = useState(false);
