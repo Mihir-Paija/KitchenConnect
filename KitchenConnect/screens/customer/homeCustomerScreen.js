@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, SafeAreaView, View } from "react-native";
 import React, { useContext } from "react";
 import { CustomerAuthContext } from "../../context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
@@ -8,7 +8,7 @@ const HomeCustomerScreen = () => {
   const [authCustomerState] = useContext(CustomerAuthContext);
 
   return (
-    <View style={activeScreenStyles.screen}>
+    <SafeAreaView style={[activeScreenStyles.screen]}>
       {authCustomerState.authCustomerToken ? ( // Check for authCustomerToken in authCustomerState
         <>
           <Text>HomeCustomerScreen</Text>
@@ -18,7 +18,7 @@ const HomeCustomerScreen = () => {
       ) : (
         <Text>You are not authorized to access this screen.</Text>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
