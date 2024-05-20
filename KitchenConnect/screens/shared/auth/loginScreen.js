@@ -19,6 +19,7 @@ import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { loginCustomer } from "../../../utils/customerApi";
 import { CustomerAuthContext } from "../../../context/authContext";
 import { UserTypeContext } from "../../../context/userTypeContext";
+import { loginProvider } from "../../../utils/providerAPI";
 
 const LoginScreen = ({ navigation }) => {
   //global states
@@ -60,6 +61,19 @@ const LoginScreen = ({ navigation }) => {
           navigation.navigate("HomeCustomer");
           console.log("Customer login data => " + JSON.stringify(bodyData));
         } else {
+          const responseData = await loginProvider(bodyData);
+          setAuthCustomerState({
+            authCustomerReady: true,
+            authCustomerToken: responseData.authCustomerToken,
+          });
+          await AsyncStorage.setItem(
+            "@authCustomer",
+            JSON.stringify(responseData.authCustomerToken)
+          );
+          getLocalStorageData();
+          // alert(responseData && responseData.message);
+          navigation.navigate("Provider Home");
+          console.log("Provider login data => " + JSON.stringify(bodyData));
         }
       }
     } catch (error) {

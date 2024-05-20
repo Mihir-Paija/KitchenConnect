@@ -14,8 +14,8 @@ import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { signupCustomer } from "../../../utils/customerApi";
-import { UserTypeContext } from "../../../context/userTypeContext";
+import { signupCustomer } from "@/utils/customerApi";
+import { UserTypeContext } from "@/context/userTypeContext";
 
 const SignupScreen = ({ navigation }) => {
   //global states
@@ -31,8 +31,6 @@ const SignupScreen = ({ navigation }) => {
   const [mobile, setmobile] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (userType == "customer") subtitle = "Tasty Meals Just A Click Away";
-  else subtitle = "Expand Your Business";
   //functions
   const handleSignup = async () => {
     try {
@@ -66,7 +64,7 @@ const SignupScreen = ({ navigation }) => {
       <SafeAreaView style={activeScreenStyles.screen}>
         <View style={authAdStyles.header}>
           <Text style={authAdStyles.title}>Join KitchenConnect</Text>
-          <Text style={authAdStyles.subtitle}>{subtitle}</Text>
+          <Text style={authAdStyles.subtitle}>Tasty Meals Just A Click Away</Text>
         </View>
         <View style={styles.formContainer}>
           <InputBox input="Name" value={name} setValue={setName} />

@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
-import SignupScreen from "@/screens/shared/auth/signupScreen";
 import LoginScreen from "@/screens/shared/auth/loginScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../screens/customer/homeCustomerScreen";
 import { UserTypeContext } from "../context/userTypeContext";
 import CustomerAuthNavigator from "./customer/customerAuthNavigator";
-import ProviderAuthNavigator from "./admin/providerAuthNavigator";
+import ProviderAuthNavigator from "./provider/providerAuthNavigator";
 import WelcomeScreen from "../screens/shared/welcomeScreen";
 import Choose from "../screens/shared/choosingScreen";
 
