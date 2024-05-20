@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Choose from "./screens/shared/choosingScreen";
 import CustomerAuthNavigator from "./navigations/customer/customerAuthNavigator";
-import ProviderAuthNavigator from "./navigations/admin/providerAuthNavigator";
+import ProviderAuthNavigator from "./navigations/provider/providerAuthNavigator";
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";

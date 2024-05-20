@@ -1,18 +1,20 @@
 import React, { useContext } from "react";
-import SignupScreen from "@/screens/shared/auth/signupScreen";
+import SignupScreen from "@/screens/provider/signupScreen";
 import LoginScreen from "@/screens/shared/auth/loginScreen";
+import HomeScreen from "@/screens/provider/homeScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
-import { UserTypeContext } from "../../context/userTypeContext";
+import { UserTypeContext } from "@/context/userTypeContext";
 
 const authStack = createStackNavigator();
 
 const ProviderAuthNavigator = () => {
   //global states
   const [userType] = useContext(UserTypeContext);
+  
 
   return (
     <authStack.Navigator
-      initialRouteName="Login"
+      initialRouteName={"Login"}
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
@@ -31,6 +33,11 @@ const ProviderAuthNavigator = () => {
       <authStack.Screen
         name="Signup"
         component={SignupScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <authStack.Screen
+        name="Provider Home"
+        component={HomeScreen}
         options={{ presentation: "transparentModal" }}
       />
     </authStack.Navigator>

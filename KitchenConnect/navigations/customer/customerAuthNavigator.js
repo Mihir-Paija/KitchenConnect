@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import SignupScreen from "@/screens/shared/auth/signupScreen";
+import SignupScreen from "@/screens/customer/signupScreen";
 import LoginScreen from "@/screens/shared/auth/loginScreen";
 import LoadingScreen from "@/screens/shared/loadingScreen";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
