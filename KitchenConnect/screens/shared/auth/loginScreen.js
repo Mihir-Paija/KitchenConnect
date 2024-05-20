@@ -48,10 +48,30 @@ const LoginScreen = ({ navigation }) => {
         };
         if (userType === "customer") {
           const responseData = await loginCustomer(bodyData);
+          setAuthCustomerState({
+            authCustomerReady: true,
+            authCustomerToken: responseData.authCustomerToken,
+          });
+          await AsyncStorage.setItem(
+            "@authCustomer",
+            JSON.stringify(responseData.authCustomerToken)
+          );
+          getLocalStorageData();
+          // alert(responseData && responseData.message);
           navigation.navigate("HomeCustomer");
           console.log("Customer login data => " + JSON.stringify(bodyData));
         } else {
           const responseData = await loginProvider(bodyData);
+          setAuthCustomerState({
+            authCustomerReady: true,
+            authCustomerToken: responseData.authCustomerToken,
+          });
+          await AsyncStorage.setItem(
+            "@authCustomer",
+            JSON.stringify(responseData.authCustomerToken)
+          );
+          getLocalStorageData();
+          // alert(responseData && responseData.message);
           navigation.navigate("Provider Home");
           console.log("Provider login data => " + JSON.stringify(bodyData));
         }
