@@ -1,7 +1,7 @@
 import Router from 'express'
 //import test from '@/test.js'
-import {providerSignUpGet, providerSignUpPost} from '../../controllers/provider/signupController.js'
-import {providerLoginGet, providerLoginPost, providerLogoutGet} from '../../controllers/provider/loginController.js'
+import {providerSignUpGet, providerSignUpPost, providerLoginGet, providerLoginPost, providerLogoutGet} from '../../controllers/provider/authController.js'
+
 
 const router = Router();
 
