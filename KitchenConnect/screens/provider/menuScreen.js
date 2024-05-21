@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import MenuTabNavigator from '@/navigations/provider/providerMenuNavigator';
@@ -30,7 +30,7 @@ const MenuScreen = () => {
         );
     
         return () => backHandler.remove();
-      }, []);
+      });
 
   return (
     <SafeAreaView style={activeScreenStyles.screen}>

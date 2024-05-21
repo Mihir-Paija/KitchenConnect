@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler } from 'react-native';
 import activeScreenStyles from '../../styles/shared/activeScreen';
 import { logoutProvider } from "@/utils/providerAPI";
 import { AuthContext } from "@/context/authContext";
@@ -10,6 +10,22 @@ import LogoutButton from '@/components/shared/logoutButton'
 
 const ProfileScreen = ({navigation}) => {
     const [authState, setAuthState] = useContext(AuthContext);
+
+    useEffect(() => {
+      
+      const backAction = () => {
+        navigation.navigate("Menu")
+  
+        return true
+      };
+  
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+  
+      return () => backHandler.remove();
+    }, []);
 
     const handleLogout = async() =>{
         try {

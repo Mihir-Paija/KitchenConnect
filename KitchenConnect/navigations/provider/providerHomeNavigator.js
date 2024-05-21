@@ -20,6 +20,8 @@ const ProviderHomeNavigator = () => {
     screenOptions={ ({ route }) => ({
       headerShown: false,
       gestureEnabled: true,
+      lazy: true,
+      unmountOnBlur: true,
       tabBarIcon: ({ focused }) => {
         let iconSource;
         switch (route.name) {
