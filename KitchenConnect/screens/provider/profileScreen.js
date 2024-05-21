@@ -22,7 +22,7 @@ const ProfileScreen = ({navigation}) => {
             })
             await AsyncStorage.removeItem("@auth")
             console.log('Logged out successfully');
-            navigation.navigate("Welcome")
+            navigation.navigate("Choose")
           } else {
             console.error('Failed to log out:', response);
         }
