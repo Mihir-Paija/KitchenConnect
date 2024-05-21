@@ -26,12 +26,12 @@ export const loginCustomer = async (bodyData) => {
   }
 };
 
-export const logoutCustomer = async() => {
+export const logoutCustomer = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/customer/logout`);
-    return response
-    }
-   catch (error) {
-    console.error('Error logging out:', error);
+    return response;
+  } catch (error) {
+    console.error("Error logging out:", error);
+    throw error.response.data;
   }
 };

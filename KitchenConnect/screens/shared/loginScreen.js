@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
   //global states
   //const [authCustomerState, setAuthCustomerState] =useContext(CustomerAuthContext);
   const [userType] = useContext(UserTypeContext);
-  const [authState, setAuthState] = useContext(AuthContext)
+  const [authState, setAuthState] = useContext(AuthContext);
 
   //states
   const [email, setEmail] = useState("");
@@ -39,9 +39,9 @@ const LoginScreen = ({ navigation }) => {
       authToken: responseData.authToken,
       authType: userType,
     };
-  
+
     setAuthState(newAuthState);
-  
+
     try {
       await AsyncStorage.setItem("@auth", JSON.stringify(newAuthState));
       console.log("Auth state saved to AsyncStorage:", newAuthState);
@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
         };
         if (userType === "customer") {
           const responseData = await loginCustomer(bodyData);
-          setAuth(responseData, bodyData)
+          setAuth(responseData, bodyData);
           // setAuthCustomerState({
           //   authCustomerReady: true,
           //   authCustomerToken: responseData.authCustomerToken,
@@ -75,13 +75,11 @@ const LoginScreen = ({ navigation }) => {
           // );
           // getLocalStorageData();
           // // alert(responseData && responseData.message);
-          navigation.navigate("HomeCustomer");
+          navigation.navigate("HomeCustomerNavigator");
           console.log("Customer login data => " + JSON.stringify(bodyData));
-        } 
-        else if(userType === "provider")
-        {
+        } else if (userType === "provider") {
           const responseData = await loginProvider(bodyData);
-          setAuth(responseData, bodyData)
+          setAuth(responseData, bodyData);
           navigation.navigate("Provider Home");
           console.log("Provider login data => " + JSON.stringify(bodyData));
         }

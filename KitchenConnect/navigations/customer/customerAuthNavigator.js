@@ -6,18 +6,19 @@ import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
 import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
-import Choose from "@/screens/shared/choosingScreen";
 
+import Choose from "@/screens/shared/choosingScreen";
+import CustomerHomeNavigator from "./customerHomeNavigator";
 const authStack = createStackNavigator();
 
 const CustomerAuthNavigator = () => {
   //global states
   // const [authCustomerState] = useContext(CustomerAuthContext);
-  const [authState] = useContext(AuthContext)
+  const [authState] = useContext(AuthContext);
   // if (!authCustomerState.authCustomerReady) {
   //   return <LoadingScreen />;
   // }
- // console.log("Auth State in Customer Navigator:", authState);
+  // console.log("Auth State in Customer Navigator:", authState);
 
   return (
     <authStack.Navigator
@@ -50,13 +51,11 @@ const CustomerAuthNavigator = () => {
             component={SignupScreen}
             options={{ presentation: "transparentModal" }}
           />
-
-
         </>
       ) : (
         <authStack.Screen
-          name="HomeCustomer"
-          component={HomeCustomerScreen}
+          name="HomeCustomerNavigator"
+          component={CustomerHomeNavigator}
           options={{ presentation: "transparentModal" }}
         />
       )}

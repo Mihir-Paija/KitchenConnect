@@ -6,22 +6,32 @@ import {
   Image,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import iconPaths from "../../../utils/customerIconpaths";
+import React, { useContext } from "react";
+import customerIconPaths from "../../../utils/customerIconpaths";
 import MenuItem from "../menu/meuItem";
 
-const FooterMenu = () => {
-  const [activeIcon, setActiveIcon] = useState(" ");
+import { useRoute } from "@react-navigation/native";
+
+const FooterMenu = ({ navigation }) => {
+  const route = useRoute();
+
+  //functions
+  const handleFooterMenu = (key) => {
+    const screenName = customerIconPaths[key]?.screen;
+    if (screenName) {
+      navigation.navigate(screenName);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.footerContainer}>
-      {Object.keys(iconPaths).map((key) => (
+      {Object.keys(customerIconPaths).map((key) => (
         <MenuItem
           key={key}
           label={key}
-          icon={iconPaths[key]}
-          isActive={activeIcon === key}
-          onPress={() => setActiveIcon(key)}
+          icon={customerIconPaths[key]}
+          isActive={route.name === customerIconPaths[key].screen}
+          onPress={() => handleFooterMenu(key)}
         />
       ))}
     </SafeAreaView>
