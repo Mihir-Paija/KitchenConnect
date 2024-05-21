@@ -1,20 +1,18 @@
 import React, { useContext } from "react";
+import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import SignupScreen from "@/screens/provider/signupScreen";
 import LoginScreen from "@/screens/shared/loginScreen";
-import HomeScreen from "@/screens/provider/homeScreen";
-import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import { UserTypeContext } from "@/context/userTypeContext";
 import { AuthContext } from "@/context/authContext";
 import Choose from "@/screens/shared/choosingScreen";
+import ProviderHomeNavigator from "./providerHomeNavigator";
 
 const authStack = createStackNavigator();
 
 const ProviderAuthNavigator = () => {
-  //global states
+  // global states
   const [userType] = useContext(UserTypeContext);
-  const [authState] = useContext(AuthContext)
- // console.log("Auth State in Tiffin Navigator:", authState);
-
+  const [authState] = useContext(AuthContext);
 
   return (
     <authStack.Navigator
@@ -31,7 +29,7 @@ const ProviderAuthNavigator = () => {
         },
       }}
     >
-            {!authState.authToken ? (
+      {!authState.authToken ? (
         <>
           <authStack.Screen
             name="Login"
@@ -43,14 +41,14 @@ const ProviderAuthNavigator = () => {
             component={SignupScreen}
             options={{ presentation: "transparentModal" }}
           />
-          </> ):(
-
+        </>
+      ) : (
         <authStack.Screen
           name="Provider Home"
-          component={HomeScreen}
+          component={ProviderHomeNavigator}
           options={{ presentation: "transparentModal" }}
         />
-          )}
+      )}
     </authStack.Navigator>
   );
 };

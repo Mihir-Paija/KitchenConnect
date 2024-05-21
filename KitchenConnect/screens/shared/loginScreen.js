@@ -80,7 +80,8 @@ const LoginScreen = ({ navigation }) => {
         } else if (userType === "provider") {
           const responseData = await loginProvider(bodyData);
           setAuth(responseData, bodyData);
-          navigation.navigate("Provider Home");
+          //navigation.navigate("Provider Home");
+          navigation.navigate("Provider Home", { screen: "Menu" });
           console.log("Provider login data => " + JSON.stringify(bodyData));
         }
       }
