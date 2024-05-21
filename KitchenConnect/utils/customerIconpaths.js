@@ -1,6 +1,6 @@
 import React from "react";
 export default {
-  Tiffin: {
+  Kitchen: {
     screen: "HomeCustomer",
     active: require("@assets/shared/icons8-yellow-tiffin-ios-17-filled/icons8-tiffin-100.png"),
     inactive: require("@assets/shared/icons8-grey-tiffin-ios-17-outlined/icons8-tiffin-100.png"),
