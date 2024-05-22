@@ -29,6 +29,7 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mobile, setmobile] = useState("");
+  const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
 
   //functions
@@ -41,7 +42,7 @@ const SignupScreen = ({ navigation }) => {
         return;
       } else {
         setLoading(false);
-        const bodyData = { name, email, mobile, password };
+        const bodyData = { name, email, mobile, password, city };
         if (userType === "customer") {
           const responseData = await signupCustomer(bodyData);
           // alert(responseData && responseData.message);
@@ -90,6 +91,7 @@ const SignupScreen = ({ navigation }) => {
             value={password}
             setValue={setPassword}
           />
+          <InputBox input="City" value={city} setValue={setCity} />
 
           <SubmitButton
             btnTitle={"SignUp"}

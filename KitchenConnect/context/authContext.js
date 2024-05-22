@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     authReady: false,
     authToken: "",
     authType: "",
+    authData: {},
   });
 
   //intial local  storage data
@@ -19,17 +20,14 @@ export const AuthProvider = ({ children }) => {
     const loadLocalStorageData = async () => {
       try {
         let localStorageData = await AsyncStorage.getItem("@auth");
-        console.log(
-            "Local data storage @auth initially => ",
-            localStorageData
-          );
+        console.log("Local data storage @auth initially => ", localStorageData);
         if (localStorageData) {
-          let authData = JSON.parse(localStorageData);
+          let authLocalData = JSON.parse(localStorageData);
           setAuthState({
-            authReady: authData.authReady,
-            authToken: authData.authToken,
-            authType: authData.authType
-     
+            authReady: authLocalData.authReady,
+            authToken: authLocalData.authToken,
+            authType: authLocalData.authType,
+            authData: authLocalData.authData,
           });
         } else {
           setAuthState((prevState) => ({
@@ -38,28 +36,26 @@ export const AuthProvider = ({ children }) => {
           }));
         }
         // console.log("Global Auth state intially => ", authCustomerState);
-          // console.log(
-          //   "Local data storage @authCustomer intially  => ",
-          //   localStorageData
-          // );
+        // console.log(
+        //   "Local data storage @authCustomer intially  => ",
+        //   localStorageData
+        // );
 
-      //  console.log("Context ", authState)
+        //  console.log("Context ", authState)
       } catch (error) {
         console.log("Error loading local storage data:", error);
         setAuthState((prevState) => ({
           ...prevState,
-          authReady: true, 
+          authReady: true,
         }));
       }
     };
 
     loadLocalStorageData();
-  }, []); 
+  }, []);
 
   return (
-    <AuthContext.Provider
-      value={[authState, setAuthState]}
-    >
+    <AuthContext.Provider value={[authState, setAuthState]}>
       {children}
     </AuthContext.Provider>
   );

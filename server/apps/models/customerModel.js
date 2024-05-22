@@ -23,6 +23,11 @@ const customerSchema = Schema(
       type: String,
       required: [true, "Please create your password"],
     },
+
+    city: {
+      type: String,
+      required: [true, "Please enter your city"],
+    },
   },
   { timestamps: true }
 );

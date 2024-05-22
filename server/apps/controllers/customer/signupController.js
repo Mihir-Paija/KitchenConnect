@@ -15,7 +15,7 @@ const signupPost = async (req, res) => {
     const valid = await signupJoiValidate(req.body);
     // console.log("valid", valid);
 
-    const { email, password, name, mobile } = req.body;
+    const { email, password, name, mobile, city } = req.body;
 
     /*02. check if email address already exist*/
     const user_exist = await customer.findOne({ email });
@@ -38,6 +38,7 @@ const signupPost = async (req, res) => {
       email,
       mobile,
       password: hash_password,
+      city,
     };
 
     //06.store userdata to DB

@@ -38,6 +38,7 @@ const LoginScreen = ({ navigation }) => {
       authReady: true,
       authToken: responseData.authToken,
       authType: userType,
+      authData: responseData.authData,
     };
 
     setAuthState(newAuthState);
