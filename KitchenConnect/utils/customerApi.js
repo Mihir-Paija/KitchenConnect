@@ -19,6 +19,7 @@ export const loginCustomer = async (bodyData) => {
       `${API_BASE_URL}/customer/login/`,
       bodyData
     );
+    // console.log(response);
     return response.data;
   } catch (error) {
     // console.log(error);

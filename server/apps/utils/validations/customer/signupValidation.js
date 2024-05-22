@@ -4,9 +4,9 @@ import Joi from "joi";
 const signupJoiSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
-  mobile: Joi.string(),
+  mobile: Joi.string().length(10).required(),
   password: Joi.string().min(6).max(13).required(),
-  // city: Joi.string(),
+  city: Joi.string().required(),
 });
 
 const signupJoiValidate = async (data) => {

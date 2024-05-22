@@ -49,6 +49,7 @@ const loginPost = async (req, res) => {
     return res.status(200).json({
       message: "Logged in successfully",
       authToken: jwtToken,
+      authData: Customer,
     });
   } catch (err) {
     console.log(err.message);
@@ -59,19 +60,19 @@ const loginPost = async (req, res) => {
   }
 };
 
-const logoutGet = async(req, res) =>{
-	try{
-		res.clearCookie('jwt')
-	
-		return res.status(200).send({
-			message: `Logout Successful`
-		})
-	}catch(error){
-		console.log('Error in logging out provider\n' + error)
-		return res.status(500).send({
-			message: 'Internal Server Error'
-		})
-	}
-}
+const logoutGet = async (req, res) => {
+  try {
+    res.clearCookie("jwt");
+
+    return res.status(200).send({
+      message: `Logout Successful`,
+    });
+  } catch (error) {
+    console.log("Error in logging out provider\n" + error);
+    return res.status(500).send({
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export { loginGet, loginPost, logoutGet };
