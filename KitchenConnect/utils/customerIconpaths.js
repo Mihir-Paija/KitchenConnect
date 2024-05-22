@@ -2,8 +2,8 @@ import React from "react";
 export default {
   Kitchen: {
     screen: "HomeCustomer",
-    active: require("@assets/shared/icons8-yellow-tiffin-ios-17-filled/icons8-tiffin-100.png"),
-    inactive: require("@assets/shared/icons8-grey-tiffin-ios-17-outlined/icons8-tiffin-100.png"),
+    active: require("@assets/shared/icons8-restaurant-ios-17-filled/icons8-restaurant-100.png"),
+    inactive: require("@assets/shared/icons8-restaurant-ios-17-outlined/icons8-restaurant-100.png"),
   },
   History: {
     screen: "HistoryCustomer",
@@ -15,9 +15,9 @@ export default {
     active: require("@assets/shared/icons8-wallet-ios-17-filled/icons8-wallet-100.png"),
     inactive: require("@assets/shared/icons8-wallet-ios-17-outlined/icons8-wallet-100.png"),
   },
-  Profile: {
-    screen: "ProfileCustomer",
-    active: require("@assets/shared/icons8-male-user-ios-17-filled/icons8-male-user-100.png"),
-    inactive: require("@assets/shared/icons8-male-user-ios-17-outlined/icons8-male-user-100.png"),
+  Subscription: {
+    screen: "SubscriptionCustomer",
+    active: require("@assets/shared/icons8-yellow-tiffin-ios-17-filled/icons8-tiffin-100.png"),
+    inactive: require("@assets/shared/icons8-grey-tiffin-ios-17-outlined/icons8-tiffin-100.png"),
   },
 };
