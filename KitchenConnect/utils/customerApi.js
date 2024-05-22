@@ -35,3 +35,13 @@ export const logoutCustomer = async () => {
     throw error.response.data;
   }
 };
+
+export const getKitchenCustomer = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/customer/kitchen`);
+    return response;
+  } catch (error) {
+    console.error("Error logging out:", error);
+    throw error.response.data;
+  }
+};

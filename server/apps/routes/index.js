@@ -1,5 +1,4 @@
 import { Router } from "express";
-import {providerAuthRouter} from './provider/authRouter.js'
 const router = Router();
 
 //Signup Router -> customer
@@ -10,9 +9,15 @@ router.use("/customer/signup", signupCustomerRouter);
 import loginCustomerRouter from "./customer/loginRouter.js";
 router.use("/customer/login", loginCustomerRouter);
 
+//Logout Router -> customer
 import { logoutCustomerRouter } from "./customer/logoutRouter.js";
 router.use("/customer/logout", logoutCustomerRouter);
 
-router.use('/provider', providerAuthRouter);
+//getKitchen Router -> customer
+import getKitchenRouter from "./customer/getKitchenRouter.js";
+router.use("/customer/kitchen", getKitchenRouter);
+
+import { providerAuthRouter } from "./provider/authRouter.js";
+router.use("/provider", providerAuthRouter);
 
 export default router;
