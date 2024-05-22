@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     borderCurve: "circular",
     // iOS shadow
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 2, height: 40 },
+    shadowOpacity: 1,
     shadowRadius: 4,
     // Android shadow (elevation)
     elevation: 3,
