@@ -1,6 +1,24 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
+const addressSchema = new mongoose.Schema({
+    flatNumber: {
+      type: String,
+      required: [true, "Please Enter Flat Number"]
+    },
+
+    street: {
+      type: String,
+      required: [true, "Please Enter Street"]
+    },
+
+    landmark: {
+      type: String,
+      required: false
+    }
+
+});
+
 const providerSchema = new Schema({
 
 	name: {
@@ -25,16 +43,33 @@ const providerSchema = new Schema({
       required: [true, "Please Create A Password"],
     },
 
+    city: {
+    	type: String,
+    	required: [true, "Please Enter Your Business City"]
+    },
+
     kitchenName: {
     	type: String,
     	required: [true, "Please Enter Your Business Name"]
     },
 
-    city: {
-    	type: String,
-    	required: [true, "Please Enter Your Business City"]
+    shortDescription: {
+      type: String,
+      required: [true, "Please Enter A Short Description of your Business"]
     },
- 
+
+    address: [addressSchema],
+
+    basePrice:{
+      type: Number,
+      default: 0,
+    },
+
+    provideDelivery:{
+      type: Boolean,
+      required: [true, "Please Enter Delivery Mode"]
+    }
+
 }, { timestamps: true } );
 
 const provider = mongoose.model('Provider', providerSchema);

@@ -18,6 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(cors());
+
 //use "/KitchenConnect/api" before every back-end api...
 app.use("/KitchenConnect/api", router);
 
