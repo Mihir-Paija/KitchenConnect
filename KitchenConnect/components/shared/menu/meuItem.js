@@ -1,5 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Image, Text, StyleSheet, View } from "react-native";
+import { windowHeight, windowWidth } from "@/utils/dimensions";
 
 const MenuItem = ({ label, icon, isActive, onPress }) => {
   return (
@@ -22,8 +23,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    width: 30,
-    height: 30,
+    width: windowWidth * 0.06,
+    height: windowWidth * 0.06,
     marginBottom: 2,
     alignSelf: "center",
     justifyContent: "center",

@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingTop: "1%",
     paddingBottom: "1%",
     // borderTopWidth: 1,
-    borderColor: "#ffa500",
+    // borderColor: "#ffa500",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     // iOS shadow

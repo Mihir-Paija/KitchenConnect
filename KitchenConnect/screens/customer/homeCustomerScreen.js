@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   BackHandler,
   Alert,
+  FlatList,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useContext, useEffect } from "react";
@@ -12,7 +14,7 @@ import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import FooterMenu from "../../components/shared/menu/footerMenu";
-import LogoutButton from "@/components/shared/logoutButton";
+import KitchenComponent from "@/components/customer/kitchenComponent";
 import { windowHeight } from "@/utils/dimensions";
 import { logoutCustomer } from "@/utils/customerApi";
 
@@ -50,8 +52,51 @@ const HomeCustomerScreen = ({ navigation }) => {
     <SafeAreaView style={activeScreenStyles.screen}>
       {authState.authToken ? (
         <>
-          <Text>HomeCustomerScreen</Text>
-          <Text>{JSON.stringify(authState)}</Text>
+          {/* <Text>HomeCustomerScreen</Text> */}
+          {/* <Text>{JSON.stringify(authState)}</Text> */}
+          <ScrollView style={styles.mainComponent}>
+            <KitchenComponent
+              title="Padma Kamal"
+              subtitle="Delicious vegetarian meals"
+              rating="3.5"
+              price="3000"
+              imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+              delivery={true}
+            />
+            <KitchenComponent
+              title="Gourmet Kitchen"
+              subtitle="Exquisite non-veg dishes"
+              rating="4.0"
+              price="5000"
+              imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+              delivery={false}
+            />
+            <KitchenComponent
+              title="Gourmet Kitchen"
+              subtitle="Exquisite non-veg dishes"
+              rating="4.0"
+              price="5000"
+              imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+              delivery={false}
+            />
+            <KitchenComponent
+              title="Gourmet Kitchen"
+              subtitle="Exquisite non-veg dishes"
+              rating="4.0"
+              price="5000"
+              imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+              delivery={false}
+            />
+            <KitchenComponent
+              title="Gourmet Kitchen"
+              subtitle="Exquisite non-veg dishes"
+              rating="4.0"
+              price="5000"
+              imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+              delivery={false}
+            />
+          </ScrollView>
+
           <FooterMenu navigation={navigation} />
         </>
       ) : (
@@ -64,9 +109,7 @@ const HomeCustomerScreen = ({ navigation }) => {
 export default HomeCustomerScreen;
 
 const styles = StyleSheet.create({
-  logoutButtonContainer: {
-    position: "absolute",
-    bottom: windowHeight * 0.1,
-    alignSelf: "center",
+  mainComponent: {
+    alignContent: "space-between",
   },
 });
