@@ -76,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
           // );
           // getLocalStorageData();
           // // alert(responseData && responseData.message);
-          navigation.navigate("HomeCustomerNavigator");
+          navigation.navigate("MenuCustomerNavigator");
           console.log("Customer login data => " + JSON.stringify(bodyData));
         } else if (userType === "provider") {
           const responseData = await loginProvider(bodyData);

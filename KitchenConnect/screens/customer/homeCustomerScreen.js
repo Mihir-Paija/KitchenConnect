@@ -81,20 +81,27 @@ const HomeCustomerScreen = ({ navigation }) => {
     fetchCities();
 
     const backAction = () => {
-      Alert.alert(
-        "Exit!",
-        "Are You Sure You Want To Exit?",
-        [
-          {
-            text: "Cancel",
-            onPress: () => null,
-            style: "cancel",
-          },
-          { text: "Exit", onPress: () => BackHandler.exitApp() },
-        ],
-        { cancelable: false }
-      );
-      return true;
+      const currentRoute =
+        navigation.getState().routes[navigation.getState().index].name;
+
+      if (currentRoute === "HomeCustomer") {
+        Alert.alert(
+          "Exit!",
+          "Are You Sure You Want To Exit?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => null,
+              style: "cancel",
+            },
+            { text: "Exit", onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false }
+        );
+        return true;
+      } else {
+        return false;
+      }
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -103,7 +110,7 @@ const HomeCustomerScreen = ({ navigation }) => {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [navigation]);
 
   const renderItem = ({ item }) => (
     <KitchenComponent
@@ -123,7 +130,7 @@ const HomeCustomerScreen = ({ navigation }) => {
   };
 
   const handleProfile = () => {
-    console.log("Clicked on Profile");
+    navigation.navigate("ProfileCustomer");
   };
 
   return (

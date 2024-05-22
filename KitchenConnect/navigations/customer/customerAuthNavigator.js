@@ -8,26 +8,19 @@ import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
 
 import Choose from "@/screens/shared/choosingScreen";
-import CustomerHomeNavigator from "./customerHomeNavigator";
+import CustomerMenuNavigator from "./customerMenuNavigator";
 const authStack = createStackNavigator();
 
 const CustomerAuthNavigator = () => {
   //global states
-  // const [authCustomerState] = useContext(CustomerAuthContext);
   const [authState] = useContext(AuthContext);
-  // if (!authCustomerState.authCustomerReady) {
-  //   return <LoadingScreen />;
-  // }
-  // console.log("Auth State in Customer Navigator:", authState);
 
   return (
     <authStack.Navigator
       initialRouteName={
-        /* authCustomerState.authCustomerReady &&
-         authCustomerState.authCustomerToken
-           ? "HomeCustomer"
-           : "Login" */
-        authState.authReady && authState.authToken ? "HomeCustomer" : "Login"
+        authState.authReady && authState.authData
+          ? "MenuCustomerNavigator"
+          : "Login"
       }
       screenOptions={{
         headerShown: false,
@@ -54,8 +47,8 @@ const CustomerAuthNavigator = () => {
         </>
       ) : (
         <authStack.Screen
-          name="HomeCustomerNavigator"
-          component={CustomerHomeNavigator}
+          name="MenuCustomerNavigator"
+          component={CustomerMenuNavigator}
           options={{ presentation: "transparentModal" }}
         />
       )}
