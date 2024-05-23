@@ -36,7 +36,7 @@ const SignupScreen = ({ navigation }) => {
   const handleSignup = async () => {
     try {
       setLoading(true);
-      if (!name || !email || !mobile || !password) {
+      if (!name || !email || !mobile || !password || !city) {
         Alert.alert("Please Fill All Fields");
         setLoading(false);
         return;

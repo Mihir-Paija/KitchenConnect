@@ -26,16 +26,16 @@ const ProviderHomeNavigator = () => {
         let iconSource;
         switch (route.name) {
           case 'Provider Menu':
-            iconSource = focused ? icons.Tiffin.active : icons.Tiffin.inactive;
+            iconSource = focused ? icons.Kitchen.active : icons.Kitchen.inactive;
             break;
           case 'Orders':
             iconSource = focused ? icons.History.active : icons.History.inactive;
             break;
           case 'Subscriptions':
-            iconSource = focused ? icons.Wallet.active : icons.Wallet.inactive;
+            iconSource = focused ? icons.Subscription.active : icons.Subscription.inactive;
             break;
           case 'Profile':
-            iconSource = focused ? icons.Profile.active : icons.Profile.inactive;
+            iconSource = focused ? icons.Wallet.active : icons.Wallet.inactive;
             break;
         }
         return <Image source={iconSource} style={{ width: 25, height: 25 }} />;

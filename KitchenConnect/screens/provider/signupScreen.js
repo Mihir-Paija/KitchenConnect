@@ -21,7 +21,7 @@ const SignupScreen = ({ navigation }) => {
   //states
   const [userType] = useContext(UserTypeContext);
   // console.log(type);
-  var subtitles;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,21 +34,24 @@ const SignupScreen = ({ navigation }) => {
   const handleSignup = async () => {
     try {
       setLoading(true);
-      if (!name || !email || !mobile || !password || !businessName || !city) {
+      if (!name || !email || !mobile || !password || !city) {
         Alert.alert("Please Fill All Fields");
         setLoading(false);
         return;
       } else {
         setLoading(false);
-        const bodyData = { name, email, mobile, password, businessName, city };
-        if (userType === "provider") {
-          const responseData = await signupProvider(bodyData);
-          Alert.alert("SignUp Successful! Please Login");
-          navigation.navigate("Login");
+          navigation.navigate("KitchenDetails", {
+            name: name,
+            email: email,
+            mobile: mobile,
+            password: password,
+            city: city
+
+          })
         }
-        console.log("register data => " + JSON.stringify(bodyData));
+        console.log("register data => " + JSON.stringify(name));
       }
-    } catch (error) {
+      catch (error) {
       Alert.alert(error.message || "An error occurred");
       setLoading(false);
       console.log(error);
@@ -82,11 +85,6 @@ const SignupScreen = ({ navigation }) => {
             setValue={setPassword}
           />
           <InputBox
-            input="Business Name"
-            value={businessName}
-            setValue={setBusinessName}
-          />
-          <InputBox
             input="Mobile No."
             keyboardType="phone-pad"
             value={mobile}
@@ -94,7 +92,7 @@ const SignupScreen = ({ navigation }) => {
           />
           <InputBox input="City" value={city} setValue={setCity} />
           <SubmitButton
-            btnTitle={"SignUp"}
+            btnTitle={"Next"}
             handleSubmitBtn={handleSignup}
             loading={loading}
           />

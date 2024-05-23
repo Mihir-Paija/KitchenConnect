@@ -6,6 +6,7 @@ import { UserTypeContext } from "@/context/userTypeContext";
 import { AuthContext } from "@/context/authContext";
 import Choose from "@/screens/shared/choosingScreen";
 import ProviderHomeNavigator from "./providerHomeNavigator";
+import KitcehnDetailsScreen from "@/screens/provider/kitchenDetailsScreen";
 
 const authStack = createStackNavigator();
 
@@ -41,6 +42,11 @@ const ProviderAuthNavigator = () => {
             component={SignupScreen}
             options={{ presentation: "transparentModal" }}
           />
+          <authStack.Screen
+            name = "KitchenDetails"
+            component={KitcehnDetailsScreen}
+            options={{ presentation: "transparentModal" }}
+            />
         </>
       ) : (
         <authStack.Screen
