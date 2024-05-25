@@ -1,59 +1,82 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import MenuTabNavigator from '@/navigations/provider/providerMenuNavigator';
-import {windowWidth, windowHeight} from '@/utils/dimensions'
+import { windowWidth, windowHeight } from '@/utils/dimensions'
+import AddMenuModal from './addMenuModal';
 
 
 const MenuScreen = () => {
-    useEffect(() => {
-        const backAction = () => {
-          Alert.alert(
-            "Exit!",
-            "Are You Sure You Want To Exit?",
-            [
-              {
-                text: "Cancel",
-                onPress: () => null,
-                style: "cancel",
-              },
-              { text: "Exit", onPress: () => BackHandler.exitApp() },
-            ],
-            { cancelable: false }
-          );
-          return true;
-        };
-    
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
-        );
-    
-        return () => backHandler.remove();
-      });
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const handleAddMenu = (menuData) => {
+    // Here you can implement your POST request logic
+    console.log('Adding menu:', menuData);
+
+    // Assuming you want to close the modal after adding the menu
+    toggleModal();
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Exit!",
+        "Are You Sure You Want To Exit?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "Exit", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false }
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  });
 
   return (
     <SafeAreaView style={activeScreenStyles.screen}>
-      <View style = {styles.providerInfo}>
+      <View style={styles.providerInfo}>
         <Text>Provider Name</Text>
         <Text>Short Description</Text>
-        <View style = {styles.rating}>
+        <View style={styles.rating}>
           <Text>Stars</Text>
           <Text>Rating</Text>
         </View>
-        <View style = {styles.delivery}>
+        <View style={styles.delivery}>
           <Text>Delivery Charges</Text>
           <Text>Edit</Text>
         </View>
       </View>
-        <View style={styles.menuTabs}>
-          <MenuTabNavigator />
-        </View>
-      <View style = {styles.btnView}>
-        <TouchableOpacity style ={styles.btn}>
-          <Text style = {styles.addMenuText}>Add Menu</Text>
+      <View style={styles.menuTabs}>
+        <MenuTabNavigator />
+      </View>
+      <View style={styles.btnView}>
+        <TouchableOpacity style={styles.btn} onPress = {toggleModal}>
+          <Text style={styles.addMenuText}>Add Menu</Text>
         </TouchableOpacity>
       </View>
+
+      <AddMenuModal
+        isVisible={isModalVisible}
+        onClose={toggleModal}
+        onAddMenu={handleAddMenu}
+      />
+
     </SafeAreaView>
   );
 };
@@ -63,21 +86,21 @@ export default MenuScreen;
 const styles = StyleSheet.create({
   providerInfo: {
     alignItems: "center",
-    marginBottom: windowHeight *0.03
+    marginBottom: windowHeight * 0.03
   },
 
-  rating:{
+  rating: {
     flexDirection: 'row',
     justifyContent: "space-around",
   },
 
-  delivery:{
+  delivery: {
     flexDirection: 'row',
     justifyContent: "space-around",
   },
 
-  menuTabs:{
-    height: windowHeight*0.70,
+  menuTabs: {
+    height: windowHeight * 0.70,
     flexDirection: "row",
   },
 
@@ -86,9 +109,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: windowHeight * 0.017,
     marginBottom: windowHeight * 0.025,
-  }, 
+  },
 
-  btn:{
+  btn: {
     backgroundColor: "green",
     alignItems: "center",
     justifyContent: "center",
@@ -96,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 15
   },
 
-  addMenuText:{
+  addMenuText: {
     padding: 7,
     color: "#FFFFFF",
     fontSize: windowWidth * 0.04,

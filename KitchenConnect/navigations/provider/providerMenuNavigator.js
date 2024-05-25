@@ -1,14 +1,14 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import TodayMenuScreen from '@/screens/provider/todayMenuScreen'; 
-import WeeklyMenuScreen from '@/screens/provider/weeklyMenuScreen'; 
+import LunchScreen from '@/screens/provider/lunchScreen'; 
+import DinnerScreen from '@/screens/provider/dinnerScreen'; 
 
 const MenuTab = createMaterialTopTabNavigator();
 
 const MenuTabNavigator = () => {
   return (
     <MenuTab.Navigator
-    initialRouteName='Today'
+    initialRouteName='Lunch'
     screenOptions={{
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor: 'gray',
@@ -17,8 +17,8 @@ const MenuTabNavigator = () => {
         backgroundColor: '#ffa500', 
       },
     }}>
-      <MenuTab.Screen name="Today" component={TodayMenuScreen} />
-      <MenuTab.Screen name="Weekly" component={WeeklyMenuScreen} />
+      <MenuTab.Screen name="Lunch" component={LunchScreen} />
+      <MenuTab.Screen name="Dinner" component={DinnerScreen} />
     </MenuTab.Navigator>
   );
 };
