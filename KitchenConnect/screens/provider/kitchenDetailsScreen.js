@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { signupProvider } from "@/utils/providerAPI";
+import { signupProvider } from "@/utils/APIs/providerAPI";
 import { UserTypeContext } from "@context/userTypeContext";
 
 const KitcehnDetailsScreen = ({ navigation, route }) => {
@@ -98,7 +98,7 @@ const KitcehnDetailsScreen = ({ navigation, route }) => {
                         onClick={() => setDelivery(!delivery)}
                         checkBoxColor="orange"
                     />
-                    <Text style={styles.label}>Would you provide delivery?</Text>
+                    <Text style={styles.labels}>Would you provide delivery?</Text>
                 </View>
                 <SubmitButton
                     btnTitle={"SignUp"}
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         padding: 0,
         margin: 0,
     },
-    label: {
+    labels: {
         fontSize: 16,
         marginLeft: 10,
     },

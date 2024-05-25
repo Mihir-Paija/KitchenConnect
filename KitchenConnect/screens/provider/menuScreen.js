@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import MenuTabNavigator from '@/navigations/provider/providerMenuNavigator';
 import { windowWidth, windowHeight } from '@/utils/dimensions'
+import { AuthContext } from "@/context/authContext";
 import AddMenuModal from './addMenuModal';
+import { addTiffin } from '../../utils/provider/tiffinAPI';
 
 
 const MenuScreen = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [refresh, setRefresh] = useState(false)
+  const [authState] = useContext(AuthContext);
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
 
-  const handleAddMenu = (menuData) => {
-    // Here you can implement your POST request logic
+  const handleAddMenu = async (menuData) => {
     console.log('Adding menu:', menuData);
-
-    // Assuming you want to close the modal after adding the menu
+    const response = await addTiffin(authState.authToken, menuData)
+    console.log(response)
     toggleModal();
+    setRefresh(!refresh)
   };
+
+  useEffect
 
   useEffect(() => {
     const backAction = () => {
@@ -62,7 +68,7 @@ const MenuScreen = () => {
           <Text>Edit</Text>
         </View>
       </View>
-      <View style={styles.menuTabs}>
+      <View style={styles.menuTabs} refresh={refresh}>
         <MenuTabNavigator />
       </View>
       <View style={styles.btnView}>

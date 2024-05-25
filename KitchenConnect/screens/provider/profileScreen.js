@@ -1,7 +1,7 @@
 import React, {useContext, useEffect} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler } from 'react-native';
 import activeScreenStyles from '../../styles/shared/activeScreen';
-import { logoutProvider } from "@/utils/providerAPI";
+import { logoutProvider } from "@/utils/APIs/providerAPI";
 import { AuthContext } from "@/context/authContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {windowHeight} from '@/utils/dimensions'
