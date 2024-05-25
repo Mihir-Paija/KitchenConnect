@@ -23,6 +23,7 @@ const ProfileCustomerScreen = ({ navigation }) => {
 
   // handle logout
   const handleLogout = async () => {
+    console.log("Handling")
     try {
       const response = await logoutCustomer();
       if (response && response.status === 200) {
