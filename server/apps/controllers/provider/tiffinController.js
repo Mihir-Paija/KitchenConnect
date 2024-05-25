@@ -16,7 +16,8 @@ export const getTiffins = async (req, res) => {
         const userID = verifyJwt(id).decoded.userID;
 
         const allLunchDetails = await tiffins.aggregate([
-            { $match: { providerID: new mongoose.Types.ObjectId(userID), tiffinType: "Lunch" } }
+            { $match: { providerID: new mongoose.Types.ObjectId(userID), tiffinType: "Lunch" } },
+            { $sort: {price: -1}}
         ])
 
         const lunch = allLunchDetails.map(item => ({
@@ -25,18 +26,18 @@ export const getTiffins = async (req, res) => {
             shortDescription: item.shortDescription,
             foodType: item.foodType,
             price: item.price,
-            tiffinType: item.tiffinType,
             hours: item.time[0] + item.time[1],
             mins: item.time[2] + item.time[3],
+            deliveryDetails: {
             availability: item.deliveryDetails.availability,
             deliveryCharge: item.deliveryDetails.deliveryCharge,
             deliveryTimeHrs: item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1],
             deliveryTimeMins: item.deliveryDetails.deliveryTime[2] + item.deliveryDetails.deliveryTime[3],
-
+            }
         }))
 
         if (lunch.length === 0)
-            return res.status(200).json({ message: "No Lunch Tiffins" })
+            return res.status(200).json([])
 
         return res.status(200).json(lunch)
 

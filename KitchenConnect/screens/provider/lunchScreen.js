@@ -3,11 +3,12 @@ import { View, Text, SafeAreaView, ScrollView , FlatList} from 'react-native';
 import menuStyle from '@/styles/provider/menuScreen';
 import TiffinItem  from '@/components/provider/tiffinComponent'
 import { windowWidth, windowHeight } from '@/utils/dimensions'
-import {getTiffins} from '@/utils/providerAPI' 
+import {getTiffins} from "@/utils/APIs/providerAPI" 
 import { AuthContext } from "@/context/authContext";
 import LoadingScreen from '../shared/loadingScreen';
 
-const LunchScreen = () => {
+const LunchScreen = ({route}) => {
+  const {refresh} = route.params
   const [tiffins, setTiffins] = useState([]);
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false)
@@ -35,7 +36,7 @@ const LunchScreen = () => {
   useEffect(() => {
     setLoading(true)
     fetchTiffins();
-  }, []);
+  }, [refresh]);
 
   
 

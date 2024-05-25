@@ -19,7 +19,7 @@ import { loginCustomer } from "../../utils/customerApi";
 import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
 import { UserTypeContext } from "../../context/userTypeContext";
-import { loginProvider } from "@/utils/providerAPI";
+import { loginProvider } from "@/utils/APIs/providerAPI";
 
 const LoginScreen = ({ navigation }) => {
   //global states
