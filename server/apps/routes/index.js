@@ -18,6 +18,8 @@ import getKitchenRouter from "./customer/getKitchenRouter.js";
 router.use("/customer/kitchen", getKitchenRouter);
 
 import { providerAuthRouter } from "./provider/authRouter.js";
+import { tiffinRouter } from "./provider/tiffinRouter.js";
 router.use("/provider", providerAuthRouter);
+router.use('/provider/tiffin', tiffinRouter)
 
 export default router;
