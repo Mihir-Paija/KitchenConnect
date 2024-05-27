@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import RatingComponent from "./ratingComponent";
 
 const KitchenComponent = ({
   title,
@@ -17,9 +18,10 @@ const KitchenComponent = ({
   price,
   imageSource,
   delivery,
+  onPress,
 }) => {
   return (
-    <TouchableOpacity style={styles.kitchenContainer}>
+    <TouchableOpacity style={styles.kitchenContainer} onPress={onPress}>
       <Image source={imageSource} style={styles.kitchenImage} />
       <View style={styles.kitchenContent}>
         <View style={styles.content}>
@@ -27,15 +29,7 @@ const KitchenComponent = ({
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
         <View style={styles.rightSideBox}>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.ratingText}>{rating}</Text>
-            <Icon
-              name="star"
-              type="material"
-              color="#ffff"
-              size={windowWidth * 0.045}
-            />
-          </View>
+          <RatingComponent rating={rating} />
           <View style={styles.priceContainer}>
             {delivery ? (
               <Image
@@ -59,7 +53,7 @@ const styles = StyleSheet.create({
   kitchenContainer: {
     backgroundColor: "#ffff",
     height: windowHeight * 0.3,
-    width: windowWidth * 0.9,
+    width: windowWidth * 0.95,
     overflow: "hidden",
     marginBottom: "7%",
     //border
