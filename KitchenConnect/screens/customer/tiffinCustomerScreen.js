@@ -8,16 +8,20 @@ import {
   FlatList,
   TouchableOpacity,
   Dropdown,
-  Menu,
+  TouchableWithoutFeedback,
   Button,
+  Image,
+  Modal,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import HeaderTiffinCustomer from "../../components/customer/tiffinScreenHeader";
 import TiffinComponent from "../../components/customer/tiffinComponent";
 import BackButtonComponent from "../../components/shared/BackButton";
 import RNPickerSelect from "react-native-picker-select";
+import SortModalTiffinCustomer from "../../components/customer/SortModalTiffinCustome";
+import FilterModalTiffinCustomer from "../../components/customer/FilterModalTiffinCustomer";
 
 //dummy data
 const tiffinsList = [
@@ -78,8 +82,15 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
   const { kitchen } = route.params;
 
   //states
-  const [tiffins, setTiffins] = useState(tiffinsList);
+  const [sortModalVisible, setSortModalVisible] = useState(false);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [sortCriteria, setSortCriteria] = useState("rating");
+  const [filterCriteria, setFilterCriteria] = useState({
+    tiffinType: "all",
+    foodType: "all",
+  });
+  const [tiffins, setTiffins] = useState(tiffinsList);
+  const [originalTiffins, setOriginalTiffins] = useState([...tiffins]);
 
   //functions
   const tiffinHandler = (item) => {
@@ -91,21 +102,42 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
     navigation.goBack();
   };
 
-  const sortTiffins = (criteria) => {
-    let sortedTiffins;
-    if (criteria === "price") {
-      sortedTiffins = [...tiffins].sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      );
-    } else if (criteria === "rating") {
-      sortedTiffins = [...tiffins].sort((a, b) => b.rating - a.rating);
+  useEffect(() => {
+    let sortedTiffins = [...originalTiffins];
+
+    if (sortCriteria === "priceHighToLow") {
+      sortedTiffins.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    } else if (sortCriteria === "priceLowToHigh") {
+      sortedTiffins.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortCriteria === "rating") {
+      sortedTiffins.sort((a, b) => b.rating - a.rating);
     }
-    setTiffins(sortedTiffins);
+
+    let filteredTiffins = [...sortedTiffins];
+
+    if (filterCriteria.tiffinType !== "all") {
+      filteredTiffins = filteredTiffins.filter(
+        (tiffin) => tiffin.tiffinType === filterCriteria.tiffinType
+      );
+    }
+
+    if (filterCriteria.foodType !== "all") {
+      filteredTiffins = filteredTiffins.filter(
+        (tiffin) => tiffin.foodType === filterCriteria.foodType
+      );
+    }
+
+    setTiffins(filteredTiffins);
+  }, [sortCriteria, filterCriteria]);
+
+  const onSortChange = (criteria) => {
+    setSortCriteria(criteria);
+    setSortModalVisible(false);
   };
 
-  const onSortChange = (value) => {
-    setSortCriteria(value);
-    sortTiffins(value);
+  const onFilterChange = (type, value) => {
+    setFilterCriteria((prev) => ({ ...prev, [type]: value }));
+    setFilterModalVisible(false);
   };
 
   // render flatlist item
@@ -128,17 +160,63 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
       <HeaderTiffinCustomer kitchen={kitchen} />
 
       <View style={styles.filterSortContainer}>
-        <Text style={styles.filterSortText}>Sort by:</Text>
-        <RNPickerSelect
-          onValueChange={(value) => onSortChange(value)}
-          items={[
-            { label: "Price", value: "price" },
-            { label: "Rating", value: "rating" },
+        <TouchableOpacity
+          style={[
+            styles.sortContainer,
+            sortCriteria !== "rating" && {
+              borderColor: "#ffa500",
+              backgroundColor: "#FFECEC",
+            },
           ]}
-          style={pickerSelectStyles}
-          value={sortCriteria}
-        />
+          onPress={() => setSortModalVisible(true)}
+        >
+          <Text style={styles.filterSortText}>Sort</Text>
+          <Image
+            source={
+              sortCriteria === "rating"
+                ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+            }
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.sortContainer,
+            (filterCriteria.tiffinType !== "all" ||
+              filterCriteria.foodType !== "all") && {
+              backgroundColor: "#FFECEC",
+              borderColor: "#ffa500",
+            },
+          ]}
+          onPress={() => setFilterModalVisible(true)}
+        >
+          <Text style={styles.filterSortText}>Filter</Text>
+          <Image
+            source={
+              filterCriteria.tiffinType === "all" &&
+              filterCriteria.foodType === "all"
+                ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+            }
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
+
+      <SortModalTiffinCustomer
+        visible={sortModalVisible}
+        onClose={() => setSortModalVisible(false)}
+        onSortChange={onSortChange}
+        sortCriteria={sortCriteria}
+      />
+
+      <FilterModalTiffinCustomer
+        visible={filterModalVisible}
+        onClose={() => setFilterModalVisible(false)}
+        onFilterChange={onFilterChange}
+        filterCriteria={filterCriteria}
+      />
 
       <FlatList
         data={tiffins}
@@ -161,45 +239,32 @@ const styles = StyleSheet.create({
   },
   filterSortContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 16,
-  },
-  filterSortContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 16,
+    // justifyContent: "center",
+    marginBottom: windowHeight * 0.005,
     alignItems: "center",
-    paddingHorizontal: 16,
+    alignContent: "center",
+    paddingHorizontal: windowWidth * 0.02,
+    // backgroundColor: "#ffaa",
+    marginBottom: windowHeight * 0.01,
   },
   filterSortText: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoRegular",
+    marginRight: windowWidth * 0.02,
   },
-  picker: {
-    height: 50,
-    width: 150,
-  },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
+  sortContainer: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 4,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
+    borderColor: "#808080",
+    borderRadius: windowWidth * 0.05,
+    padding: windowWidth * 0.02,
+    paddingHorizontal: windowWidth * 0.03,
+    marginLeft: windowWidth * 0.02,
   },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: "purple",
-    borderRadius: 8,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
+  icon: {
+    width: windowWidth * 0.05,
+    height: windowWidth * 0.05,
   },
 });

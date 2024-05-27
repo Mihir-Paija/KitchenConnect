@@ -8,8 +8,6 @@ import {
 } from "react-native";
 import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
-import JainIcon from "../../assets/foodType/Jain.svg";
-import { SvgXml } from "react-native-svg";
 import foodTypeIcon from "../../utils/foodTypeIconPath";
 
 const TiffinComponent = ({
