@@ -7,8 +7,7 @@ import {getTiffins} from "@/utils/APIs/providerAPI"
 import { AuthContext } from "@/context/authContext";
 import LoadingScreen from '../shared/loadingScreen';
 
-const LunchScreen = ({route}) => {
-  const {refresh} = route.params
+const LunchScreen = () => {
   const [tiffins, setTiffins] = useState([]);
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false)
@@ -28,15 +27,15 @@ const LunchScreen = ({route}) => {
     console.log(`Edit Tiffin ${id}`);
   };
 
-  const handleDeliveryDetails = (details) => {
-    console.log(`Delivery details for Tiffin ${details.deliveryCharge}`);
+  const handleDeliveryDetails = (name, details) => {
+    console.log(`Delivery details for ${name} ${details.deliveryCharge}`);
   };
 
 
   useEffect(() => {
     setLoading(true)
     fetchTiffins();
-  }, [refresh]);
+  }, []);
 
   
 
@@ -58,7 +57,7 @@ const LunchScreen = ({route}) => {
           mins={item.mins}
           price={item.price}
           edit={() => handleEdit(item.id)}
-          showDelivery={() => handleDeliveryDetails(item.deliveryDetails)}
+          showDelivery={() => handleDeliveryDetails(item.name, item.deliveryDetails)}
         />
       )}
       keyExtractor={(item) => item.id.toString()}

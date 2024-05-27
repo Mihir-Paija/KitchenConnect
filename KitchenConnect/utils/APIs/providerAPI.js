@@ -36,6 +36,16 @@ export const logoutProvider = async() =>{
   }
 };
 
+export const getProfile = async(authToken) =>{
+  try {
+    const response = await axios.get(`${API_BASE_URL}/provider/${authToken}`);
+    return response.data
+    
+  } catch (error) {
+    console.error('Error In Getting Profile:', error);
+  }
+}
+
 export const getTiffins = async(authToken) =>{
   try {
     const response = await axios.get(`${API_BASE_URL}/provider/tiffin/${authToken}`);
