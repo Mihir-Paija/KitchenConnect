@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,16 @@ const SortModalTiffinCustomer = ({
   onSortChange,
   sortCriteria,
 }) => {
+  useEffect(() => {
+    if (visible) {
+      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBackgroundColor("#4A4B4D");
+    } else {
+      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBackgroundColor("#ffffff"); // Set your default status bar color here
+    }
+  }, [visible]);
+
   return (
     <Modal transparent={true} visible={visible} animationType="slide">
       <TouchableWithoutFeedback onPress={onClose}>

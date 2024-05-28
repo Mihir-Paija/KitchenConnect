@@ -15,7 +15,7 @@ import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { loginCustomer } from "../../utils/customerApi";
+import { loginCustomer } from "../../utils/APIs/customerApi";
 import { CustomerAuthContext } from "../../context/customerAuthContext";
 import { AuthContext } from "@/context/authContext";
 import { UserTypeContext } from "../../context/userTypeContext";
