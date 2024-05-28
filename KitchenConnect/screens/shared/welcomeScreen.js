@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Animated } from "react-native";
+import { StyleSheet, Text, View, Animated, StatusBar } from "react-native";
 
 const WelcomeScreen = ({ navigation }) => {
   const [scale] = useState(new Animated.Value(0)); // Animate scale

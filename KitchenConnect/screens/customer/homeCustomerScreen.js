@@ -7,6 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
+import { windowHeight, windowWidth } from "@/utils/dimensions";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import FooterMenu from "../../components/shared/menu/footerMenu";
@@ -144,17 +145,18 @@ const HomeCustomerScreen = ({ navigation }) => {
                     selectedCity={selectedCity}
                     setSelectedCity={setSelectedCity}
                     cities={cities}
-                    handleProfile={() => navigation.navigate("ProfileCustomer")}
+                    handleProfile={() => handleProfile()}
                     kitchensCount={kitchens.length}
                   />
                 }
-                data={kitchens}
+                data={kitchens.length > 0 ? kitchens : ["No kitchen"]}
                 renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                contentContainerStyle={{ flexGrow: 1 }}
+                keyExtractor={(item, index) =>
+                  kitchens.length > 0 ? item._id : index.toString()
+                }
                 style={styles.mainComponent}
-                // ListFooterComponent={<FooterMenu navigation={navigation} />}
               />
+
               <FooterMenu navigation={navigation} />
             </>
           )}
@@ -171,5 +173,15 @@ export default HomeCustomerScreen;
 const styles = StyleSheet.create({
   mainComponent: {
     alignContent: "space-between",
+    marginBottom: windowHeight * 0.04,
+  },
+  noKitchenContainer: {
+    alignSelf: "center",
+    position: "absolute",
+    marginTop: windowHeight * 0.5,
+  },
+  noKitchenText: {
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
   },
 });
