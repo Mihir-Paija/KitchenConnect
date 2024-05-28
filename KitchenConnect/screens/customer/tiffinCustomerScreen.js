@@ -13,13 +13,13 @@ import {
   Image,
   Modal,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import HeaderTiffinCustomer from "../../components/customer/tiffinScreenHeader";
 import TiffinComponent from "../../components/customer/tiffinComponent";
 import BackButtonComponent from "../../components/shared/BackButton";
-import RNPickerSelect from "react-native-picker-select";
+import { AuthContext } from "@/context/authContext";
 import SortModalTiffinCustomer from "../../components/customer/SortModalTiffinCustome";
 import FilterModalTiffinCustomer from "../../components/customer/FilterModalTiffinCustomer";
 import { getTiffinCustomer } from "@/utils/APIs/customerApi";
@@ -83,6 +83,8 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
   // route params
   const { kitchen } = route.params;
 
+  const [authState, setAuthState] = useContext(AuthContext);
+
   //states
   const [loading, setLoading] = useState(true);
   const [sortModalVisible, setSortModalVisible] = useState(false);
@@ -102,7 +104,7 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
       const tiffinsList = response.data;
       setTiffins(tiffinsList);
       setOriginalTiffins(tiffinsList);
-      console.log("Tiffins:", tiffinsList);
+      // console.log("Tiffins:", tiffinsList);
     } catch (error) {
       console.error("Failed to fetch tiffins:", error);
     } finally {
@@ -169,7 +171,7 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
       deliveryCharge={item.deliveryDetails.deliveryCharge}
       foodType={item.foodType}
       tiffinType={item.tiffinType}
-      description={item.description}
+      description={item.shortDescription}
       rating={3.5}
       onPress={() => tiffinHandler(item)}
     />
@@ -177,87 +179,93 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ? (
-        <LoadingScreen />
-      ) : (
+      {authState.authToken ? (
         <>
-          <BackButtonComponent onPress={backHandler} />
-          <HeaderTiffinCustomer kitchen={kitchen} />
-
-          <View style={styles.filterSortContainer}>
-            <TouchableOpacity
-              style={[
-                styles.sortContainer,
-                sortCriteria !== "rating" && {
-                  borderColor: "#ffa500",
-                  backgroundColor: "#FFECEC",
-                },
-              ]}
-              onPress={() => setSortModalVisible(true)}
-            >
-              <Text style={styles.filterSortText}>Sort</Text>
-              <Image
-                source={
-                  sortCriteria === "rating"
-                    ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
-                    : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
-                }
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.sortContainer,
-                (filterCriteria.tiffinType !== "all" ||
-                  filterCriteria.foodType !== "all") && {
-                  backgroundColor: "#FFECEC",
-                  borderColor: "#ffa500",
-                },
-              ]}
-              onPress={() => setFilterModalVisible(true)}
-            >
-              <Text style={styles.filterSortText}>Filter</Text>
-              <Image
-                source={
-                  filterCriteria.tiffinType === "all" &&
-                  filterCriteria.foodType === "all"
-                    ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
-                    : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
-                }
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <SortModalTiffinCustomer
-            visible={sortModalVisible}
-            onClose={() => setSortModalVisible(false)}
-            onSortChange={onSortChange}
-            sortCriteria={sortCriteria}
-          />
-
-          <FilterModalTiffinCustomer
-            visible={filterModalVisible}
-            onClose={() => setFilterModalVisible(false)}
-            onFilterChange={onFilterChange}
-            filterCriteria={filterCriteria}
-          />
-
-          {tiffins.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                No Tiffin Available for this Kitchen...
-              </Text>
-            </View>
+          {loading ? (
+            <LoadingScreen />
           ) : (
-            <FlatList
-              data={tiffins}
-              renderItem={renderItem}
-              keyExtractor={(item) => item._id}
-              style={styles.tiffinList}
-            />
+            <>
+              <BackButtonComponent onPress={backHandler} />
+              <HeaderTiffinCustomer kitchen={kitchen} />
+
+              <View style={styles.filterSortContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    sortCriteria !== "rating" && {
+                      borderColor: "#ffa500",
+                      backgroundColor: "#FFECEC",
+                    },
+                  ]}
+                  onPress={() => setSortModalVisible(true)}
+                >
+                  <Text style={styles.filterSortText}>Sort</Text>
+                  <Image
+                    source={
+                      sortCriteria === "rating"
+                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    (filterCriteria.tiffinType !== "all" ||
+                      filterCriteria.foodType !== "all") && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                  ]}
+                  onPress={() => setFilterModalVisible(true)}
+                >
+                  <Text style={styles.filterSortText}>Filter</Text>
+                  <Image
+                    source={
+                      filterCriteria.tiffinType === "all" &&
+                      filterCriteria.foodType === "all"
+                        ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                        : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <SortModalTiffinCustomer
+                visible={sortModalVisible}
+                onClose={() => setSortModalVisible(false)}
+                onSortChange={onSortChange}
+                sortCriteria={sortCriteria}
+              />
+
+              <FilterModalTiffinCustomer
+                visible={filterModalVisible}
+                onClose={() => setFilterModalVisible(false)}
+                onFilterChange={onFilterChange}
+                filterCriteria={filterCriteria}
+              />
+
+              {tiffins.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>
+                    No Tiffin Available for this Kitchen...
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  data={tiffins}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item._id}
+                  style={styles.tiffinList}
+                />
+              )}
+            </>
           )}
         </>
+      ) : (
+        <Text>You are not authorized to access this screen.</Text>
       )}
     </SafeAreaView>
   );

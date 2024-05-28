@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3,
     width: windowWidth * 0.95,
     overflow: "hidden",
-    marginBottom: "7%",
+    marginBottom: windowHeight * 0.03,
     //border
     borderRadius: windowWidth * 0.03,
     borderCurve: "circular",

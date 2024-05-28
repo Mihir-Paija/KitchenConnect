@@ -19,7 +19,7 @@ const SortModalTiffinCustomer = ({
   useEffect(() => {
     if (visible) {
       StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor("#4A4B4D");
+      StatusBar.setBackgroundColor("rgba(0, 0, 0, 0.5)");
     } else {
       StatusBar.setBarStyle("dark-content");
       StatusBar.setBackgroundColor("#ffffff"); // Set your default status bar color here
