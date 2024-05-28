@@ -12,7 +12,7 @@ import activeScreenStyles from "@/styles/shared/activeScreen";
 import FooterMenu from "../../components/shared/menu/footerMenu";
 import KitchenComponent from "@/components/customer/kitchenComponent";
 import LoadingScreen from "../../screens/shared/loadingScreen";
-import { getKitchenCustomer } from "@/utils/customerApi";
+import { getKitchenCustomer } from "@/utils/APIs/customerApi";
 import HeaderHomeCustomer from "@/components/customer/kitchenScreenHeader";
 
 const HomeCustomerScreen = ({ navigation }) => {
@@ -151,12 +151,13 @@ const HomeCustomerScreen = ({ navigation }) => {
                 data={kitchens}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
+                contentContainerStyle={{ flexGrow: 1 }}
                 style={styles.mainComponent}
+                // ListFooterComponent={<FooterMenu navigation={navigation} />}
               />
+              <FooterMenu navigation={navigation} />
             </>
           )}
-
-          <FooterMenu navigation={navigation} />
         </>
       ) : (
         <Text>You are not authorized to access this screen.</Text>

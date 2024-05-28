@@ -3,10 +3,10 @@ import provider from "../../models/providerModel.js";
 export const kitchenGet = async (req, res) => {
   try {
     const kitchens = await provider.find();
-    if (kitchens) {
+    if (kitchens.length > 0) {
       return res.status(200).json(kitchens);
     } else {
-      return res.status(200).json({ message: "There is no kitchen near you" });
+      return res.status(200).json([]); // { message: "There is no kitchen near you" }
     }
   } catch (error) {
     console.log("Internal Server Error in GET Kitchen\n" + error);

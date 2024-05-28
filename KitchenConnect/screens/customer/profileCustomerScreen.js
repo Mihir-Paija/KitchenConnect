@@ -15,7 +15,7 @@ import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import LogoutButton from "@/components/shared/logoutButton";
 import { windowHeight } from "@/utils/dimensions";
-import { logoutCustomer } from "@/utils/customerApi";
+import { logoutCustomer } from "@/utils/APIs/customerApi";
 
 const ProfileCustomerScreen = ({ navigation }) => {
   //gloabal states

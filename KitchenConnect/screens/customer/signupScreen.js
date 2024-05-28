@@ -14,7 +14,7 @@ import SubmitButton from "@components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@utils/dimensions";
-import { signupCustomer } from "@utils/customerApi";
+import { signupCustomer } from "@utils/APIs/customerApi";
 import { UserTypeContext } from "@context/userTypeContext";
 
 const SignupScreen = ({ navigation }) => {
