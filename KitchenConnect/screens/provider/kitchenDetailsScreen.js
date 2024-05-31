@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
-import { signupProvider } from "@/utils/APIs/providerAPI";
+import { signupProvider } from "@/utils/provider/providerAPI";
 import { UserTypeContext } from "@context/userTypeContext";
 
 const KitcehnDetailsScreen = ({ navigation, route }) => {

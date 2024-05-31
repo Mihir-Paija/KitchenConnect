@@ -10,3 +10,23 @@ export const addTiffin = async(authToken, bodyData) =>{
         
     }
 }
+
+export const editTiffin = async(authToken, tiffinID, bodyData) =>{
+    try {
+        const response = await axios.patch(`${API_BASE_URL}/provider/tiffin/${authToken}/${tiffinID}`, bodyData)
+        return response
+    } catch (error) {
+        console.log("Error In Editing Tiffin", error)
+
+    }
+}
+
+export const deleteTiffin = async(authToken, tiffinID) =>{
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/provider/tiffin/${authToken}/${tiffinID}`)
+        return response
+    } catch (error) {
+        console.log("Error In Deleting Tiffin", error)
+
+    }
+}

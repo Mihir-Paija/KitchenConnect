@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, Picker, ScrollView } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 import RNPickerSelect from 'react-native-picker-select';
 import CheckBox from 'react-native-check-box';
 
-const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
-    const [menuData, setMenuData] = useState({
+const AddTiffinModal = ({ isVisible, onClose, onAddTiffin }) => {
+    const [tiffinData, setTiffinData] = useState({
         name: '',
         shortDescription: '',
         price: '',
@@ -17,13 +17,12 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
         deliveryCharge: 0,
         deliveryTimeHrs: '',
         deliveryTimeMins: ''
-
     });
 
-    const handleAddMenu = () => {
-        onAddMenu(menuData);
+    const handleAddTiffin = () => {
+        onAddTiffin(tiffinData);
 
-        setMenuData({
+        setTiffinData({
             name: '',
             shortDescription: '',
             price: '',
@@ -40,7 +39,7 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
 
     const foodTypeOptions = ['Veg', 'Non-Veg'].map(value => ({ label: value, value: value }));
     const tiffinTypeOptions = ['Lunch', 'Dinner'].map(value => ({ label: value, value: value }));
-    const hourOptions = Array.from({ length: 24 }, (_, i) => ({ label: i.toString(), value: i.toString() }));
+    const hourOptions = Array.from({ length: 24 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
     const minuteOptions = ['00', '15', '30', '45'].map(value => ({ label: value, value: value }));
 
     return (
@@ -51,27 +50,26 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
             onRequestClose={onClose}
         >
             <View style={styles.modalContainer}>
-
                 <View style={styles.modalContent}>
                     <ScrollView>
-                        <Text style={styles.modalTitle}>Add New Menu Item</Text>
+                        <Text style={styles.modalTitle}>Add New Tiffin</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Name"
-                            value={menuData.name}
-                            onChangeText={(text) => setMenuData({ ...menuData, name: text })}
+                            value={tiffinData.name}
+                            onChangeText={(text) => setTiffinData({ ...tiffinData, name: text })}
                         />
                         <TextInput
                             style={[styles.input, { height: 80 }]}
                             placeholder="Write A Short Description"
-                            value={menuData.shortDescription}
-                            onChangeText={(text) => setMenuData({ ...menuData, shortDescription: text })}
+                            value={tiffinData.shortDescription}
+                            onChangeText={(text) => setTiffinData({ ...tiffinData, shortDescription: text })}
                         />
                         <TextInput
                             style={styles.input}
                             placeholder="Enter Tiffin Price"
-                            value={menuData.price}
-                            onChangeText={(text) => setMenuData({ ...menuData, price: text })}
+                            value={tiffinData.price}
+                            onChangeText={(text) => setTiffinData({ ...tiffinData, price: text })}
                             keyboardType="numeric"
                         />
 
@@ -79,8 +77,8 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                             <Text style={styles.label}>Food Type</Text>
                             <RNPickerSelect
                                 placeholder={{ label: 'Select Food Type', value: null }}
-                                value={menuData.foodType}
-                                onValueChange={(value) => setMenuData({ ...menuData, foodType: value })}
+                                value={tiffinData.foodType}
+                                onValueChange={(value) => setTiffinData({ ...tiffinData, foodType: value })}
                                 items={foodTypeOptions}
                                 style={pickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
@@ -91,8 +89,8 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                             <Text style={styles.label}>Tiffin Type</Text>
                             <RNPickerSelect
                                 placeholder={{ label: 'Select Tiffin Type', value: null }}
-                                value={menuData.tiffinType}
-                                onValueChange={(value) => setMenuData({ ...menuData, tiffinType: value })}
+                                value={tiffinData.tiffinType}
+                                onValueChange={(value) => setTiffinData({ ...tiffinData, tiffinType: value })}
                                 items={tiffinTypeOptions}
                                 style={pickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
@@ -103,8 +101,8 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                             <View style={styles.pickerContainerHalf}>
                                 <RNPickerSelect
                                     placeholder={{ label: 'Select Hours', value: null }}
-                                    value={menuData.hours}
-                                    onValueChange={(value) => setMenuData({ ...menuData, hours: value })}
+                                    value={tiffinData.hours}
+                                    onValueChange={(value) => setTiffinData({ ...tiffinData, hours: value })}
                                     items={hourOptions}
                                     style={pickerSelectStyles}
                                     useNativeAndroidPickerStyle={false}
@@ -113,8 +111,8 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                             <View style={styles.pickerContainerHalf}>
                                 <RNPickerSelect
                                     placeholder={{ label: 'Select Minutes', value: null }}
-                                    value={menuData.min}
-                                    onValueChange={(value) => setMenuData({ ...menuData, min: value })}
+                                    value={tiffinData.mins}
+                                    onValueChange={(value) => setTiffinData({ ...tiffinData, mins: value })}
                                     items={minuteOptions}
                                     style={pickerSelectStyles}
                                     useNativeAndroidPickerStyle={false}
@@ -123,60 +121,61 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                         </View>
                         <View style={styles.checkboxContainer}>
                             <CheckBox
-                                isChecked={menuData.availability}
-                                onClick={() => setMenuData({ ...menuData, availability: !menuData.availability })}
+                                isChecked={tiffinData.availability}
+                                onClick={() => setTiffinData({ ...tiffinData, availability: !tiffinData.availability })}
                                 checkBoxColor="orange"
                             />
                             <Text style={styles.labels}>Would you provide delivery?</Text>
                         </View>
-                        {menuData.availability ? (<>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Enter Delivery Charge (if applicable)"
-                                value={menuData.deliveryCharge}
-                                onChangeText={(text) => setMenuData({ ...menuData, deliveryCharge: text })}
-                                keyboardType="numeric"
-                            />
-                            <Text style={styles.label}>At What Would You Deliver Tiffins</Text>
-                            <View style={styles.row}>
-                                <View style={styles.pickerContainerHalf}>
-                                    <RNPickerSelect
-                                        placeholder={{ label: 'Select Hours', value: null }}
-                                        value={menuData.deliveryTimeHrs}
-                                        onValueChange={(value) => setMenuData({ ...menuData, deliveryTimeHrs: value })}
-                                        items={hourOptions}
-                                        style={pickerSelectStyles}
-                                        useNativeAndroidPickerStyle={false}
-                                    />
+                        {tiffinData.availability ? (
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter Delivery Charge (if applicable)"
+                                    value={tiffinData.deliveryCharge.toString()}
+                                    onChangeText={(text) => setTiffinData({ ...tiffinData, deliveryCharge: text })}
+                                    keyboardType="numeric"
+                                />
+                                <Text style={styles.label}>At What Time Would You Deliver Tiffins</Text>
+                                <View style={styles.row}>
+                                    <View style={styles.pickerContainerHalf}>
+                                        <RNPickerSelect
+                                            placeholder={{ label: 'Select Hours', value: null }}
+                                            value={tiffinData.deliveryTimeHrs}
+                                            onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeHrs: value })}
+                                            items={hourOptions}
+                                            style={pickerSelectStyles}
+                                            useNativeAndroidPickerStyle={false}
+                                        />
+                                    </View>
+                                    <View style={styles.pickerContainerHalf}>
+                                        <RNPickerSelect
+                                            placeholder={{ label: 'Select Minutes', value: null }}
+                                            value={tiffinData.deliveryTimeMins}
+                                            onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeMins: value })}
+                                            items={minuteOptions}
+                                            style={pickerSelectStyles}
+                                            useNativeAndroidPickerStyle={false}
+                                        />
+                                    </View>
                                 </View>
-                                <View style={styles.pickerContainerHalf}>
-                                    <RNPickerSelect
-                                        placeholder={{ label: 'Select Minutes', value: null }}
-                                        value={menuData.deliveryTimeMins}
-                                        onValueChange={(value) => setMenuData({ ...menuData, deliveryTimeMins: value })}
-                                        items={minuteOptions}
-                                        style={pickerSelectStyles}
-                                        useNativeAndroidPickerStyle={false}
-                                    />
-                                </View>
-                            </View>
-                        </>) : (<></>)}
+                            </>
+                        ) : null}
                     </ScrollView>
 
-                    <TouchableOpacity style={styles.submitButton} onPress={handleAddMenu}>
+                    <TouchableOpacity style={styles.submitButton} onPress={handleAddTiffin}>
                         <Text style={styles.buttonText}>Add</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                         <Text style={styles.buttonText}>Close</Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
         </Modal>
     );
 };
 
-export default AddMenuModal;
+export default AddTiffinModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
