@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image } from 'react-native';
 import menuStyle from '@/styles/provider/menuScreen';
 import TiffinItem from '@/components/provider/tiffinComponent';
 import { getTiffins } from "@/utils/provider/providerAPI";
@@ -9,6 +9,9 @@ import { RefreshContext } from '@/context/refreshContext';
 import EditTiffinModal from './editTiffinModal';
 import DeliveryDetailsModal from './deliveryDetailsModal';
 import { editTiffin, deleteTiffin } from '../../utils/provider/tiffinAPI';
+import SortTiffinModal from '@/components/provider/sortTiffinModal';
+import FilterTiffinModal from '@/components/provider/filterTiffinModal';
+import {windowHeight, windowWidth} from '@/utils/dimensions'
 
 const LunchScreen = () => {
   const [authState] = useContext(AuthContext);
@@ -16,6 +19,15 @@ const LunchScreen = () => {
   const [refresh, setRefresh] = useContext(RefreshContext);
 
   const [tiffins, setTiffins] = useState([]);
+  const [originalTiffins, setOriginalTiffins] = useState([]);
+
+  const [sortCriteria, setSortCriteria] = useState("rating");
+  const [filterCriteria, setFilterCriteria] = useState({
+    foodType: "all",
+  });
+  const [sortModal, setSortModal] = useState(false);
+  const [filterModal, setFilterModal] = useState(false);
+  
 
   const [editModal, setEditModal] = useState(false);
   const [editTiffin, setEditTiffin] = useState(null);
@@ -30,6 +42,7 @@ const LunchScreen = () => {
     try {
       const response = await getTiffins(authState.authToken);
       setTiffins(response);
+      setOriginalTiffins(response)
       setLoading(false);
     } catch (error) {
       console.error('Error fetching tiffins:', error);
@@ -78,6 +91,44 @@ const LunchScreen = () => {
     fetchTiffins();
   }, [refresh]);
 
+  useEffect(() => {
+    let sortedTiffins = [...originalTiffins];
+
+    if (sortCriteria === "priceHighToLow") {
+      sortedTiffins.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    } else if (sortCriteria === "priceLowToHigh") {
+      sortedTiffins.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortCriteria === "rating") {
+      sortedTiffins.sort((a, b) => b.rating - a.rating);
+    }
+
+    let filteredTiffins = [...sortedTiffins];
+
+    if (filterCriteria.tiffinType !== "all") {
+      filteredTiffins = filteredTiffins.filter(
+        (tiffin) => tiffin.tiffinType === filterCriteria.tiffinType
+      );
+    }
+
+    if (filterCriteria.foodType !== "all") {
+      filteredTiffins = filteredTiffins.filter(
+        (tiffin) => tiffin.foodType === filterCriteria.foodType
+      );
+    }
+
+    setTiffins(filteredTiffins);
+  }, [sortCriteria, filterCriteria, , originalTiffins]);
+
+  const onSortChange = (criteria) => {
+    setSortCriteria(criteria);
+    setSortModal(false);
+  };
+
+  const onFilterChange = (type, value) => {
+    setFilterCriteria((prev) => ({ ...prev, [type]: value }));
+    setFilterModal(false);
+  };
+
   return (
     <SafeAreaView style={menuStyle.screen}>
       {authState.authToken ? (
@@ -87,6 +138,65 @@ const LunchScreen = () => {
           <>
             {tiffins.length !== 0 ? (
               <>
+                 <View style={styles.filterSortContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    sortCriteria !== "rating" && {
+                      borderColor: "#ffa500",
+                      backgroundColor: "#FFECEC",
+                    },
+                  ]}
+                  onPress={() => setSortModal(true)}
+                >
+                  <Text style={styles.filterSortText}>Sort</Text>
+                  <Image
+                    source={
+                      sortCriteria === "rating"
+                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    (filterCriteria.tiffinType !== "all" ||
+                      filterCriteria.foodType !== "all") && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                  ]}
+                  onPress={() => setFilterModal(true)}
+                >
+                  <Text style={styles.filterSortText}>Filter</Text>
+                  <Image
+                    source={
+                      filterCriteria.tiffinType === "all" &&
+                      filterCriteria.foodType === "all"
+                        ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                        : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <SortTiffinModal
+                visible={sortModal}
+                onClose={() => setSortModal(false)}
+                onSortChange={onSortChange}
+                sortCriteria={sortCriteria}
+              />
+
+              <FilterTiffinModal
+                visible={filterModal}
+                onClose={() => setFilterModal(false)}
+                onFilterChange={onFilterChange}
+                filterCriteria={filterCriteria}
+              />
+
                 <FlatList
                   data={tiffins}
                   renderItem={({ item }) => (
@@ -134,3 +244,43 @@ const LunchScreen = () => {
 };
 
 export default LunchScreen;
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffff",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+    alignContent: "center",
+  },
+  filterSortContainer: {
+    flexDirection: "row",
+    // justifyContent: "center",
+    marginBottom: windowHeight * 0.005,
+    alignItems: "flex-start",
+    alignContent: "center",
+    paddingHorizontal: windowWidth * 0.02,
+    // backgroundColor: "#ffaa",
+    marginBottom: windowHeight * 0.01,
+  },
+  filterSortText: {
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoRegular",
+    marginRight: windowWidth * 0.02,
+  },
+  sortContainer: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#808080",
+    borderRadius: windowWidth * 0.05,
+    padding: windowWidth * 0.02,
+    paddingHorizontal: windowWidth * 0.03,
+    marginLeft: windowWidth * 0.02,
+  },
+  icon: {
+    width: windowWidth * 0.05,
+    height: windowWidth * 0.05,
+  },
+});

@@ -9,8 +9,9 @@ import {
   StatusBar,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { windowHeight, windowWidth } from "@/utils/dimensions";
 
-const SortModalTiffinCustomer = ({
+const SortTiffinModal = ({
   visible,
   onClose,
   onSortChange,
@@ -22,7 +23,7 @@ const SortModalTiffinCustomer = ({
       StatusBar.setBackgroundColor("rgba(0, 0, 0, 0.5)");
     } else {
       StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor("#ffffff"); // Set your default status bar color here
+      StatusBar.setBackgroundColor("#ffffff"); 
     }
   }, [visible]);
 
@@ -84,9 +85,9 @@ const SortModalTiffinCustomer = ({
     </Modal>
   );
 };
-import { windowHeight, windowWidth } from "@/utils/dimensions";
 
-export default SortModalTiffinCustomer;
+
+export default SortTiffinModal;
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -123,6 +124,5 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.12,
     color: "#ffa500",
     fontFamily: "NunitoLight",
-    // backgroundColor: "#ffff",
   },
 });

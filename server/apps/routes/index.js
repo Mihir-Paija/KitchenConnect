@@ -17,9 +17,13 @@ router.use("/customer/logout", logoutCustomerRouter);
 import getKitchenRouter from "./customer/getKitchenRouter.js";
 router.use("/customer/kitchen", getKitchenRouter);
 
+//getTiffin Router -> customer
+import getTiffinRouter from "./customer/getTiffinRouter.js";
+router.use("/customer/tiffin", getTiffinRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
 router.use("/provider", providerAuthRouter);
-router.use('/provider/tiffin', tiffinRouter)
+router.use("/provider/tiffin", tiffinRouter);
 
 export default router;

@@ -13,7 +13,7 @@ import {
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const FilterModalTiffinCustomer = ({
+const FilterTiffinModal = ({
   visible,
   onClose,
   onFilterChange,
@@ -41,50 +41,6 @@ const FilterModalTiffinCustomer = ({
           />
           <View style={styles.modalContainer}>
             <Text style={styles.title}>Filter by:</Text>
-            <Text style={styles.subTitle}>Tiffin Type</Text>
-            <TouchableOpacity
-              style={styles.option}
-              onPress={() => onFilterChange("tiffinType", "all")}
-            >
-              <Text
-                style={
-                  filterCriteria.tiffinType === "all"
-                    ? styles.selectedOption
-                    : styles.optionText
-                }
-              >
-                All
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.option}
-              onPress={() => onFilterChange("tiffinType", "Lunch")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  filterCriteria.tiffinType === "Lunch" &&
-                    styles.selectedOption,
-                ]}
-              >
-                Lunch
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.option}
-              onPress={() => onFilterChange("tiffinType", "Dinner")}
-            >
-              <Text
-                style={[
-                  styles.optionText,
-                  filterCriteria.tiffinType === "Dinner" &&
-                    styles.selectedOption,
-                ]}
-              >
-                Dinner
-              </Text>
-            </TouchableOpacity>
-
             <Text style={styles.subTitle}>Food Type</Text>
             <TouchableOpacity
               style={styles.option}
@@ -173,7 +129,7 @@ const FilterModalTiffinCustomer = ({
   );
 };
 
-export default FilterModalTiffinCustomer;
+export default FilterTiffinModal;
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -183,7 +139,6 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: "white",
-    // backgroundColor: "transparent",
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -218,6 +173,5 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.12,
     color: "#ffa500",
     fontFamily: "NunitoLight",
-    // backgroundColor: "#ffff",
   },
 });

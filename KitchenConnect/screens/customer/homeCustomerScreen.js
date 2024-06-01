@@ -7,12 +7,13 @@ import {
   FlatList,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
+import { windowHeight, windowWidth } from "@/utils/dimensions";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import FooterMenu from "../../components/shared/menu/footerMenu";
 import KitchenComponent from "@/components/customer/kitchenComponent";
 import LoadingScreen from "../../screens/shared/loadingScreen";
-import { getKitchenCustomer } from "@/utils/customerApi";
+import { getKitchenCustomer } from "@/utils/APIs/customerApi";
 import HeaderHomeCustomer from "@/components/customer/kitchenScreenHeader";
 
 const HomeCustomerScreen = ({ navigation }) => {
@@ -144,19 +145,21 @@ const HomeCustomerScreen = ({ navigation }) => {
                     selectedCity={selectedCity}
                     setSelectedCity={setSelectedCity}
                     cities={cities}
-                    handleProfile={() => navigation.navigate("ProfileCustomer")}
+                    handleProfile={() => handleProfile()}
                     kitchensCount={kitchens.length}
                   />
                 }
-                data={kitchens}
+                data={kitchens.length > 0 ? kitchens : ["No kitchen"]}
                 renderItem={renderItem}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item, index) =>
+                  kitchens.length > 0 ? item._id : index.toString()
+                }
                 style={styles.mainComponent}
               />
+
+              <FooterMenu navigation={navigation} />
             </>
           )}
-
-          <FooterMenu navigation={navigation} />
         </>
       ) : (
         <Text>You are not authorized to access this screen.</Text>
@@ -170,5 +173,15 @@ export default HomeCustomerScreen;
 const styles = StyleSheet.create({
   mainComponent: {
     alignContent: "space-between",
+    marginBottom: windowHeight * 0.04,
+  },
+  noKitchenContainer: {
+    alignSelf: "center",
+    position: "absolute",
+    marginTop: windowHeight * 0.5,
+  },
+  noKitchenText: {
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
   },
 });

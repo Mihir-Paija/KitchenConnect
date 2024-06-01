@@ -55,12 +55,13 @@ const providerSchema = new Schema({
       type: Boolean,
       required: [true, "Please Enter Delivery Mode"]
     },
+    
     deactivate: {
       type: Boolean,
       default: false,
     }
 }, { timestamps: true });
 
-const Provider = mongoose.model('Provider', providerSchema);
+const provider = mongoose.model('Provider', providerSchema);
 
-export default Provider;
+export default provider;
