@@ -1,12 +1,24 @@
-import {StyleSheet} from 'react-native'
+// src/styles/provider/menuScreen.js
+import { StyleSheet } from 'react-native';
 
 const menuStyle = StyleSheet.create({
-    screen:{
-        flex: 1,
-        backgroundColor: '#CCCCCC',
-        alignItems: "center"
+  screen: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flatList: {
+    width: '100%',
+  },
+  noTiffinsText: {
+    color: 'black',
+    textAlign: 'center',
+  },
+  loginText: {
+    color: 'black',
+    textAlign: 'center',
+  },
+});
 
-    }
-})
-
-export default menuStyle
+export default menuStyle;

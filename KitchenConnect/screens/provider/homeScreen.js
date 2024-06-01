@@ -5,7 +5,7 @@ import activeScreenStyles from "@/styles/shared/activeScreen";
 import SubmitButton from '@/components/shared/forms/submitButton'
 import LogoutButton from "@/components/shared/logoutButton";
 import {windowHeight} from '@/utils/dimensions'
-import { logoutProvider } from "@/utils/APIs/providerAPI";
+import { logoutProvider } from "@/utils/provider/providerAPI";
 import { AuthContext } from "@/context/authContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

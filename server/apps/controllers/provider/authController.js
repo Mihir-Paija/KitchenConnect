@@ -116,7 +116,7 @@ export const providerLoginPost = async (req, res) => {
     const user = await provider.findOne({ email });
 
     if (!user) {
-      return res.staus(409).send({
+      return res.status(409).send({
         message: "User Doesn't Exist! Please Register.",
       });
     }

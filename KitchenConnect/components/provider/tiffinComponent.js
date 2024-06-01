@@ -1,15 +1,18 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { windowWidth, windowHeight } from '@/utils/dimensions'
+import { windowWidth, windowHeight } from '@/utils/dimensions';
 
-const TiffinItem = ({ name, description, foodType, price, hours, mins, edit, showDelivery}) => {
+const TiffinItem = ({ name, description, foodType, price, hours, mins, edit, showDelivery, onPress }) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.mainContent}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.text}>{description}</Text>
         <Text style={styles.text}>{foodType}</Text>
-        <Text style={styles.text}>Ready Time: {hours}:{mins}</Text>
+        <View style={styles.readyTimeContainer}>
+          <Text style={styles.readyTimeLabel}>Ready Time: </Text>
+          <Text style={styles.readyTimeValue}>{hours}:{mins}</Text>
+        </View>
         <Text style={styles.price}>Per Person: {price}</Text>
       </View>
       <View style={styles.sideButtons}>
@@ -17,10 +20,11 @@ const TiffinItem = ({ name, description, foodType, price, hours, mins, edit, sho
           <Text style={styles.buttonText}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deliveryButton} onPress={showDelivery}>
-          <Text style={styles.buttonText}>Delivery Details</Text>
+          <Text style={styles.buttonText}>Delivery</Text>
+          <Text style={styles.buttonText}>Details</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -29,64 +33,82 @@ export default TiffinItem;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    width: windowWidth * 0.95, // 90% of screen width
-    height: windowHeight * 0.18, // Reduced height to 18% of screen height
+    width: windowWidth * 0.95,
+    height: windowHeight * 0.18,
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: windowWidth * 0.02, // Rounded corners
-    backgroundColor: '#f8f8f8', // Background color for the container
-    alignItems: 'center', // Center items vertically
-    marginTop: windowWidth * 0.01
+    borderColor: '#ddd',
+    borderRadius: windowWidth * 0.02,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    marginVertical: windowWidth * 0.02,
+    padding: windowWidth * 0.02,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: windowWidth * 0.02,
   },
   mainContent: {
-    flex: 1, // Take remaining space
-    padding: windowWidth * 0.02, // Padding inside the main content
+    flex: 1,
+    padding: windowWidth * 0.02,
   },
   name: {
-    fontSize: windowWidth * 0.05, // Larger font size for name
-    fontWeight: 'bold', // Bold font weight for name
-    marginBottom: windowWidth * 0.01, // Space between text items
+    fontSize: windowWidth * 0.05,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: windowWidth * 0.01,
   },
   text: {
-    fontSize: windowWidth * 0.04, // Font size relative to screen width
-    marginBottom: windowWidth * 0.01, // Space between text items
+    fontSize: windowWidth * 0.04,
+    color: '#555',
+    marginBottom: windowWidth * 0.01,
+  },
+  readyTimeContainer: {
+    flexDirection: 'row',
+    marginBottom: windowWidth * 0.01,
+  },
+  readyTimeLabel: {
+    fontSize: windowWidth * 0.04,
+    color: '#555',
+    fontWeight: 'bold',
+  },
+  readyTimeValue: {
+    fontSize: windowWidth * 0.038,
+    color: '#555',
   },
   price: {
-    fontSize: windowWidth * 0.045, // Slightly larger font size for price
-    fontWeight: 'bold', // Bold font weight for price
-    color: '#d9534f', // Highlighted color for price
-    marginBottom: windowWidth * 0.01, // Space between text items
+    fontSize: windowWidth * 0.04,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: windowWidth * 0.01,
   },
   sideButtons: {
-    width: windowWidth * 0.25, // 25% of the container width
-    justifyContent: 'center', // Center buttons vertically
-    alignItems: 'center', // Center buttons horizontally
-    marginRight: windowWidth *0.03,
-    marginLeft: windowWidth *0.01,
-    marginTop: windowHeight *0.005,
-    marginTop: windowHeight *0.005,
+    width: windowWidth * 0.25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: windowWidth * 0.02,
   },
   editButton: {
-    height: windowHeight * 0.07, // Reduced height to 8% of screen height
+    height: windowHeight * 0.07,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 123, 255, 1)', // Blue color with transparency
-    borderRadius: windowWidth * 0.02, // Rounded corners
-    marginBottom: windowWidth * 0.01, // Margin below the button
+    backgroundColor: 'rgba(0, 123, 255, 1)',
+    borderRadius: windowWidth * 0.02,
+    marginBottom: windowWidth * 0.01,
   },
   deliveryButton: {
-    height: windowHeight * 0.07, // Reduced height to 8% of screen height
+    height: windowHeight * 0.07,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 166, 81, 1)', // Green color with transparency
-    borderRadius: windowWidth * 0.02, // Rounded corners
-    marginTop: windowWidth * 0.01, // Margin above the button
+    backgroundColor: 'rgba(0, 166, 81, 1)',
+    borderRadius: windowWidth * 0.02,
+    marginTop: windowWidth * 0.01,
   },
   buttonText: {
     color: 'white',
-    fontSize: windowWidth * 0.04, // Font size relative to screen width
-    fontWeight: 'bold', // Bold font weight for button text
+    fontSize: windowWidth * 0.04,
+    fontWeight: 'bold',
   },
 });

@@ -61,6 +61,11 @@ const tiffinSchema = new Schema({
         required: [true, "Please Add Delivery Details" ]
     },
 
+    deactivate: {
+        type: Boolean,
+        default: false,
+    }
+
 }, { timestamps: true } )
 
 const tiffins = mongoose.model('Tiffins', tiffinSchema);

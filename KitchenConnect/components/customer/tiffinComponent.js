@@ -54,7 +54,7 @@ export default TiffinComponent;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFF",
     height: windowHeight * 0.2,
     width: windowWidth * 0.97,
     overflow: "hidden",

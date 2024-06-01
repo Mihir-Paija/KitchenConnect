@@ -4,6 +4,7 @@ import provider from "../../models/providerModel.js";
 import { verifyJwt } from "../../utils/jwt.js";
 
 
+
 export const getTiffins = async (req, res) => {
     try {
         const { id } = req.params
@@ -20,6 +21,7 @@ export const getTiffins = async (req, res) => {
             { $sort: {price: -1}}
         ])
 
+
         const lunch = allLunchDetails.map(item => ({
             id: item._id,
             name: item.name,
@@ -29,10 +31,10 @@ export const getTiffins = async (req, res) => {
             hours: item.time[0] + item.time[1],
             mins: item.time[2] + item.time[3],
             deliveryDetails: {
-            availability: item.deliveryDetails.availability,
-            deliveryCharge: item.deliveryDetails.deliveryCharge,
-            deliveryTimeHrs: item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1],
-            deliveryTimeMins: item.deliveryDetails.deliveryTime[2] + item.deliveryDetails.deliveryTime[3],
+            availability: item.deliveryDetails.availability, 
+            deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
+            deliveryTimeHrs: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1]) : null ,
+            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[2] + item.deliveryDetails.deliveryTime[3]) : null,
             }
         }))
 

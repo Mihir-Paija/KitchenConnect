@@ -2,7 +2,7 @@ import Jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-const maxAge = 24 * 60 * 60; // 24hr
+const maxAge = 120 * 60 * 60; // 10hr
 
 const signJwt = (object) => {
   return Jwt.sign(object, process.env.JWT_SECRET, { expiresIn: maxAge });
