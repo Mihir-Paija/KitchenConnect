@@ -23,7 +23,8 @@ router.use("/customer/tiffin", getTiffinRouter);
 
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
-router.use("/provider", providerAuthRouter);
-router.use("/provider/tiffin", tiffinRouter);
-
+import { menuRouter } from "./provider/menuRouter.js";
+router.use('/provider', providerAuthRouter);
+router.use('/provider/tiffin', tiffinRouter);
+router.use('/provider/menu', menuRouter)
 export default router;

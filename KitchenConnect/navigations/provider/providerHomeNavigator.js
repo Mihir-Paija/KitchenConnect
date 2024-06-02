@@ -1,58 +1,44 @@
 import React, { useContext } from "react";
-import { Image } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { UserTypeContext } from "../../context/userTypeContext";
-import MenuScreen from "@/screens/provider/menuScreen";
-import OrdersScreen from "@/screens/provider/ordersScreen";
-import SubscriptionsScreen from "@/screens/provider/subscriptionsScreen";
-import ProfileScreen from "@/screens/provider/profileScreen";
-import icons from "@/utils/customerIconpaths";
-import { RefreshProvider } from '@/context/refreshContext';
-import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
+import { AuthContext } from "@/context/authContext";
+import TiffinTabNavigator from "./providerTiffinNavigator";
+import MenuTabNavigator from "./providerMenuNavigator";
+import TiffinScreen from "@/screens/provider/tiffinScreen";
+import InsideTiffinScreen from "@/screens/provider/insideTiffinScreen";
 
-const Tab = createBottomTabNavigator();
+const HomeStack = createStackNavigator()
 
-const ProviderHomeNavigator = () => {
-  const [userType] = useContext(UserTypeContext);
+const ProviderHomeNavigator = () =>{
+    const [authState] = useContext(AuthContext)
 
-  return (
-    <RefreshProvider>
-      <Tab.Navigator
-        initialRouteName="Menu"
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          gestureEnabled: true,
-          lazy: true,
-          unmountOnBlur: true,
-          tabBarIcon: ({ focused }) => {
-            let iconSource;
-            switch (route.name) {
-              case 'Menu':
-                iconSource = focused ? icons.Kitchen.active : icons.Kitchen.inactive;
-                break;
-              case 'Subscriptions':
-                iconSource = focused ? icons.Subscription.active : icons.Subscription.inactive;
-                break;
-              case 'Orders':
-                iconSource = focused ? icons.History.active : icons.History.inactive;
-                break;
-              case 'Wallet':
-                iconSource = focused ? icons.Wallet.active : icons.Wallet.inactive;
-                break;
-            }
-            return <Image source={iconSource} style={{ width: 25, height: 25 }} />;
-          },
-          tabBarActiveTintColor: '#ffa500',
-          tabBarInactiveTintColor: 'gray',
-        })}
-      >
-        <Tab.Screen name="Menu" component={MenuScreen} />
-        <Tab.Screen name="Subscriptions" component={SubscriptionsScreen} />
-        <Tab.Screen name="Orders" component={OrdersScreen} />
-        <Tab.Screen name="Wallet" component={ProfileScreen} />
-      </Tab.Navigator>
-    </RefreshProvider>
-  );
-};
+    return (
+        <HomeStack.Navigator
+        initialRouteName="Tiffin"
+          screenOptions={{
+            headerShown: false,
+            gestureEnabled: true,
+            gestureDirection: "horizontal",
+            transitionSpec: {
+              open: TransitionSpecs.TransitionIOSSpec,
+              close: TransitionSpecs.TransitionIOSSpec,
+            },
+          }}
+        >
 
-export default ProviderHomeNavigator;
+        <HomeStack.Screen
+            name="Tiffin"
+            component={TiffinScreen}
+            options={{ presentation: "transparentModal" }}
+        />
+        <HomeStack.Screen
+            name="Inside Tiffin"
+            component={InsideTiffinScreen}
+            options={{ presentation: "transparentModal" }}
+        />
+
+
+        </HomeStack.Navigator>
+    )
+}
+
+export default ProviderHomeNavigator

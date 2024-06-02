@@ -71,7 +71,11 @@ export const addTiffins = async (req, res) => {
         console.log(user);
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
-
+        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || !availability)
+            return res.status(400).send({
+                message: "Please Enter All Required Fields"
+            })
+        
         let deliveryTime = undefined
         if (availability) {
             deliveryTime = deliveryTimeHrs + deliveryTimeMins
@@ -150,6 +154,10 @@ export const editTiffin = async (req, res) => {
             })
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
+        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || !availability)
+            return res.status(400).send({
+                message: "Please Enter All Required Fields"
+            })
 
         let deliveryTime = undefined
         if (availability) {

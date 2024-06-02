@@ -1,18 +1,17 @@
 import React, {useContext} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import LunchScreen from '@/screens/provider/lunchScreen'; 
-import DinnerScreen from '@/screens/provider/dinnerScreen'; 
-
-
+import MenuScreen from '@/screens/provider/menuScreen';
+import SubScreen from '@/screens/provider/subScreen';
 
 const MenuTab = createMaterialTopTabNavigator();
 
-const MenuTabNavigator = () => {
+const MenuTabNavigator = ({route}) => {
+    //const {tiffinID} = route.params
 
   return (
     
     <MenuTab.Navigator
-    initialRouteName='Lunch'
+    initialRouteName='Menu'
     screenOptions={{
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor: 'gray',
@@ -21,8 +20,8 @@ const MenuTabNavigator = () => {
         backgroundColor: '#ffa500', 
       },
     }}>
-      <MenuTab.Screen name="Lunch" component={LunchScreen} />
-      <MenuTab.Screen name="Dinner" component={DinnerScreen} />
+      <MenuTab.Screen name="Menu" component={MenuScreen} />
+      <MenuTab.Screen name="Subscriptions" component={SubScreen} />
     </MenuTab.Navigator>
   );
 };
