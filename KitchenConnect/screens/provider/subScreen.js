@@ -2,11 +2,11 @@ import React, {useEffect} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 
-const SubscriptionsScreen = ({ navigation}) => {
+const SubScreen = ({ navigation}) => {
   useEffect(() => {
     
     const backAction = () => {
-      navigation.navigate("My Tiffins")
+      navigation.navigate("Menu")
 
       return true
     };
@@ -26,4 +26,4 @@ const SubscriptionsScreen = ({ navigation}) => {
 };
 
 
-export default SubscriptionsScreen;
+export default SubScreen;

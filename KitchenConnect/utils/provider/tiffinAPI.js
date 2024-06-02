@@ -11,7 +11,7 @@ export const addTiffin = async(authToken, bodyData) =>{
     }
 }
 
-export const editTiffin = async(authToken, tiffinID, bodyData) =>{
+export const editTiffins = async(authToken, tiffinID, bodyData) =>{
     try {
         const response = await axios.patch(`${API_BASE_URL}/provider/tiffin/${authToken}/${tiffinID}`, bodyData)
         return response

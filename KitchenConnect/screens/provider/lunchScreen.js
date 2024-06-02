@@ -8,12 +8,13 @@ import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
 import EditTiffinModal from './editTiffinModal';
 import DeliveryDetailsModal from './deliveryDetailsModal';
-import { editTiffin, deleteTiffin } from '../../utils/provider/tiffinAPI';
+import { editTiffins, deleteTiffin } from '../../utils/provider/tiffinAPI';
 import SortTiffinModal from '@/components/provider/sortTiffinModal';
 import FilterTiffinModal from '@/components/provider/filterTiffinModal';
 import {windowHeight, windowWidth} from '@/utils/dimensions'
+import { useNavigation } from "@react-navigation/native"
 
-const LunchScreen = () => {
+const LunchScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
@@ -61,7 +62,7 @@ const LunchScreen = () => {
 
   const handleEditTiffin = async (tiffin) => {
     setLoading(true)
-    const response = await editTiffin(authState.authToken, tiffin.id, tiffin) 
+    const response = await editTiffins(authState.authToken, tiffin.id, tiffin) 
     setLoading(false);
     setRefresh(!refresh);
   };
@@ -128,6 +129,13 @@ const LunchScreen = () => {
     setFilterCriteria((prev) => ({ ...prev, [type]: value }));
     setFilterModal(false);
   };
+
+  const handleTiffinPress = (tiffinID) =>{
+      navigation.getParent().navigate("Inside Tiffin", {
+        tiffinID: tiffinID
+      })
+
+  }
 
   return (
     <SafeAreaView style={menuStyle.screen}>
@@ -209,6 +217,7 @@ const LunchScreen = () => {
                       price={item.price}
                       edit={() => handleEditModal(item)}
                       showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
+                      onPress={() => handleTiffinPress(item.id)}
                     />
                   )}
                   keyExtractor={(item) => item.id.toString()}
