@@ -42,7 +42,7 @@ import LoadingScreen from "@/screens/shared/loadingScreen";
 //     title: "Special Meals",
 //     price: "250",
 //     deliveryCharge: "30",
-//     foodType: "NonVeg",
+//     foodType: "Non-Veg",
 //     tiffinType: "Lunch",
 //     description: "Veg preparation | Spring mix, plant based, organic",
 //     rating: 4.3,
