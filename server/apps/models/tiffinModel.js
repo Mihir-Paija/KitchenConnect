@@ -24,15 +24,9 @@ const tiffinSchema = new Schema(
     },
 
     providerID: {
-<<<<<<< HEAD
       type: Schema.Types.ObjectId,
       ref: "Provider", // Referencing the Provider model
       required: true,
-=======
-        type: Schema.Types.ObjectId,
-        ref: 'Provider',
-        required: true
->>>>>>> d3386d8062498642e191ffdcacb9ae6fd578a9d7
     },
 
     shortDescription: {
