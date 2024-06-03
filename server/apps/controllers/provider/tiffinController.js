@@ -34,7 +34,7 @@ export const getTiffins = async (req, res) => {
             availability: item.deliveryDetails.availability, 
             deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
             deliveryTimeHrs: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1]) : null ,
-            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[2] + item.deliveryDetails.deliveryTime[3]) : null,
+            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[3] + item.deliveryDetails.deliveryTime[4]) : null,
             }
         }))
 
@@ -76,10 +76,19 @@ export const addTiffins = async (req, res) => {
                 message: "Please Enter All Required Fields"
             })
         
+        
+        
         let deliveryTime = undefined
         if (availability) {
-            deliveryTime = deliveryTimeHrs + deliveryTimeMins
+            if(!deliveryTimeHrs || !deliveryTimeMins)
+                return res.status(400).send({
+                message: `Delivery Time Not Available`
+            })
+            deliveryTime = deliveryTimeHrs + ':' + deliveryTimeMins
         }
+
+        if(!availability)
+            deliveryCharge = undefined
 
         const deliveryDetails = {
             availability: availability,
@@ -87,7 +96,7 @@ export const addTiffins = async (req, res) => {
             deliveryTime: deliveryTime === undefined ? null : deliveryTime,
         }
 
-        const readyTime = hours + mins
+        const readyTime = hours + ':' + mins
         const tiffin = {
             name,
             providerID: user._id,

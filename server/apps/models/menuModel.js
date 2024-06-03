@@ -1,12 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
-const menuDetails = new mongoose.Schema({
-    itemType: {
-        type: String,
-        required: [true, "Please Provide Item Type"]
-    },
-
+const item = new mongoose.Schema({
     itemName: {
         type: String,
         required: [true, "Please Provide Item Name"]
@@ -21,6 +16,18 @@ const menuDetails = new mongoose.Schema({
         type: String,
         required: [true, "Please Provide Unit"]
     }
+})
+
+const menuDetails = new mongoose.Schema({
+
+    day: {
+        type: String,
+        enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 
+        required: [true, "Please Enter The Day"],
+        unique: [true, "This day already exists"],
+    },
+
+    items: [item]
 });
 
 const menuSchema = new Schema ({
@@ -36,17 +43,7 @@ const menuSchema = new Schema ({
         required: true
     },
 
-    day: {
-        type: String,
-        enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 
-        required: [true, "Please Enter The Day"],
-        unique: [true, "This day already exists"],
-    },
-
-    menu: {
-        type: menuDetails,
-        required: [true],
-    }
+    menu: [menuDetails]
 
 }, {timestamps: true})
 

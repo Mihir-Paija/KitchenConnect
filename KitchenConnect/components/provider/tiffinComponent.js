@@ -13,7 +13,7 @@ const TiffinItem = ({ name, description, foodType, price, hours, mins, edit, sho
           <Text style={styles.readyTimeLabel}>Ready Time: </Text>
           <Text style={styles.readyTimeValue}>{hours}:{mins}</Text>
         </View>
-        <Text style={styles.price}>Per Tiffin: {price}</Text>
+        <Text style={styles.price}>Per Tiffin: ₹{price}</Text>
       </View>
       <View style={styles.sideButtons}>
         <TouchableOpacity style={styles.editButton} onPress={edit}>
