@@ -2,7 +2,7 @@ import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import ProfileCustomerScreen from "../../screens/customer/profileCustomerScreen";
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
 import TiffinCustomerScreen from "../../screens/customer/tiffinCustomerScreen";
-
+import MenuCustomerScreen from "../../screens/customer/menuCustomerScreen";
 const HomeStack = createStackNavigator();
 
 const HomeCustomerNavigator = () => {
@@ -32,6 +32,11 @@ const HomeCustomerNavigator = () => {
       <HomeStack.Screen
         name="TiffinCustomer"
         component={TiffinCustomerScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <HomeStack.Screen
+        name="MenuCustomer"
+        component={MenuCustomerScreen}
         options={{ presentation: "transparentModal" }}
       />
     </HomeStack.Navigator>
