@@ -72,6 +72,7 @@ const FilterTiffinModal = ({
             <TouchableOpacity
               style={styles.option}
               onPress={() => onFilterChange("foodType", "Non-Veg")}
+              onPress={() => onFilterChange("foodType", "Non-Veg")}
             >
               <Text
                 style={[

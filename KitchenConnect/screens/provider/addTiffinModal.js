@@ -1,89 +1,121 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, Picker, ScrollView } from 'react-native';
-import { windowWidth, windowHeight } from '@/utils/dimensions';
-import RNPickerSelect from 'react-native-picker-select';
-import CheckBox from 'react-native-check-box';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+  StyleSheet,
+  Picker,
+  ScrollView,
+} from "react-native";
+import { windowWidth, windowHeight } from "@/utils/dimensions";
+import RNPickerSelect from "react-native-picker-select";
+import CheckBox from "react-native-check-box";
 
 const AddTiffinModal = ({ isVisible, onClose, onAddTiffin }) => {
-    const [tiffinData, setTiffinData] = useState({
-        name: '',
-        shortDescription: '',
-        price: '',
-        foodType: 'Veg', // Default value
-        tiffinType: 'Lunch',
-        hours: '',
-        mins: '',
-        availability: false,
-        deliveryCharge: 0,
-        deliveryTimeHrs: '',
-        deliveryTimeMins: ''
+  const [tiffinData, setTiffinData] = useState({
+    name: "",
+    shortDescription: "",
+    price: "",
+    foodType: "Veg", // Default value
+    tiffinType: "Lunch",
+    hours: "",
+    mins: "",
+    availability: false,
+    deliveryCharge: 0,
+    deliveryTimeHrs: "",
+    deliveryTimeMins: "",
+  });
+
+  const handleAddTiffin = () => {
+    onAddTiffin(tiffinData);
+
+    setTiffinData({
+      name: "",
+      shortDescription: "",
+      price: "",
+      foodType: "Veg",
+      tiffinType: "Lunch",
+      hours: "",
+      mins: "",
+      availability: false,
+      deliveryCharge: 0,
+      deliveryTimeHrs: "",
+      deliveryTimeMins: "",
     });
+  };
 
-    const handleAddTiffin = () => {
-        onAddTiffin(tiffinData);
+  const foodTypeOptions = [
+    "Veg",
+    "Non-Veg",
+    "Swaminarayan",
+    "Jain",
+    "Vegan",
+  ].map((value) => ({ label: value, value: value }));
+  const tiffinTypeOptions = ["Lunch", "Dinner"].map((value) => ({
+    label: value,
+    value: value,
+  }));
+  const hourOptions = Array.from({ length: 24 }, (_, i) => ({
+    label: i.toString().padStart(2, "0"),
+    value: i.toString().padStart(2, "0"),
+  }));
+  const minuteOptions = ["00", "15", "30", "45"].map((value) => ({
+    label: value,
+    value: value,
+  }));
 
-        setTiffinData({
-            name: '',
-            shortDescription: '',
-            price: '',
-            foodType: 'Veg',
-            tiffinType: 'Lunch',
-            hours: '',
-            mins: '',
-            availability: false,
-            deliveryCharge: 0,
-            deliveryTimeHrs: '',
-            deliveryTimeMins: ''
-        });
-    };
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <ScrollView>
+            <Text style={styles.modalTitle}>Add New Tiffin</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={tiffinData.name}
+              onChangeText={(text) =>
+                setTiffinData({ ...tiffinData, name: text })
+              }
+            />
+            <TextInput
+              style={[styles.input, { height: 80 }]}
+              placeholder="Write A Short Description"
+              value={tiffinData.shortDescription}
+              onChangeText={(text) =>
+                setTiffinData({ ...tiffinData, shortDescription: text })
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Tiffin Price"
+              value={tiffinData.price}
+              onChangeText={(text) =>
+                setTiffinData({ ...tiffinData, price: text })
+              }
+              keyboardType="numeric"
+            />
 
-    const foodTypeOptions = ['Veg', 'Non-Veg'].map(value => ({ label: value, value: value }));
-    const tiffinTypeOptions = ['Lunch', 'Dinner'].map(value => ({ label: value, value: value }));
-    const hourOptions = Array.from({ length: 24 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
-    const minuteOptions = ['00', '15', '30', '45'].map(value => ({ label: value, value: value }));
-
-    return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={isVisible}
-            onRequestClose={onClose}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <ScrollView>
-                        <Text style={styles.modalTitle}>Add New Tiffin</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Name"
-                            value={tiffinData.name}
-                            onChangeText={(text) => setTiffinData({ ...tiffinData, name: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { height: 80 }]}
-                            placeholder="Write A Short Description"
-                            value={tiffinData.shortDescription}
-                            onChangeText={(text) => setTiffinData({ ...tiffinData, shortDescription: text })}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter Tiffin Price"
-                            value={tiffinData.price}
-                            onChangeText={(text) => setTiffinData({ ...tiffinData, price: text })}
-                            keyboardType="numeric"
-                        />
-
-                        <View style={styles.pickerContainer}>
-                            <Text style={styles.label}>Food Type</Text>
-                            <RNPickerSelect
-                                placeholder={{ label: 'Select Food Type', value: null }}
-                                value={tiffinData.foodType}
-                                onValueChange={(value) => setTiffinData({ ...tiffinData, foodType: value })}
-                                items={foodTypeOptions}
-                                style={pickerSelectStyles}
-                                useNativeAndroidPickerStyle={false}
-                            />
-                        </View>
+            <View style={styles.pickerContainer}>
+              <Text style={styles.label}>Food Type</Text>
+              <RNPickerSelect
+                placeholder={{ label: "Select Food Type", value: null }}
+                value={tiffinData.foodType}
+                onValueChange={(value) =>
+                  setTiffinData({ ...tiffinData, foodType: value })
+                }
+                items={foodTypeOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
 
                         <View style={styles.pickerContainer}>
                             <Text style={styles.label}>Tiffin Type</Text>
@@ -181,11 +213,11 @@ const AddTiffinModal = ({ isVisible, onClose, onAddTiffin }) => {
 export default AddTiffinModal;
 
 const styles = StyleSheet.create({
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
 
     modalContent: {
         backgroundColor: '#fff',

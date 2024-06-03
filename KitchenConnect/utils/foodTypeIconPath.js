@@ -10,7 +10,7 @@ export default {
     },
   },
   NonVeg: {
-    Type: "NonVeg",
+    Type: "Non-Veg",
     path: require("@assets/foodType/Non_Veg_Icon.png"),
     foodTypeStyle: {
       resizeMode: "cover",

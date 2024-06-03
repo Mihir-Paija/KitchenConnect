@@ -10,6 +10,15 @@ import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import foodTypeIcon from "../../utils/foodTypeIconPath";
 
+// Mapping object
+const foodTypeMapping = {
+  Veg: "Veg",
+  "Non-Veg": "NonVeg",
+  Swaminarayan: "Swaminarayan",
+  Jain: "Jain",
+  Vegan: "Vegan",
+};
+
 const TiffinComponent = ({
   title,
   price,
@@ -20,14 +29,14 @@ const TiffinComponent = ({
   rating,
   onPress,
 }) => {
+  const iconKey = foodTypeMapping[foodType];
+  const iconData = foodTypeIcon[iconKey];
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.tiffinItem}>
         <View style={styles.tiffinDetails}>
-          <Image
-            source={foodTypeIcon[foodType].path}
-            style={foodTypeIcon[foodType].foodTypeStyle}
-          />
+          <Image source={iconData.path} style={iconData.foodTypeStyle} />
           <Text style={styles.tiffinTitle}>{title}</Text>
           <Text style={styles.tiffinType}>{tiffinType}</Text>
           <Text style={styles.tiffinPrice}>Starting From ₹ {price}</Text>

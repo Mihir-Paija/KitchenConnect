@@ -12,7 +12,8 @@ const HeaderTiffinCustomer = ({ kitchen }) => {
         <RatingComponent rating={3.5} />
       </View>
       <Text style={styles.address}>
-        DA-IICT, Reliance cross road,Gandhinagar
+        {kitchen.address[0].flatNumber}, {kitchen.address[0].street},{" "}
+        {kitchen.address[0].landmark}
       </Text>
       <View style={styles.line}></View>
     </SafeAreaView>
