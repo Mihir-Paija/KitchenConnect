@@ -96,6 +96,7 @@ const AddTiffinModal = ({ isVisible, onClose, onAddTiffin }) => {
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
+              
                         <Text style={styles.label}>At What Time Would Tiffin Be Ready</Text>
                         <View style={styles.row}>
                             <View style={styles.pickerContainerHalf}>
@@ -161,14 +162,16 @@ const AddTiffinModal = ({ isVisible, onClose, onAddTiffin }) => {
                                 </View>
                             </>
                         ) : null}
+                
                     </ScrollView>
-
+                    <View style = {styles.btnContainer}>
                     <TouchableOpacity style={styles.submitButton} onPress={handleAddTiffin}>
                         <Text style={styles.buttonText}>Add</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                         <Text style={styles.buttonText}>Close</Text>
                     </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -186,80 +189,93 @@ const styles = StyleSheet.create({
 
     modalContent: {
         backgroundColor: '#fff',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 20,
+        borderTopLeftRadius: windowWidth * 0.05,
+        borderTopRightRadius: windowWidth * 0.05,
+        padding: windowWidth * 0.03,
         width: '100%',
     },
 
     modalTitle: {
-        fontSize: 20,
+        fontSize: windowWidth * 0.06,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.01,
     },
 
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginBottom: 10,
+        borderRadius: windowWidth * 0.02,
+        paddingVertical: windowHeight * 0.01,
+        paddingHorizontal: windowWidth * 0.03,
+        marginBottom: windowHeight * 0.01,
     },
 
     pickerContainer: {
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.01,
     },
+    
     pickerContainerHalf: {
         flex: 1,
-        marginRight: 5,
+        marginRight: windowWidth * 0.01,  
     },
+    
+    pickerContainerHalfLast: {
+        flex: 1,
+        marginRight: 0,  
+    },
+
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.011,
     },
 
     label: {
-        marginBottom: 5,
-        fontSize: 16,
+        marginBottom: windowHeight * 0.005,
+        fontSize: windowWidth * 0.04,
     },
 
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: windowHeight * 0.02,
     },
     checkbox: {
         padding: 0,
         margin: 0,
     },
     labels: {
-        fontSize: 16,
-        marginLeft: 10,
+        fontSize: windowWidth * 0.04,
+        marginLeft: windowWidth * 0.025,
+    },
+
+    btnContainer: {
+        alignItems: 'center'
     },
 
     submitButton: {
         backgroundColor: 'green',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        marginTop: 10,
+        height: windowHeight * 0.05,
+        width: windowWidth * 0.95,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
     },
 
     closeButton: {
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        marginTop: 10,
+        height: windowHeight * 0.05,
+        width: windowWidth * 0.95,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
     },
 
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: windowWidth * 0.04,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -267,25 +283,25 @@ const styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
+        fontSize: windowWidth * 0.04,
+        paddingVertical: windowHeight * 0.01,
+        paddingHorizontal: windowWidth * 0.03,
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
+        borderRadius: windowWidth * 0.02,
         color: 'black',
-        paddingRight: 30,
-        marginBottom: 10,
+        paddingRight: windowWidth * 0.1,
+        marginBottom: windowHeight * 0.01,
     },
     inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        fontSize: windowWidth * 0.035,
+        paddingHorizontal: windowWidth * 0.03,
+        paddingVertical: windowHeight * 0.01,
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
+        borderRadius: windowWidth * 0.02,
         color: 'black',
-        paddingRight: 30,
-        marginBottom: 10,
+        paddingRight: windowWidth * 0.1,
+        marginBottom: windowHeight * 0.01,
     },
 });

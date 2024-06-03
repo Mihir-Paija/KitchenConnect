@@ -5,8 +5,6 @@ const menuStyle = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   flatList: {
     width: '100%',

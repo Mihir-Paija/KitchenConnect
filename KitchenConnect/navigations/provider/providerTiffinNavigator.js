@@ -7,7 +7,7 @@ import DinnerScreen from '@/screens/provider/dinnerScreen';
 
 const TiffinTab = createMaterialTopTabNavigator();
 
-const TiffinTabNavigator = ({onTiffinPress}) => {
+const TiffinTabNavigator = () => {
 
   return (
     
@@ -21,7 +21,7 @@ const TiffinTabNavigator = ({onTiffinPress}) => {
         backgroundColor: '#ffa500', 
       },
     }}>
-      <TiffinTab.Screen name="Lunch" component={LunchScreen} onTiffinPress={onTiffinPress}/>
+      <TiffinTab.Screen name="Lunch" component={LunchScreen} />
       <TiffinTab.Screen name="Dinner" component={DinnerScreen}/>
     </TiffinTab.Navigator>
   );

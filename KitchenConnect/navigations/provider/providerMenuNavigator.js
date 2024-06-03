@@ -5,8 +5,7 @@ import SubScreen from '@/screens/provider/subScreen';
 
 const MenuTab = createMaterialTopTabNavigator();
 
-const MenuTabNavigator = ({route}) => {
-    //const {tiffinID} = route.params
+const MenuTabNavigator = ({tiffin}) => {
 
   return (
     
@@ -20,7 +19,7 @@ const MenuTabNavigator = ({route}) => {
         backgroundColor: '#ffa500', 
       },
     }}>
-      <MenuTab.Screen name="Menu" component={MenuScreen} />
+      <MenuTab.Screen name="Menu" component={MenuScreen} initialParams={{tiffin: tiffin}}/>
       <MenuTab.Screen name="Subscriptions" component={SubScreen} />
     </MenuTab.Navigator>
   );

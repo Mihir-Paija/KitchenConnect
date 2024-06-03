@@ -76,12 +76,8 @@ const TiffinScreen = ({navigation}) => {
     return () => backHandler.remove();
   });
 
-  const tiffinPress = (tiffinID) =>{
-    navigation.navigate("Inside Tiffin")
-  }
-
   return (
-    <SafeAreaView style={activeScreenStyles.screen}>
+    <SafeAreaView style={styles.screen}>
       {authState.authToken ? (
         <>
           {loading ? (
@@ -95,14 +91,12 @@ const TiffinScreen = ({navigation}) => {
               </View>
               <View style={styles.divider} />
               <View style={styles.menuTabs}>
-                <TiffinTabNavigator 
-                onTiffinPress={tiffinPress}
-                />
+                <TiffinTabNavigator />
               </View>
               <View style={styles.divider} />
               <View style={styles.btnView}>
                 <TouchableOpacity style={styles.btn} onPress={toggleModal}>
-                  <Text style={styles.addMenuText}>Add Tiffin</Text>
+                  <Text style={styles.addTiffinText}>Add Tiffin</Text>
                 </TouchableOpacity>
               </View>
               <AddTiffinModal
@@ -123,35 +117,37 @@ const TiffinScreen = ({navigation}) => {
 export default TiffinScreen;
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   providerInfo: {
+    flex: 2, 
     alignItems: 'center',
-    marginBottom: windowHeight * 0.015,
+    justifyContent: 'center',
+    paddingHorizontal: windowWidth * 0.05,
   },
   providerName: {
     color: 'black',
     fontSize: windowHeight * 0.03,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   divider: {
-    height: 1,
-    backgroundColor: '#ddd',
+    height: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+    elevation: 1,
     width: '100%',
     alignSelf: 'center',
-    marginVertical: windowHeight * 0.015,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: windowWidth * 0.01,
+    marginVertical: windowHeight * 0.005,
   },
   menuTabs: {
-    height: windowHeight * 0.70,
-    flexDirection: 'row',
+    flex: 7, 
   },
   btnView: {
+    flex: 1, 
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: windowHeight * 0.01,
     marginBottom: windowHeight * 0.01,
   },
   btn: {
@@ -160,8 +156,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: windowHeight * 0.055,
     borderRadius: 15,
+    width: windowWidth * 0.4,
   },
-  addMenuText: {
+  addTiffinText: {
     padding: 7,
     color: '#FFFFFF',
     fontSize: windowWidth * 0.04,

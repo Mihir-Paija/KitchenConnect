@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { windowWidth, windowHeight } from '@/utils/dimensions';
 import RNPickerSelect from 'react-native-picker-select';
 import CheckBox from 'react-native-check-box';
+import Icon from "react-native-vector-icons/Ionicons";
 
-const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffin }) => {
+const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffin, onDeactivateTiffin }) => {
     const [tiffinData, setTiffinData] = useState({
         id: '',
         name: '',
@@ -48,6 +50,11 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
         onClose();
     };
 
+    const handleDeactivateTiffin = () => {
+        onDeactivateTiffin(tiffinData.id);
+        onClose();
+    };
+
     const foodTypeOptions = ['Veg', 'Non-Veg'].map(value => ({ label: value, value: value }));
     const tiffinTypeOptions = ['Lunch', 'Dinner'].map(value => ({ label: value, value: value }));
     const hourOptions = Array.from({ length: 24 }, (_, i) => ({ label: i.toString().padStart(2, '0'), value: i.toString().padStart(2, '0') }));
@@ -69,10 +76,15 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
                         <View style={styles.modalContent}>
                             <ScrollView contentContainerStyle={styles.scrollViewContainer} keyboardShouldPersistTaps="handled">
                                 <View style={styles.headerContainer}>
-                                    <Text style={styles.modalTitle}>Edit Tiffin - {item.name}</Text>
-                                    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteTiffin}>
-                                        <Text style={styles.buttonText}>Delete</Text>
-                                    </TouchableOpacity>
+                                    <Text style={styles.modalTitle}>Edit {item.name}</Text>
+                                <View style={styles.closeButtonHeader}>
+                                    <Icon
+                                        name="close"
+                                        type="ionicon"
+                                        style={styles.closeButton}
+                                        onPress={onClose}
+                                    />
+                                </View>
                                 </View>
                                 <TextInput
                                     style={styles.input}
@@ -80,7 +92,7 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
                                     onChangeText={(text) => setTiffinData({ ...tiffinData, name: text })}
                                 />
                                 <TextInput
-                                    style={[styles.input, { height: 80 }]}
+                                    style={[styles.input, { height: windowHeight * 0.1 }]}
                                     value={tiffinData.shortDescription}
                                     onChangeText={(text) => setTiffinData({ ...tiffinData, shortDescription: text })}
                                 />
@@ -123,7 +135,7 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
                                             useNativeAndroidPickerStyle={false}
                                         />
                                     </View>
-                                    <View style={styles.pickerContainerHalf}>
+                                    <View style={styles.pickerContainerHalfLast}>
                                         <RNPickerSelect
                                             value={tiffinData.mins}
                                             onValueChange={(value) => setTiffinData({ ...tiffinData, mins: value })}
@@ -160,7 +172,7 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
                                                     useNativeAndroidPickerStyle={false}
                                                 />
                                             </View>
-                                            <View style={styles.pickerContainerHalf}>
+                                            <View style={styles.pickerContainerHalfLast}>
                                                 <RNPickerSelect
                                                     value={tiffinData.deliveryTimeMins}
                                                     onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeMins: value })}
@@ -173,13 +185,19 @@ const EditTiffinModal = ({ isVisible, item, onClose, onEditTiffin, onDeleteTiffi
                                     </>
                                 )}
                             </ScrollView>
-
-                            <TouchableOpacity style={styles.submitButton} onPress={handleEditTiffin}>
-                                <Text style={styles.buttonText}>Edit</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                                <Text style={styles.buttonText}>Close</Text>
-                            </TouchableOpacity>
+                            <View style={styles.btnContainer}>
+                                <TouchableOpacity style={styles.submitButton} onPress={handleEditTiffin}>
+                                    <Text style={styles.buttonText}>Edit</Text>
+                                </TouchableOpacity>
+                                <View style={styles.row}>
+                                    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteTiffin}>
+                                        <Text style={styles.buttonText}>Delete</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.deactivateButton} onPress={handleDeactivateTiffin}>
+                                        <Text style={styles.buttonText}>Deactivate</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     </KeyboardAvoidingView>
                 </View>
@@ -203,89 +221,112 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 20,
+        borderTopLeftRadius: windowWidth * 0.05,
+        borderTopRightRadius: windowWidth * 0.05,
+        padding: windowWidth * 0.03,
         width: '100%',
         flex: 1,
     },
     scrollViewContainer: {
-        paddingBottom: 100,
+        paddingBottom: windowHeight * 0.1,
     },
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.01,
     },
     modalTitle: {
-        fontSize: 20,
+        fontSize: windowWidth * 0.06,
         fontWeight: 'bold',
     },
-    deleteButton: {
-        backgroundColor: 'red',
+    closeButtonHeader: {
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        paddingHorizontal: 20,
+        height: windowHeight * 0.04,
+        paddingHorizontal: windowWidth * 0.03,
+        fontSize: windowWidth * 0.07,
+    },
+    closeButton: {
+        fontSize: windowWidth * 0.08, 
     },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginBottom: 10,
+        borderRadius: windowWidth * 0.02,
+        paddingVertical: windowHeight * 0.01,
+        paddingHorizontal: windowWidth * 0.03,
+        marginBottom: windowHeight * 0.01,
     },
     pickerContainer: {
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.01,
     },
     pickerContainerHalf: {
         flex: 1,
-        marginRight: 5,
+        marginRight: windowWidth * 0.02,
+    },
+    pickerContainerHalfLast: {
+        flex: 1,
+        marginRight: 0,
     },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: windowHeight * 0.011,
     },
     label: {
-        marginBottom: 5,
-        fontSize: 16,
+        marginBottom: windowHeight * 0.005,
+        fontSize: windowWidth * 0.04,
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: windowHeight * 0.02,
     },
     checkbox: {
         padding: 0,
         margin: 0,
     },
     labels: {
-        fontSize: 16,
-        marginLeft: 10,
+        fontSize: windowWidth * 0.04,
+        marginLeft: windowWidth * 0.025,
+    },
+    btnContainer: {
+        alignItems: 'center'
     },
     submitButton: {
         backgroundColor: 'green',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        marginTop: 10,
+        height: windowHeight * 0.05,
+        width: windowWidth * 0.95,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
     },
-    closeButton: {
+    deleteButton: {
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        marginTop: 10,
+        height: windowHeight * 0.05,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
+        flex: 1,
+        marginRight: windowHeight * 0.005,
+    },
+    deactivateButton: {
+        backgroundColor: '#FF8C00',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: windowHeight * 0.05,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
+        flex: 1,
+        marginLeft: windowHeight * 0.005,
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: windowWidth * 0.04,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -293,25 +334,25 @@ const styles = StyleSheet.create({
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
+        fontSize: windowWidth * 0.04,
+        paddingVertical: windowHeight * 0.01,
+        paddingHorizontal: windowWidth * 0.03,
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
+        borderRadius: windowWidth * 0.02,
         color: 'black',
-        paddingRight: 30,
-        marginBottom: 10,
+        paddingRight: windowWidth * 0.1,
+        marginBottom: windowHeight * 0.01,
     },
     inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        fontSize: windowWidth * 0.035,
+        paddingHorizontal: windowWidth * 0.03,
+        paddingVertical: windowHeight * 0.01,
         borderWidth: 1,
         borderColor: '#ccc',
-        borderRadius: 5,
+        borderRadius: windowWidth * 0.02,
         color: 'black',
-        paddingRight: 30,
-        marginBottom: 10,
+        paddingRight: windowWidth * 0.1,
+        marginBottom: windowHeight * 0.01,
     },
 });

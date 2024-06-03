@@ -8,7 +8,7 @@ import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
 import EditTiffinModal from './editTiffinModal';
 import DeliveryDetailsModal from './deliveryDetailsModal';
-import { editTiffins, deleteTiffin } from '../../utils/provider/tiffinAPI';
+import { editTiffins, deleteTiffin, deactivateTiffin } from '../../utils/provider/tiffinAPI';
 import SortTiffinModal from '@/components/provider/sortTiffinModal';
 import FilterTiffinModal from '@/components/provider/filterTiffinModal';
 import {windowHeight, windowWidth} from '@/utils/dimensions'
@@ -74,6 +74,14 @@ const LunchScreen = ({navigation}) => {
     setRefresh(!refresh);
   }
 
+  const handleDeactivateTiffin = async(tiffinID) => {
+    setLoading(true)
+    const response = await deactivateTiffin(authState.authToken, tiffinID) 
+    setLoading(false);
+    setRefresh(!refresh);
+
+  }
+
   // See Delivery Details
   const toggleDeliveryModal = () => {
     setDeliveryModal(!deliveryModal);
@@ -105,12 +113,6 @@ const LunchScreen = ({navigation}) => {
 
     let filteredTiffins = [...sortedTiffins];
 
-    if (filterCriteria.tiffinType !== "all") {
-      filteredTiffins = filteredTiffins.filter(
-        (tiffin) => tiffin.tiffinType === filterCriteria.tiffinType
-      );
-    }
-
     if (filterCriteria.foodType !== "all") {
       filteredTiffins = filteredTiffins.filter(
         (tiffin) => tiffin.foodType === filterCriteria.foodType
@@ -130,9 +132,10 @@ const LunchScreen = ({navigation}) => {
     setFilterModal(false);
   };
 
-  const handleTiffinPress = (tiffinID) =>{
+  const handleTiffinPress = (tiffin) =>{
+    console.log(tiffin)
       navigation.getParent().navigate("Inside Tiffin", {
-        tiffinID: tiffinID
+        tiffin: tiffin
       })
 
   }
@@ -144,8 +147,7 @@ const LunchScreen = ({navigation}) => {
           <LoadingScreen />
         ) : (
           <>
-            {tiffins.length !== 0 ? (
-              <>
+            
                  <View style={styles.filterSortContainer}>
                 <TouchableOpacity
                   style={[
@@ -170,8 +172,7 @@ const LunchScreen = ({navigation}) => {
                 <TouchableOpacity
                   style={[
                     styles.sortContainer,
-                    (filterCriteria.tiffinType !== "all" ||
-                      filterCriteria.foodType !== "all") && {
+                  (filterCriteria.foodType !== "all") && {
                       backgroundColor: "#FFECEC",
                       borderColor: "#ffa500",
                     },
@@ -181,7 +182,6 @@ const LunchScreen = ({navigation}) => {
                   <Text style={styles.filterSortText}>Filter</Text>
                   <Image
                     source={
-                      filterCriteria.tiffinType === "all" &&
                       filterCriteria.foodType === "all"
                         ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
                         : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
@@ -204,7 +204,9 @@ const LunchScreen = ({navigation}) => {
                 onFilterChange={onFilterChange}
                 filterCriteria={filterCriteria}
               />
-
+            <View style = {styles.tiffins}>
+            {tiffins.length !== 0 ? (
+              <>
                 <FlatList
                   data={tiffins}
                   renderItem={({ item }) => (
@@ -217,7 +219,7 @@ const LunchScreen = ({navigation}) => {
                       price={item.price}
                       edit={() => handleEditModal(item)}
                       showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
-                      onPress={() => handleTiffinPress(item.id)}
+                      onPress={() => handleTiffinPress(item)}
                     />
                   )}
                   keyExtractor={(item) => item.id.toString()}
@@ -230,6 +232,7 @@ const LunchScreen = ({navigation}) => {
                     onClose={toggleEditModal}
                     onEditTiffin={handleEditTiffin}
                     onDeleteTiffin={handleDeleteTiffin}
+                    onDeactivateTiffin={handleDeactivateTiffin}
                   />
                 )}
                 {deliveryDetails && (
@@ -243,6 +246,7 @@ const LunchScreen = ({navigation}) => {
             ) : (
               <Text style={menuStyle.noTiffinsText}>No Lunch Tiffins Found</Text>
             )}
+            </View>
           </>
         )
       ) : (
@@ -265,15 +269,15 @@ const styles = StyleSheet.create({
   filterSortContainer: {
     flexDirection: "row",
     // justifyContent: "center",
-    marginBottom: windowHeight * 0.005,
+    marginTop: windowHeight * 0.007,
     alignItems: "flex-start",
     alignContent: "center",
-    paddingHorizontal: windowWidth * 0.02,
+    paddingHorizontal: windowWidth * 0.005,
     // backgroundColor: "#ffaa",
-    marginBottom: windowHeight * 0.01,
+    marginBottom: windowHeight * 0.008,
   },
   filterSortText: {
-    fontSize: windowWidth * 0.05,
+    fontSize: windowWidth * 0.04,
     fontFamily: "NunitoRegular",
     marginRight: windowWidth * 0.02,
   },
@@ -292,4 +296,7 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
   },
+  tiffins:{
+    alignItems: 'center'
+  }
 });

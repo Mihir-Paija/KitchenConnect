@@ -43,6 +43,7 @@ export const getProfile = async(authToken) =>{
     
   } catch (error) {
     console.error('Error In Getting Profile:', error);
+    throw error.response.data;
   }
 }
 
@@ -52,5 +53,6 @@ export const getTiffins = async(authToken) =>{
     return response.data
   } catch (error) {
     console.error('Error In Getting Tiffins:', error);
+    throw error.response.data;
   }
 }

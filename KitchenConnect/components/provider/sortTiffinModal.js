@@ -33,7 +33,7 @@ const SortTiffinModal = ({
         <View style={styles.modalBackground}>
           {/* <StatusBar barStyle="dark-content" backgroundColor={"#4A4B4D"} /> */}
           <Icon
-            name="close-circle-sharp"
+            name="close-circle-outline"
             type="ionicon"
             style={styles.closeButton}
             onPress={onClose}
@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: windowWidth * 0.05,
     fontFamily: "NunitoBold",
-    marginBottom: 20,
+    marginBottom: windowHeight * 0.02,  // Example adjustment
   },
   option: {
-    paddingVertical: 10,
+    paddingVertical: windowHeight * 0.01,  // Example adjustment
   },
   optionText: {
     fontSize: windowWidth * 0.04,
@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: "center",
-    marginBottom: windowWidth * 0.01,
-    fontSize: windowWidth * 0.12,
+    marginBottom: windowHeight * 0.01,
+    fontSize: windowWidth * 0.1,
     color: "#ffa500",
     fontFamily: "NunitoLight",
   },

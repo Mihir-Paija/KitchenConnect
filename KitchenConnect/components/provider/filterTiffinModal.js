@@ -71,12 +71,12 @@ const FilterTiffinModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.option}
-              onPress={() => onFilterChange("foodType", "NonVeg")}
+              onPress={() => onFilterChange("foodType", "Non-Veg")}
             >
               <Text
                 style={[
                   styles.optionText,
-                  filterCriteria.foodType === "NonVeg" && styles.selectedOption,
+                  filterCriteria.foodType === "Non-Veg" && styles.selectedOption,
                 ]}
               >
                 Non-Veg
@@ -151,10 +151,10 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: windowWidth * 0.05,
     fontFamily: "NunitoSemiBold",
-    marginTop: 10,
+    marginTop: windowHeight * 0.01,
   },
   option: {
-    paddingVertical: 10,
+    paddingVertical: windowHeight * 0.007,
   },
   optionText: {
     fontSize: windowWidth * 0.04,
@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: "center",
-    marginBottom: windowWidth * 0.01,
-    fontSize: windowWidth * 0.12,
+    marginBottom: windowHeight * 0.005,
+    fontSize: windowWidth * 0.1,
     color: "#ffa500",
     fontFamily: "NunitoLight",
   },

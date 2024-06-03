@@ -63,7 +63,7 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                         />
                         <View style={styles.row}>
                             <TextInput
-                                style={[styles.input, { flex: 1, marginRight: 5 }]}
+                                style={[styles.input, { flex: 2, marginRight: 5 }]}
                                 placeholder="Quantity"
                                 value={menuData.quantity}
                                 onChangeText={(text) => setMenuData({ ...menuData, quantity: text })}
@@ -74,7 +74,7 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                                 value={menuData.unit}
                                 onValueChange={(value) => setMenuData({ ...menuData, unit: value })}
                                 items={unitOptions}
-                                style={[pickerSelectStyles, { inputIOS: { flex: 1, marginLeft: 5 } }]}
+                                style={[pickerSelectStyles, {flex: 2}]}
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
 
     row: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        //justifyContent: 'space-between',
         marginBottom: 10,
     },
 
@@ -189,4 +189,3 @@ const pickerSelectStyles = StyleSheet.create({
         marginBottom: 10,
     },
 });
-

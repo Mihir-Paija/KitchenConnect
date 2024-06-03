@@ -13,7 +13,7 @@ const TiffinItem = ({ name, description, foodType, price, hours, mins, edit, sho
           <Text style={styles.readyTimeLabel}>Ready Time: </Text>
           <Text style={styles.readyTimeValue}>{hours}:{mins}</Text>
         </View>
-        <Text style={styles.price}>Per Person: {price}</Text>
+        <Text style={styles.price}>Per Tiffin: {price}</Text>
       </View>
       <View style={styles.sideButtons}>
         <TouchableOpacity style={styles.editButton} onPress={edit}>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: windowWidth * 0.02,
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    marginVertical: windowWidth * 0.02,
+    marginVertical: windowWidth * 0.015,
     padding: windowWidth * 0.02,
     elevation: 3,
     shadowColor: '#000',

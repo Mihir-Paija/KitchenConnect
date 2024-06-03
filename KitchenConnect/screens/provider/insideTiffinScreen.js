@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from "react-native-vector-icons/Ionicons";
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import MenuTabNavigator from '@/navigations/provider/providerMenuNavigator';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
@@ -10,8 +11,8 @@ import { getProfile } from '@/utils/provider/providerAPI';
 import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
 
-const InsideTiffinScreen = ({route}) => {
-  const {tiffinID} = route.params
+const InsideTiffinScreen = ({ route, navigation }) => {
+  const { tiffin } = route.params
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
@@ -26,8 +27,8 @@ const InsideTiffinScreen = ({route}) => {
   };
 
   const handleAddMenu = async (menuData) => {
-    console.log('Adding tiffin:', menuData);
-    const response = await addMenu(authState.authToken, tiffinID, menuData);
+    console.log('Adding Menu:', menuData);
+    const response = await addMenu(authState.authToken, tiffin.id, menuData);
     console.log(response);
     toggleModal();
     setRefresh(!refresh);
@@ -46,6 +47,10 @@ const InsideTiffinScreen = ({route}) => {
     }
   };
 
+  const handleBack = async() =>{
+    navigation.navigate("Tiffin")
+  }
+
 
   useEffect(() => {
     setLoading(true);
@@ -53,35 +58,35 @@ const InsideTiffinScreen = ({route}) => {
   }, []);
 
 
+
   return (
-    <SafeAreaView style={activeScreenStyles.screen}>
+    <SafeAreaView style={styles.screen}>
       {authState.authToken ? (
-        <>
-          {loading ? (
-            <LoadingScreen />
-          ) : (
-            <>
-              <View style={styles.providerInfo}>
-                <Text>Hello</Text>
-              </View>
-              <View style={styles.divider} />
-              <View style={styles.menuTabs}>
-                <MenuTabNavigator />
-              </View>
-              <View style={styles.divider} />
-              <View style={styles.btnView}>
-                <TouchableOpacity style={styles.btn} onPress={toggleModal}>
-                  <Text style={styles.addMenuText}>Add Menu</Text>
-                </TouchableOpacity>
-              </View>
-              <AddMenuModal
-                isVisible={isModalVisible}
-                onClose={toggleModal}
-                onAddMenu={handleAddMenu}
+        loading ? (
+          <LoadingScreen />
+        ) : (
+          <>
+            <View style={styles.backButtonContainer}>
+              <Icon
+                name="arrow-back"
+                type="ionicon"
+                style={styles.backButton}
+                onPress={handleBack}
               />
-            </>
-          )}
-        </>
+            </View>
+            <View style={styles.container}>
+              <View style={styles.topView}>
+                <Text style={styles.providerName} numberOfLines={1} adjustsFontSizeToFit>
+                  {tiffin.name}
+                </Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.bottomView}>
+                <MenuTabNavigator tiffin={tiffin} />
+              </View>
+            </View>
+          </>
+        )
       ) : (
         <Text>Please Login!</Text>
       )}
@@ -92,48 +97,52 @@ const InsideTiffinScreen = ({route}) => {
 export default InsideTiffinScreen;
 
 const styles = StyleSheet.create({
-  providerInfo: {
+  screen: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  backButtonContainer: {
+    position: 'absolute',
+    top: windowHeight * 0.04, 
+    left: windowWidth * 0.02, 
+  },
+  backButton: {
+    color: 'black',
+    fontSize: windowWidth * 0.08,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: windowHeight * 0.015,
+  },
+  topView: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: windowWidth * 0.05,
+    maxHeight: '25%', // Ensure it doesn't exceed 25% of the screen height
+  },
+  bottomView: {
+    flex: 3,
+    width: '100%',
+    flexDirection: 'row',
   },
   providerName: {
     color: 'black',
-    fontSize: windowHeight * 0.03,
+    fontSize: windowHeight * 0.04,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   divider: {
     height: 1,
     backgroundColor: '#ddd',
     width: '100%',
     alignSelf: 'center',
-    marginVertical: windowHeight * 0.015,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: windowWidth * 0.01,
-  },
-  menuTabs: {
-    height: windowHeight * 0.70,
-    flexDirection: 'row',
-  },
-  btnView: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: windowHeight * 0.01,
-    marginBottom: windowHeight * 0.01,
-  },
-  btn: {
-    backgroundColor: 'green',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: windowHeight * 0.055,
-    borderRadius: 15,
-  },
-  addMenuText: {
-    padding: 7,
-    color: '#FFFFFF',
-    fontSize: windowWidth * 0.04,
-    fontFamily: 'NunitoBold',
   },
 });

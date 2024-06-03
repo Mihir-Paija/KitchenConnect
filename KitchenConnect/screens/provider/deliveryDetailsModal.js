@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
+import { windowWidth, windowHeight } from '@/utils/dimensions';
 
 const DeliveryDetailsModal = ({ isVisible, info, onClose }) => {
     const [deliveryDetails, setDeliveryDetails] = useState({
@@ -62,41 +63,41 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
+        borderRadius: windowWidth * 0.025,
+        padding: windowWidth * 0.05,
         width: '80%',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: windowHeight * 0.002 },
         shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowRadius: windowWidth * 0.01,
         elevation: 5,
     },
     scrollContainer: {
         alignItems: 'center',
     },
     modalTitle: {
-        fontSize: 20,
+        fontSize: windowWidth * 0.05,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: windowHeight * 0.015,
         textAlign: 'center',
     },
     detailText: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: windowWidth * 0.04,
+        marginBottom: windowHeight * 0.01,
         textAlign: 'center',
     },
     closeButton: {
         backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        borderRadius: 5,
-        marginTop: 20,
+        height: windowHeight * 0.05,
+        borderRadius: windowWidth * 0.0125,
+        marginTop: windowHeight * 0.02,
         width: '100%',
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: windowWidth * 0.04,
         fontWeight: 'bold',
     },
 });

@@ -71,7 +71,7 @@ export const addTiffins = async (req, res) => {
         console.log(user);
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
-        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || !availability)
+        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined))
             return res.status(400).send({
                 message: "Please Enter All Required Fields"
             })
@@ -154,7 +154,7 @@ export const editTiffin = async (req, res) => {
             })
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
-        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || !availability)
+        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined))
             return res.status(400).send({
                 message: "Please Enter All Required Fields"
             })
@@ -252,5 +252,59 @@ export const deleteTiffin = async (req, res) => {
         return res.status(500).send({
             message: "Internal Server Error"
         })
+    }
+}
+
+
+export const deactivateTiffin = async(req, res) =>{
+    try {
+        const { id, tiffinID } = req.params;
+
+        if (!id) {
+            return res.status(400).send({
+                message: "Please Login"
+            })
+        }
+
+        const userID = verifyJwt(id).decoded.userID;
+        const user = await provider.findById(userID)
+        if (!user)
+            return res.status(404).send({
+                message: "User Doesn't Exist! Please Register"
+            })
+
+        const tiffin = await tiffins.findById(tiffinID)
+
+        if (!tiffin)
+            return res.status(404).send({
+                message: "Tiffin Doesn't Exist"
+            })
+
+        if (tiffin.providerID.toString() !== userID)
+            return res.status(400).send({
+                message: "You are not authorised to deactivate this tiffin!"
+            })
+        
+        const currentState = tiffin.deactivate 
+        
+        const updatedTiffin = await tiffins.findByIdAndUpdate(
+                tiffinID,
+                { $set: { deactivate: !currentState } }, 
+                { new: true }                   
+              );
+    
+        if(updatedTiffin)
+            return res.status(200).send({
+                message: `Success`
+            })
+        
+        return res.status(400).send({
+                message: `Failure`
+            })
+    } catch (error) {
+        console.log("Error In Deactivating Tiffin ", error)
+        return res.status(500).send({
+            message: "Internal Server Error"
+        })        
     }
 }
