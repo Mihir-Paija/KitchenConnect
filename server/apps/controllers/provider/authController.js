@@ -164,29 +164,8 @@ export const providerLogoutGet = async (req, res) => {
 
 export const getProfile = async(req, res) =>{
   try {
-    const {id} = req.params
-    if (!id) {
-      return res.status(400).send({
-          message: "Please Login"
-      })
-  }
+    const user = req.user
 
-    const userID = verifyJwt(id).decoded.userID;
-    console.log(userID)
-
-    if(!userID)
-      return res.status(400).send({
-        message: "Please Login"
-    })
-
-    const user = await provider.findById(userID)
-
-    if(!user)
-      return res.status(404).send({
-    message: "Please Register"
-  })
-
-  console.log(user)
 
   return res.status(200).send({
     name: user.name,

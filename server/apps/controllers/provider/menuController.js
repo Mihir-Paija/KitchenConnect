@@ -4,34 +4,64 @@ import provider from "../../models/providerModel.js";
 import tiffins from "../../models/tiffinModel.js";
 import { verifyJwt } from "../../utils/jwt.js";
 
+export const getMenu = async(req, res) =>{
+    try {
+        const userID = req.user._id
+        const {tiffinID} = req.params
+
+        const currentMenu = await menu.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
+
+        if(currentMenu)
+            console.log(currentMenu[0].menu)
+            return res.status(200).json(currentMenu[0].menu)
+
+        const dummyMenu = [
+            {
+                day: "Mon",
+                item: []
+            },
+            {
+                day: "Tue",
+                item: []
+            },
+            {
+                day: "Wed",
+                item: []
+            },
+            {
+                day: "Thu",
+                item: []
+            },
+            {
+                day: "Fri",
+                item: []
+            },
+            {
+                day: "Sat",
+                item: []
+            },
+            {
+                day: "Sun",
+                item: []
+            }
+        ];
+        
+        
+        return res.status(200).json(dummyMenu)
+
+
+    } catch (error) {
+        console.log("Error in Fetching Menu - Provider ", error)
+        return res.status(500).send({
+            message: "Internal Server Error"
+        })
+    }
+}
+
 export const addMenu = async (req, res) => {
     try {
-        const { id, tiffinID } = req.params;
-
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-        const user = await provider.findById(userID)
-        if (!user)
-            return res.status(404).send({
-                message: "User Doesn't Exist! Please Register"
-            })
-
-        const tiffin = await tiffins.findById(tiffinID)
-
-        if (!tiffin)
-            res.status(404).send({
-                message: "Tiffin Doesn't Exist"
-            })
-
-        if (tiffin.providerID.toString() !== userID)
-            return res.status(400).send({
-                message: "You are not authorised to add a menu!"
-            })
+        const userID = req.user._id
+        const {tiffinID} = req.params
 
         const { day, itemName, quantity, unit } = req.body
 
@@ -53,7 +83,7 @@ export const addMenu = async (req, res) => {
         }
 
         let newItem = {
-            providerID: user._id,
+            providerID: userID,
             tiffinID,
             menu: []
         }

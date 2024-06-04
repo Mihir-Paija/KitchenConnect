@@ -7,15 +7,7 @@ import { verifyJwt } from "../../utils/jwt.js";
 
 export const getTiffins = async (req, res) => {
     try {
-        const { id } = req.params
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-
+        const userID = req.user._id
         const allLunchDetails = await tiffins.aggregate([
             { $match: { providerID: new mongoose.Types.ObjectId(userID), tiffinType: "Lunch" } },
             { $sort: {price: -1}}
@@ -29,12 +21,13 @@ export const getTiffins = async (req, res) => {
             foodType: item.foodType,
             price: item.price,
             hours: item.time[0] + item.time[1],
-            mins: item.time[2] + item.time[3],
+            mins: item.time[3] + item.time[4],
             deliveryDetails: {
             availability: item.deliveryDetails.availability, 
             deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
             deliveryTimeHrs: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1]) : null ,
             deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[3] + item.deliveryDetails.deliveryTime[4]) : null,
+            deactivated: item.deactivate
             }
         }))
 
@@ -54,21 +47,7 @@ export const getTiffins = async (req, res) => {
 
 export const addTiffins = async (req, res) => {
     try {
-        const { id } = req.params
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-        const user = await provider.findById(userID)
-        if (!user)
-            return res.status(404).send({
-                message: "User Doesn't Exist! Please Register"
-            })
-
-        console.log(user);
+        const userID = req.user._id
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
         if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined))
@@ -99,7 +78,7 @@ export const addTiffins = async (req, res) => {
         const readyTime = hours + ':' + mins
         const tiffin = {
             name,
-            providerID: user._id,
+            providerID: userID,
             shortDescription,
             foodType,
             price,
@@ -135,32 +114,8 @@ export const addTiffins = async (req, res) => {
 
 export const editTiffin = async (req, res) => {
     try {
-        const { id, tiffinID } = req.params;
-
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-        const user = await provider.findById(userID)
-        if (!user)
-            return res.status(404).send({
-                message: "User Doesn't Exist! Please Register"
-            })
-
-        const tiffin = await tiffins.findById(tiffinID)
-
-        if (!tiffin)
-            res.status(404).send({
-                message: "Tiffin Doesn't Exist"
-            })
-
-        if (tiffin.providerID.toString() !== userID)
-           return res.status(400).send({
-                message: "You are not authorised to edit this tiffin!"
-            })
+        const userID = req.user._id
+        const {tiffinID} = req.params
 
         const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
         if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined))
@@ -170,7 +125,7 @@ export const editTiffin = async (req, res) => {
 
         let deliveryTime = undefined
         if (availability) {
-            deliveryTime = deliveryTimeHrs + deliveryTimeMins
+            deliveryTime = deliveryTimeHrs + ':' + deliveryTimeMins
         }
 
         const deliveryDetails = {
@@ -179,10 +134,10 @@ export const editTiffin = async (req, res) => {
             deliveryTime: deliveryTime === undefined ? null : deliveryTime,
         }
 
-        const readyTime = hours + mins
+        const readyTime = hours + ':' + mins
         const updatedTiffin = {
             name,
-            providerID: user._id,
+            providerID: userID,
             shortDescription,
             foodType,
             price,
@@ -217,32 +172,7 @@ export const editTiffin = async (req, res) => {
 
 export const deleteTiffin = async (req, res) => {
     try {
-        const { id, tiffinID } = req.params;
-
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-        const user = await provider.findById(userID)
-        if (!user)
-            return res.status(404).send({
-                message: "User Doesn't Exist! Please Register"
-            })
-
-        const tiffin = await tiffins.findById(tiffinID)
-
-        if (!tiffin)
-            return res.status(404).send({
-                message: "Tiffin Doesn't Exist"
-            })
-
-        if (tiffin.providerID.toString() !== userID)
-            return res.status(400).send({
-                message: "You are not authorised to delete this tiffin!"
-            })
+        const {tiffinID } = req.params;
 
         const deletedTiffin = await tiffins.findByIdAndDelete(tiffinID)
 
@@ -267,34 +197,12 @@ export const deleteTiffin = async (req, res) => {
 
 export const deactivateTiffin = async(req, res) =>{
     try {
-        const { id, tiffinID } = req.params;
-
-        if (!id) {
-            return res.status(400).send({
-                message: "Please Login"
-            })
-        }
-
-        const userID = verifyJwt(id).decoded.userID;
-        const user = await provider.findById(userID)
-        if (!user)
-            return res.status(404).send({
-                message: "User Doesn't Exist! Please Register"
-            })
-
-        const tiffin = await tiffins.findById(tiffinID)
-
-        if (!tiffin)
-            return res.status(404).send({
-                message: "Tiffin Doesn't Exist"
-            })
-
-        if (tiffin.providerID.toString() !== userID)
-            return res.status(400).send({
-                message: "You are not authorised to deactivate this tiffin!"
-            })
         
+        const tiffin = req.tiffin
+        const tiffinID = tiffin._id
+
         const currentState = tiffin.deactivate 
+        console.log(currentState)
         
         const updatedTiffin = await tiffins.findByIdAndUpdate(
                 tiffinID,
