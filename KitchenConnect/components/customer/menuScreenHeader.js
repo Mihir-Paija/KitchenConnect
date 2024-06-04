@@ -19,46 +19,57 @@ const HeaderMenuCustomer = ({ tiffin }) => {
   const iconData = foodTypeIcon[iconKey];
   return (
     <SafeAreaView style={styles.menuHeader}>
-      <Image source={iconData.path} style={iconData.foodTypeStyle} />
       <View style={styles.middleContent}>
         <View style={styles.tiffinDetails}>
+          <Image source={iconData.path} style={iconData.foodTypeStyle} />
           <Text style={styles.name}>{tiffin.name}</Text>
           <Text style={styles.shortDescription}>{tiffin.shortDescription}</Text>
           <View style={styles.ratingBox}>
             <RatingComponent rating={3.5} />
           </View>
           <Text style={styles.price}>Starting from ₹{tiffin.price}</Text>
+          <View style={styles.time}>
+            <View style={styles.delivery}>
+              <Image
+                source={require("@assets/shared/icons8-take-away-food-ios-17-filled/icons8-take-away-food-90.png")}
+                style={styles.deliveryIcon}
+              />
+              <Text style={styles.timeText}> {tiffin.time}</Text>
+            </View>
+
+            {tiffin.deliveryDetails.availability ? (
+              <>
+                <Icon name="dot-fill" type="Octicons" style={styles.dotIcon} />
+                <View style={styles.delivery}>
+                  <Image
+                    source={require("@assets/shared/icons8-delivery-scooter-ios-17-glyph/icons8-delivery-scooter-90.png")}
+                    style={styles.deliveryIcon}
+                  />
+                  <Text style={styles.timeText}>
+                    {" "}
+                    {tiffin.deliveryDetails.deliveryTime}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              //   <Text style={styles.noDelivery}>
+              //     Delivery Service is not Available for this tiffin
+              //   </Text>
+              <></>
+            )}
+          </View>
         </View>
         <View style={styles.sideBar}>
           <Image
             source={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
             style={styles.tiffinImage}
           />
+          <View style={styles.bookButton}>
+            <Text style={styles.tiffinType}>{tiffin.tiffinType} Tiffin</Text>
+          </View>
         </View>
       </View>
-      <View style={styles.bottomContent}>
-        <Text style={styles.time}>
-          Tiffin will be prepared by {tiffin.time}
-        </Text>
-        {tiffin.deliveryDetails.availability ? (
-          <View style={styles.delivery}>
-            <Image
-              source={require("@assets/shared/icons8-delivery-scooter-ios-17-glyph/icons8-delivery-scooter-90.png")}
-              style={styles.deliveryIcon}
-            />
-            <Text style={styles.deliveryText}>
-              {" "}
-              ₹{tiffin.deliveryDetails.deliveryCharge}{" "}
-              <Icon name="dot-fill" type="Octicons" style={styles.dotIcon} />{" "}
-              Tiffin will be delivered by {tiffin.deliveryDetails.deliveryTime}
-            </Text>
-          </View>
-        ) : (
-          <Text style={styles.noDelivery}>
-            Delivery Service is not Available for this tiffin
-          </Text>
-        )}
-      </View>
+
       <View style={styles.line}></View>
     </SafeAreaView>
   );
@@ -88,54 +99,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: windowWidth * 0.06,
     fontFamily: "NunitoBold",
-    marginBottom: windowWidth * 0.01,
+    marginBottom: windowWidth * 0.013,
   },
   shortDescription: {
     textAlign: "center",
     fontSize: windowWidth * 0.04,
     fontFamily: "NunitoRegular",
-    marginBottom: windowWidth * 0.01,
     color: "#3c3636",
+    marginBottom: windowWidth * 0.013,
   },
   ratingBox: {
-    marginVertical: windowWidth * 0.02,
+    marginBottom: windowWidth * 0.013,
   },
   price: {
     textAlign: "center",
     fontSize: windowWidth * 0.04,
     fontFamily: "NunitoRegular",
-    marginBottom: windowWidth * 0.01,
+    marginBottom: windowWidth * 0.013,
     color: "#3c3636",
-  },
-  address: {
-    textAlign: "center",
-    fontSize: windowWidth * 0.04,
-    fontFamily: "NunitoRegular",
-    marginVertical: windowWidth * 0.02,
-    color: "#3c3636",
-  },
-  sideBar: {
-    width: windowWidth * 0.35,
-    height: "100%",
-    alignItems: "flex-end",
-    // backgroundColor: "#aaaa",
-  },
-  tiffinImage: {
-    height: windowWidth * 0.3,
-    width: windowWidth * 0.35,
-    borderRadius: windowWidth * 0.03,
-  },
-  bottomContent: {
-    // backgroundColor: "#f8f8",
-    justifyContent: "center",
-    alignContent: "center",
   },
   time: {
-    textAlign: "center",
-    fontSize: windowWidth * 0.04,
-    fontFamily: "NunitoRegular",
-    marginBottom: windowWidth * 0.01,
-    color: "#3c3636",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+    marginBottom: windowWidth * 0.013,
   },
   noDelivery: {
     textAlign: "center",
@@ -148,28 +136,60 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
-    marginBottom: windowWidth * 0.01,
+    // marginBottom: windowWidth * 0.01,
   },
   dotIcon: {
     // backgroundColor: "#aaff",
     fontSize: windowWidth * 0.03,
     color: "#3c3636",
+    marginRight: windowWidth * 0.02,
   },
-  deliveryText: {
+  timeText: {
     textAlign: "center",
     fontSize: windowWidth * 0.04,
     fontFamily: "NunitoRegular",
     color: "#3c3636",
+    marginRight: windowWidth * 0.02,
   },
   deliveryIcon: {
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
   },
+  sideBar: {
+    width: windowWidth * 0.35,
+    height: "100%",
+  },
+  tiffinImage: {
+    height: windowWidth * 0.3,
+    width: windowWidth * 0.35,
+    borderRadius: windowWidth * 0.03,
+  },
+  tiffinType: {
+    color: "#000",
+    textAlign: "center",
+    fontSize: windowWidth * 0.045,
+    fontFamily: "NunitoRegular",
+  },
+  bookButton: {
+    backgroundColor: "#FFECEC",
+    paddingVertical: windowWidth * 0.01,
+    paddingHorizontal: windowWidth * 0.03,
+    borderRadius: windowWidth * 0.02,
+    borderWidth: 0.5,
+    borderColor: "#FFECEC",
+    marginVertical: windowHeight * 0.005,
+    alignSelf: "center",
+  },
+  bottomContent: {
+    // backgroundColor: "#f8f8",
+    justifyContent: "center",
+    alignContent: "center",
+  },
   line: {
     borderWidth: 0.2,
     opacity: 0.4,
     borderColor: "black",
-    marginTop: windowHeight * 0.01,
+    // marginTop: windowHeight * 0.01,
 
     // iOS shadow
     shadowColor: "#000",

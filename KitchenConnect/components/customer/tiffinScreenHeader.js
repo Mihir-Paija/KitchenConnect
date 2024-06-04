@@ -12,8 +12,8 @@ const HeaderTiffinCustomer = ({ kitchen }) => {
         <RatingComponent rating={3.5} />
       </View>
       <Text style={styles.address}>
-        {kitchen.address[0].flatNumber}, {kitchen.address[0].street},{" "}
-        {kitchen.address[0].landmark}
+        {kitchen.address.flatNumber}, {kitchen.address.street},{" "}
+        {kitchen.address.landmark}
       </Text>
       <View style={styles.line}></View>
     </SafeAreaView>
