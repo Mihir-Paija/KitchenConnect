@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, ScrollView, Alert } from 'react-native';
+import { windowWidth, windowHeight } from '@/utils/dimensions';
 import RNPickerSelect from 'react-native-picker-select';
 
 const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
     const [menuData, setMenuData] = useState({
         day: '',
-        itemType: '',
         itemName: '',
         quantity: '',
         unit: ''
     });
 
     const handleAddMenu = () => {
+        if(!menuData.day || ! menuData.itemName || !menuData.quantity || !menuData.unit){
+            Alert.alert("Please Fill All Fields");
+            return
+        }
         onAddMenu(menuData);
 
         setMenuData({
             day: '',
-            itemType: '',
             itemName: '',
             quantity: '',
             unit: ''
@@ -24,7 +27,6 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
     };
 
     const dayOptions = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(value => ({ label: value, value: value }));
-    const itemTypeOptions = ['Main Course', 'Side Dish', 'Dessert', 'Beverage'].map(value => ({ label: value, value: value }));
     const unitOptions = ['kg', 'g', 'L', 'ml', 'pcs'].map(value => ({ label: value, value: value }));
 
     return (
@@ -37,7 +39,7 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ScrollView>
-                        <Text style={styles.modalTitle}>Add New Menu Item</Text>
+                        <Text style={styles.modalTitle}>Add New Item</Text>
                         <View style={styles.pickerContainer}>
                             <Text style={styles.label}>Day</Text>
                             <RNPickerSelect
@@ -51,19 +53,13 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                         </View>
                         <TextInput
                             style={styles.input}
-                            placeholder="Item Type"
-                            value={menuData.itemType}
-                            onChangeText={(text) => setMenuData({ ...menuData, itemType: text })}
-                        />
-                        <TextInput
-                            style={styles.input}
                             placeholder="Item Name"
                             value={menuData.itemName}
                             onChangeText={(text) => setMenuData({ ...menuData, itemName: text })}
                         />
                         <View style={styles.row}>
                             <TextInput
-                                style={[styles.input, { flex: 2, marginRight: 5 }]}
+                                style={styles.quantity}
                                 placeholder="Quantity"
                                 value={menuData.quantity}
                                 onChangeText={(text) => setMenuData({ ...menuData, quantity: text })}
@@ -74,7 +70,7 @@ const AddMenuModal = ({ isVisible, onClose, onAddMenu }) => {
                                 value={menuData.unit}
                                 onValueChange={(value) => setMenuData({ ...menuData, unit: value })}
                                 items={unitOptions}
-                                style={[pickerSelectStyles, {flex: 2}]}
+                                style={unitPickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
@@ -124,8 +120,28 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
 
-    pickerContainer: {
+    quantity: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         marginBottom: 10,
+        flex: 3,
+    },
+
+    pickerContainer: {
+        marginBottom: 10,   
+    },
+
+    unitContainer: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        marginBottom: 10,
+        flex: 1,
     },
 
     row: {
@@ -189,3 +205,30 @@ const pickerSelectStyles = StyleSheet.create({
         marginBottom: 10,
     },
 });
+
+const unitPickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        flex: 1.2,
+        fontSize: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        color: 'black',
+        paddingRight: 30,
+        marginBottom: 10,
+    },
+    inputAndroid: {
+        flex: 1.2,
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        color: 'black',
+        paddingRight: 30,
+        marginLeft: 5,
+    },
+})

@@ -10,7 +10,6 @@ export const getMenu = async(req, res) =>{
         const {tiffinID} = req.params
 
         const currentMenu = await menu.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
-        console.log(currentMenu.length)
         if(currentMenu.length !== 0)
             return res.status(200).json(currentMenu[0].menu)
         

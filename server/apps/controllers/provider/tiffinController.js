@@ -5,7 +5,7 @@ import { verifyJwt } from "../../utils/jwt.js";
 
 
 
-export const getTiffins = async (req, res) => {
+export const getLunchTiffins = async (req, res) => {
     try {
         const userID = req.user._id
         const allLunchDetails = await tiffins.aggregate([
@@ -22,13 +22,14 @@ export const getTiffins = async (req, res) => {
             price: item.price,
             hours: item.time[0] + item.time[1],
             mins: item.time[3] + item.time[4],
+            deactivated: item.deactivate,
             deliveryDetails: {
             availability: item.deliveryDetails.availability, 
             deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
             deliveryTimeHrs: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1]) : null ,
-            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[3] + item.deliveryDetails.deliveryTime[4]) : null,
-            deactivated: item.deactivate
+            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[3] + item.deliveryDetails.deliveryTime[4]) : null, 
             }
+            
         }))
 
         if (lunch.length === 0)

@@ -30,26 +30,6 @@ const AddTiffinModal1 = ({ isVisible, onClose, onNext }) => {
     onNext(tiffinData);
   };
 
-  const foodTypeOptions = [
-    "Veg",
-    "Non-Veg",
-    "Swaminarayan",
-    "Jain",
-    "Vegan",
-  ].map((value) => ({ label: value, value: value }));
-  const tiffinTypeOptions = ["Lunch", "Dinner"].map((value) => ({
-    label: value,
-    value: value,
-  }));
-  const hourOptions = Array.from({ length: 24 }, (_, i) => ({
-    label: i.toString().padStart(2, "0"),
-    value: i.toString().padStart(2, "0"),
-  }));
-  const minuteOptions = ["00", "15", "30", "45"].map((value) => ({
-    label: value,
-    value: value,
-  }));
-
   return (
     <Modal
       animationType="slide"
