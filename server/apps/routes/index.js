@@ -21,10 +21,14 @@ router.use("/customer/kitchen", getKitchenRouter);
 import getTiffinRouter from "./customer/getTiffinRouter.js";
 router.use("/customer/tiffin", getTiffinRouter);
 
+//getMenuRouter -> customer
+import getMenuRouter from "./customer/getMenuRouter.js";
+router.use("/customer/menu", getMenuRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
 import { menuRouter } from "./provider/menuRouter.js";
-router.use('/provider', providerAuthRouter);
-router.use('/provider/tiffin', tiffinRouter);
-router.use('/provider/menu', menuRouter)
+router.use("/provider", providerAuthRouter);
+router.use("/provider/tiffin", tiffinRouter);
+router.use("/provider/menu", menuRouter);
 export default router;
