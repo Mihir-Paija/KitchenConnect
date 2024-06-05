@@ -28,7 +28,10 @@ router.use("/customer/menu", getMenuRouter);
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
 import { menuRouter } from "./provider/menuRouter.js";
+import { subscriptionRouter } from "./provider/subscriptionRouter.js";
 router.use("/provider", providerAuthRouter);
 router.use("/provider/tiffin", tiffinRouter);
 router.use("/provider/menu", menuRouter);
+router.use('/provider/subscription', subscriptionRouter)
+
 export default router;
