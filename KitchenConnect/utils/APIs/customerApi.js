@@ -63,3 +63,16 @@ export const getTiffinCustomer = async (kitchenId) => {
     throw error.response.data;
   }
 };
+
+// customer -> getMenu : GET
+export const getMenuCustomer = async (kitchenID, tiffinID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/menu/${kitchenID}/${tiffinID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getMenu Customer API:", error);
+    throw error.response.data;
+  }
+};
