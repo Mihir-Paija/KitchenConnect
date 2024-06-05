@@ -72,7 +72,6 @@ const FilterTiffinModal = ({
             <TouchableOpacity
               style={styles.option}
               onPress={() => onFilterChange("foodType", "Non-Veg")}
-              onPress={() => onFilterChange("foodType", "Non-Veg")}
             >
               <Text
                 style={[
@@ -121,6 +120,47 @@ const FilterTiffinModal = ({
                 ]}
               >
                 Jain
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.subTitle}>Activation</Text>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => onFilterChange("deactivated", "all")}
+            >
+              <Text
+                style={
+                  filterCriteria.deactivated === "all"
+                    ? styles.selectedOption
+                    : styles.optionText
+                }
+              >
+                All
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => onFilterChange("deactivated", false)}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  filterCriteria.deactivated === false && styles.selectedOption,
+                ]}
+              >
+                Activated
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.option}
+              onPress={() => onFilterChange("deactivated", true)}
+            >
+              <Text
+                style={[
+                  styles.optionText,
+                  filterCriteria.deactivated === true  && styles.selectedOption,
+                ]}
+              >
+                Deactivated
               </Text>
             </TouchableOpacity>
           </View>

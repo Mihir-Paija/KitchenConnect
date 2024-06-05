@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native';
 import menuStyle from '@/styles/provider/menuScreen';
 import TiffinItem from '@/components/provider/tiffinComponent';
-import { getTiffins } from "@/utils/provider/providerAPI";
+import { getLunchTiffins } from "@/utils/provider/providerAPI";
 import { AuthContext } from "@/context/authContext";
 import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
@@ -26,6 +26,7 @@ const LunchScreen = ({navigation}) => {
   const [sortCriteria, setSortCriteria] = useState("rating");
   const [filterCriteria, setFilterCriteria] = useState({
     foodType: "all",
+    deactivated: "all",
   });
   const [sortModal, setSortModal] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
@@ -43,7 +44,7 @@ const LunchScreen = ({navigation}) => {
 
   const fetchTiffins = async () => {
     try {
-      const response = await getTiffins(authState.authToken);
+      const response = await getLunchTiffins(authState.authToken);
       setTiffins(response);
       setOriginalTiffins(response)
       setLoading(false);
@@ -151,6 +152,12 @@ const LunchScreen = ({navigation}) => {
       );
     }
 
+    if (filterCriteria.deactivated !== "all") {
+      filteredTiffins = filteredTiffins.filter(
+        (tiffin) => tiffin.deactivated === filterCriteria.deactivated
+      );
+    }
+
     setTiffins(filteredTiffins);
   }, [sortCriteria, filterCriteria, , originalTiffins]);
 
@@ -165,7 +172,6 @@ const LunchScreen = ({navigation}) => {
   };
 
   const handleTiffinPress = (tiffin) =>{
-    console.log(tiffin)
       navigation.getParent().navigate("Inside Tiffin", {
         tiffin: tiffin
       })
@@ -204,6 +210,10 @@ const LunchScreen = ({navigation}) => {
                 style={[
                   styles.sortContainer,
                   filterCriteria.foodType !== "all" && {
+                    backgroundColor: "#FFECEC",
+                    borderColor: "#ffa500",
+                  },
+                  filterCriteria.deactivated !== "all" && {
                     backgroundColor: "#FFECEC",
                     borderColor: "#ffa500",
                   },
@@ -247,6 +257,7 @@ const LunchScreen = ({navigation}) => {
                     hours={item.hours}
                     mins={item.mins}
                     price={item.price}
+                    deactivated={item.deactivated}
                     edit={() => handleEditModal(item)}
                     showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
                     onPress={() => handleTiffinPress(item)}

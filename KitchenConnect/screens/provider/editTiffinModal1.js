@@ -6,6 +6,7 @@ import CheckBox from 'react-native-check-box';
 import Icon from "react-native-vector-icons/Ionicons";
 
 const EditTiffinModal1 = ({ isVisible, item, onClose, onNext, onDeleteTiffin, onDeactivateTiffin }) => {
+
     const [tiffinData, setTiffinData] = useState({
         id: item.id,
         name: item.name || '',
@@ -103,16 +104,25 @@ const EditTiffinModal1 = ({ isVisible, item, onClose, onNext, onDeleteTiffin, on
                                 onClick={() => setRedZone(!redZone)}
                                 checkBoxColor="orange"
                             />
+                            {!item.deactivated ?
                             <Text style={styles.labels}>Want To Deactivate or Delete Tiffin</Text>
+                            :
+                            <Text style={styles.labels}>Want To Activate or Delete Tiffin</Text>
+                            }
                         </View>
                         {redZone ?
                             <View style={styles.row}>
                                 <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteTiffin}>
                                     <Text style={styles.buttonText}>Delete</Text>
                                 </TouchableOpacity>
+                                { item.deactivated ?
                                 <TouchableOpacity style={styles.deactivateButton} onPress={handleDeactivateTiffin}>
-                                    <Text style={styles.buttonText}>Deactivate</Text>
+                                    <Text style={styles.buttonText}>Activate</Text>
                                 </TouchableOpacity>
+                                :
+                                <TouchableOpacity style={styles.deactivateButton} onPress={handleDeactivateTiffin}>
+                                <Text style={styles.buttonText}>Deactivate</Text>
+                            </TouchableOpacity>}
                             </View>
                             : null}
                         </View>

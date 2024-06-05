@@ -47,9 +47,9 @@ export const getProfile = async(authToken) =>{
   }
 }
 
-export const getTiffins = async(authToken) =>{
+export const getLunchTiffins = async(authToken) =>{
   try {
-    const response = await axios.get(`${API_BASE_URL}/provider/tiffin/${authToken}`);
+    const response = await axios.get(`${API_BASE_URL}/provider/tiffin/${authToken}/lunch`);
     return response.data
   } catch (error) {
     console.error('Error In Getting Tiffins:', error);
