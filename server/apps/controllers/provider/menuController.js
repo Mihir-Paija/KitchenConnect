@@ -10,39 +10,38 @@ export const getMenu = async(req, res) =>{
         const {tiffinID} = req.params
 
         const currentMenu = await menu.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
-
-        if(currentMenu)
-            console.log(currentMenu[0].menu)
+        console.log(currentMenu.length)
+        if(currentMenu.length !== 0)
             return res.status(200).json(currentMenu[0].menu)
-
+        
         const dummyMenu = [
             {
                 day: "Mon",
-                item: []
+                items: []
             },
             {
                 day: "Tue",
-                item: []
+                items: []
             },
             {
                 day: "Wed",
-                item: []
+                items: []
             },
             {
                 day: "Thu",
-                item: []
+                items: []
             },
             {
                 day: "Fri",
-                item: []
+                items: []
             },
             {
                 day: "Sat",
-                item: []
+                items: []
             },
             {
                 day: "Sun",
-                item: []
+                items: []
             }
         ];
         

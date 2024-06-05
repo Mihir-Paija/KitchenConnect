@@ -4,14 +4,16 @@ import activeScreenStyles from '@/styles/shared/activeScreen';
 import TiffinTabNavigator from '@/navigations/provider/providerTiffinNavigator';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 import { AuthContext } from "@/context/authContext";
-import AddTiffinModal from './addTiffinModal';
 import { addTiffin } from '@/utils/provider/tiffinAPI';
 import { getProfile } from '@/utils/provider/providerAPI';
 import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
+import AddTiffinModal1 from './addTiffinModal1';
+import AddTiffinModal2 from './addTiffinModal2';
 
 const TiffinScreen = ({navigation}) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModal1Visible, setIsModal1Visible] = useState(false);
+  const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
   const [authState] = useContext(AuthContext);
@@ -20,15 +22,56 @@ const TiffinScreen = ({navigation}) => {
     shortDescription: '',
   });
 
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
+  const [tiffinData, setTiffinData] = useState({
+    name: "",
+    shortDescription: "",
+    price: "",
+    
+  })
+ 
+  const toggleModal1 = () => {
+    setIsModal1Visible(!isModal1Visible);
   };
+
+  const toggleModal2 = () => {
+    setIsModal2Visible(!isModal2Visible);
+    
+  };
+
+  const handleModal2 = async (tiffin) =>{
+    try {
+      setTiffinData({
+        name: tiffin.name,
+        shortDescription: tiffin.shortDescription,
+        price: tiffin.price,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      toggleModal2()
+    }
+  
+  }
+
+  const closeModals = () =>{
+    toggleModal1()
+    toggleModal2()
+    setTiffinData({
+      name: "",
+      shortDescription: "",
+      price: "",
+      
+    })
+    
+  }
 
   const handleAddTiffin = async (tiffinData) => {
     console.log('Adding tiffin:', tiffinData);
     const response = await addTiffin(authState.authToken, tiffinData);
     console.log(response);
-    toggleModal();
+    toggleModal1();
+    toggleModal2();
     setRefresh(!refresh);
   };
 
@@ -95,15 +138,24 @@ const TiffinScreen = ({navigation}) => {
               </View>
               <View style={styles.divider} />
               <View style={styles.btnView}>
-                <TouchableOpacity style={styles.btn} onPress={toggleModal}>
+                <TouchableOpacity style={styles.btn} onPress={toggleModal1}>
                   <Text style={styles.addTiffinText}>Add Tiffin</Text>
                 </TouchableOpacity>
               </View>
-              <AddTiffinModal
-                isVisible={isModalVisible}
-                onClose={toggleModal}
+              {isModal1Visible ?
+              <AddTiffinModal1
+                isVisible={isModal1Visible}
+                onClose={toggleModal1}
+                onNext={handleModal2}
+              /> : null}
+              {isModal2Visible ? 
+              <AddTiffinModal2
+                isVisible={isModal2Visible}
+                tiffin={tiffinData}
+                onBack={toggleModal2}
+                onClose={closeModals}
                 onAddTiffin={handleAddTiffin}
-              />
+              /> : null}
             </>
           )}
         </>

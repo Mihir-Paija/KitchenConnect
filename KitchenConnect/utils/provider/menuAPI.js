@@ -4,6 +4,7 @@ import {API_BASE_URL} from "@env";
 export const getMenu = async(id, tiffinID) =>{
     try {
         const response = await axios.get(`${API_BASE_URL}/provider/menu/${id}/${tiffinID}`)
+        console.log(response.data)
         return response.data
     } catch (error) {
         console.log('Error in Get Menu API', error)

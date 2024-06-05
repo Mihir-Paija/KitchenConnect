@@ -66,12 +66,9 @@ export const addTiffins = async (req, res) => {
             deliveryTime = deliveryTimeHrs + ':' + deliveryTimeMins
         }
 
-        if(!availability)
-            deliveryCharge = undefined
-
         const deliveryDetails = {
             availability: availability,
-            deliveryCharge: deliveryCharge === undefined ? null : deliveryCharge,
+            deliveryCharge: !availability ? null : deliveryCharge,
             deliveryTime: deliveryTime === undefined ? null : deliveryTime,
         }
 

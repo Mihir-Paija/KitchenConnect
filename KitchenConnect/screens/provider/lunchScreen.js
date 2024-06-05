@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native';
 import menuStyle from '@/styles/provider/menuScreen';
 import TiffinItem from '@/components/provider/tiffinComponent';
 import { getTiffins } from "@/utils/provider/providerAPI";
 import { AuthContext } from "@/context/authContext";
 import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
-import EditTiffinModal from './editTiffinModal';
+import EditTiffinModal1 from './editTiffinModal1'
+import EditTiffinModal2 from './editTiffinModal2';
 import DeliveryDetailsModal from './deliveryDetailsModal';
 import { editTiffins, deleteTiffin, deactivateTiffin } from '../../utils/provider/tiffinAPI';
 import SortTiffinModal from '@/components/provider/sortTiffinModal';
@@ -30,7 +31,8 @@ const LunchScreen = ({navigation}) => {
   const [filterModal, setFilterModal] = useState(false);
   
 
-  const [editModal, setEditModal] = useState(false);
+  const [editModal1, setEditModal1] = useState(false);
+  const [editModal2, setEditModal2] = useState(false);
   const [editTiffin, setEditTiffin] = useState(null);
 
   const [deliveryModal, setDeliveryModal] = useState(false);
@@ -51,14 +53,37 @@ const LunchScreen = ({navigation}) => {
   };
 
   // Edit Tiffins
-  const toggleEditModal = () => {
-    setEditModal(!editModal);
+  const toggleEditModal1 = () => {
+    setEditModal1(!editModal1);
+  };
+
+  const toggleEditModal2 = () => {
+    setEditModal2(!editModal2);
   };
 
   const handleEditModal = (item) => {
     setEditTiffin(item);
-    setEditModal(true);
+    setEditModal1(true);
   };
+
+  const handleNext = async(newDetails) =>{
+    try {
+      setEditTiffin({
+        ...editTiffin,
+        id: newDetails.id,
+        name: newDetails.name,
+        shortDescription: newDetails.shortDescription,
+        price: newDetails.price,
+      })
+      
+
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      toggleEditModal2()
+    }
+  }
 
   const handleEditTiffin = async (tiffin) => {
     setLoading(true)
@@ -66,6 +91,13 @@ const LunchScreen = ({navigation}) => {
     setLoading(false);
     setRefresh(!refresh);
   };
+
+  const closeModals = () =>{
+    toggleEditModal1()
+    toggleEditModal2()
+    setEditTiffin(null)
+    
+  }
 
   const handleDeleteTiffin = async(tiffinID) =>{
     setLoading(true)
@@ -147,106 +179,112 @@ const LunchScreen = ({navigation}) => {
           <LoadingScreen />
         ) : (
           <>
-            
-                 <View style={styles.filterSortContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.sortContainer,
-                    sortCriteria !== "rating" && {
-                      borderColor: "#ffa500",
-                      backgroundColor: "#FFECEC",
-                    },
-                  ]}
-                  onPress={() => setSortModal(true)}
-                >
-                  <Text style={styles.filterSortText}>Sort</Text>
-                  <Image
-                    source={
-                      sortCriteria === "rating"
-                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
-                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
-                    }
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.sortContainer,
-                  (filterCriteria.foodType !== "all") && {
-                      backgroundColor: "#FFECEC",
-                      borderColor: "#ffa500",
-                    },
-                  ]}
-                  onPress={() => setFilterModal(true)}
-                >
-                  <Text style={styles.filterSortText}>Filter</Text>
-                  <Image
-                    source={
-                      filterCriteria.foodType === "all"
-                        ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
-                        : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
-                    }
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              <SortTiffinModal
-                visible={sortModal}
-                onClose={() => setSortModal(false)}
-                onSortChange={onSortChange}
-                sortCriteria={sortCriteria}
-              />
-
-              <FilterTiffinModal
-                visible={filterModal}
-                onClose={() => setFilterModal(false)}
-                onFilterChange={onFilterChange}
-                filterCriteria={filterCriteria}
-              />
-            <View style = {styles.tiffins}>
-            {tiffins.length !== 0 ? (
-              <>
-                <FlatList
-                  data={tiffins}
-                  renderItem={({ item }) => (
-                    <TiffinItem
-                      name={item.name}
-                      description={item.shortDescription}
-                      foodType={item.foodType}
-                      hours={item.hours}
-                      mins={item.mins}
-                      price={item.price}
-                      edit={() => handleEditModal(item)}
-                      showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
-                      onPress={() => handleTiffinPress(item)}
-                    />
-                  )}
-                  keyExtractor={(item) => item.id.toString()}
-                  contentContainerStyle={menuStyle.flatList}
+            <View style={styles.filterSortContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.sortContainer,
+                  sortCriteria !== "rating" && {
+                    borderColor: "#ffa500",
+                    backgroundColor: "#FFECEC",
+                  },
+                ]}
+                onPress={() => setSortModal(true)}
+              >
+                <Text style={styles.filterSortText}>Sort</Text>
+                <Image
+                  source={
+                    sortCriteria === "rating"
+                      ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                      : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                  }
+                  style={styles.icon}
                 />
-                {editTiffin && (
-                  <EditTiffinModal
-                    isVisible={editModal}
-                    item={editTiffin}
-                    onClose={toggleEditModal}
-                    onEditTiffin={handleEditTiffin}
-                    onDeleteTiffin={handleDeleteTiffin}
-                    onDeactivateTiffin={handleDeactivateTiffin}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.sortContainer,
+                  filterCriteria.foodType !== "all" && {
+                    backgroundColor: "#FFECEC",
+                    borderColor: "#ffa500",
+                  },
+                ]}
+                onPress={() => setFilterModal(true)}
+              >
+                <Text style={styles.filterSortText}>Filter</Text>
+                <Image
+                  source={
+                    filterCriteria.foodType === "all"
+                      ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                      : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                  }
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <SortTiffinModal
+              visible={sortModal}
+              onClose={() => setSortModal(false)}
+              onSortChange={onSortChange}
+              sortCriteria={sortCriteria}
+            />
+
+            <FilterTiffinModal
+              visible={filterModal}
+              onClose={() => setFilterModal(false)}
+              onFilterChange={onFilterChange}
+              filterCriteria={filterCriteria}
+            />
+
+            {tiffins.length !== 0 ? (
+              <FlatList
+                data={tiffins}
+                renderItem={({ item }) => (
+                  <TiffinItem
+                    name={item.name}
+                    description={item.shortDescription}
+                    foodType={item.foodType}
+                    hours={item.hours}
+                    mins={item.mins}
+                    price={item.price}
+                    edit={() => handleEditModal(item)}
+                    showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
+                    onPress={() => handleTiffinPress(item)}
                   />
                 )}
-                {deliveryDetails && (
-                  <DeliveryDetailsModal
-                    isVisible={deliveryModal}
-                    info={deliveryDetails}
-                    onClose={toggleDeliveryModal}
-                  />
-                )}
-              </>
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={menuStyle.flatList}
+              />
             ) : (
               <Text style={menuStyle.noTiffinsText}>No Lunch Tiffins Found</Text>
             )}
-            </View>
+
+            {editModal1 ? (
+              <EditTiffinModal1
+                isVisible={editModal1}
+                item={editTiffin}
+                onClose={toggleEditModal1}
+                onNext={handleNext}
+                onDeleteTiffin={handleDeleteTiffin}
+                onDeactivateTiffin={handleDeactivateTiffin}
+              />
+            ): null}
+            {editModal2 ? (
+              <EditTiffinModal2
+                isVisible={editModal2}
+                item={editTiffin}
+                onBack={toggleEditModal2}
+                onClose={closeModals}
+                onEditTiffin={handleEditTiffin}
+              />
+            ): null}
+            {deliveryDetails && (
+              <DeliveryDetailsModal
+                isVisible={deliveryModal}
+                info={deliveryDetails}
+                onClose={toggleDeliveryModal}
+              />
+            )}
           </>
         )
       ) : (
@@ -255,7 +293,6 @@ const LunchScreen = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
 export default LunchScreen;
 
 
@@ -298,5 +335,7 @@ const styles = StyleSheet.create({
   },
   tiffins:{
     alignItems: 'center'
-  }
+  },
+  flatList: {
+  },
 });
