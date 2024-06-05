@@ -2,17 +2,32 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions'; 
 
-const TiffinSubscription = ({ name, price, days }) => {
+const TiffinSubscription = ({ title, price, days, exists , onCreate}) => {
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{name}</Text>
+     {exists ?
+     <>
+      <Text style={styles.name}>{title}</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.price}>Price: ₹{price}</Text>
         <Text style={styles.days}>Days: {days}</Text>
       </View>
       <TouchableOpacity style={styles.createButton}>
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity> 
+     </> 
+     : 
+     <>
+      <Text style={styles.name}>{title}</Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.price}>Price: ₹{price}</Text>
+        <Text style={styles.days}>Days: {days}</Text>
+      </View>
+      <TouchableOpacity style={styles.createButton} onPress={onCreate}>
         <Text style={styles.buttonText}>Create</Text>
       </TouchableOpacity>
+      </>}
     </View>
   );
 };

@@ -31,7 +31,7 @@ const ProviderNavigator = () => {
               case 'My Tiffins':
                 iconSource = focused ? icons.Kitchen.active : icons.Kitchen.inactive;
                 break;
-              case 'Subscriptions':
+              case 'Subscribers':
                 iconSource = focused ? icons.Subscription.active : icons.Subscription.inactive;
                 break;
               case 'Orders':
@@ -48,7 +48,7 @@ const ProviderNavigator = () => {
         })}
       >
         <Tab.Screen name="My Tiffins" component={ProviderHomeNavigator} />
-        <Tab.Screen name="Subscriptions" component={SubscriptionsScreen} />
+        <Tab.Screen name="Subscribers" component={SubscriptionsScreen} />
         <Tab.Screen name="Orders" component={OrdersScreen} />
         <Tab.Screen name="Wallet" component={ProfileScreen} />
       </Tab.Navigator>

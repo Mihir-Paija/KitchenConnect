@@ -20,7 +20,7 @@ const MenuTabNavigator = ({tiffin}) => {
       },
     }}>
       <MenuTab.Screen name="Menu" component={MenuScreen} initialParams={{tiffin: tiffin}}/>
-      <MenuTab.Screen name="Subscriptions" component={TiffinSubscriptionScreen} />
+      <MenuTab.Screen name="Subscriptions" component={TiffinSubscriptionScreen} initialParams={{tiffin: tiffin}}/>
     </MenuTab.Navigator>
   );
 };

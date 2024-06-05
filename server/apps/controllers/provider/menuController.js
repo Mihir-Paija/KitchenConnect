@@ -92,19 +92,16 @@ export const addMenu = async (req, res) => {
             newItem.menu.push(menuDetails);
             const newMenu = await menu.create(newItem)
             if (newMenu) {
-                console.log(newMenu)
                 return res.status(201).send({
                     message: "Menu Added Successfully"
                 })
             }
 
             return res.status(500).send({
-                message: "No"
+                message: "Menu Not Added!"
             })
 
         }
-        console.log(menuExists)
-        console.log(menuExists[0].menu)
 
         let dayExists = menuExists[0].menu.find(menuItem => menuItem.day === day);
         console.log(dayExists)
