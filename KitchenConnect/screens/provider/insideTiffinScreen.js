@@ -17,45 +17,11 @@ const InsideTiffinScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
   const [authState] = useContext(AuthContext);
-  const [profile, setProfile] = useState({
-    name: '',
-    shortDescription: '',
-  });
-
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
-
-  const handleAddMenu = async (menuData) => {
-    console.log('Adding Menu:', menuData);
-    const response = await addMenu(authState.authToken, tiffin.id, menuData);
-    console.log(response);
-    toggleModal();
-    setRefresh(!refresh);
-  };
-
-  const fetchProfile = async () => {
-    try {
-      const response = await getProfile(authState.authToken);
-      setProfile({
-        name: response.name,
-        shortDescription: response.shortDescription,
-      });
-      setLoading(false);
-    } catch (error) {
-      console.log('Error in fetching profile ', error);
-    }
-  };
 
   const handleBack = async() =>{
     navigation.navigate("Tiffin")
   }
 
-
-  useEffect(() => {
-    setLoading(true);
-    fetchProfile();
-  }, []);
 
 
 

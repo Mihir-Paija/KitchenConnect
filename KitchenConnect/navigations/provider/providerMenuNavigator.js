@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MenuScreen from '@/screens/provider/menuScreen';
-import SubScreen from '@/screens/provider/subScreen';
+import TiffinSubscriptionScreen from '@/screens/provider/tiffinSubScreen';
 
 const MenuTab = createMaterialTopTabNavigator();
 
@@ -20,7 +20,7 @@ const MenuTabNavigator = ({tiffin}) => {
       },
     }}>
       <MenuTab.Screen name="Menu" component={MenuScreen} initialParams={{tiffin: tiffin}}/>
-      <MenuTab.Screen name="Subscriptions" component={SubScreen} />
+      <MenuTab.Screen name="Subscriptions" component={TiffinSubscriptionScreen} />
     </MenuTab.Navigator>
   );
 };
