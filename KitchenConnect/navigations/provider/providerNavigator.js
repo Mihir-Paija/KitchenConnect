@@ -43,7 +43,7 @@ const ProviderNavigator = () => {
             }
             return <Image source={iconSource} style={{ width: 25, height: 25 }} />;
           },
-          tabBarActiveTintColor: '#ffa500',
+          tabBarActiveTintColor: '#FFA500',
           tabBarInactiveTintColor: 'gray',
         })}
       >

@@ -47,8 +47,7 @@ const EditTiffinModal1 = ({ isVisible, item, onClose, onNext, onDeleteTiffin, on
 
 
     const handleDeleteTiffin = () => {
-        onDeleteTiffin(tiffinData.id);
-        onClose();
+        onDeleteTiffin(tiffinData.name,tiffinData.id);
     };
 
     const handleDeactivateTiffin = () => {

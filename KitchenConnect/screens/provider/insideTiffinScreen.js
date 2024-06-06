@@ -45,6 +45,7 @@ const InsideTiffinScreen = ({ route, navigation }) => {
                 <Text style={styles.providerName} numberOfLines={1} adjustsFontSizeToFit>
                   {tiffin.name}
                 </Text>
+                <Text>{tiffin.shortDescription}</Text>
                 <Text style={styles.price}>₹{tiffin.price}</Text>
               </View>
               <View style={styles.divider} />
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: windowWidth * 0.05,
-    maxHeight: '25%', // Ensure it doesn't exceed 25% of the screen height
+    maxHeight: '25%', 
   },
   bottomView: {
     flex: 3,

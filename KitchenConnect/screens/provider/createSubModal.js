@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { View, TextInput, TouchableOpacity, Alert, StyleSheet, Modal, Text } from 'react-native'
 import RNPickerSelect from "react-native-picker-select";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
     const [subscription, setSubscription] = useState({
@@ -38,14 +39,24 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Create Subscription</Text>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.modalTitle}>Create Subscription</Text>
+                        <View style={styles.closeButtonHeader}>
+                            <Icon
+                                name="close"
+                                type="ionicon"
+                                style={styles.closeButton}
+                                onPress={onClose}
+                            />
+                        </View>
+                    </View>
                     <View style={styles.subscriptionRow}>
                         <View style={styles.pickerContainer}>
                             <Text style={styles.daysText}>Select Subscription</Text>
                         </View>
-                        <View style = {styles.textContainer}>
-                        <Text style={styles.daysText}>Days</Text>
-                    </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.daysText}>Days</Text>
+                        </View>
                     </View>
                     <View style={styles.subscriptionRow}>
                         <View style={styles.pickerContainer}>
@@ -60,8 +71,8 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
-                        <View style = {styles.textContainer}>
-                        <Text style={styles.dayCount}>{subscription.days}</Text>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.dayCount}>{subscription.days}</Text>
                         </View>
                     </View>
                     <TextInput
@@ -76,9 +87,6 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                     <View style={styles.btnContainer}>
                         <TouchableOpacity style={styles.submitButton} onPress={handleCreate}>
                             <Text style={styles.buttonText}>Add</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                            <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -104,9 +112,26 @@ const styles = StyleSheet.create({
         width: '100%',
     },
 
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: windowHeight * 0.015,
+    },
     modalTitle: {
         fontSize: windowWidth * 0.06,
         fontWeight: 'bold',
+    },
+    closeButtonHeader: {
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: windowHeight * 0.04,
+        paddingHorizontal: windowWidth * 0.03,
+        fontSize: windowWidth * 0.07,
+    },
+    closeButton: {
+        fontSize: windowWidth * 0.08,
     },
     subscriptionRow: {
         flexDirection: 'row',
@@ -119,7 +144,7 @@ const styles = StyleSheet.create({
     },
 
     textContainer: {
-        flex: 2,
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: windowWidth * 0.02,
@@ -135,7 +160,7 @@ const styles = StyleSheet.create({
     },
 
 
-   input: {
+    input: {
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: windowWidth * 0.02,
@@ -155,16 +180,6 @@ const styles = StyleSheet.create({
 
     submitButton: {
         backgroundColor: 'green',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: windowHeight * 0.05,
-        width: windowWidth * 0.95,
-        borderRadius: windowWidth * 0.02,
-        marginTop: windowHeight * 0.01,
-    },
-
-    closeButton: {
-        backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
         height: windowHeight * 0.05,

@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import InputBox from "@components/shared/forms/inputBox";
 import SubmitButton from "@components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
@@ -31,6 +31,7 @@ const SignupScreen = ({ navigation }) => {
   const [mobile, setmobile] = useState("");
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
+  const [keyboard, setKeyboard] = useState(false);
 
   //functions
   const handleSignup = async () => {
@@ -56,6 +57,21 @@ const SignupScreen = ({ navigation }) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboard(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboard(false);
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -63,13 +79,13 @@ const SignupScreen = ({ navigation }) => {
       }}
     >
       <SafeAreaView style={activeScreenStyles.screen}>
-        <View style={authAdStyles.header}>
+        <View style={keyboard ?styles.header : authAdStyles.header }>
           <Text style={authAdStyles.title}>Join KitchenConnect</Text>
           <Text style={authAdStyles.subtitle}>
             Tasty Meals Just A Click Away
           </Text>
         </View>
-        <View style={styles.formContainer}>
+        <View style={keyboard ?styles.keyboardFormContainer:  styles.formContainer }>
           <InputBox input="Name" value={name} setValue={setName} />
           <InputBox
             input="Email"
@@ -124,6 +140,19 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.9,
     top: windowHeight * 0.35,
     marginBottom: windowHeight * 0.01,
+  },
+  header:{
+    position: "absolute",
+    // backgroundColor: "#ffaa",
+    top: windowHeight * 0.1,
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  keyboardFormContainer: {
+    flex: 1,
+    width: windowWidth * 0.9,
+    top: windowHeight * 0.20,
+    marginBottom: windowHeight * 0.02,
   },
   loginNavText: {
     fontFamily: "NunitoRegular",

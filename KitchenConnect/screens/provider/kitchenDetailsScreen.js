@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, Keyboard, Alert } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import InputBox from "@/components/shared/forms/inputBox"
 import SubmitButton from "@/components/shared/forms/submitButton";
@@ -22,11 +22,12 @@ const KitcehnDetailsScreen = ({ navigation, route }) => {
     const [delivery, setDelivery] = useState(false);
 
     const [loading, setLoading] = useState(false);
+    const [keyboard, setKeyboard] = useState(false);
 
     const handleSignup = async () => {
         try {
             setLoading(true);
-            if (!businessName || !description || !flatNumber || !street || !landmark || !delivery) {
+            if (!businessName || !description || !flatNumber || !street || !landmark ) {
                 Alert.alert("Please Fill All Fields");
                 setLoading(false);
                 return;
@@ -39,11 +40,11 @@ const KitcehnDetailsScreen = ({ navigation, route }) => {
                     password,
                     city,
                     businessName,
-                    description,
+                    shortDescription: description,
                     flatNumber,
                     street,
                     landmark,
-                    delivery
+                    provideDelivery: delivery
                 };
                 console.log(bodyData)
                 if (userType === "provider") {
@@ -60,13 +61,27 @@ const KitcehnDetailsScreen = ({ navigation, route }) => {
         }
     };
 
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+          setKeyboard(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+          setKeyboard(false);
+        });
+    
+        return () => {
+          keyboardDidHideListener.remove();
+          keyboardDidShowListener.remove();
+        };
+      }, []);
+
     return (
         <SafeAreaView style={activeScreenStyles.screen}>
-            <View style={authAdStyles.header}>
+            <View style={keyboard ?styles.header : authAdStyles.header}>
                 <Text style={authAdStyles.title}>Join KitchenConnect</Text>
                 <Text style={authAdStyles.subtitle}>Expand Your Business</Text>
             </View>
-            <View style={styles.formContainer}>
+            <View style={keyboard ?styles.keyboardFormContainer:  styles.formContainer}>
                 <InputBox
                     input="Business Name"
                     value={businessName}
@@ -122,6 +137,19 @@ const styles = StyleSheet.create({
         top: windowHeight * 0.35,
         marginBottom: windowHeight * 0.01,
     },
+    header:{
+        position: "absolute",
+        // backgroundColor: "#ffaa",
+        top: windowHeight * 0.1,
+        justifyContent: "center",
+        alignContent: "center",
+      },
+      keyboardFormContainer: {
+        flex: 1,
+        width: windowWidth * 0.9,
+        top: windowHeight * 0.18,
+        marginBottom: windowHeight * 0.02,
+      },
 
     checkboxContainer: {
         flexDirection: 'row',

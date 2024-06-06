@@ -44,7 +44,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
 
   const handleCreate = async(newSubscription) =>{
     try {
-      if(subscriptions.find(item => item.title = newSubscription.title)){
+      if(subscriptions.find(item => item.title === newSubscription.title)){
         Alert.alert("Subscription Already Exists!");
         return;
       }

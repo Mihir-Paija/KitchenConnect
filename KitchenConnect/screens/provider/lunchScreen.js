@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, StyleSheet, Platform, StatusBar, TouchableOpacity, Image, Alert } from 'react-native';
 import menuStyle from '@/styles/provider/menuScreen';
 import TiffinItem from '@/components/provider/tiffinComponent';
 import { getLunchTiffins } from "@/utils/provider/providerAPI";
@@ -100,12 +100,32 @@ const LunchScreen = ({navigation}) => {
     
   }
 
+  const alertDelete = (name, tiffinID) => {
+    Alert.alert(
+      'Delete!',
+      `Are You Sure You Want To Delete ${name}`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Delete', onPress: () =>  handleDeleteTiffin(tiffinID)},
+      ],
+      { cancelable: false }
+    );
+    return true;
+  };
+
   const handleDeleteTiffin = async(tiffinID) =>{
+   toggleEditModal1()
     setLoading(true)
     const response = await deleteTiffin(authState.authToken, tiffinID) 
     setLoading(false);
     setRefresh(!refresh);
   }
+
+   
 
   const handleDeactivateTiffin = async(tiffinID) => {
     setLoading(true)
@@ -276,7 +296,7 @@ const LunchScreen = ({navigation}) => {
                 item={editTiffin}
                 onClose={toggleEditModal1}
                 onNext={handleNext}
-                onDeleteTiffin={handleDeleteTiffin}
+                onDeleteTiffin={alertDelete}
                 onDeactivateTiffin={handleDeactivateTiffin}
               />
             ): null}

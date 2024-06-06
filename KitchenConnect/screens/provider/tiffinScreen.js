@@ -91,7 +91,7 @@ const TiffinScreen = ({navigation}) => {
   const backAction = () => {
     Alert.alert(
       'Exit!',
-      'Are You Sure You Want To Exit?',
+      'You Want To Exit The App?',
       [
         {
           text: 'Cancel',

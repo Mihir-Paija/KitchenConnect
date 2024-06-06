@@ -13,8 +13,9 @@ import {
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import RNPickerSelect from "react-native-picker-select";
 import CheckBox from "react-native-check-box";
+import Icon from "react-native-vector-icons/Ionicons";
 
-const AddTiffinModal2 = ({ isVisible, tiffin, onBack,  onClose, onAddTiffin }) => {
+const AddTiffinModal2 = ({ isVisible, tiffin, onBack, onClose, onAddTiffin }) => {
 
     const [tiffinData, setTiffinData] = useState({
         name: tiffin.name,
@@ -31,17 +32,17 @@ const AddTiffinModal2 = ({ isVisible, tiffin, onBack,  onClose, onAddTiffin }) =
     });
 
     const handleAddTiffin = () => {
-        if(!tiffinData.name || !tiffinData.shortDescription || !tiffinData.price || !tiffinData.foodType || !tiffinData.tiffinType || !tiffinData.hours || !tiffinData.mins){
+        if (!tiffinData.name || !tiffinData.shortDescription || !tiffinData.price || !tiffinData.foodType || !tiffinData.tiffinType || !tiffinData.hours || !tiffinData.mins) {
             Alert.alert("Please Fill All Fields");
             return
-          }
+        }
 
-          if(tiffinData.availability){
-            if(!tiffinData.deliveryCharge.toString().length || !tiffinData.deliveryTimeHrs || !tiffinData.deliveryTimeMins){
+        if (tiffinData.availability) {
+            if (!tiffinData.deliveryCharge.toString().length || !tiffinData.deliveryTimeHrs || !tiffinData.deliveryTimeMins) {
                 Alert.alert("Please Fill All Delivery Details");
                 return
             }
-          }
+        }
         onAddTiffin(tiffinData);
 
         setTiffinData({
@@ -88,112 +89,118 @@ const AddTiffinModal2 = ({ isVisible, tiffin, onBack,  onClose, onAddTiffin }) =
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <ScrollView>
+                    <View style={styles.headerContainer}>
                         <Text style={styles.modalTitle}>Adding {tiffinData.name}</Text>
+                        <View style={styles.closeButtonHeader}>
+                            <Icon
+                                name="close"
+                                type="ionicon"
+                                style={styles.closeButton}
+                                onPress={onClose}
+                            />
+                        </View>
+                    </View>
 
-                        <View style={styles.pickerContainer}>
-                            <Text style={styles.label}>Food Type</Text>
+
+                    <View style={styles.pickerContainer}>
+                        <Text style={styles.label}>Food Type</Text>
+                        <RNPickerSelect
+                            placeholder={{ label: "Select Food Type", value: null }}
+                            value={tiffinData.foodType}
+                            onValueChange={(value) =>
+                                setTiffinData({ ...tiffinData, foodType: value })
+                            }
+                            items={foodTypeOptions}
+                            style={pickerSelectStyles}
+                            useNativeAndroidPickerStyle={false}
+                        />
+                    </View>
+
+                    <View style={styles.pickerContainer}>
+                        <Text style={styles.label}>Tiffin Type</Text>
+                        <RNPickerSelect
+                            placeholder={{ label: 'Select Tiffin Type', value: null }}
+                            value={tiffinData.tiffinType}
+                            onValueChange={(value) => setTiffinData({ ...tiffinData, tiffinType: value })}
+                            items={tiffinTypeOptions}
+                            style={pickerSelectStyles}
+                            useNativeAndroidPickerStyle={false}
+                        />
+                    </View>
+
+                    <Text style={styles.label}>At What Time Would Tiffin Be Ready</Text>
+                    <View style={styles.row}>
+                        <View style={styles.pickerContainerHalf}>
                             <RNPickerSelect
-                                placeholder={{ label: "Select Food Type", value: null }}
-                                value={tiffinData.foodType}
-                                onValueChange={(value) =>
-                                    setTiffinData({ ...tiffinData, foodType: value })
-                                }
-                                items={foodTypeOptions}
+                                placeholder={{ label: 'Select Hours', value: null }}
+                                value={tiffinData.hours}
+                                onValueChange={(value) => setTiffinData({ ...tiffinData, hours: value })}
+                                items={hourOptions}
                                 style={pickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
-
-                        <View style={styles.pickerContainer}>
-                            <Text style={styles.label}>Tiffin Type</Text>
+                        <View style={styles.pickerContainerHalf}>
                             <RNPickerSelect
-                                placeholder={{ label: 'Select Tiffin Type', value: null }}
-                                value={tiffinData.tiffinType}
-                                onValueChange={(value) => setTiffinData({ ...tiffinData, tiffinType: value })}
-                                items={tiffinTypeOptions}
+                                placeholder={{ label: 'Select Minutes', value: null }}
+                                value={tiffinData.mins}
+                                onValueChange={(value) => setTiffinData({ ...tiffinData, mins: value })}
+                                items={minuteOptions}
                                 style={pickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
                             />
                         </View>
-
-                        <Text style={styles.label}>At What Time Would Tiffin Be Ready</Text>
-                        <View style={styles.row}>
-                            <View style={styles.pickerContainerHalf}>
-                                <RNPickerSelect
-                                    placeholder={{ label: 'Select Hours', value: null }}
-                                    value={tiffinData.hours}
-                                    onValueChange={(value) => setTiffinData({ ...tiffinData, hours: value })}
-                                    items={hourOptions}
-                                    style={pickerSelectStyles}
-                                    useNativeAndroidPickerStyle={false}
-                                />
-                            </View>
-                            <View style={styles.pickerContainerHalf}>
-                                <RNPickerSelect
-                                    placeholder={{ label: 'Select Minutes', value: null }}
-                                    value={tiffinData.mins}
-                                    onValueChange={(value) => setTiffinData({ ...tiffinData, mins: value })}
-                                    items={minuteOptions}
-                                    style={pickerSelectStyles}
-                                    useNativeAndroidPickerStyle={false}
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.checkboxContainer}>
-                            <CheckBox
-                                isChecked={tiffinData.availability}
-                                onClick={() => setTiffinData({ ...tiffinData, availability: !tiffinData.availability })}
-                                checkBoxColor="orange"
+                    </View>
+                    <View style={styles.checkboxContainer}>
+                        <CheckBox
+                            isChecked={tiffinData.availability}
+                            onClick={() => setTiffinData({ ...tiffinData, availability: !tiffinData.availability })}
+                            checkBoxColor="orange"
+                        />
+                        <Text style={styles.labels}>Would you provide delivery?</Text>
+                    </View>
+                    {tiffinData.availability ? (
+                        <>
+                            <Text style={styles.label}>Delivery Charge</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter Delivery Charge"
+                                value={tiffinData.deliveryCharge.toString()}
+                                onChangeText={(text) => setTiffinData({ ...tiffinData, deliveryCharge: text })}
+                                keyboardType="numeric"
                             />
-                            <Text style={styles.labels}>Would you provide delivery?</Text>
-                        </View>
-                        {tiffinData.availability ? (
-                            <>  
-                                <Text style={styles.label}>Delivery Charge</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Enter Delivery Charge"
-                                    value={tiffinData.deliveryCharge.toString()}
-                                    onChangeText={(text) => setTiffinData({ ...tiffinData, deliveryCharge: text })}
-                                    keyboardType="numeric"
-                                />
-                                <Text style={styles.label}>At What Time Would You Deliver Tiffins</Text>
-                                <View style={styles.row}>
-                                    <View style={styles.pickerContainerHalf}>
-                                        <RNPickerSelect
-                                            placeholder={{ label: 'Select Hours', value: null }}
-                                            value={tiffinData.deliveryTimeHrs}
-                                            onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeHrs: value })}
-                                            items={hourOptions}
-                                            style={pickerSelectStyles}
-                                            useNativeAndroidPickerStyle={false}
-                                        />
-                                    </View>
-                                    <View style={styles.pickerContainerHalf}>
-                                        <RNPickerSelect
-                                            placeholder={{ label: 'Select Minutes', value: null }}
-                                            value={tiffinData.deliveryTimeMins}
-                                            onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeMins: value })}
-                                            items={minuteOptions}
-                                            style={pickerSelectStyles}
-                                            useNativeAndroidPickerStyle={false}
-                                        />
-                                    </View>
+                            <Text style={styles.label}>At What Time Would You Deliver Tiffins</Text>
+                            <View style={styles.row}>
+                                <View style={styles.pickerContainerHalf}>
+                                    <RNPickerSelect
+                                        placeholder={{ label: 'Select Hours', value: null }}
+                                        value={tiffinData.deliveryTimeHrs}
+                                        onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeHrs: value })}
+                                        items={hourOptions}
+                                        style={pickerSelectStyles}
+                                        useNativeAndroidPickerStyle={false}
+                                    />
                                 </View>
-                            </>
-                        ) : null}
+                                <View style={styles.pickerContainerHalf}>
+                                    <RNPickerSelect
+                                        placeholder={{ label: 'Select Minutes', value: null }}
+                                        value={tiffinData.deliveryTimeMins}
+                                        onValueChange={(value) => setTiffinData({ ...tiffinData, deliveryTimeMins: value })}
+                                        items={minuteOptions}
+                                        style={pickerSelectStyles}
+                                        useNativeAndroidPickerStyle={false}
+                                    />
+                                </View>
+                            </View>
+                        </>
+                    ) : null}
 
-                    </ScrollView>
                     <View style={styles.btnContainer}>
                         <TouchableOpacity style={styles.submitButton} onPress={handleAddTiffin}>
                             <Text style={styles.buttonText}>Add</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.backButton} onPress={onBack}>
                             <Text style={styles.buttonText}>Back</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                            <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -219,10 +226,26 @@ const styles = StyleSheet.create({
         width: '100%',
     },
 
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: windowHeight * 0.01,
+    },
     modalTitle: {
         fontSize: windowWidth * 0.06,
         fontWeight: 'bold',
-        marginBottom: windowHeight * 0.01,
+    },
+    closeButtonHeader: {
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: windowHeight * 0.04,
+        paddingHorizontal: windowWidth * 0.03,
+        fontSize: windowWidth * 0.07,
+    },
+    closeButton: {
+        fontSize: windowWidth * 0.08,
     },
 
     input: {
@@ -289,16 +312,6 @@ const styles = StyleSheet.create({
 
     backButton: {
         backgroundColor: '#FF8C00',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: windowHeight * 0.05,
-        width: windowWidth * 0.95,
-        borderRadius: windowWidth * 0.02,
-        marginTop: windowHeight * 0.01,
-    },
-
-    closeButton: {
-        backgroundColor: 'red',
         alignItems: 'center',
         justifyContent: 'center',
         height: windowHeight * 0.05,
