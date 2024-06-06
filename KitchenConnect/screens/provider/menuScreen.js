@@ -62,6 +62,10 @@ const MenuScreen = ({navigation, route}) => {
     <SafeAreaView style={styles.screen}>
       {authState.authToken ? (
         <>
+        {loading ?
+        <LoadingScreen/>
+          :
+          (<>
           <View style={styles.daysScrollViewContainer}>
             <DaysScrollView selectedDay={selectedDay} onDayChange={onDayChange} />
           </View>
@@ -79,7 +83,7 @@ const MenuScreen = ({navigation, route}) => {
               )}
             /> :
             <View style = {{alignItems: 'center', paddingTop: windowHeight * 0.15}}>
-             <Text style = {{fontSize: windowWidth * 0.05}}>No Menu Has Been Added</Text>
+             <Text style = {{fontSize: windowWidth * 0.05}}>No Item Has Been Added</Text>
              <Text style = {{fontSize: windowWidth * 0.05}}>For This Day</Text>
              </View> }
           </View>
@@ -90,9 +94,10 @@ const MenuScreen = ({navigation, route}) => {
           />
           <View style={styles.btnView}>
             <TouchableOpacity style={styles.btn} onPress={toggleModal}>
-              <Text style={styles.addMenuText}>Add Menu</Text>
+              <Text style={styles.addMenuText}>Add Item</Text>
             </TouchableOpacity>
           </View>
+          </>)}
       </>
       ) : 
         <Text>You are not authorized to access this screen.</Text>

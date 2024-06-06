@@ -2,32 +2,21 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions'; 
 
-const TiffinSubscription = ({ title, price, days, exists , onCreate}) => {
+const TiffinSubscription = ({ title, price, days}) => {
   
   return (
     <View style={styles.container}>
-     {exists ?
-     <>
+    
       <Text style={styles.name}>{title}</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.price}>Price: ₹{price}</Text>
         <Text style={styles.days}>Days: {days}</Text>
       </View>
       <TouchableOpacity style={styles.createButton}>
-        <Text style={styles.buttonText}>Delete</Text>
+        <Text style={styles.buttonText}>Edit</Text>
       </TouchableOpacity> 
-     </> 
-     : 
-     <>
-      <Text style={styles.name}>{title}</Text>
-      <View style={styles.infoContainer}>
-        <Text style={styles.price}>Price: ₹{price}</Text>
-        <Text style={styles.days}>Days: {days}</Text>
-      </View>
-      <TouchableOpacity style={styles.createButton} onPress={onCreate}>
-        <Text style={styles.buttonText}>Create</Text>
-      </TouchableOpacity>
-      </>}
+   
+
     </View>
   );
 };
@@ -41,12 +30,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     padding: windowWidth * 0.04,
+    paddingTop: windowWidth * 0.015,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    marginBottom: windowWidth * 0.04,
+    marginBottom: windowWidth * 0.01,
   },
   name: {
     fontSize: windowWidth * 0.05,
