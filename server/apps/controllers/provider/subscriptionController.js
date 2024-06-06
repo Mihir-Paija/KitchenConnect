@@ -8,9 +8,10 @@ export const getSubscriptions = async(req, res) =>{
 
         const currentSubs = await subscription.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
 
-        if(currentSubs.length !== 0)
+        if(currentSubs.length !== 0){
+            console.log(currentSubs[0].subscriptions)
             return res.status(200).json(currentSubs[0].subscriptions)
-
+        }
         return res.status(200).json([]);
 
     } catch (error) {
