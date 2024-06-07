@@ -7,36 +7,26 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import PriceInfoModal from './priceInfoModal';
 
-const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
+const EditSubModal = ({ isVisible, onClose, onEdit, item }) => {
     const [subscription, setSubscription] = useState({
-        title: "",
-        price: "",
-        days: "",
-        description: "",
-        perTiffin: "",
+        price: item.price,
+        description: item.description,
+        perTiffin: item.price / item.days,
     });
 
-    const handleCreate = async () => {
-        const { title, price, days, description } = subscription;
-        if (!title || !price || !days || !description) {
+    const handleEdit = async () => {
+        const { title, price, days } = subscription;
+        if (!title || !price || !days) {
             Alert.alert("Please Fill All Fields");
             return;
         }
 
-        onCreate(subscription);
+        onEdit(subscription);
     };
-
-    const dayCount = {
-        'Weekly': 7,
-        'Fortnightly': 15,
-        'Monthly': 30,
-    };
-
-    const subOptions = ['Weekly', 'Fortnightly', 'Monthly'].map((value) => ({ label: value, value: value }));
 
     const [infoModal, setInfoModal] = useState(false)
 
-    const toggleInfoModal = () =>{
+    const toggleInfoModal = () => {
         setInfoModal(!infoModal)
     }
 
@@ -50,7 +40,7 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <View style={styles.headerContainer}>
-                        <Text style={styles.modalTitle}>Create Subscription</Text>
+                        <Text style={styles.modalTitle}>Edit {item.title} Subscription</Text>
                         <View style={styles.closeButtonHeader}>
                             <Icon
                                 name="close"
@@ -60,34 +50,8 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                             />
                         </View>
                     </View>
-                    <View style={styles.subscriptionRow}>
-                        <View style={styles.pickerContainer}>
-                            <Text style={styles.daysText}>Select Subscription</Text>
-                        </View>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.daysText}>Days</Text>
-                        </View>
-                    </View>
-                    <View style={styles.subscriptionRow}>
-                        <View style={styles.pickerContainer}>
-                            <RNPickerSelect
-                                placeholder={{ label: "Select Type", value: null }}
-                                value={subscription.title}
-                                onValueChange={(value) =>
-                                    setSubscription({ ...subscription, title: value, days: dayCount[value] })
-                                }
-                                items={subOptions}
-                                style={pickerSelectStyles}
-                                useNativeAndroidPickerStyle={false}
-                            />
-                        </View>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.dayCount}>{subscription.days}</Text>
-                        </View>
-                    </View>
                     <TextInput
-                        style={[styles.input, { height: windowHeight *0.09 }]}
-                        placeholder="Enter Description"
+                        style={[styles.input, { height: windowHeight * 0.09 }]}
                         value={subscription.description}
                         onChangeText={(text) =>
                             setSubscription({ ...subscription, description: text })
@@ -95,57 +59,53 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                     />
                     <View style={styles.subscriptionRow}>
                         <View style={styles.pickerContainer}>
-                            <View style = {styles.priceContainer}>
-                            <Text style={[styles.daysText, {fontSize: windowHeight *0.016}]}>Enter Per Tiffin Price</Text>
-                            <Icon2
-                                name='infocirlceo'
-                                style={styles.infoIcon}
-                                onPress={toggleInfoModal}
-                            />
+                            <View style={styles.priceContainer}>
+                                <Text style={[styles.daysText, { fontSize: windowHeight * 0.016 }]}>Enter Per Tiffin Price</Text>
+                                <Icon2
+                                    name='infocirlceo'
+                                    style={styles.infoIcon}
+                                    onPress={toggleInfoModal}
+                                />
                             </View>
-                            
                         </View>
-                        <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
+                        <View style={[styles.textContainer, { marginRight: windowWidth * 0.025 }]}>
                             <Text style={styles.daysText}>Total Price</Text>
                         </View>
                     </View>
                     <View style={styles.subscriptionRow}>
-                        <View style={[styles.pickerContainer, {flex: 2.5}]}>
-                        <TextInput
-                        style={[styles.input, {height: windowHeight *0.065 }]}
-                        placeholder="Enter Price"
-                        value={subscription.perTiffin}
-                        onChangeText={(text) =>
-                            setSubscription({ ...subscription, perTiffin: text, price: text * subscription.days })
-                        }
-                        keyboardType="numeric"
-                    />
+                        <View style={[styles.pickerContainer, { flex: 2.5 }]}>
+                            <TextInput
+                                style={[styles.input, { height: windowHeight * 0.065 }]}
+                                value={subscription.price}
+                                onChangeText={(text) =>
+                                    setSubscription({ ...subscription, perTiffin: text, price: text * item.days })
+                                }
+                                keyboardType="numeric"
+                            />
                         </View>
                         <View style={styles.textContainer}>
                             <Text style={styles.dayCount}>{subscription.price}</Text>
                         </View>
                     </View>
-                    
+
 
                     <View style={styles.btnContainer}>
-                        <TouchableOpacity style={styles.submitButton} onPress={handleCreate}>
-                            <Text style={styles.buttonText}>Add</Text>
+                        <TouchableOpacity style={styles.submitButton} onPress={handleEdit}>
+                            <Text style={styles.buttonText}>Edit</Text>
                         </TouchableOpacity>
-
-                        {infoModal ?
-                        <PriceInfoModal
-                         isVisible={infoModal}
-                         onClose={toggleInfoModal}
-                         /> : null}
                     </View>
+                    {infoModal ?
+                        <PriceInfoModal
+                            isVisible={infoModal}
+                            onClose={toggleInfoModal}
+                        /> : null}
                 </View>
             </View>
-
         </Modal>
     );
 }
 
-export default CreateSubModal;
+export default EditSubModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
@@ -169,7 +129,7 @@ const styles = StyleSheet.create({
         marginBottom: windowHeight * 0.015,
     },
     modalTitle: {
-        fontSize: windowWidth * 0.06,
+        fontSize: windowWidth * 0.055,
         fontWeight: 'bold',
     },
     closeButtonHeader: {
@@ -177,7 +137,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: windowHeight * 0.04,
-        paddingHorizontal: windowWidth * 0.03,
+        paddingHorizontal: windowWidth * 0.04,
         fontSize: windowWidth * 0.07,
     },
     closeButton: {
@@ -193,14 +153,14 @@ const styles = StyleSheet.create({
         flex: 3,
     },
 
-    priceContainer:{
+    priceContainer: {
         flexDirection: 'row',
     },
 
     infoIcon: {
         fontSize: windowHeight * 0.014,
         marginTop: windowHeight * 0.006,
-        marginLeft: windowWidth *0.017,
+        marginLeft: windowWidth * 0.017,
     },
 
     textContainer: {

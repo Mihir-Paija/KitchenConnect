@@ -1,22 +1,25 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions'; 
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const TiffinSubscription = ({ title, price, days}) => {
+
+const TiffinSubscription = ({ title, price, days, description, onEdit}) => {
   
   return (
     <View style={styles.container}>
-    
+    <View style={styles.headerContainer}>
       <Text style={styles.name}>{title}</Text>
+      <Icon
+        name='pencil-outline'
+        style={styles.createButton}
+        onPress={onEdit}/>
+        </View>
+      <Text>{description}</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.price}>Price: ₹{price}</Text>
         <Text style={styles.days}>Days: {days}</Text>
       </View>
-      <TouchableOpacity style={styles.createButton}>
-        <Text style={styles.buttonText}>Edit</Text>
-      </TouchableOpacity> 
-   
-
     </View>
   );
 };
@@ -30,23 +33,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     padding: windowWidth * 0.04,
-    paddingTop: windowWidth * 0.015,
+    paddingBottom: windowWidth * 0.015,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    marginBottom: windowWidth * 0.01,
+    marginBottom: windowWidth * 0.015,
+  },
+  headerContainer:{
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
+    marginBottom: windowWidth * 0.005,
   },
   name: {
-    fontSize: windowWidth * 0.05,
+    fontSize: windowHeight * 0.03,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: windowWidth * 0.03,
+    
+  },
+  createButton: {
+    position: 'absolute',
+    right: windowWidth * 0.01,
+    top: windowHeight *0.010,
+    color: '#FFA500',
+    fontSize: windowHeight * 0.028,
   },
   infoContainer: {
+    marginTop: windowHeight *0.02,
     flexDirection: 'row',
-    marginBottom: windowWidth * 0.03,
+    marginBottom: windowWidth * 0.01,
   },
   price: {
     flex: 1,
@@ -62,18 +79,10 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-  createButton: {
-    backgroundColor: '#FFA500',
-    width: "100%",
-    height: windowHeight * 0.05,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: windowWidth * 0.01,
-    borderRadius: 10,
-  },
+
   buttonText: {
     color: 'white',
-    fontSize: windowWidth * 0.045,
+    fontSize: windowHeight * 0.020,
     fontWeight: 'bold',
   },
 });

@@ -6,7 +6,6 @@ const detailsSchema = new mongoose.Schema({
         type: String,
         enum: ["Weekly", "Fortnightly", "Monthly"],
         required: [true, "Please Enter Title"],
-        unique: [true, "This subscription already exists"],
     },
 
     price: {
@@ -17,6 +16,11 @@ const detailsSchema = new mongoose.Schema({
     days: {
         type: Number,
         required: [true, "Please Enter Number of Days"]
+    },
+
+    description: {
+        type: String,
+        required: false
     },
 
     activated:{
