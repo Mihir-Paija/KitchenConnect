@@ -60,7 +60,7 @@ const AddTiffinModal1 = ({ isVisible, onClose, onNext }) => {
             }
           />
           <TextInput
-            style={[styles.input, { height: 80 }]}
+            style={[styles.input, { height: windowHeight *0.09 }]}
             placeholder="Write A Short Description"
             value={tiffinData.shortDescription}
             onChangeText={(text) =>

@@ -25,12 +25,14 @@ export const getSubscriptions = async(req, res) =>{
 export const addSubscription = async(req, res) =>{
 try {
     const userID = req.user._id;
-    const {tiffinID} = req.params
+    const {tiffinID} = req.params;
 
-    const {title, price, days} = req.body;
+    console.log(userID);
+    console.log(tiffinID);
 
-    if(!title || !price || !days){
-        console.log("Fields")
+    const {title, price, days, description} = req.body;
+
+    if(!title || !price || !days || !description){
         return res.status(400).send({
             message: "Please Enter All Required Fields"
         })
@@ -38,7 +40,8 @@ try {
     const details ={
         title,
         price,
-        days
+        days,
+        description
     }
 
     let newSub = {
@@ -47,9 +50,9 @@ try {
         subscriptions: []
     }
 
-    let subExists = await subscription.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
+    let subExists = await subscription.findOne({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
 
-    if (subExists.length === 0) {
+    if (subExists.length == 0) {
         newSub.subscriptions.push(details);
         const addedSub = await subscription.create(newSub)
         if (addedSub) {
@@ -64,29 +67,35 @@ try {
 
     }
 
-    
-    let titleExists = subExists[0].subscriptions.find(item => item.title === title);
+    let titleExists = subExists.subscriptions.find(item => item.title === title);
 
-    if(titleExists)
+    if(titleExists){
+        console.log(titleExists)
         return res.status(400).send({
         message: `Subscription Already Exists!`
     })
+}
 
-    subExists[0].subscriptions.push(details)
 
-    const updatedSub = subExists[0].save();
+   const updatedSub = await subExists.save();
+    // console.log(await subscription.findOne({ _id: subExists._id }))
+    // const updatedSub = await subscription.updateOne(
+    //     { _id: subExists._id },
+    //     { $push: { subscriptions: details } }
+    // );
 
-    if(updatedSub)
+    if(updatedSub){
+        console.log(updatedSub)
         return res.status(201).send({
             message: `Subscription Added Succesfully`
         })
-
+    }
     return res.status(500).send({
         message: "Couldn't Add Subscription! Please Try Again"
     })
 
 } catch (error) {
-    console.log("Error in Adding Subscription", error)
+    console.log("Error in Adding Subscription\n", error)
         return res.status(500).send({
             message: "Internal Server Error"
         })
