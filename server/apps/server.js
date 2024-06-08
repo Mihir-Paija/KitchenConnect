@@ -4,14 +4,20 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import { connectDB } from "./configs/dbConnect.js";
 import router from "./routes/index.js";
+import { verifyJwt } from "./utils/jwt.js";
+import provider from "./models/providerModel.js";
+
 
 // Call the connectToDB function
 connectDB();
 
 // Create an Express application
 const app = express();
+export const server = createServer(app);
 
 //global middleware
 app.use(express.json());
@@ -31,6 +37,39 @@ app.get("/", (req, res) => {
 const port = process.env.PORT || 3000;
 
 // Start the server and listen on the specified port
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server for KitchenConnect is listening on port ${port}...`);
 });
+
+export const io = new Server(server,{
+  cors:{
+    origin: "*",
+    methods:["GET", "POST"]
+  }
+})
+
+export let providers = {}
+
+
+io.on('connection', (socket) =>{
+  console.log('Socket Connected')
+
+  socket.on('register-provider', (data) => {
+    const providerID = verifyJwt(data.providerID).decoded.userID
+    providers[providerID] = socket.id;
+    console.log(providerID, " registered with ", socket.id)
+  });
+
+  socket.on('disconnect-provider', () => {
+    
+    for (let providerID in providers) {
+      if (providers[providerID] === socket.id) {
+        delete providers[providerID];
+        break;
+      }
+    }
+    console.log('Provider Disconnected!')
+  });
+})
+
+export default providers;

@@ -12,6 +12,7 @@ import loadFonts from "./utils/fontLoader";
 import { CustomerAuthProvider } from "./context/customerAuthContext";
 import {AuthProvider} from "./context/authContext";
 import { UserTypeProvider } from "./context/userTypeContext";
+import { SocketProvider } from "./context/socketContext";
 import WelcomeNavigator from "./navigations/welcomeNavigator";
 
 export default function App() {
@@ -42,9 +43,11 @@ export default function App() {
 
     <AuthProvider>
       <UserTypeProvider>
+        <SocketProvider>
         <NavigationContainer>
           <WelcomeNavigator />
         </NavigationContainer>
+        </SocketProvider>
       </UserTypeProvider>
     </AuthProvider>
   );
