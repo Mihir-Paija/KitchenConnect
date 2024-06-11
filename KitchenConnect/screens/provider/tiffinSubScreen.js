@@ -9,6 +9,7 @@ import LoadingScreen from '../shared/loadingScreen';
 import { getSubscriptions, addSubscription } from '@/utils/provider/subscriptionAPI';
 import CreateSubModal from './createSubModal';
 import EditSubModal from './editSubModal';
+import { deleteSubscription, editSub } from '../../utils/provider/subscriptionAPI';
 
 const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const {tiffin} = route.params
@@ -72,16 +73,52 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
     setEditSubscription(item);
   }
 
-  const handleEdit = async()=>{
+  const handleEdit = async(sub)=>{
     try {
       toggleEditModal()
-      //call edit API
+      setLoading(true);
+      const tiffinID = tiffin.id;
+      const response = await editSub(authState.authToken, tiffinID, sub);
       
     } catch (error) {
       
     }
     finally{
+      setLoading(false);
+      setRefresh(!refresh)
+    }
+  }
 
+  const alertDelete = (title) => {
+    Alert.alert(
+      'Delete!',
+      `Are You Sure You Want To Delete`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Delete', onPress: () =>  handleDelete(title)},
+      ],
+      { cancelable: false }
+    );
+    return true;
+  };
+
+  const handleDelete = async(title)=>{
+    try {
+      console.log("Deleting")
+      const bodyData = {
+        title: title
+      }
+      toggleEditModal()
+      const tiffinID = tiffin.id;
+      const response = await deleteSubscription(authState.authToken, tiffinID, bodyData)
+    } catch (error) {
+      
+    }finally{
+      setRefresh(!refresh);
     }
   }
 
@@ -122,6 +159,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
        onClose={toggleEditModal}
        item = {editSubscription}
        onEdit={handleEdit} 
+       onDelete = {alertDelete}
       />
       : null} 
       </View>

@@ -7,22 +7,24 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import PriceInfoModal from './priceInfoModal';
 
-const EditSubModal = ({ isVisible, onClose, onEdit, item }) => {
+const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item }) => {
     const [subscription, setSubscription] = useState({
+        title: item.title,
         price: item.price,
         description: item.description,
         perTiffin: item.price / item.days,
     });
 
     const handleEdit = async () => {
-        const { title, price, days } = subscription;
-        if (!title || !price || !days) {
+        const { title, price, description } = subscription;
+        if (!title || !price || !description) {
             Alert.alert("Please Fill All Fields");
             return;
         }
 
         onEdit(subscription);
     };
+
 
     const [infoModal, setInfoModal] = useState(false)
 
@@ -92,6 +94,9 @@ const EditSubModal = ({ isVisible, onClose, onEdit, item }) => {
                     <View style={styles.btnContainer}>
                         <TouchableOpacity style={styles.submitButton} onPress={handleEdit}>
                             <Text style={styles.buttonText}>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item.title)}>
+                            <Text style={styles.buttonText}>Delete</Text>
                         </TouchableOpacity>
                     </View>
                     {infoModal ?
@@ -206,6 +211,16 @@ const styles = StyleSheet.create({
         width: windowWidth * 0.95,
         borderRadius: windowWidth * 0.02,
         marginTop: windowHeight * 0.01,
+    },
+    deleteButton: {
+        backgroundColor: 'red',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: windowHeight * 0.05,
+        width: windowWidth * 0.95,
+        borderRadius: windowWidth * 0.02,
+        marginTop: windowHeight * 0.01,
+        marginRight: windowHeight * 0.005,
     },
 
     buttonText: {
