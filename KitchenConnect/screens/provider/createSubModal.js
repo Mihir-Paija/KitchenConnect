@@ -4,17 +4,21 @@ import { View, TextInput, TouchableOpacity, Alert, StyleSheet, Modal, Text } fro
 import RNPickerSelect from "react-native-picker-select";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/Ionicons";
+import Icon2 from "react-native-vector-icons/AntDesign";
+import PriceInfoModal from './priceInfoModal';
 
 const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
     const [subscription, setSubscription] = useState({
         title: "",
         price: "",
         days: "",
+        description: "",
+        perTiffin: "",
     });
 
     const handleCreate = async () => {
-        const { title, price, days } = subscription;
-        if (!title || !price || !days) {
+        const { title, price, days, description } = subscription;
+        if (!title || !price || !days || !description) {
             Alert.alert("Please Fill All Fields");
             return;
         }
@@ -29,6 +33,12 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
     };
 
     const subOptions = ['Weekly', 'Fortnightly', 'Monthly'].map((value) => ({ label: value, value: value }));
+
+    const [infoModal, setInfoModal] = useState(false)
+
+    const toggleInfoModal = () =>{
+        setInfoModal(!infoModal)
+    }
 
     return (
         <Modal
@@ -76,21 +86,61 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                         </View>
                     </View>
                     <TextInput
-                        style={styles.input}
-                        placeholder="Enter Subscription Price"
-                        value={subscription.price}
+                        style={[styles.input, { height: windowHeight *0.09 }]}
+                        placeholder="Enter Description"
+                        value={subscription.description}
                         onChangeText={(text) =>
-                            setSubscription({ ...subscription, price: text })
+                            setSubscription({ ...subscription, description: text })
+                        }
+                    />
+                    <View style={styles.subscriptionRow}>
+                        <View style={styles.pickerContainer}>
+                            <View style = {styles.priceContainer}>
+                            <Text style={[styles.daysText, {fontSize: windowHeight *0.016}]}>Enter Per Tiffin Price</Text>
+                            <Icon2
+                                name='infocirlceo'
+                                style={styles.infoIcon}
+                                onPress={toggleInfoModal}
+                            />
+                            </View>
+                            
+                        </View>
+                        <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
+                            <Text style={styles.daysText}>Total Price</Text>
+                        </View>
+                    </View>
+                    <View style={styles.subscriptionRow}>
+                        <View style={[styles.pickerContainer, {flex: 2.5}]}>
+                        <TextInput
+                        style={[styles.input, {height: windowHeight *0.065 }]}
+                        placeholder="Enter Price"
+                        value={subscription.perTiffin}
+                        onChangeText={(text) =>
+                            setSubscription({ ...subscription, perTiffin: text, price: text * subscription.days })
                         }
                         keyboardType="numeric"
                     />
+                        </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.dayCount}>{subscription.price}</Text>
+                        </View>
+                    </View>
+                    
+
                     <View style={styles.btnContainer}>
                         <TouchableOpacity style={styles.submitButton} onPress={handleCreate}>
                             <Text style={styles.buttonText}>Add</Text>
                         </TouchableOpacity>
+
+                        {infoModal ?
+                        <PriceInfoModal
+                         isVisible={infoModal}
+                         onClose={toggleInfoModal}
+                         /> : null}
                     </View>
                 </View>
             </View>
+
         </Modal>
     );
 }
@@ -141,6 +191,16 @@ const styles = StyleSheet.create({
 
     pickerContainer: {
         flex: 3,
+    },
+
+    priceContainer:{
+        flexDirection: 'row',
+    },
+
+    infoIcon: {
+        fontSize: windowHeight * 0.014,
+        marginTop: windowHeight * 0.006,
+        marginLeft: windowWidth *0.017,
     },
 
     textContainer: {

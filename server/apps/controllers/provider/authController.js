@@ -6,6 +6,7 @@ import {
 import { hashPassword } from "../../utils/bcrypt.js";
 import { comparePassword } from "../../utils/bcrypt.js";
 import { signJwt, maxAge, verifyJwt } from "../../utils/jwt.js";
+import { notifyProvider } from "../../socket.js";
 
 export const providerSignUpGet = async (req, res) => {
   try {
@@ -166,8 +167,7 @@ export const getProfile = async(req, res) =>{
   try {
     const user = req.user
 
-
-  return res.status(200).send({
+   return res.status(200).send({
     name: user.name,
     shortDescription: user.shortDescription
   })
@@ -181,4 +181,14 @@ export const getProfile = async(req, res) =>{
     })
     
   }
+}
+
+export const sendStatus = async(req, res) =>{
+  const userID = req.user._id;
+  const {message} = req.body;
+  await notifyProvider(userID, message)
+
+  return res.status(200).send({
+    message: `Message Sent`
+  })
 }

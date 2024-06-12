@@ -6,6 +6,7 @@ import MenuTabNavigator from '@/navigations/provider/providerMenuNavigator';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 import { AuthContext } from "@/context/authContext";
 import AddMenuModal from './addMenuModal';
+import MenuScreenHeader from '@/components/provider/menuScreenHeader';
 import { addMenu } from '@/utils/provider/menuAPI';
 import { getProfile } from '@/utils/provider/providerAPI';
 import LoadingScreen from '../shared/loadingScreen';
@@ -32,21 +33,12 @@ const InsideTiffinScreen = ({ route, navigation }) => {
           <LoadingScreen />
         ) : (
           <>
-            <View style={styles.backButtonContainer}>
-              <Icon
-                name="arrow-back"
-                type="ionicon"
-                style={styles.backButton}
-                onPress={handleBack}
-              />
-            </View>
             <View style={styles.container}>
               <View style={styles.topView}>
-                <Text style={styles.providerName} numberOfLines={1} adjustsFontSizeToFit>
-                  {tiffin.name}
-                </Text>
-                <Text>{tiffin.shortDescription}</Text>
-                <Text style={styles.price}>₹{tiffin.price}</Text>
+                <MenuScreenHeader 
+                tiffin={tiffin}
+                onBack={handleBack}
+                />
               </View>
               <View style={styles.divider} />
               <View style={styles.bottomView}>
@@ -86,9 +78,6 @@ const styles = StyleSheet.create({
   topView: {
     flex: 1,
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: windowWidth * 0.05,
     maxHeight: '25%', 
   },
   bottomView: {

@@ -8,6 +8,8 @@ import { windowWidth, windowHeight } from '@/utils/dimensions';
 import LoadingScreen from '../shared/loadingScreen';
 import { getSubscriptions, addSubscription } from '@/utils/provider/subscriptionAPI';
 import CreateSubModal from './createSubModal';
+import EditSubModal from './editSubModal';
+import { deleteSubscription, editSub } from '../../utils/provider/subscriptionAPI';
 
 const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const {tiffin} = route.params
@@ -17,6 +19,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const [refresh, setRefresh] = useContext(RefreshContext)
   const [authState] = useContext(AuthContext)
   const [createModal, setCreateModal] = useState(false)
+  const [editModal, setEditModal] = useState(false)
+  const [editSubscription, setEditSubscription] = useState(false)
 
   const fetchSubscriptions = async() =>{
     try {
@@ -38,23 +42,83 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
 
   }, [, refresh])
 
-  const toggleModal = () =>{
+  const toggleCreateModal = () =>{
     setCreateModal(!createModal)
   }
 
   const handleCreate = async(newSubscription) =>{
     try {
+      toggleCreateModal()
       if(subscriptions.find(item => item.title === newSubscription.title)){
         Alert.alert("Subscription Already Exists!");
         return;
+        //stop going from finally
       }
       const response = await addSubscription(authState.authToken, tiffin.id, newSubscription)
 
     } catch (error) {
       
     } finally{
-      toggleModal()
+      
       setRefresh(!refresh)
+    }
+  }
+
+  const toggleEditModal = () =>{
+    setEditModal(!editModal)
+  }
+
+  const openEditModal = (item) =>{
+    toggleEditModal();
+    setEditSubscription(item);
+  }
+
+  const handleEdit = async(sub)=>{
+    try {
+      toggleEditModal()
+      setLoading(true);
+      const tiffinID = tiffin.id;
+      const response = await editSub(authState.authToken, tiffinID, sub);
+      
+    } catch (error) {
+      
+    }
+    finally{
+      setLoading(false);
+      setRefresh(!refresh)
+    }
+  }
+
+  const alertDelete = (title) => {
+    Alert.alert(
+      'Delete!',
+      `Are You Sure You Want To Delete`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        { text: 'Delete', onPress: () =>  handleDelete(title)},
+      ],
+      { cancelable: false }
+    );
+    return true;
+  };
+
+  const handleDelete = async(title)=>{
+    try {
+      console.log("Deleting")
+      const bodyData = {
+        title: title
+      }
+      toggleEditModal()
+      const tiffinID = tiffin.id;
+      const response = await deleteSubscription(authState.authToken, tiffinID, bodyData)
+    } catch (error) {
+      
+    }finally{
+      setRefresh(!refresh);
     }
   }
 
@@ -65,6 +129,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
       <LoadingScreen /> 
       :
       <>
+      <View style = {styles.subView}>
       {subscriptions.length !== 0 ?
       <FlatList
         data={subscriptions}
@@ -72,22 +137,36 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
           <TiffinSubscription
           title= {item.title}
           price={item.price}
-          days={item.days}/>
+          days={item.days}
+          description={item.description}
+          onEdit={() =>openEditModal(item)}/>
         )}
         keyExtractor={(item) => item._id.toString()}
         contentContainerStyle={styles.flatList}
       /> : <Text>No Subscriptions Created</Text>}
+
         {createModal ? 
       <CreateSubModal
        isVisible={createModal}
-       onClose={toggleModal}
+       onClose={toggleCreateModal}
        onCreate={handleCreate} 
       />
       : null}
 
+    {editModal ? 
+      <EditSubModal
+       isVisible={editModal}
+       onClose={toggleEditModal}
+       item = {editSubscription}
+       onEdit={handleEdit} 
+       onDelete = {alertDelete}
+      />
+      : null} 
+      </View>
+
         <View style={styles.btnView}>
-            <TouchableOpacity style={styles.btn} onPress={toggleModal}>
-              <Text style={styles.createText}>Create Subscriptions</Text>
+            <TouchableOpacity style={styles.btn} onPress={toggleCreateModal}>
+              <Text style={styles.createText}>Create A Subscription</Text>
             </TouchableOpacity>
           </View>
     
@@ -107,10 +186,11 @@ export default TiffinSubscriptionScreen;
 const styles = StyleSheet.create({
   flatList: {
   },
+  subView: {
+    flex:5,
+  },
   btnView: {
-    position: 'absolute',
-    bottom: windowHeight * 0.02, 
-    left: windowWidth * 0.16, 
+    flex:1,
     alignItems: 'center',
     justifyContent: 'center',
   },

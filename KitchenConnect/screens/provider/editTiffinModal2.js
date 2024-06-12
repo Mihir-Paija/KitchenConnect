@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -14,6 +15,13 @@ import {
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import RNPickerSelect from "react-native-picker-select";
 import CheckBox from "react-native-check-box";
+=======
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, TextInput, Modal, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { windowWidth, windowHeight } from '@/utils/dimensions';
+import RNPickerSelect from 'react-native-picker-select';
+import CheckBox from 'react-native-check-box';
+>>>>>>> cc96c1428bad5f0d84a343bb93e4ed8136fdb6fb
 import Icon from "react-native-vector-icons/Ionicons";
 
 const EditTiffinModal2 = ({

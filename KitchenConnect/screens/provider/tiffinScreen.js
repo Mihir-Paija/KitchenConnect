@@ -91,14 +91,14 @@ const TiffinScreen = ({navigation}) => {
   const backAction = () => {
     Alert.alert(
       'Exit!',
-      'You Want To Exit The App?',
+      'Do You Want To Exit The App?',
       [
         {
           text: 'Cancel',
           onPress: () => null,
           style: 'cancel',
         },
-        { text: 'Exit', onPress: () => BackHandler.exitApp() },
+        { text: 'Yes', onPress: () => BackHandler.exitApp() },
       ],
       { cancelable: false }
     );
@@ -167,6 +167,7 @@ const TiffinScreen = ({navigation}) => {
 };
 
 export default TiffinScreen;
+
 
 const styles = StyleSheet.create({
   screen: {
