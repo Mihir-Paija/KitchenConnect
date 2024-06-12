@@ -169,7 +169,8 @@ export const getProfile = async(req, res) =>{
 
    return res.status(200).send({
     name: user.name,
-    shortDescription: user.shortDescription
+    shortDescription: user.shortDescription,
+    fcmToken: user.fcmToken
   })
 
 
@@ -191,4 +192,33 @@ export const sendStatus = async(req, res) =>{
   return res.status(200).send({
     message: `Message Sent`
   })
+}
+
+export const setFCMToken = async(req, res) =>{
+    try {
+      const userID = req.user._id;
+      const {fcmToken} = req.body;
+
+      const setToken = await provider.findByIdAndUpdate(
+        userID,
+        { $set: { fcmToken: fcmToken } }, 
+        { new: true }                   
+      );
+
+      if(setToken){
+        return res.status(200).send({
+          message: `Token Set Successfully`
+        })
+      }
+      
+      return res.status(500).send({
+        message: `Couldn't Set Token`
+      })
+      
+    } catch (error) {
+      console.log(error)
+      return res.status(500).send({
+        message: `Couldn't Set Token`
+      })
+    }
 }

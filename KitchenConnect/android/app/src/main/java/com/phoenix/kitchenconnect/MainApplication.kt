@@ -1,4 +1,4 @@
-package com.dhruvs_87.KitchenConnect
+package com.phoenix.kitchenconnect
 
 import android.app.Application
 import android.content.res.Configuration

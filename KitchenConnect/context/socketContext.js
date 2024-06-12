@@ -22,8 +22,6 @@ export const SocketProvider = ({children}) =>{
 
         const newSocket = io(ENDPOINT)
         setSocket(newSocket);
-        console.log(newSocket);
-        console.log(authState)
 
         const providerID = authState.authToken;
         if(authState.authType === 'provider'){

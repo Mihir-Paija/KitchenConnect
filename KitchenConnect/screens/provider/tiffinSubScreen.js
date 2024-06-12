@@ -10,6 +10,8 @@ import { getSubscriptions, addSubscription } from '@/utils/provider/subscription
 import CreateSubModal from './createSubModal';
 import EditSubModal from './editSubModal';
 import { deleteSubscription, editSub } from '../../utils/provider/subscriptionAPI';
+import NotificationManager from './notificationManager';
+import messaging from '@react-native-firebase/messaging';
 
 const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const {tiffin} = route.params
@@ -36,10 +38,11 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
   }
 
 
+
   useEffect(() =>{
     setLoading(true)
     fetchSubscriptions()
-
+    
   }, [, refresh])
 
   const toggleCreateModal = () =>{
@@ -108,7 +111,6 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
 
   const handleDelete = async(title)=>{
     try {
-      console.log("Deleting")
       const bodyData = {
         title: title
       }

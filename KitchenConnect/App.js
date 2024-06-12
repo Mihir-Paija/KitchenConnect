@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import Choose from "./screens/shared/choosingScreen";
 import CustomerAuthNavigator from "./navigations/customer/customerAuthNavigator";
 import ProviderAuthNavigator from "./navigations/provider/providerAuthNavigator";
@@ -14,6 +12,7 @@ import {AuthProvider} from "./context/authContext";
 import { UserTypeProvider } from "./context/userTypeContext";
 import { SocketProvider } from "./context/socketContext";
 import WelcomeNavigator from "./navigations/welcomeNavigator";
+import { initializeFirebase, requestUserPermission, handleBackgroundMessages, handleForegroundMessages } from './utils/firebase';
 
 export default function App() {
   //global states
@@ -25,6 +24,10 @@ export default function App() {
 
   //first render
   useEffect(() => {
+    //initializeFirebase()
+    //requestUserPermission();
+    //handleBackgroundMessages();
+    //handleForegroundMessages()
     loadFonts().then(() => setIsAppReady(true));
   }, []);
 

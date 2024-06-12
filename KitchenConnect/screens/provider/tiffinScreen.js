@@ -10,13 +10,15 @@ import LoadingScreen from '../shared/loadingScreen';
 import { RefreshContext } from '@/context/refreshContext';
 import AddTiffinModal1 from './addTiffinModal1';
 import AddTiffinModal2 from './addTiffinModal2';
+import { setFCMToken } from '../../utils/provider/providerAPI';
+import messaging from '@react-native-firebase/messaging';
 
 const TiffinScreen = ({navigation}) => {
   const [isModal1Visible, setIsModal1Visible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
-  const [authState] = useContext(AuthContext);
+  const [authState, setAuthState] = useContext(AuthContext);
   const [profile, setProfile] = useState({
     name: '',
     shortDescription: '',
@@ -82,6 +84,18 @@ const TiffinScreen = ({navigation}) => {
         name: response.name,
         shortDescription: response.shortDescription,
       });
+
+      if(!response.fcmToken){
+        const token = await messaging().getToken();
+        console.log('FCM Token:', token);
+
+        const bodyData = {
+          fcmToken: token
+        }
+
+        const response = await setFCMToken(authState.authToken, bodyData)
+        setAuthState({...authState, fcmToken: token})
+      }
       setLoading(false);
     } catch (error) {
       console.log('Error in fetching profile ', error);

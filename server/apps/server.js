@@ -9,12 +9,11 @@ import { Server } from 'socket.io';
 import { connectDB } from "./configs/dbConnect.js";
 import router from "./routes/index.js";
 import { verifyJwt } from "./utils/jwt.js";
-import provider from "./models/providerModel.js";
-
+import { firebaseAdmin } from "./utils/firebaseAdmin.js";
 
 // Call the connectToDB function
 connectDB();
-
+firebaseAdmin();
 // Create an Express application
 const app = express();
 export const server = createServer(app);
@@ -73,3 +72,5 @@ io.on('connection', (socket) =>{
 })
 
 export default providers;
+
+
