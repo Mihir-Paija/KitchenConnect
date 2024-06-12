@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     authToken: "",
     authType: "",
     authData: {},
+    fcmToken: ""
   });
 
   //intial local  storage data

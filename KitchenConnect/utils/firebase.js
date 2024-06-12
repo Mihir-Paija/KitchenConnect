@@ -1,18 +1,45 @@
-// firebase.js
-import firebase from 'firebase/app';
-import 'firebase/messaging';
+import firebase  from '@react-native-firebase/app';
+import messaging from  '@react-native-firebase/messaging';
+import { Alert } from 'react-native';
+import {API_KEY, SENDER_ID, APP_ID} from "@env";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCHKFphV8SUpFcn_in43pUcjbow4oHJ0Dg",
-  authDomain: "your-auth-domain",
+  apiKey: API_KEY,
+  authDomain: 'YOUR_AUTH_DOMAIN',
   projectId: "kitchenconnect-2021",
   storageBucket: "kitchenconnect-2021.appspot.com",
-  messagingSenderId: "385542085457",
-  appId: "1:385542085457:android:4e38a038ccb67dccfdd170"
+  messagingSenderId: SENDER_ID,
+  appId: APP_ID,
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+export const initializeFirebase = () => {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+};
 
-export default firebase;
+
+export const requestUserPermission = async () => {
+  const authStatus = await messaging().requestPermission();
+  console.log(authStatus)
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+};
+
+export const handleBackgroundMessages = () => {
+  console.log("In Bakground")
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  });
+};
+
+export const handleForegroundMessages = () => {
+  return messaging().onMessage(async remoteMessage => {
+    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  });
+};

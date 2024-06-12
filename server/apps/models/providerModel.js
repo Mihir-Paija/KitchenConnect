@@ -68,7 +68,12 @@ const providerSchema = new Schema({
   deactivate: {
     type: Boolean,
     default: false,
-  }
+  },
+  
+  fcmToken: {
+    type: String,
+    default: null,
+  },
   
 }, { timestamps: true });
 

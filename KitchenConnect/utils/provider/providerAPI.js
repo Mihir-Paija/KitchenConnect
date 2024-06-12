@@ -56,3 +56,13 @@ export const getLunchTiffins = async(authToken) =>{
     throw error.response.data;
   }
 }
+
+export const setFCMToken = async(authToken, bodyData) =>{
+  try {
+    const response = await axios.post(`${API_BASE_URL}/provider/${authToken}/setFCMToken`, bodyData);
+    return response.data
+  } catch (error) {
+    console.error('Error In Setting Token:', error);
+    throw error.response.data;
+  }  
+}

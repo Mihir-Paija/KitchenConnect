@@ -1,5 +1,11 @@
 import subscription from "../../models/subscriptionModel.js";
 import mongoose from 'mongoose';
+import { admin } from "../../utils/firebaseAdmin.js";
+import axios from 'axios';
+import { serviceAccount } from "../../utils/serviceKey.js";
+import { google } from 'googleapis';
+import { JWT } from 'google-auth-library';
+const SCOPES = ['https://www.googleapis.com/auth/firebase.messaging'];
 
 export const getSubscriptions = async (req, res) => {
     try {
@@ -152,7 +158,7 @@ export const deleteSubscription = async (req, res) => {
         const userID = req.user._id;
         const { tiffinID } = req.params;
 
-        const {title}  = req.body;
+        const { title } = req.body;
 
         let sub = await subscription.findOne({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) });
 
@@ -190,6 +196,83 @@ export const deleteSubscription = async (req, res) => {
         console.log("Error in Deleting Subscription\n", error)
         return res.status(500).send({
             message: "Internal Server Error"
+        })
+    }
+}
+
+const getAccessToken = async() =>{
+    
+    const key = serviceAccount
+    const jwtClient = new google.auth.JWT(
+        key.client_email,
+        null,
+        key.private_key,
+        SCOPES,
+        null
+      );
+      jwtClient.authorize(function(err, tokens) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        //console.log(tokens)
+        return tokens.access_token
+      });
+}
+
+
+export const sendNotification = async (req, res) => {
+
+    
+   
+
+    
+    const fcmUrl = 'https://fcm.googleapis.com/v1/projects/kitchenconnect-2021/messages:send';
+    const oAuth= 'ya29.a0AXooCgtnzRnxoiFWw8QtRpYLa8Suv51Z-ggQM3kztL2sl5Q7DGV-6uFaRZR0r1eYpnDgXz1VNk5veGZx72eafKhOxCe8WYXt6rUgGQCDOHApOTeQgA97Nv4qXjYJB6az123qF-d7DN71sBVpp3bm5-ZIez95I6uynb8haCgYKAVwSARISFQHGX2MiAl68Y1Xd2pjMMPh43gMxgQ0171' //playground
+    const apiKey='ya29.a0AXooCgvqWJuBIjXEpx0smH2t4--pPnmny2J9uZbj81_QeOY0v0HBMrcTmjkhxj2Cw1BwPrw1zC0ZN2IidReRElwX7jXEZ-IssA97Og9__Dn9s9WSO0MwV6L8XWwd8iFeINsn2sRP0d_HizV3aMs-g8PBwzk0mpuXtNKDaCgYKAV4SARISFQHGX2MiefPyIQQpsRgihp7pgGsI6A0171' //postman
+   
+
+
+    try {
+
+
+        const { fcmToken } = req.body
+    console.log(fcmToken)
+
+    const accessToken = await getAccessToken()
+    console.log(accessToken)
+
+    const message = {
+        notification: {
+            title: "KitchenConnect",
+            body: "You got 1 new subscription",
+        },
+        token: fcmToken,
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log(response);
+
+
+    // const response = await axios.post(fcmUrl, message, {
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           'Authorization': `Bearer ${accessToken}`,
+    //         },
+    //       });
+        
+
+        if (response) {
+            console.log(response)
+            console.log(response)
+            return res.status(200).send({
+                message: `Successfully sent message`
+            })
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        return res.status(500).send({
+            message: `Unsuccessfully sent message`
         })
     }
 }
