@@ -12,6 +12,7 @@ import {
   FlatList,
   Dimensions,
   Animated,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as NavigationBar from "expo-navigation-bar";

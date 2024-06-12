@@ -103,7 +103,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
   };
 
   const subscriptionHandler = () => {
-    console.log("click on subscription");
+    // console.log("click on subscription");
     setSubscriptionModalVisible(true);
   };
 
