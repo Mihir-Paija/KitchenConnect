@@ -25,13 +25,18 @@ router.use("/customer/tiffin", getTiffinRouter);
 import getMenuRouter from "./customer/getMenuRouter.js";
 router.use("/customer/menu", getMenuRouter);
 
+import subscribeRouter from './customer/subscribeRouter.js'
+router.use('/customer/subscribe', subscribeRouter)
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
 import { menuRouter } from "./provider/menuRouter.js";
 import { subscriptionRouter } from "./provider/subscriptionRouter.js";
+import { subscriberRouter } from "./provider/subscriberRouter.js";
 router.use("/provider", providerAuthRouter);
 router.use("/provider/tiffin", tiffinRouter);
 router.use("/provider/menu", menuRouter);
 router.use('/provider/subscription', subscriptionRouter)
+router.use('/provider/subscriber', subscriberRouter)
 
 export default router;
