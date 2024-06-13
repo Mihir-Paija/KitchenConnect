@@ -1,4 +1,4 @@
-package com.dhruvs_87.KitchenConnect
+package com.phoenix.kitchenconnect
 
 import android.os.Build
 import android.os.Bundle

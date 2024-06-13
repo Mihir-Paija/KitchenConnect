@@ -12,13 +12,18 @@
   "author": "TeamPhoenix",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "firebase-admin": "^12.1.1",
+    "google-auth-library": "^9.11.0",
+    "googleapis": "^140.0.0",
     "mongodb": "^6.6.2",
     "mongoose": "^8.4.0",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.3.2",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
