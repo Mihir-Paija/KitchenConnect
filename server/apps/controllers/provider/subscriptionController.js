@@ -221,10 +221,10 @@ const getAccessToken = async () => {
 }
 
 
-export const sendNotification = async (req, res) => {
+export const sendNotification = async (token) => {
    
     try {
-        const { fcmToken } = req.body
+        const fcmToken = token
         console.log(fcmToken)
 
         const message = {
