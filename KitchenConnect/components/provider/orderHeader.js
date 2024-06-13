@@ -1,58 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {windowHeight, windowWidth} from '@utils/dimensions'
 
-const OrderHeader = ({type}) =>{
-  const [type, setType] = useState(type);
+const OrderHeader = ({name, onPressLunch, onPressDinner}) =>{
+  const [type, setType] = useState(name);
+
+  useEffect(()=>{
+    setType(name)
+  }, [name])
 
   return (
-    <View style={styles.container}>
+    <View style={styles.buttonRow}>
       <TouchableOpacity
-        style={[
-          styles.button,
-          type === 'Lunch' && styles.buttonPressed
-        ]}
+       style={[
+        styles.button,
+        type === 'Lunch' && styles.buttonPressed
+      ]}
         onPress={onPressLunch}
       >
         <Text style={styles.buttonText}>Lunch</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[
-          styles.button,
-          type === 'Dinner' && styles.buttonPressed
-        ]}
+        style={[styles.button, type === 'Dinner' && styles.buttonPressed]}
         onPress={onPressDinner}
       >
         <Text style={styles.buttonText}>Dinner</Text>
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 export default OrderHeader
 
 const styles = StyleSheet.create({
-  container: {
+  buttonRow: {
     flexDirection: 'row',
     width: '100%',
-    height: '100%',
-    justifyContent: 'space-around',
-    alignItems: 'center',
   },
   button: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 20,
-    margin: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#000',
+    borderWidth: 0,
+    height: windowHeight * 0.06
   },
   buttonPressed: {
     backgroundColor: 'lightgrey',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    color: 'black',
   },
 });
+
+
