@@ -1,66 +1,48 @@
 import React from "react";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import CompletedSubCustomerScreen from "../../screens/customer/CompletedSubCustomerScreen";
-import CurrentSubCustomerScreen from "../../screens/customer/CurrentSubCustomerScreen";
-import PendingSubCustomerScreen from "../../screens/customer/PendingSubCustomerScreen";
-import { windowHeight, windowWidth } from "@/utils/dimensions";
+import { createStackNavigator } from "@react-navigation/stack";
+import SubscriptionCustomerScreen from "@/screens/customer/SubscriptionCustomerScreen";
+import PendingSubScreen from "@/screens/customer/subscriptionCards/PendingSubScreen";
+import CurrentSubScreen from "@/screens/customer/subscriptionCards/CurrentSubScreen";
+import CompletedSubScreen from "../../screens/customer/subscriptionCards/completedSubScreen";
 
-const SubscriptionTab = createMaterialTopTabNavigator();
+const subscriptionStack = createStackNavigator();
 
-const SubscriptionTabNavigator = () => {
+const subscriptionCustomerNavigator = () => {
   return (
-    <SubscriptionTab.Navigator
-      initialRouteName="Current"
+    <subscriptionStack.Navigator
+      initialRouteName="SubscriptionCustomer"
       screenOptions={{
-        tabBarActiveTintColor: "#000",
-        tabBarInactiveTintColor: "#808080",
-        tabBarLabelStyle: {
-          fontSize: windowWidth * 0.035,
-          fontFamily: "NunitoBold",
-          textTransform: "none",
-          textAlign: "center",
+        headerShown: false,
+        gestureEnabled: true,
+        gestureDirection: "horizontal",
+        transitionSpec: {
+          open: TransitionSpecs.TransitionIOSSpec,
+          close: TransitionSpecs.TransitionIOSSpec,
         },
-        tabBarIndicatorStyle: {
-          backgroundColor: "#ffa500",
-          height: windowWidth * 0.005,
-          width: windowWidth * 0.2,
-          marginHorizontal: windowWidth * 0.02,
-        },
-        tabBarItemStyle: {
-          //   backgroundColor: "#ffaa",
-          width: windowWidth * 0.25,
-          paddingHorizontal: windowWidth * 0.02,
-          paddingVertical: windowWidth * 0.005,
-        },
-        tabBarStyle: {
-          //   marginLeft: windowWidth * 0.15,
-          backgroundColor: "#fff",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 2,
-          elevation: 5,
-        },
-        tabBarScrollEnabled: true,
       }}
     >
-      <SubscriptionTab.Screen
-        name="Current"
-        component={CurrentSubCustomerScreen}
-        options={{ tabBarLabel: "Current" }}
+      <subscriptionStack.Screen
+        name="SubscriptionCustomer"
+        component={SubscriptionCustomerScreen}
+        options={{ presentation: "transparentModal" }}
       />
-      <SubscriptionTab.Screen
-        name="Completed"
-        component={CompletedSubCustomerScreen}
-        options={{ tabBarLabel: "Completed" }}
+      <subscriptionStack.Screen
+        name="PendingSubScreen"
+        component={PendingSubScreen}
+        options={{ presentation: "transparentModal" }}
       />
-      <SubscriptionTab.Screen
-        name="Pending"
-        component={PendingSubCustomerScreen}
-        options={{ tabBarLabel: "Pending" }}
+      <subscriptionStack.Screen
+        name="CurrentSubScreen"
+        component={CurrentSubScreen}
+        options={{ presentation: "transparentModal" }}
       />
-    </SubscriptionTab.Navigator>
+      <subscriptionStack.Screen
+        name="CompletedSubScreen"
+        component={CompletedSubScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+    </subscriptionStack.Navigator>
   );
 };
 
-export default SubscriptionTabNavigator;
+export default subscriptionCustomerNavigator;
