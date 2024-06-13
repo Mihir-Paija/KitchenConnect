@@ -25,7 +25,7 @@ const tiffinSchema = new Schema(
 
     providerID: {
       type: Schema.Types.ObjectId,
-      ref: "Provider", // Referencing the Provider model
+      ref: "Provider", 
       required: true,
     },
 
