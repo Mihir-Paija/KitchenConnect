@@ -21,10 +21,11 @@ import SubscriptionCard from "../../components/customer/subscriptionCard";
 const DUMMY_DATA = [
   {
     id: 1,
-    type: "pending",
-    providerName: "Healthy Bites",
+    type: "Pending",
+    providerName: "Phoenix Kitchen",
     tiffinName: "Veg Thali",
-    subscriptionName: "Monthly Veg Thali",
+    subscriptionName: "Standard Subscription",
+    tiffinType: "Lunch",
     duration: 30,
     deliveryIncluded: true,
     deliveryCharge: 50,
@@ -33,6 +34,8 @@ const DUMMY_DATA = [
       deliveryCharge: 1500,
       totalPrice: 3000,
     },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
     numberOfTiffins: 30,
     startDate: "2024-06-14",
     endDate: "2024-07-13",
@@ -44,10 +47,11 @@ const DUMMY_DATA = [
   },
   {
     id: 2,
-    type: "current",
+    type: "Current",
     providerName: "NutriBowl",
     tiffinName: "Keto Power Bowl",
     subscriptionName: "Weekly Keto Power Bowl",
+    tiffinType: "Dinner",
     duration: 7,
     deliveryIncluded: true,
     deliveryCharge: 20,
@@ -56,6 +60,8 @@ const DUMMY_DATA = [
       deliveryCharge: 140,
       totalPrice: 840,
     },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
     numberOfTiffins: 7,
     startDate: "2024-06-10",
     endDate: "2024-06-16",
@@ -67,10 +73,11 @@ const DUMMY_DATA = [
   },
   {
     id: 3,
-    type: "completed",
+    type: "Completed",
     providerName: "Fresh Delight",
     tiffinName: "Balanced Diet",
     subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
     duration: 30,
     deliveryIncluded: false,
     deliveryCharge: 0,
@@ -79,11 +86,91 @@ const DUMMY_DATA = [
       deliveryCharge: 0,
       totalPrice: 1500,
     },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
     numberOfTiffins: 30,
     startDate: "2024-05-01",
     endDate: "2024-05-30",
     pricePerTiffinDelivery: 0,
     status: "completed",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
+  {
+    id: 4,
+    type: "Current",
+    providerName: "NutriBowl",
+    tiffinName: "Keto Power Bowl",
+    subscriptionName: "Weekly Keto Power Bowl",
+    tiffinType: "Dinner",
+    duration: 7,
+    deliveryIncluded: true,
+    deliveryCharge: 20,
+    priceBreakdown: {
+      subscriptionPrice: 700,
+      deliveryCharge: 140,
+      totalPrice: 840,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 7,
+    startDate: "2024-06-10",
+    endDate: "2024-06-16",
+    pricePerTiffinDelivery: 20,
+    status: "current",
+    remainingDays: 4,
+    daysCompleted: 3,
+    daysOptedOut: 0,
+  },
+  {
+    id: 5,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "completed",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
+  {
+    id: 6,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "declined",
     remainingDays: 0,
     daysCompleted: 30,
     daysOptedOut: 0,
@@ -114,13 +201,13 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
 
   // States for each subscription type
   const [currentSubscriptions, setCurrentSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "current")
+    DUMMY_DATA.filter((item) => item.type === "Current")
   );
   const [completedSubscriptions, setCompletedSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "completed")
+    DUMMY_DATA.filter((item) => item.type === "Completed")
   );
   const [pendingSubscriptions, setPendingSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "pending")
+    DUMMY_DATA.filter((item) => item.type === "Pending")
   );
 
   // functions
@@ -145,6 +232,10 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
       ...prev,
       [section]: !prev[section],
     }));
+  };
+
+  const cardHandler = (subscription) => {
+    navigation.navigate("SubscriptionDetailsCustomer", { subscription });
   };
 
   return (
@@ -255,6 +346,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
                   {currentSubscriptions.map((subscription) => (
                     <SubscriptionCard
                       key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
                       subscription={subscription}
                     />
                   ))}
@@ -276,6 +368,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
                   {completedSubscriptions.map((subscription) => (
                     <SubscriptionCard
                       key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
                       subscription={subscription}
                     />
                   ))}
@@ -297,6 +390,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
                   {pendingSubscriptions.map((subscription) => (
                     <SubscriptionCard
                       key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
                       subscription={subscription}
                     />
                   ))}

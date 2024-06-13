@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const PendingSubScreen = ({ route }) => {
+const PendingSubScreen = ({ navigation, route }) => {
   const { subscription } = route.params;
 
   return (

@@ -10,8 +10,12 @@ import React, { useContext, useEffect } from "react";
 import FooterMenu from "../../components/shared/menu/footerMenu";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
+import { useRoute } from "@react-navigation/native";
 
 const HistoryCustomerScreen = ({ navigation }) => {
+  const route = useRoute();
+  const currentRoute = route.name;
+
   //gloabal states
   const [authState, setAuthState] = useContext(AuthContext);
   return (
