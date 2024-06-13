@@ -17,8 +17,11 @@ const FooterMenu = ({ navigation }) => {
 
   //functions
   const handleFooterMenu = (key) => {
+    const navigatorName = customerIconPaths[key]?.navigator;
     const screenName = customerIconPaths[key]?.screen;
-    if (screenName) {
+    if (navigatorName) {
+      navigation.navigate(navigatorName);
+    } else if (screenName) {
       navigation.navigate(screenName);
     }
   };

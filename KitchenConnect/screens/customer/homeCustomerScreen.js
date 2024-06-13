@@ -15,9 +15,11 @@ import KitchenComponent from "@/components/customer/kitchenComponent";
 import LoadingScreen from "../../screens/shared/loadingScreen";
 import { getKitchenCustomer } from "@/utils/APIs/customerApi";
 import HeaderHomeCustomer from "@/components/customer/kitchenScreenHeader";
+import { useRoute, useIsFocused } from "@react-navigation/native";
 
 const HomeCustomerScreen = ({ navigation }) => {
   const [authState, setAuthState] = useContext(AuthContext);
+  const isFocused = useIsFocused();
 
   //states
   const [selectedCity, setSelectedCity] = useState("");
@@ -78,10 +80,7 @@ const HomeCustomerScreen = ({ navigation }) => {
     fetchCities();
 
     const backAction = () => {
-      const currentRoute =
-        navigation.getState().routes[navigation.getState().index].name;
-
-      if (currentRoute === "HomeCustomer") {
+      if (isFocused) {
         Alert.alert(
           "Exit!",
           "Are You Sure You Want To Exit?",
@@ -96,9 +95,8 @@ const HomeCustomerScreen = ({ navigation }) => {
           { cancelable: false }
         );
         return true;
-      } else {
-        return false;
       }
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -107,7 +105,7 @@ const HomeCustomerScreen = ({ navigation }) => {
     );
 
     return () => backHandler.remove();
-  }, [navigation]);
+  }, [navigation, isFocused]);
 
   const renderItem = ({ item }) => (
     <KitchenComponent

@@ -16,52 +16,165 @@ import FilterModalTiffinCustomer from "@/components/customer/FilterModalTiffinCu
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import DownButton from "../../components/shared/DownButton";
 import UpButton from "../../components/shared/UpButton";
-import PendingCard from "../../components/customer/subscriptionCards/pendingCard";
+import SubscriptionCard from "../../components/customer/subscriptionCard";
 
 const DUMMY_DATA = [
   {
     id: 1,
-    type: "pending", // Replace with actual subscription type (pending, current, completed)
-    providerName: "Healthy Bites", // Data for BaseCard
-    tiffinName: "Veg Thali", // Data for BaseCard
-    // Data specific to pending subscriptions
+    type: "Pending",
+    providerName: "Phoenix Kitchen",
+    tiffinName: "Veg Thali",
+    subscriptionName: "Standard Subscription",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: true,
+    deliveryCharge: 50,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 1500,
+      totalPrice: 3000,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
     startDate: "2024-06-14",
-    endDate: "2024-06-30",
-    subscriptionName: "Monthly Veg Thali",
-    expanded: false, // Controls details visibility initially (PendingCard)
-  },
-  // ... other subscriptions (pending, current, completed)
-];
-
-const pendingSubscriptions = [
-  {
-    id: 1, // Unique identifier for the subscription
-    type: "pending", // Subscription type (pending, current, completed)
-    providerName: "Fresh Delight",
-    tiffinName: "Balanced Diet",
-    // BaseCard data
-    imageUrl: "https://example.com/balanced_diet.jpg", // Image URL for the tiffin (optional)
-    rating: 4.5, // Rating of the provider or tiffin (optional)
-
-    // PendingCard data
-    startDate: "2024-06-17",
-    endDate: "2024-06-30",
-    subscriptionName: "Monthly Balanced Diet",
-    expanded: false, // Controls details visibility initially
+    endDate: "2024-07-13",
+    pricePerTiffinDelivery: 50,
+    status: "pending",
+    remainingDays: null,
+    daysCompleted: null,
+    daysOptedOut: null,
   },
   {
     id: 2,
-    type: "pending",
+    type: "Current",
     providerName: "NutriBowl",
     tiffinName: "Keto Power Bowl",
-    imageUrl: "https://example.com/keto_power_bowl.jpg",
-    rating: 4.8,
-    startDate: "2024-06-20",
-    endDate: "2024-07-10",
     subscriptionName: "Weekly Keto Power Bowl",
-    expanded: false,
+    tiffinType: "Dinner",
+    duration: 7,
+    deliveryIncluded: true,
+    deliveryCharge: 20,
+    priceBreakdown: {
+      subscriptionPrice: 700,
+      deliveryCharge: 140,
+      totalPrice: 840,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 7,
+    startDate: "2024-06-10",
+    endDate: "2024-06-16",
+    pricePerTiffinDelivery: 20,
+    status: "current",
+    remainingDays: 4,
+    daysCompleted: 3,
+    daysOptedOut: 0,
   },
-  // ... add more pending subscriptions here
+  {
+    id: 3,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "completed",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
+  {
+    id: 4,
+    type: "Current",
+    providerName: "NutriBowl",
+    tiffinName: "Keto Power Bowl",
+    subscriptionName: "Weekly Keto Power Bowl",
+    tiffinType: "Dinner",
+    duration: 7,
+    deliveryIncluded: true,
+    deliveryCharge: 20,
+    priceBreakdown: {
+      subscriptionPrice: 700,
+      deliveryCharge: 140,
+      totalPrice: 840,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 7,
+    startDate: "2024-06-10",
+    endDate: "2024-06-16",
+    pricePerTiffinDelivery: 20,
+    status: "current",
+    remainingDays: 4,
+    daysCompleted: 3,
+    daysOptedOut: 0,
+  },
+  {
+    id: 5,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "completed",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
+  {
+    id: 6,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "declined",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
 ];
 
 const SubscriptionCustomerScreen = ({ navigation }) => {
@@ -86,6 +199,17 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   const currentRef = useRef();
   const pendingRef = useRef();
 
+  // States for each subscription type
+  const [currentSubscriptions, setCurrentSubscriptions] = useState(
+    DUMMY_DATA.filter((item) => item.type === "Current")
+  );
+  const [completedSubscriptions, setCompletedSubscriptions] = useState(
+    DUMMY_DATA.filter((item) => item.type === "Completed")
+  );
+  const [pendingSubscriptions, setPendingSubscriptions] = useState(
+    DUMMY_DATA.filter((item) => item.type === "Pending")
+  );
+
   // functions
   const onFilterChange = (type, value) => {
     setFilterCriteria((prev) => ({ ...prev, [type]: value }));
@@ -108,6 +232,10 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
       ...prev,
       [section]: !prev[section],
     }));
+  };
+
+  const cardHandler = (subscription) => {
+    navigation.navigate("SubscriptionDetailsCustomer", { subscription });
   };
 
   return (
@@ -207,61 +335,63 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
             <View ref={currentRef} style={styles.section}>
               <TouchableOpacity onPress={() => toggleSection("current")}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Current (2)</Text>
+                  <Text style={styles.sectionTitle}>
+                    Current ({currentSubscriptions.length})
+                  </Text>
                   {collapsedSections.current ? <DownButton /> : <UpButton />}
                 </View>
               </TouchableOpacity>
               {!collapsedSections.current && (
                 <View>
-                  {/* Add your current subscriptions here */}
-                  <View style={styles.card}>
-                    <Text>Jodhpur</Text>
-                  </View>
-                  <View style={styles.card}>
-                    <Text>Udaipur</Text>
-                  </View>
+                  {currentSubscriptions.map((subscription) => (
+                    <SubscriptionCard
+                      key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
+                      subscription={subscription}
+                    />
+                  ))}
                 </View>
               )}
             </View>
+
             <View ref={completedRef} style={styles.section}>
               <TouchableOpacity onPress={() => toggleSection("completed")}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Completed (3)</Text>
+                  <Text style={styles.sectionTitle}>
+                    Completed ({completedSubscriptions.length})
+                  </Text>
                   {collapsedSections.completed ? <DownButton /> : <UpButton />}
                 </View>
               </TouchableOpacity>
               {!collapsedSections.completed && (
                 <View>
-                  {/* Add your completed subscriptions here */}
-                  <View style={styles.card}>
-                    <Text>Jaipur</Text>
-                  </View>
-                  <View style={styles.card}>
-                    <Text>Agra</Text>
-                  </View>
-                  <View style={styles.card}>
-                    <Text>Delhi</Text>
-                  </View>
+                  {completedSubscriptions.map((subscription) => (
+                    <SubscriptionCard
+                      key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
+                      subscription={subscription}
+                    />
+                  ))}
                 </View>
               )}
             </View>
+
             <View ref={pendingRef} style={styles.section}>
               <TouchableOpacity onPress={() => toggleSection("pending")}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Pending (1)</Text>
+                  <Text style={styles.sectionTitle}>
+                    Pending ({pendingSubscriptions.length})
+                  </Text>
                   {collapsedSections.pending ? <DownButton /> : <UpButton />}
                 </View>
               </TouchableOpacity>
               {!collapsedSections.pending && (
                 <View>
-                  {/* Add your pending subscriptions here */}
                   {pendingSubscriptions.map((subscription) => (
-                    <PendingCard
-                      key={subscription.id} // Replace with unique ID from your data
-                      providerName={subscription.providerName}
-                      tiffinName={subscription.tiffinName}
-                      onPress={() => console.log("click")}
-                      onWithdraw={() => console.log("withdraw")}
+                    <SubscriptionCard
+                      key={subscription.id}
+                      onPress={() => cardHandler(subscription)}
+                      subscription={subscription}
                     />
                   ))}
                 </View>
@@ -269,16 +399,16 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
             </View>
           </ScrollView>
 
+          <FooterMenu active="Subscriptions" navigation={navigation} />
           <FilterModalTiffinCustomer
             visible={filterModalVisible}
             onClose={() => setFilterModalVisible(false)}
             onFilterChange={onFilterChange}
             filterCriteria={filterCriteria}
           />
-          <FooterMenu navigation={navigation} />
         </>
       ) : (
-        <Text>You are not authorized to access this screen.</Text>
+        <Text style={{ color: "red" }}>Please Login</Text>
       )}
     </SafeAreaView>
   );
@@ -289,12 +419,8 @@ export default SubscriptionCustomerScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
-  },
-  ScrollContent: {
-    marginBottom: windowHeight * 0.06,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#fff",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   header: {
     flexDirection: "row",
@@ -302,6 +428,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: windowWidth * 0.02,
     paddingVertical: windowWidth * 0.02,
+    // backgroundColor: "#fff",
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#e0e0e0",
   },
   filterContainer: {
     backgroundColor: "#fff",
@@ -323,12 +452,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeTab: {
-    // paddingVertical: windowHeight * 0.05,
-    // borderBottomColor: "#ffa500",
-    // borderBottomWidth: windowWidth * 0.01,
-    // borderRadius: windowWidth * 0.02,
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // paddingVertical: 10,
+    // borderBottomWidth: 2,
+    // borderBottomColor: "#000",
   },
-  // inactiveTab: { paddingVertical: windowHeight * 0.005 },
+  inactiveTab: {
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // paddingVertical: 10,
+  },
   activeTabText: {
     fontSize: windowWidth * 0.04,
     fontFamily: "NunitoBold",
@@ -345,9 +481,14 @@ const styles = StyleSheet.create({
     marginTop: windowHeight * 0.005,
     borderRadius: windowWidth * 0.02,
   },
+  ScrollContent: {
+    marginBottom: windowHeight * 0.06,
+    backgroundColor: "#f8f8f8",
+  },
   section: {
     padding: windowWidth * 0.03,
     // backgroundColor: "#ffaa",
+    // marginBottom: windowHeight * 0.005,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -356,28 +497,10 @@ const styles = StyleSheet.create({
     paddingBottom: windowWidth * 0.02,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    // borderBottomColor: "#e0e0e0",
   },
   sectionTitle: {
     fontSize: windowWidth * 0.05,
     fontFamily: "NunitoBold",
-  },
-  card: {
-    width: windowWidth * 0.9,
-    height: windowHeight * 0.25,
-    backgroundColor: "#ffffff", // corrected the color code
-    marginVertical: windowHeight * 0.01,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    // Shadow properties for iOS
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    // Elevation property for Android
-    elevation: 2,
   },
 });
