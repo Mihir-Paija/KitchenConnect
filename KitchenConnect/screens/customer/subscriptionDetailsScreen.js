@@ -29,6 +29,12 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   const backHandler = () => {
     navigation.goBack();
   };
+  const calculateDiscountedPrice = (price, discount) => {
+    const discountedPrice =
+      parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100;
+    return discountedPrice.toFixed(2);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {authState.authToken ? (
@@ -49,6 +55,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               style={styles.tiffinImage}
             />
           </View>
+
           <View style={styles.bookingBox}>
             <Text style={styles.bookingTitleTxt}>Booking Details</Text>
             <View
@@ -87,7 +94,48 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               </Text>
             </View>
           </View>
-          {/* <Text>SubscriptionDetailsScreen</Text> */}
+
+          <View
+            style={[
+              styles.bookingBox,
+              //   {
+              //     backgroundColor: "rgba(256,165,0,0.2)",
+              //     shadowColor: "rgba(256,165,0,1)",
+              //     elevation: 0.00005,
+              //   },
+            ]}
+          >
+            <Text style={styles.bookingTitleTxt}>Subscription Details</Text>
+            <View style={styles.subBox}>
+              <Text style={styles.subNameText}>
+                {" "}
+                {subscription.subscriptionName}{" "}
+              </Text>
+              <View style={styles.priceContainer}>
+                {subscription.discount && (
+                  <Text style={styles.originalPrice}>
+                    ₹{subscription.price}
+                  </Text>
+                )}
+                <Text
+                  style={
+                    subscription.discount
+                      ? styles.discountedPrice
+                      : styles.planPrice
+                  }
+                >
+                  ₹
+                  {subscription.discount
+                    ? calculateDiscountedPrice(
+                        subscription.price,
+                        subscription.discount
+                      )
+                    : subscription.price}{" "}
+                  / {"fortNight"}
+                </Text>
+              </View>
+            </View>
+          </View>
         </>
       ) : (
         <Text>You are not authorized to access this screen.</Text>
@@ -215,5 +263,52 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: windowWidth * 0.042,
     fontFamily: "NunitoRegular",
+  },
+  subBox: {
+    padding: windowWidth * 0.03,
+    marginVertical: windowHeight * 0.01,
+    backgroundColor: "rgba(256,165,0,0.1)",
+    borderRadius: windowWidth * 0.02,
+  },
+  subNameText: {
+    color: "rgba(204,128,0,1)",
+    fontSize: windowWidth * 0.054,
+    fontFamily: "NunitoExtraBold",
+    textAlign: "center",
+    marginBottom: windowHeight * 0.01,
+  },
+  //   subPriceText: {
+  //   fontSize: windowWidth * 0.04,
+  //   fontFamily: "NunitoSemiBold",
+  //     textAlign: "center",
+  //     marginBottom: windowHeight * 0.01,
+  //   },
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    alignContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+
+  planPrice: {
+    fontSize: windowWidth * 0.04,
+    fontFamily: "NunitoSemiBold",
+    // color: "#ffa500",
+    marginBottom: 20,
+  },
+  originalPrice: {
+    fontSize: windowWidth * 0.04,
+    fontFamily: "NunitoSemiBold",
+    color: "gray",
+    textDecorationLine: "line-through",
+    marginRight: 5,
+  },
+  discountedPrice: {
+    fontSize: windowWidth * 0.04,
+    fontFamily: "NunitoSemiBold",
+    // color: "#ffa500",
+    marginBottom: 5,
   },
 });
