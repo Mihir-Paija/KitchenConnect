@@ -29,6 +29,8 @@ const DUMMY_DATA = [
     duration: 30,
     deliveryIncluded: true,
     deliveryCharge: 50,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 1500,
       deliveryCharge: 1500,
@@ -55,6 +57,8 @@ const DUMMY_DATA = [
     duration: 7,
     deliveryIncluded: true,
     deliveryCharge: 20,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 700,
       deliveryCharge: 140,
@@ -81,6 +85,8 @@ const DUMMY_DATA = [
     duration: 30,
     deliveryIncluded: false,
     deliveryCharge: 0,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 1500,
       deliveryCharge: 0,
@@ -107,6 +113,8 @@ const DUMMY_DATA = [
     duration: 7,
     deliveryIncluded: true,
     deliveryCharge: 20,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 700,
       deliveryCharge: 140,
@@ -133,6 +141,8 @@ const DUMMY_DATA = [
     duration: 30,
     deliveryIncluded: false,
     deliveryCharge: 0,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 1500,
       deliveryCharge: 0,
@@ -159,6 +169,8 @@ const DUMMY_DATA = [
     duration: 30,
     deliveryIncluded: false,
     deliveryCharge: 0,
+    price: "2000",
+    discount: "10",
     priceBreakdown: {
       subscriptionPrice: 1500,
       deliveryCharge: 0,
