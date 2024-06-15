@@ -33,7 +33,7 @@ const DUMMY_DATA = [
     discount: "10",
     priceBreakdown: {
       subscriptionPrice: 1500,
-      deliveryCharge: 1500,
+      deliveryCharge: 50,
       totalPrice: 3000,
     },
     orderDate: "2024-06-12",
