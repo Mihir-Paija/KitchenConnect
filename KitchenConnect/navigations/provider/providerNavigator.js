@@ -6,7 +6,7 @@ import ProviderHomeNavigator from "./providerHomeNavigator";
 import TiffinScreen from "@/screens/provider/tiffinScreen";
 import OrdersScreen from "@/screens/provider/ordersScreen";
 import SubscriberScreen from "@/screens/provider/subscriberScreen";
-import ProfileScreen from "@/screens/provider/profileScreen";
+import WalletScreen from "@/screens/provider/walletScreen";
 import icons from "@/utils/customerIconpaths";
 import { RefreshProvider } from '@/context/refreshContext';
 import { NavigationContainer } from "@react-navigation/native";
@@ -50,7 +50,7 @@ const ProviderNavigator = () => {
         <Tab.Screen name="My Tiffins" component={ProviderHomeNavigator} />
         <Tab.Screen name="Subscribers" component={SubscriberScreen} />
         <Tab.Screen name="Orders" component={OrdersScreen} />
-        <Tab.Screen name="Wallet" component={ProfileScreen} />
+        <Tab.Screen name="Wallet" component={WalletScreen} />
       </Tab.Navigator>
     </RefreshProvider>
   );

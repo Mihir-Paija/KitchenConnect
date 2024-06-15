@@ -1,10 +1,11 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert } from 'react-native';
 import { AuthContext } from "@/context/authContext";
 import { RefreshContext } from '@/context/refreshContext'
-import OrderHeader from '../../components/provider/orderHeader';
+import OrderHeader from '@/components/provider/orderHeader';
 import { getSubscribers, decideStatus } from '@/utils/provider/subscriberAPI';
-import OrderComponent from '../../components/provider/orderComponent';
+import OrderComponent from '@/components/provider/orderComponent';
+import OrderCard from '@/components/provider/orderCard';
 
 const OrdersScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
@@ -17,6 +18,7 @@ const OrdersScreen = ({navigation}) => {
 
   const fetchSubscribers = async() => {
     try {
+      setLoading(true)
       const response = await getSubscribers(authState.authToken)
       console.log(response)
 
@@ -34,9 +36,12 @@ const OrdersScreen = ({navigation}) => {
 
       setLunch(lunch);
       setDinner(dinner);
+      setLoading(false)
 
     } catch (error) {
-      
+      console.log('Error in Fetching Orders ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     }
   }
 
@@ -67,6 +72,10 @@ const OrdersScreen = ({navigation}) => {
       onPressLunch={()=>setType('Lunch')}
       onPressDinner={()=>setType('Dinner')}
       />
+          <View style = {styles.view}>
+      <OrderCard/>
+      </View>
+      {/*
       {type === 'Lunch' ?
       <>
       { lunch.length !== 0 ?
@@ -103,6 +112,7 @@ const OrdersScreen = ({navigation}) => {
       }
       </>
       : null}
+    */}
     </SafeAreaView>
   );
 };
@@ -117,11 +127,18 @@ const styles = StyleSheet.create({
 
   },
   flatList: {
+    flex: 1,
     paddingBottom: 70,
+  },
+  view:{
+    flex: 1,
+    marginVertical: 10,
+    alignItems: 'center'
   },
 
 
   emptyView: {
+    flex: 1,
     marginTop: 20,
     alignItems: 'center'
   }

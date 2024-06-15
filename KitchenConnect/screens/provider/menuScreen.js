@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {AuthContext} from '@/context/authContext'
 import { RefreshContext } from '@/context/refreshContext';
 import AddMenuModal from './addMenuModal';
@@ -26,7 +26,9 @@ const MenuScreen = ({navigation, route}) => {
       const response = await getMenu(authState.authToken, tiffin.id);
       setMenu(response);
     } catch (error) {
-      console.error('Error fetching menu:', error);
+      console.log('Error in Fetching menu:', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -49,11 +51,20 @@ const MenuScreen = ({navigation, route}) => {
   };
 
   const handleAddMenu = async (menuData) => {
-    console.log('Adding Menu:', menuData);
-    const response = await addMenu(authState.authToken, tiffin.id, menuData);
-    console.log(response);
-    toggleModal();
-    setRefresh(!refresh);
+    try {
+      console.log('Adding Menu:', menuData);
+      const response = await addMenu(authState.authToken, tiffin.id, menuData);
+      //console.log(response);
+      toggleModal();
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log('Error in Adding menu:', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   const selectedMenu = menu.find((menuItem) => menuItem.day === selectedDay) || { items: [] }; 

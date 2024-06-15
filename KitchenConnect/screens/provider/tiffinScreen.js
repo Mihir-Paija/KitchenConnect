@@ -69,12 +69,19 @@ const TiffinScreen = ({navigation}) => {
   }
 
   const handleAddTiffin = async (tiffinData) => {
-    console.log('Adding tiffin:', tiffinData);
-    const response = await addTiffin(authState.authToken, tiffinData);
-    console.log(response);
-    toggleModal1();
-    toggleModal2();
-    setRefresh(!refresh);
+    try {
+      console.log('Adding tiffin:', tiffinData);
+      const response = await addTiffin(authState.authToken, tiffinData);
+      console.log(response);
+      toggleModal1();
+      toggleModal2();
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log('Error in Adding Tiffin   ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    }
+   
   };
 
   const fetchProfile = async () => {
@@ -99,6 +106,8 @@ const TiffinScreen = ({navigation}) => {
       setLoading(false);
     } catch (error) {
       console.log('Error in fetching profile ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     }
   };
 

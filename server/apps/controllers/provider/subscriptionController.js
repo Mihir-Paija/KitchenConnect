@@ -221,7 +221,7 @@ const getAccessToken = async () => {
 }
 
 
-export const sendNotification = async (token) => {
+export const sendNotification = async (token, title, body) => {
    
     try {
         const fcmToken = token
@@ -229,8 +229,8 @@ export const sendNotification = async (token) => {
 
         const message = {
             notification: {
-                title: "KitchenConnect",
-                body: "You got 1 new subscription",
+                title: title,
+                body: body,
             },
             token: fcmToken,
         };

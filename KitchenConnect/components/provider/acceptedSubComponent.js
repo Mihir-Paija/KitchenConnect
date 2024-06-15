@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import {windowWidth, windowHeight} from '@/utils/dimensions'
 
 const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noOfTiffins, price, startDate, endDate, }) => {
     const dayCount = {
@@ -11,7 +12,7 @@ const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noO
         <TouchableOpacity
             style={[styles.container, Platform.OS === 'android' ? styles.androidShadow : styles.iosShadow]}
         >
-            <Text style={styles.title}>{title} Sunscription - {dayCount[title]} days</Text>
+            <Text style={styles.title}>{title} Subscription - {dayCount[title]} days</Text>
             <Text style={styles.detail}>
                 {tiffinName} - {tiffinType} x {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}
             </Text>
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         marginVertical: 10,
-        width: '100%',
+        width: windowWidth *0.95,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#CCCCCC',

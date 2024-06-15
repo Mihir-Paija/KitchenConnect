@@ -8,7 +8,7 @@ import {windowHeight} from '@/utils/dimensions'
 import LogoutButton from '@/components/shared/logoutButton'
 
 
-const ProfileScreen = ({navigation}) => {
+const WalletScreen = ({navigation}) => {
     const [authState, setAuthState] = useContext(AuthContext);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const ProfileScreen = ({navigation}) => {
       }
   return (
     <SafeAreaView style={activeScreenStyles.screen}>
-      <Text>Profile Screen</Text>
+      <Text>Wallet Screen</Text>
       <View style={styles.logoutButtonContainer}>
         <LogoutButton 
         handleLogoutBtn = {handleLogout}/>
@@ -58,7 +58,7 @@ const ProfileScreen = ({navigation}) => {
   );
 };
 
-export default ProfileScreen;
+export default WalletScreen;
 
 const styles = StyleSheet.create({
     logoutButtonContainer: {
