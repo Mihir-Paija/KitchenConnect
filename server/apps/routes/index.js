@@ -33,10 +33,12 @@ import { tiffinRouter } from "./provider/tiffinRouter.js";
 import { menuRouter } from "./provider/menuRouter.js";
 import { subscriptionRouter } from "./provider/subscriptionRouter.js";
 import { subscriberRouter } from "./provider/subscriberRouter.js";
+import {orderRouter} from './provider/orderRouter.js'
 router.use("/provider", providerAuthRouter);
 router.use("/provider/tiffin", tiffinRouter);
 router.use("/provider/menu", menuRouter);
 router.use('/provider/subscription', subscriptionRouter)
 router.use('/provider/subscriber', subscriberRouter)
+router.use('/provider/order', orderRouter)
 
 export default router;

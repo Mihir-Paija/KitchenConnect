@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FFA500',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
   },

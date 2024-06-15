@@ -9,14 +9,14 @@ import PendingSubComponent from '../../components/provider/pendingSubComponent';
 import CompletedSubComponent from '../../components/provider/completedSubComponent';
 import { getSubscribers, decideStatus } from '@/utils/provider/subscriberAPI';
 import LoadingScreen from '../shared/loadingScreen';
-import {windowHeight, windowWidth} from '@/utils/dimensions'
+import { windowHeight, windowWidth } from '@/utils/dimensions'
 import SortSubModal from '../../components/provider/sortSubModal';
 import FilterSubModal from '../../components/provider/filterSubModal';
 
 const SubscriberScreen = ({ navigation }) => {
 
   const [authState] = useContext(AuthContext);
-  const [refresh, setRefresh] = useContext(RefreshContext);
+  const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [active, setActive] = useState(true);
@@ -41,13 +41,13 @@ const SubscriberScreen = ({ navigation }) => {
     try {
       setLoading(true)
       const response = await getSubscribers(authState.authToken)
-    
+
       setActiveSubscribers(response.active);
       setOriginalActiveSubscribers(response.active);
       setPendingSubscribers(response.pending);
       setCompletedSubscribers(response.completed);
       setTiffins(response.tiffins);
-      
+
     } catch (error) {
       console.log('Error in Fetching Subscribers ', error);
       Alert.alert(error.message || "An error occurred");
@@ -87,13 +87,13 @@ const SubscriberScreen = ({ navigation }) => {
         comments
       }
       const response = await decideStatus(authState.authToken, id, bodyData)
-      if(response){
-       
+      if (response) {
+
         let pending = []
 
-        for(const subscriber of pendingSubscribers){
-          if(subscriber._id === id){
-            if(status){
+        for (const subscriber of pendingSubscribers) {
+          if (subscriber._id === id) {
+            if (status) {              
               const active = [...activeSubscribers]
               active.push(subscriber)
               setActiveSubscribers(active)
@@ -104,7 +104,7 @@ const SubscriberScreen = ({ navigation }) => {
           }
         }
 
-        
+
         setPendingSubscribers(pending)
       }
     } catch (error) {
@@ -117,20 +117,20 @@ const SubscriberScreen = ({ navigation }) => {
 
   }
 
-  const toggleSortModal= () =>{
+  const toggleSortModal = () => {
     setSortModal(!sortModal)
   }
 
-  const toggleFilterModal= () =>{
+  const toggleFilterModal = () => {
     setFilterModal(!filterModal)
   }
 
-  const handleSort = (criteria) =>{
+  const handleSort = (criteria) => {
     setSortCriteria(criteria);
     toggleSortModal(true);
   }
 
-  const handleFilter = (type, value) =>{
+  const handleFilter = (type, value) => {
     setFilterCriteria((prev) => ({ ...prev, [type]: value }))
     toggleFilterModal()
   }
@@ -151,13 +151,13 @@ const SubscriberScreen = ({ navigation }) => {
       sortedSubscribers.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
     } else if (sortCriteria === "priceHTL") {
       sortedSubscribers.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortCriteria === "tiffinLTH") {
+    } else if (sortCriteria === "tiffinsLTH") {
       sortedSubscribers.sort((a, b) => parseFloat(a.noOfTiffins) - parseFloat(b.noOfTiffins));
-    }else if (sortCriteria === "tiffinHTL") {
+    } else if (sortCriteria === "tiffinsHTL") {
       sortedSubscribers.sort((a, b) => parseFloat(b.noOfTiffins) - parseFloat(a.noOfTiffins));
     }
 
-    
+
     let filteredSubscribers = [...sortedSubscribers];
 
     if (filterCriteria.subscription !== "all") {
@@ -178,7 +178,7 @@ const SubscriberScreen = ({ navigation }) => {
       );
     }
 
-   setActiveSubscribers(filteredSubscribers)
+    setActiveSubscribers(filteredSubscribers)
 
   }, [sortCriteria, filterCriteria, , originalActiveSubscribers]);
 
@@ -213,89 +213,93 @@ const SubscriberScreen = ({ navigation }) => {
             completed={completed}
             onPressCompleted={handleCompleted}
           />
-          {active ? 
-                        (<>
-                          <View style={styles.filterSortContainer}>
-                            <TouchableOpacity
-                              style={[
-                                styles.sortContainer,
-                                sortCriteria !== "noSort" && {
-                                  borderColor: "#ffa500",
-                                  backgroundColor: "#FFECEC",
-                                },
-                              ]}
-                              onPress={() => setSortModal(true)}
-                            >
-                              <Text style={styles.filterSortText}>Sort</Text>
-                              <Image
-                                source={
-                                  sortCriteria === "noSort"
-                                    ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
-                                    : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
-                                }
-                                style={styles.icon}
-                              />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={[
-                                styles.sortContainer,
-                                filterCriteria.subscription !== "all" && {
-                                  backgroundColor: "#FFECEC",
-                                  borderColor: "#ffa500",
-                                },
-                                filterCriteria.tiffin !== "All" && {
-                                  backgroundColor: "#FFECEC",
-                                  borderColor: "#ffa500",
-                                },
-                                filterCriteria.tiffinType !== "all" && {
-                                  backgroundColor: "#FFECEC",
-                                  borderColor: "#ffa500",
-                                },
-                              ]}
-                              onPress={() => setFilterModal(true)}
-                            >
-                              <Text style={styles.filterSortText}>Filter</Text>
-                              <Image
-                                source={
-                                  filterCriteria.subscription === "all"
-                                    ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
-                                    : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
-                                }
-                                style={styles.icon}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          <SortSubModal
-                          visible={sortModal}
-                          onClose={toggleSortModal}
-                          onSortChange={handleSort}
-                          sortCriteria={sortCriteria}
-                          />
-                          <FilterSubModal
-                          visible={filterModal}
-                          onClose={toggleFilterModal}
-                          onFilterChange={handleFilter}
-                          filterCriteria={filterCriteria}
-                          tiffins={tiffins}
-                          />
-            {activeSubscribers.length !== 0 ?
-
-                <FlatList
-                  data={activeSubscribers}
-                  renderItem={({ item }) => (
-                    <AcceptedSubComponent {...item} />
-
-                  )}
-                  keyExtractor={(item) => item._id.toString()}
-                  contentContainerStyle={styles.flatList}
-                />
-              :
-              <View style={styles.emptyView}>
-                <Text>No Active Subscriptions</Text>
+          {active ?
+            (<>
+              <View style={styles.filterSortContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    sortCriteria !== "noSort" && {
+                      borderColor: "#ffa500",
+                      backgroundColor: "#FFECEC",
+                    },
+                  ]}
+                  onPress={() => setSortModal(true)}
+                >
+                  <Text style={styles.filterSortText}>Sort</Text>
+                  <Image
+                    source={
+                      sortCriteria === "noSort"
+                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.sortContainer,
+                    filterCriteria.subscription !== "all" && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                    filterCriteria.tiffin !== "All" && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                    filterCriteria.tiffinType !== "all" && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                  ]}
+                  onPress={() => setFilterModal(true)}
+                >
+                  <Text style={styles.filterSortText}>Filter</Text>
+                  <Image
+                    source={
+                      filterCriteria.subscription === "all"
+                        ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                        : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
               </View>
+              <SortSubModal
+                visible={sortModal}
+                onClose={toggleSortModal}
+                onSortChange={handleSort}
+                sortCriteria={sortCriteria}
+              />
+              <FilterSubModal
+                visible={filterModal}
+                onClose={toggleFilterModal}
+                onFilterChange={handleFilter}
+                filterCriteria={filterCriteria}
+                tiffins={tiffins}
+              />
+              {activeSubscribers.length !== 0 ?
+                <>
+                  <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                    <Text style={styles.number}>{activeSubscribers.length} Subscribers</Text>
+                  </View>
+                  <FlatList
+                    data={activeSubscribers}
+                    renderItem={({ item }) => (
+                      <AcceptedSubComponent {...item} />
 
-            }
-          </>)
+                    )}
+                    keyExtractor={(item) => item._id.toString()}
+                    contentContainerStyle={styles.flatList}
+                  />
+                </>
+                :
+                <View style={styles.emptyView}>
+                  <Text>No Active Subscriptions</Text>
+                </View>
+
+              }
+            </>)
             : null
           }
 
@@ -353,13 +357,13 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight * 1
+    paddingTop: StatusBar.currentHeight * 1.1
 
   },
   filterSortContainer: {
     flexDirection: "row",
     // justifyContent: "center",
-    marginTop: windowHeight * 0.007,
+    marginTop: windowHeight * 0.012,
     alignItems: "flex-start",
     alignContent: "center",
     paddingHorizontal: windowWidth * 0.005,
@@ -386,13 +390,17 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.05,
     height: windowWidth * 0.05,
   },
+  number: {
+    fontSize: 20,
+  },
+
   subscribers: {
     justifyContent: 'center',
     alignContent: 'center',
   },
 
   flatList: {
-    paddingBottom: 70,
+    paddingBottom: 30,
     alignItems: 'center'
   },
 
