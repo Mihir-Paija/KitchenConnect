@@ -15,7 +15,7 @@ const MenuScreen = ({navigation, route}) => {
   const [authState] = useContext(AuthContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext);
+  const [refresh, setRefresh] = useState(false)
   const [menu, setMenu] = useState([])
   const [selectedDay, setSelectedDay] = useState("Mon");
 

@@ -3,13 +3,13 @@ import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList,
 import { AuthContext } from "@/context/authContext";
 import { RefreshContext } from '@/context/refreshContext'
 import OrderHeader from '@/components/provider/orderHeader';
-import { getSubscribers, decideStatus } from '@/utils/provider/subscriberAPI';
 import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
+import { getOrders } from '../../utils/provider/orderAPI';
 
 const OrdersScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
-  const [refresh, setRefresh] = useContext(RefreshContext)
+  const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const [type, setType] = useState('Lunch')
@@ -19,24 +19,10 @@ const OrdersScreen = ({navigation}) => {
   const fetchSubscribers = async() => {
     try {
       setLoading(true)
-      const response = await getSubscribers(authState.authToken)
-      console.log(response)
+      const response = await getOrders(authState.authToken)
 
-      const lunch = [];
-      const dinner = [];
-      const currentDate = new Date();
-
-      for (const subscriber of response) {
-        if (new Date(subscriber.startDate) < currentDate && currentDate < new Date(subscriber.endDate) && subscriber.accepted) {
-          if(subscriber.tiffinType === 'Lunch')
-            lunch.push(subscriber)
-          else dinner.push(subscriber)
-        }
-      }
-
-      setLunch(lunch);
-      setDinner(dinner);
-      setLoading(false)
+      setLunch(response.lunch)
+      setDinner(response.dinner)
 
     } catch (error) {
       console.log('Error in Fetching Orders ', error);
@@ -72,19 +58,14 @@ const OrdersScreen = ({navigation}) => {
       onPressLunch={()=>setType('Lunch')}
       onPressDinner={()=>setType('Dinner')}
       />
-          <View style = {styles.view}>
-      <OrderCard/>
-      </View>
-      {/*
       {type === 'Lunch' ?
       <>
       { lunch.length !== 0 ?
        <FlatList
        data={lunch}
        renderItem={({ item }) => (
-         <OrderComponent {...item} />
+         <OrderCard {...item} />
        )}
-       keyExtractor={(item) => item._id.toString()}
        contentContainerStyle={styles.flatList}
      />
      :
@@ -100,9 +81,8 @@ const OrdersScreen = ({navigation}) => {
        <FlatList
        data={dinner}
        renderItem={({ item }) => (
-         <OrderComponent {...item} />
+         <OrderCard {...item} />
        )}
-       keyExtractor={(item) => item._id.toString()}
        contentContainerStyle={styles.flatList}
      />
      :
@@ -112,7 +92,6 @@ const OrdersScreen = ({navigation}) => {
       }
       </>
       : null}
-    */}
     </SafeAreaView>
   );
 };
@@ -127,8 +106,9 @@ const styles = StyleSheet.create({
 
   },
   flatList: {
-    flex: 1,
-    paddingBottom: 70,
+    alignItems: 'center',
+    marginTop: 12,
+    paddingBottom: 20,
   },
   view:{
     flex: 1,

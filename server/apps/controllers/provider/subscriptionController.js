@@ -251,14 +251,9 @@ export const sendNotification = async (token, title, body) => {
 
         if (response) {
             console.log(response)
-            return res.status(200).send({
-                message: `Successfully sent message`
-            })
+            
         }
     } catch (error) {
         console.error('Error sending message:', error);
-        return res.status(500).send({
-            message: `Unsuccessfully sent message`
-        })
     }
 }

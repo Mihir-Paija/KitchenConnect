@@ -16,12 +16,28 @@ const InsideTiffinScreen = ({ route, navigation }) => {
   const { tiffin } = route.params
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext);
+  const [refresh, setRefresh] = useState(false)
   const [authState] = useContext(AuthContext);
 
   const handleBack = async() =>{
     navigation.navigate("Tiffin")
   }
+
+  useEffect(() => {
+
+    const backAction = () => {
+      navigation.navigate("Tiffin")
+
+      return true
+    }
+
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+  })
+
 
 
 

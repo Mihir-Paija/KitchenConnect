@@ -26,7 +26,7 @@ export default function App() {
   useEffect(() => {
     //initializeFirebase()
     //requestUserPermission();
-   // handleBackgroundMessages();
+    //handleBackgroundMessages();
     //handleForegroundMessages()
     loadFonts().then(() => setIsAppReady(true));
   }, []);

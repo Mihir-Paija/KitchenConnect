@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.06
   },
   buttonPressed: {
-    backgroundColor: 'lightgrey',
+    borderBottomWidth: 4,
+    borderColor: "#FFA500"
   },
   buttonText: {
     fontSize: 16,

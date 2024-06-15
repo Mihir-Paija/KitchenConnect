@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     borderBottomWidth: 1,
+    paddingLeft: 17,
     borderBottomColor: '#ccc',
     width: '100%'
   },
