@@ -21,18 +21,14 @@ export const initializeFirebase = () => {
 
 export const requestUserPermission = async () => {
   const authStatus = await messaging().requestPermission();
-  console.log(authStatus)
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
+
 };
 
 export const handleBackgroundMessages = () => {
-  console.log("In Bakground")
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
@@ -40,6 +36,9 @@ export const handleBackgroundMessages = () => {
 
 export const handleForegroundMessages = () => {
   return messaging().onMessage(async remoteMessage => {
-    Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    Alert.alert(
+      remoteMessage.notification.title,
+      remoteMessage.notification.body
+    );
   });
 };

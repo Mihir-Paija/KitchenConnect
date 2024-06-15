@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import { AuthContext } from "@/context/authContext";
 import { RefreshContext } from '@/context/refreshContext'
@@ -67,7 +67,9 @@ const SubscriberScreen = ({ navigation }) => {
       setCompletedSubscribers(completed);
 
     } catch (error) {
-
+      console.log('Error in Fetching Subscribers ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     } finally {
       setLoading(false)
     }
@@ -104,7 +106,9 @@ const SubscriberScreen = ({ navigation }) => {
       }
       const response = await decideStatus(authState.authToken, id, bodyData)
     } catch (error) {
-
+      console.log('Error in Deciding Status ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     } finally {
       setLoading(false)
       setRefresh(!refresh)
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight * 1.2
+    paddingTop: StatusBar.currentHeight * 1
 
   },
   subscribers: {
@@ -225,12 +229,11 @@ const styles = StyleSheet.create({
 
   flatList: {
     paddingBottom: 70,
+    alignItems: 'center'
   },
 
   view: {
     marginTop: 20,
-    justifyContent: 'center',
-    alignContent: 'center',
   },
 
   emptyView: {

@@ -50,6 +50,8 @@ const LunchScreen = ({navigation}) => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching tiffins:', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
     }
   };
 
@@ -87,10 +89,17 @@ const LunchScreen = ({navigation}) => {
   }
 
   const handleEditTiffin = async (tiffin) => {
-    setLoading(true)
-    const response = await editTiffins(authState.authToken, tiffin.id, tiffin) 
-    setLoading(false);
-    setRefresh(!refresh);
+    try {
+      setLoading(true)
+      const response = await editTiffins(authState.authToken, tiffin.id, tiffin) 
+      setLoading(false);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log('Error in editing Tiffin ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    }
+
   };
 
   const closeModals = () =>{
@@ -118,20 +127,35 @@ const LunchScreen = ({navigation}) => {
   };
 
   const handleDeleteTiffin = async(tiffinID) =>{
-   toggleEditModal1()
-    setLoading(true)
-    const response = await deleteTiffin(authState.authToken, tiffinID) 
-    setLoading(false);
-    setRefresh(!refresh);
+    try {
+      toggleEditModal1()
+      setLoading(true)
+      const response = await deleteTiffin(authState.authToken, tiffinID) 
+      setLoading(false);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log('Error in Deleting Tiffin ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    }
+
   }
 
    
 
   const handleDeactivateTiffin = async(tiffinID) => {
-    setLoading(true)
-    const response = await deactivateTiffin(authState.authToken, tiffinID) 
-    setLoading(false);
-    setRefresh(!refresh);
+    try {
+      toggleEditModal1()
+      setLoading(true)
+      const response = await deactivateTiffin(authState.authToken, tiffinID) 
+      setLoading(false);
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log('Error in Deactivating Tiffin ', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    }
+
 
   }
 

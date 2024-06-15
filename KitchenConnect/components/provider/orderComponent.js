@@ -1,13 +1,14 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList } from 'react-native';
 
-const OrderComponent = ({tiffinName, noOfTiffins, customerName, delivery, address}) =>{
+const OrderComponent = ({tiffinName, noOfTiffins, customerName, price, delivery, address}) =>{
 return (
     <View style={styles.container}>
       <Text style={styles.title}>{tiffinName} - {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}</Text>
       <Text>{customerName}</Text>
+      <Text>Amout to be paid: ₹{price}</Text>
       {delivery ?
-      <Text style={styles.address}>{address}</Text>
+      <Text style={styles.address}>Deliver To: {address}</Text>
     : 
     <Text style={styles.address}>You Don't Provide Delivery</Text>}
     </View>

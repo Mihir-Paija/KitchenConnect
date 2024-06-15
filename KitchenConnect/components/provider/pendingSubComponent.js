@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import {windowWidth, windowHeight} from '@/utils/dimensions'
 
 const PendingSubComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, price, startDate, endDate, onAccept, onReject, }) => {
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#CCCCCC',
-        width: '100%',
+        width: windowWidth *0.95,
     },
     title: {
         fontSize: 18,

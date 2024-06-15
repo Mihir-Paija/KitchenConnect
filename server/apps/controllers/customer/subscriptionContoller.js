@@ -52,25 +52,28 @@ export const subscribe = async (req, res) => {
 
         const newSubscriber = await subscriber.create(details)
         if (newSubscriber) {
+
+            process.nextTick(async () => {
+                try {
+                    const kitchen = await provider.findById(kitchenID);
+                    if (kitchen && kitchen.fcmToken) {
+                        const heading = 'New Subscription Request';
+                        const body = `You have received a subscription request for ${tiffinName} - ${tiffinType}!`
+                        await sendNotification(kitchen.fcmToken, heading, body);
+                        console.log('Notification sent successfully');
+                    } else {
+                        console.error('Kitchen or FCM token not found');
+                    }
+                } catch (error) {
+                    console.error('Error fetching kitchen or sending notification:', error);
+                }
+            });
+
             console.log(newSubscriber)
             return res.status(201).send({
                 message: `Sent Subscription Request`
             })
         }
-
-        process.nextTick(async () => {
-            try {
-                const kitchen = await provider.findById(kitchenID);
-                if (kitchen && kitchen.fcmToken) {
-                    await sendNotification(kitchen.fcmToken);
-                    console.log('Notification sent successfully');
-                } else {
-                    console.error('Kitchen or FCM token not found');
-                }
-            } catch (error) {
-                console.error('Error fetching kitchen or sending notification:', error);
-            }
-        });
 
         return res.status(500).send({
             message: `Couldn't Subscribe!`
