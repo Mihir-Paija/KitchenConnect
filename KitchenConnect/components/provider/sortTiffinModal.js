@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: windowWidth * 0.05,
     fontFamily: "NunitoBold",
-    marginBottom: windowHeight * 0.02,  // Example adjustment
+    marginBottom: windowHeight * 0.02,  
   },
   option: {
-    paddingVertical: windowHeight * 0.01,  // Example adjustment
+    paddingVertical: windowHeight * 0.01, 
   },
   optionText: {
     fontSize: windowWidth * 0.04,

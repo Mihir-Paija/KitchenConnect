@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noOfTiffins, price, startDate, endDate, }) => {
+const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate, }) => {
     const dayCount = {
         'Weekly': 7,
         'Fortnightly': 15,
@@ -19,7 +19,7 @@ const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noO
             <Text style={styles.detail}>Customer: {customerName}</Text>
             <Text style={styles.detail}>Price: ₹{price}</Text>
             <Text style={styles.dateDetail}>
-                {startDate} - {endDate}
+                {formattedStartDate} - {formattedEndDate}
             </Text>
         </TouchableOpacity>
     );
