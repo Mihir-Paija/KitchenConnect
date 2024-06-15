@@ -24,7 +24,6 @@ const ProviderNavigator = () => {
           headerShown: false,
           gestureEnabled: true,
           lazy: true,
-          unmountOnBlur: true,
           tabBarIcon: ({ focused }) => {
             let iconSource;
             switch (route.name) {

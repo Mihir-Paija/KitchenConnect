@@ -17,7 +17,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const [subscriptions, setSubscriptions] = useState([])
 
   const [loading, setLoading] = useState(false)
-  const [refresh, setRefresh] = useContext(RefreshContext)
+  const [refresh, setRefresh] = useState(false)
   const [authState] = useContext(AuthContext)
   const [createModal, setCreateModal] = useState(false)
   const [editModal, setEditModal] = useState(false)

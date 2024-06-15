@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 const LunchScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext);
+  const [refresh, setRefresh] = useState(false)
 
   const [tiffins, setTiffins] = useState([]);
   const [originalTiffins, setOriginalTiffins] = useState([]);

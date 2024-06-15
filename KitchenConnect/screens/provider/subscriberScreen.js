@@ -13,8 +13,6 @@ import {windowHeight, windowWidth} from '@/utils/dimensions'
 import SortSubModal from '../../components/provider/sortSubModal';
 import FilterSubModal from '../../components/provider/filterSubModal';
 
-
-
 const SubscriberScreen = ({ navigation }) => {
 
   const [authState] = useContext(AuthContext);
@@ -39,53 +37,17 @@ const SubscriberScreen = ({ navigation }) => {
   })
   const [tiffins, setTiffins] = useState([])
 
-
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${day}/${month}/${year}`;
-  };
-
   const fetchSubscribers = async () => {
     try {
       setLoading(true)
       const response = await getSubscribers(authState.authToken)
-      //console.log(response)
-      const active = [];
-      const pending = [];
-      const completed = [];
-      const currentDate = new Date();
-      const tiffins = new Set();
-      tiffins.add('All')
-
-      for (const subscriber of response) {
-
-        const formattedSubscriber = {
-          ...subscriber,
-          formattedStartDate: formatDate(new Date(subscriber.startDate)),
-          formattedEndDate: formatDate(new Date(subscriber.endDate)),
-        };
-
-        if (new Date(subscriber.endDate) < currentDate && subscriber.accepted) {
-          completed.push(formattedSubscriber);
-        }
-        else if (subscriber.accepted) {
-          tiffins.add(subscriber.tiffinName)
-          active.push(formattedSubscriber);
-        } else if (subscriber.pending) {
-          pending.push(formattedSubscriber);
-        }
-      }
-      //console.log(tiffins)
-
-
-      setActiveSubscribers(active);
-      setOriginalActiveSubscribers(active);
-      setPendingSubscribers(pending);
-      setCompletedSubscribers(completed);
-      setTiffins(tiffins);
-
+    
+      setActiveSubscribers(response.active);
+      setOriginalActiveSubscribers(response.active);
+      setPendingSubscribers(response.pending);
+      setCompletedSubscribers(response.completed);
+      setTiffins(response.tiffins);
+      
     } catch (error) {
       console.log('Error in Fetching Subscribers ', error);
       Alert.alert(error.message || "An error occurred");
@@ -125,13 +87,32 @@ const SubscriberScreen = ({ navigation }) => {
         comments
       }
       const response = await decideStatus(authState.authToken, id, bodyData)
+      if(response){
+       
+        let pending = []
+
+        for(const subscriber of pendingSubscribers){
+          if(subscriber._id === id){
+            if(status){
+              const active = [...activeSubscribers]
+              active.push(subscriber)
+              setActiveSubscribers(active)
+            }
+            pending = pendingSubscribers.filter(item => item !== subscriber)
+            break;
+
+          }
+        }
+
+        
+        setPendingSubscribers(pending)
+      }
     } catch (error) {
       console.log('Error in Deciding Status ', error);
       Alert.alert(error.message || "An error occurred");
       setLoading(false);
     } finally {
       setLoading(false)
-      setRefresh(!refresh)
     }
 
   }
@@ -150,7 +131,6 @@ const SubscriberScreen = ({ navigation }) => {
   }
 
   const handleFilter = (type, value) =>{
-    console.log(type, " ", value)
     setFilterCriteria((prev) => ({ ...prev, [type]: value }))
     toggleFilterModal()
   }
@@ -179,7 +159,6 @@ const SubscriberScreen = ({ navigation }) => {
 
     
     let filteredSubscribers = [...sortedSubscribers];
-    console.log(filterCriteria)
 
     if (filterCriteria.subscription !== "all") {
       filteredSubscribers = filteredSubscribers.filter(
@@ -198,7 +177,6 @@ const SubscriberScreen = ({ navigation }) => {
         (subscriber) => subscriber.tiffinType === filterCriteria.tiffinType
       );
     }
-    console.log(filteredSubscribers)
 
    setActiveSubscribers(filteredSubscribers)
 
@@ -298,7 +276,7 @@ const SubscriberScreen = ({ navigation }) => {
                           onClose={toggleFilterModal}
                           onFilterChange={handleFilter}
                           filterCriteria={filterCriteria}
-                          tiffins={Array.from(tiffins)}
+                          tiffins={tiffins}
                           />
             {activeSubscribers.length !== 0 ?
 
@@ -306,6 +284,7 @@ const SubscriberScreen = ({ navigation }) => {
                   data={activeSubscribers}
                   renderItem={({ item }) => (
                     <AcceptedSubComponent {...item} />
+
                   )}
                   keyExtractor={(item) => item._id.toString()}
                   contentContainerStyle={styles.flatList}

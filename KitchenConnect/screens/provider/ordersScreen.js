@@ -9,7 +9,7 @@ import OrderCard from '@/components/provider/orderCard';
 
 const OrdersScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
-  const [refresh, setRefresh] = useContext(RefreshContext)
+  const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const [type, setType] = useState('Lunch')

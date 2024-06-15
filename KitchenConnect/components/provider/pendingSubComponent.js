@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const PendingSubComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, price, startDate, endDate, onAccept, onReject, }) => {
+const PendingSubComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate, onAccept, onReject, }) => {
 
     const dayCount = {
         'Weekly': 7,
@@ -31,7 +31,7 @@ const PendingSubComponent = ({ _id, title, customerName, tiffinName, tiffinType,
             <Text style={styles.detail}>Customer: {customerName}</Text>
             <Text style={styles.detail}>Price: ₹{price}</Text>
             <Text style={styles.dateDetail}>
-                {startDate} - {endDate}
+                {formattedStartDate} - {formattedEndDate}
             </Text>
 
             <View style={styles.buttonContainer}>

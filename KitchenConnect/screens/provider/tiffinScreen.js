@@ -12,13 +12,15 @@ import AddTiffinModal1 from './addTiffinModal1';
 import AddTiffinModal2 from './addTiffinModal2';
 import { setFCMToken } from '../../utils/provider/providerAPI';
 import messaging from '@react-native-firebase/messaging';
+import { useIsFocused } from "@react-navigation/native";
 
 const TiffinScreen = ({navigation}) => {
   const [isModal1Visible, setIsModal1Visible] = useState(false);
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext);
+  const [refresh, setRefresh] = useState(false)
   const [authState, setAuthState] = useContext(AuthContext);
+  const isFocused = useIsFocused();
   const [profile, setProfile] = useState({
     name: '',
     shortDescription: '',
@@ -112,6 +114,7 @@ const TiffinScreen = ({navigation}) => {
   };
 
   const backAction = () => {
+    if(isFocused){
     Alert.alert(
       'Exit!',
       'Do You Want To Exit The App?',
@@ -126,6 +129,9 @@ const TiffinScreen = ({navigation}) => {
       { cancelable: false }
     );
     return true;
+  }
+
+  return false;
   };
 
   useEffect(() => {
