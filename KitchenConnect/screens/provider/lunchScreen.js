@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 const LunchScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useContext(RefreshContext)
 
   const [tiffins, setTiffins] = useState([]);
   const [originalTiffins, setOriginalTiffins] = useState([]);
@@ -31,19 +31,9 @@ const LunchScreen = ({navigation}) => {
   const [sortModal, setSortModal] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
   
-
-  const [editModal1, setEditModal1] = useState(false);
-  const [editModal2, setEditModal2] = useState(false);
-  const [editTiffin, setEditTiffin] = useState(null);
-
-  const [deliveryModal, setDeliveryModal] = useState(false);
-  const [deliveryDetails, setDeliveryDetails] = useState({
-    name: '',
-    details: {},
-  });
-
   const fetchTiffins = async () => {
     try {
+      console.log('Fetching')
       const response = await getLunchTiffins(authState.authToken);
       setTiffins(response);
       setOriginalTiffins(response)
@@ -53,123 +43,6 @@ const LunchScreen = ({navigation}) => {
       Alert.alert(error.message || "An error occurred");
       setLoading(false);
     }
-  };
-
-  // Edit Tiffins
-  const toggleEditModal1 = () => {
-    setEditModal1(!editModal1);
-  };
-
-  const toggleEditModal2 = () => {
-    setEditModal2(!editModal2);
-  };
-
-  const handleEditModal = (item) => {
-    setEditTiffin(item);
-    setEditModal1(true);
-  };
-
-  const handleNext = async(newDetails) =>{
-    try {
-      setEditTiffin({
-        ...editTiffin,
-        id: newDetails.id,
-        name: newDetails.name,
-        shortDescription: newDetails.shortDescription,
-        price: newDetails.price,
-      })
-      
-
-    } catch (error) {
-      console.log(error)
-    }
-    finally{
-      toggleEditModal2()
-    }
-  }
-
-  const handleEditTiffin = async (tiffin) => {
-    try {
-      setLoading(true)
-      const response = await editTiffins(authState.authToken, tiffin.id, tiffin) 
-      setLoading(false);
-      setRefresh(!refresh);
-    } catch (error) {
-      console.log('Error in editing Tiffin ', error);
-      Alert.alert(error.message || "An error occurred");
-      setLoading(false);
-    }
-
-  };
-
-  const closeModals = () =>{
-    toggleEditModal1()
-    toggleEditModal2()
-    setEditTiffin(null)
-    
-  }
-
-  const alertDelete = (name, tiffinID) => {
-    Alert.alert(
-      'Delete!',
-      `Are You Sure You Want To Delete ${name}`,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        { text: 'Delete', onPress: () =>  handleDeleteTiffin(tiffinID)},
-      ],
-      { cancelable: false }
-    );
-    return true;
-  };
-
-  const handleDeleteTiffin = async(tiffinID) =>{
-    try {
-      toggleEditModal1()
-      setLoading(true)
-      const response = await deleteTiffin(authState.authToken, tiffinID) 
-      setLoading(false);
-      setRefresh(!refresh);
-    } catch (error) {
-      console.log('Error in Deleting Tiffin ', error);
-      Alert.alert(error.message || "An error occurred");
-      setLoading(false);
-    }
-
-  }
-
-   
-
-  const handleDeactivateTiffin = async(tiffinID) => {
-    try {
-      toggleEditModal1()
-      setLoading(true)
-      const response = await deactivateTiffin(authState.authToken, tiffinID) 
-      setLoading(false);
-      setRefresh(!refresh);
-    } catch (error) {
-      console.log('Error in Deactivating Tiffin ', error);
-      Alert.alert(error.message || "An error occurred");
-      setLoading(false);
-    }
-
-
-  }
-
-  // See Delivery Details
-  const toggleDeliveryModal = () => {
-    setDeliveryModal(!deliveryModal);
-  };
-
-  const handleDeliveryModal = async (name, details) => {
-    setDeliveryDetails({
-      name: name,
-      details: details || {},
-    });
-    setDeliveryModal(!deliveryModal);
   };
 
   useEffect(() => {
@@ -314,32 +187,7 @@ const LunchScreen = ({navigation}) => {
               <Text style={menuStyle.noTiffinsText}>No Lunch Tiffins Found</Text>
             )}
 
-            {editModal1 ? (
-              <EditTiffinModal1
-                isVisible={editModal1}
-                item={editTiffin}
-                onClose={toggleEditModal1}
-                onNext={handleNext}
-                onDeleteTiffin={alertDelete}
-                onDeactivateTiffin={handleDeactivateTiffin}
-              />
-            ): null}
-            {editModal2 ? (
-              <EditTiffinModal2
-                isVisible={editModal2}
-                item={editTiffin}
-                onBack={toggleEditModal2}
-                onClose={closeModals}
-                onEditTiffin={handleEditTiffin}
-              />
-            ): null}
-            {deliveryDetails && (
-              <DeliveryDetailsModal
-                isVisible={deliveryModal}
-                info={deliveryDetails}
-                onClose={toggleDeliveryModal}
-              />
-            )}
+
           </>
         )
       ) : (

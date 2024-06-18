@@ -18,6 +18,7 @@ export const getLunchTiffins = async (req, res) => {
             id: item._id,
             name: item.name,
             shortDescription: item.shortDescription,
+            tiffinType: 'Lunch',
             foodType: item.foodType,
             price: item.price,
             hours: item.time[0] + item.time[1],

@@ -6,7 +6,6 @@ import {windowWidth, windowHeight} from '@/utils/dimensions'
 const OrderCard = ({tiffinName, number, subscribers}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };

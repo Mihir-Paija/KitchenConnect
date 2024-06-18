@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 import FoodTypeIcon from '@/components/provider/foodTypeIcon'; // Adjust the import path accordingly
 
@@ -28,14 +28,11 @@ const TiffinItem = ({ name, description, foodType, price, hours, mins, deactivat
         </View>
     
       </View>
-      <View style={styles.sideButtons}>
-        <TouchableOpacity style={styles.editButton} onPress={edit}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deliveryButton} onPress={showDelivery}>
-          <Text style={styles.buttonText}>Delivery</Text>
-          <Text style={styles.buttonText}>Details</Text>
-        </TouchableOpacity>
+      <View style={styles.image}>
+   <Image 
+   source={require("@assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+   style={styles.photo}
+   />
       </View>
     </TouchableOpacity>
   );
@@ -47,7 +44,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: windowWidth * 0.95,
-    height: windowHeight * 0.20,
+    height: windowHeight * 0.18,
     marginHorizontal: windowWidth * 0.025,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
   deactivatedContainer: {
     flexDirection: 'row',
     width: windowWidth * 0.95,
-    height: windowHeight * 0.22,
+    height: windowHeight * 0.20,
     marginHorizontal: windowWidth * 0.025,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -85,7 +82,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   infoContainer: {
-    flex: 3,
+    flex: 2.5,
     margin: 0,
     padding: 0,
   },
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
   },
   readyTimeContainer: {
     flexDirection: 'row',
-    marginTop: windowHeight * 0.02,
+    marginTop: windowHeight * 0.01,
   },
   readyTimeLabel: {
     fontSize: windowWidth * 0.04,
@@ -142,34 +139,17 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: windowWidth * 0.005,
   },
-  sideButtons: {
-    flex: 1.3,
-    width: windowWidth * 0.20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  image: {
+    flex: 1.5,
+    //width: windowWidth * 0.20,
+    //justifyContent: 'flex-start',
     marginHorizontal: windowWidth*0.03,
+    marginTop: 0,
+    paddingTop: 0
   },
-  editButton: {
-    height: windowHeight * 0.07,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 123, 255, 1)',
-    borderRadius: windowWidth * 0.02,
-    marginBottom: windowWidth * 0.01,
-  },
-  deliveryButton: {
-    height: windowHeight * 0.07,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 166, 81, 1)',
-    borderRadius: windowWidth * 0.02,
-    marginTop: windowWidth * 0.01,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: windowWidth * 0.04,
-    fontWeight: 'bold',
+  photo:{
+    width: 150,
+    height: 250,
+    resizeMode: 'contain'
   },
 });
