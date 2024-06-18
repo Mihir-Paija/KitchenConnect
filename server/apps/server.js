@@ -51,13 +51,15 @@ export let providers = {}
 
 
 io.on('connection', (socket) =>{
-  console.log('Socket Connected')
+  console.log('Socket Connected ', socket.id)
 
   socket.on('register-provider', (data) => {
-    const providerID = verifyJwt(data.providerID).decoded.userID
+    const providerID = verifyJwt(data.userID).decoded.userID
     providers[providerID] = socket.id;
     console.log(providerID, " registered with ", socket.id)
   });
+
+  //socket.on('check-connection', (data))
 
   socket.on('disconnect-provider', () => {
     

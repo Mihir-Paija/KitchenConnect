@@ -13,6 +13,9 @@ import AddTiffinModal2 from './addTiffinModal2';
 import { setFCMToken } from '../../utils/provider/providerAPI';
 import messaging from '@react-native-firebase/messaging';
 import { useIsFocused } from "@react-navigation/native";
+import { SocketContext } from '../../context/socketContext';
+import { connectSocket } from '../../utils/socket';
+
 
 const TiffinScreen = ({navigation}) => {
   const [isModal1Visible, setIsModal1Visible] = useState(false);
@@ -20,6 +23,7 @@ const TiffinScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false)
   const [authState, setAuthState] = useContext(AuthContext);
+  const [socket, setSocket] = useContext(SocketContext)
   const isFocused = useIsFocused();
   const [profile, setProfile] = useState({
     name: '',
@@ -113,6 +117,7 @@ const TiffinScreen = ({navigation}) => {
     }
   };
 
+
   const backAction = () => {
     if(isFocused){
     Alert.alert(
@@ -137,6 +142,11 @@ const TiffinScreen = ({navigation}) => {
   useEffect(() => {
     setLoading(true);
     fetchProfile();
+
+    if(!socket){
+      const newSocket = connectSocket(authState.authToken, authState.authType)  
+      setSocket(newSocket)  
+    }
   }, []);
 
   useEffect(() => {

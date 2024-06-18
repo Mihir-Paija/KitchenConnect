@@ -1,12 +1,25 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList } from 'react-native';
 
-const OrderComponent = ({tiffinName, noOfTiffins, customerName, price, delivery, address}) =>{
+const OrderComponent = ({title, tiffinName, noOfTiffins, customerName, price, delivery, address}) =>{
+  const dayCount = {
+    Weekly: 7,
+    Fortnightly: 15,
+    Monthly: 30,
+  }
+
+  const [dayPrice, setDayPrice] = useState(0);
+
+  useEffect(() => {
+    const result = price/(dayCount[title] * noOfTiffins)
+    setDayPrice(Math.round(result *100) /100)
+  }, [])
+
 return (
     <View style={styles.container}>
       <Text style={styles.title}>{tiffinName} - {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}</Text>
       <Text>{customerName}</Text>
-      <Text>Amout to be paid: ₹{price}</Text>
+      <Text>Amout to be paid: ₹{dayPrice}</Text>
       {delivery ?
       <Text style={styles.address}>Deliver To: {address}</Text>
     : 
