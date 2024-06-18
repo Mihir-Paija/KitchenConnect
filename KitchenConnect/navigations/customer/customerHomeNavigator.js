@@ -3,6 +3,7 @@ import ProfileCustomerScreen from "../../screens/customer/profileCustomerScreen"
 import HomeCustomerScreen from "../../screens/customer/homeCustomerScreen";
 import TiffinCustomerScreen from "../../screens/customer/tiffinCustomerScreen";
 import MenuCustomerScreen from "../../screens/customer/menuCustomerScreen";
+import ProfileDetailsCustomerScreen from "../../screens/customer/profileDetailsCustomerScreen";
 const HomeStack = createStackNavigator();
 
 const HomeCustomerNavigator = () => {
@@ -27,6 +28,11 @@ const HomeCustomerNavigator = () => {
       <HomeStack.Screen
         name="ProfileCustomer"
         component={ProfileCustomerScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <HomeStack.Screen
+        name="ProfileDetailsCustomer"
+        component={ProfileDetailsCustomerScreen}
         options={{ presentation: "transparentModal" }}
       />
       <HomeStack.Screen
