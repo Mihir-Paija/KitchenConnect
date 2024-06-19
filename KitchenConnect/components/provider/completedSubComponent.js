@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, noOfTiffins, price, formattedEndDate,}) => {
+const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, noOfTiffins, price, formattedEndDate, onPress}) => {
     const dayCount = {
         'Weekly': 7,
         'Fortnightly': 15,
@@ -12,6 +12,7 @@ const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, noO
     return (
         <TouchableOpacity
             style={[styles.container, Platform.OS === 'android' ? styles.androidShadow : styles.iosShadow]}
+            onPress = {onPress}
         >
             <Text style={styles.title}>{title} Subscription - {dayCount[title]} days</Text>
             <Text style={styles.detail}>

@@ -14,6 +14,121 @@ import SortSubModal from '../../components/provider/sortSubModal';
 import FilterSubModal from '../../components/provider/filterSubModal';
 import CommentModal from './modals/commentModal';
 
+const DUMMY_DATA = [
+  {
+    _id: 1,
+    type: "Pending",
+    providerName: "Phoenix Kitchen",
+    tiffinName: "Veg Thali",
+    subscriptionName: "Standard Subscription",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: true,
+    deliveryCharge: 50,
+    price: "2000",
+    discount: "10",
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 50,
+      totalPrice: 3000,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-06-14",
+    endDate: "2024-07-13",
+    pricePerTiffinDelivery: 50,
+    status: "pending",
+    remainingDays: null,
+    daysCompleted: null,
+    daysOptedOut: null,
+  },
+  {
+    _id: 2,
+    type: "Current",
+    providerName: "NutriBowl",
+    tiffinName: "Keto Power Bowl",
+    subscriptionName: "Weekly Keto Power Bowl",
+    tiffinType: "Dinner",
+    duration: 7,
+    deliveryIncluded: true,
+    deliveryCharge: 20,
+    price: "2000",
+    discount: "10",
+    priceBreakdown: {
+      subscriptionPrice: 700,
+      deliveryCharge: 140,
+      totalPrice: 840,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 7,
+    startDate: "2024-06-10",
+    endDate: "2024-06-25",
+    pricePerTiffinDelivery: 20,
+    status: "current",
+    remainingDays: 4,
+    daysCompleted: 3,
+    daysOptedOut: 0,
+  },
+  {
+    _id: 3,
+    type: "Completed",
+    providerName: "Fresh Delight",
+    tiffinName: "Balanced Diet",
+    subscriptionName: "Monthly Balanced Diet",
+    tiffinType: "Lunch",
+    duration: 30,
+    deliveryIncluded: false,
+    deliveryCharge: 0,
+    price: "2000",
+    discount: "10",
+    priceBreakdown: {
+      subscriptionPrice: 1500,
+      deliveryCharge: 0,
+      totalPrice: 1500,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 30,
+    startDate: "2024-05-01",
+    endDate: "2024-05-30",
+    pricePerTiffinDelivery: 0,
+    status: "current",
+    remainingDays: 0,
+    daysCompleted: 30,
+    daysOptedOut: 0,
+  },
+  {
+    _id: 4,
+    type: "Current",
+    providerName: "NutriBowl",
+    tiffinName: "Keto Power Bowl",
+    subscriptionName: "Weekly Keto Power Bowl",
+    tiffinType: "Dinner",
+    duration: 7,
+    deliveryIncluded: true,
+    deliveryCharge: 20,
+    price: "2000",
+    discount: "10",
+    priceBreakdown: {
+      subscriptionPrice: 700,
+      deliveryCharge: 140,
+      totalPrice: 840,
+    },
+    orderDate: "2024-06-12",
+    orderTime: "12:00",
+    numberOfTiffins: 7,
+    startDate: "2024-06-10",
+    endDate: "2024-06-25",
+    pricePerTiffinDelivery: 20,
+    status: "current",
+    remainingDays: 4,
+    daysCompleted: 3,
+    daysOptedOut: 0,
+  },
+]
+
 const SubscriberScreen = ({ navigation }) => {
 
   const [authState] = useContext(AuthContext);
@@ -59,8 +174,40 @@ const SubscriberScreen = ({ navigation }) => {
     }
   }
 
+  const fetchDummySubscribers =() => {
+    const active = [];
+    const pending = [];
+    const completed = [];
+    const tiffinSet = new Set();
+    tiffinSet.add('All')
+    const currentDate = new Date();
+
+    for (const subscriber of DUMMY_DATA) {
+      //console.log(subscriber)
+      if ((new Date(subscriber.endDate) < currentDate && subscriber.status === 'current') || subscriber.status === 'cancelled') {
+        completed.push(subscriber);
+      }
+      else if (subscriber.status === 'current') {
+        tiffinSet.add(subscriber.tiffinName)
+        active.push(subscriber);
+      } else if (subscriber.status === 'pending') {
+        pending.push(subscriber);
+      }
+    }
+
+    console.log(active)
+    setOriginalActiveSubscribers(active);
+    setActiveSubscribers(active);
+    setPendingSubscribers(pending);
+    setCompletedSubscribers(completed);
+    const tiffinArray = Array.from(tiffinSet);
+    setTiffins(tiffinArray)
+
+  }
+
   useEffect(() => {
-    fetchSubscribers()
+    //fetchSubscribers()
+    fetchDummySubscribers()
   }, [, refresh])
 
   const handleActive = () => {
@@ -81,7 +228,7 @@ const SubscriberScreen = ({ navigation }) => {
     setCompleted(true)
   }
 
-  const handleRejection = () =>{
+  const handleRejection = () => {
     setCommentModal(true);
   }
 
@@ -99,7 +246,7 @@ const SubscriberScreen = ({ navigation }) => {
 
         for (const subscriber of pendingSubscribers) {
           if (subscriber._id === id) {
-            if (status) {              
+            if (status) {
               const active = [...activeSubscribers]
               active.push(subscriber)
               setActiveSubscribers(active)
@@ -187,6 +334,12 @@ const SubscriberScreen = ({ navigation }) => {
     setActiveSubscribers(filteredSubscribers)
 
   }, [sortCriteria, filterCriteria, , originalActiveSubscribers]);
+
+  const handlePress = (subscription) => {
+    navigation.navigate('Subscription Details', {
+      subscription: subscription
+    })
+  }
 
 
   useEffect(() => {
@@ -292,7 +445,8 @@ const SubscriberScreen = ({ navigation }) => {
                   <FlatList
                     data={activeSubscribers}
                     renderItem={({ item }) => (
-                      <AcceptedSubComponent {...item} />
+                      <AcceptedSubComponent {...item} 
+                      onPress = {() => handlePress(item)}/>
 
                     )}
                     keyExtractor={(item) => item._id.toString()}
@@ -328,9 +482,9 @@ const SubscriberScreen = ({ navigation }) => {
                 </View>
               }
               <CommentModal
-              isVisible={commentModal}
-              onClose={() => setCommentModal(false)}
-              onReject={handleStatus} />
+                isVisible={commentModal}
+                onClose={() => setCommentModal(false)}
+                onReject={handleStatus} />
             </View>
             : null
           }
@@ -341,7 +495,8 @@ const SubscriberScreen = ({ navigation }) => {
                 <FlatList
                   data={completedSubscribers}
                   renderItem={({ item }) => (
-                    <CompletedSubComponent {...item} />
+                    <CompletedSubComponent {...item} 
+                    onPress = {() => handlePress(item)}/>
                   )}
                   keyExtractor={(item) => item._id.toString()}
                   contentContainerStyle={styles.flatList}
