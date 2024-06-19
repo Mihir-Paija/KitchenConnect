@@ -12,6 +12,7 @@ import LoadingScreen from '../shared/loadingScreen';
 import { windowHeight, windowWidth } from '@/utils/dimensions'
 import SortSubModal from '../../components/provider/sortSubModal';
 import FilterSubModal from '../../components/provider/filterSubModal';
+import CommentModal from './modals/commentModal';
 
 const SubscriberScreen = ({ navigation }) => {
 
@@ -26,6 +27,7 @@ const SubscriberScreen = ({ navigation }) => {
   const [originalActiveSubscribers, setOriginalActiveSubscribers] = useState([])
   const [pendingSubscribers, setPendingSubscribers] = useState([]);
   const [completedSubscribers, setCompletedSubscribers] = useState([]);
+  const [commentModal, setCommentModal] = useState(false);
 
   const [sortModal, setSortModal] = useState(false)
   const [sortCriteria, setSortCriteria] = useState("noSort")
@@ -77,6 +79,10 @@ const SubscriberScreen = ({ navigation }) => {
     setActive(false)
     setPending(false)
     setCompleted(true)
+  }
+
+  const handleRejection = () =>{
+    setCommentModal(true);
   }
 
   const handleStatus = async (id, status, comments) => {
@@ -311,7 +317,7 @@ const SubscriberScreen = ({ navigation }) => {
                   renderItem={({ item }) => (
                     <PendingSubComponent {...item}
                       onAccept={handleStatus}
-                      onReject={handleStatus} />
+                      onReject={handleRejection} />
                   )}
                   keyExtractor={(item) => item._id.toString()}
                   contentContainerStyle={styles.flatList}
@@ -321,6 +327,10 @@ const SubscriberScreen = ({ navigation }) => {
                   <Text>No Pending Subscriptions</Text>
                 </View>
               }
+              <CommentModal
+              isVisible={commentModal}
+              onClose={() => setCommentModal(false)}
+              onReject={handleStatus} />
             </View>
             : null
           }

@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 import tiffins from "../../models/tiffinModel.js";
 import provider from "../../models/providerModel.js";
-import { verifyJwt } from "../../utils/jwt.js";
-
-
 
 export const getLunchTiffins = async (req, res) => {
     try {

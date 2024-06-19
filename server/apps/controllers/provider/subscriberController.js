@@ -1,10 +1,28 @@
 import subscriber from "../../models/subscriberModel.js";
+import tiffins from "../../models/tiffinModel.js";
+import subscription from "../../models/subscriptionModel.js";
 import mongoose from 'mongoose';
 import { formatDate } from "../../utils/formatDate.js";
 
 export const getSubscribers = async (req, res) => {
     try {
         const userID = req.user._id;
+
+        const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+
+        const tiffinMap = new Map();
+
+        for(value of tiffins){
+          tiffinMap.set(value._id, [value.name, value.tiffinType])
+        }
+
+        const subscriptions = await subscription.find({providerID: new mongoose.Types.ObjectId(userID) })
+        const subMap = new Map();
+
+        for(value of subscriptions){
+            for(title of value.subscriptions)
+                subMap.set(title._id, title.title)
+        }
 
         const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
         
@@ -21,17 +39,20 @@ export const getSubscribers = async (req, res) => {
                 const subscriberData = subscriber._doc
                 const formattedSubscriber = {
                   ...subscriberData,
+                  title: subMap.get(subscriberData.subscriptionID),
+                  tiffinName: tiffinMap.get(subscriberData.tiffinID)[0],
+                  tiffinType: tiffinMap.get(subscriberData.tiffinID)[1],
                   formattedStartDate: formatDate(new Date(subscriberData.startDate)),
                   formattedEndDate: formatDate(new Date(subscriberData.endDate)),
                 };
         
-                if (new Date(subscriberData.endDate) < currentDate && subscriberData.accepted) {
+                if ((new Date(subscriberData.endDate) < currentDate && subscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
                   completed.push(formattedSubscriber);
                 }
-                else if (subscriberData.accepted) {
+                else if (subscriberData.status === 'Current') {
                     tiffinSet.add(subscriberData.tiffinName)
                   active.push(formattedSubscriber);
-                } else if (subscriberData.pending) {
+                } else if (subscriberData.status === 'Pending') {
                   pending.push(formattedSubscriber);
                 }
             }
@@ -63,7 +84,7 @@ export const decideStatus = async (req, res) => {
     try {
         const { subscriptionID } = req.params;
         console.log(subscriptionID)
-        const { accepted, comments } = req.body
+        const { status, comments } = req.body
 
         const current = await subscriber.findById(subscriptionID)
 
@@ -72,8 +93,7 @@ export const decideStatus = async (req, res) => {
                 message: `Subscriber Not Found`
             })
 
-        current.accepted = accepted;
-        current.pending = false;
+        current.status = status;
         current.comments = comments ? comments : null
 
         await current.save();

@@ -1,5 +1,43 @@
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 const { Schema, model } = mongoose;
+
+
+const priceSchema = new mongoose.Schema({
+    tiffinPrice: {
+        type: Number,
+        required: true,
+    },
+
+    discount: {
+        type: Number,
+        required: true,
+    },
+
+    deliveryCharge: {
+        type: Number,
+        required: true,
+    },
+})
+
+const daySchema = new mongoose.Schema({
+    remaining: {
+        type: [Date],
+        required: true,
+    },
+
+    completed: {
+        type: [Date]
+    },
+
+    customerOut: {
+        type: [Date]
+    },
+
+    providerOut: {
+        type: [Date]
+    }
+});
+
 
 const subscriberSchema = new Schema({
     providerID: {
@@ -25,46 +63,20 @@ const subscriberSchema = new Schema({
         required: true, 
     },
 
-    tiffinName: { 
-        type: String, 
-        required: true 
-    },
-
-    tiffinType: {
-        type: String,
-        enum: ["Lunch", "Dinner"],
-        required: true
-    },
-
     subscriptionID:{
         type: Schema.Types.ObjectId,
         ref: 'Subscription',
         required: true, 
     },
 
-    title: {
-        type: String,
-        enum: ["Weekly", "Fortnightly", "Monthly"],
-        required: true
-    },
-
     noOfTiffins: { 
         type: Number, 
         required: true 
     },
- 
-    price: { 
-        type: Number, 
-        required: true 
-    },
 
-    version: { 
-        type: Number, 
-        default: 1,
-    },
-
-    accepted: { 
-        type: Boolean, 
+    status: { 
+        type: String,
+        enum: ['Current', 'Pending', 'Rejected', 'Cancelled'],
         default: false,
     },
 
@@ -78,6 +90,20 @@ const subscriberSchema = new Schema({
         required: true 
     },
 
+    days: {
+        type: daySchema,
+    },
+
+    lowerLimit:{
+        type: Number,
+        required: true
+    },
+
+    price: {
+        type: priceSchema,
+        required: true
+    },
+
     delivery: { 
         type: Boolean, 
         required: true 
@@ -87,16 +113,14 @@ const subscriberSchema = new Schema({
         type: String, 
     },
 
-    pending:{
-        type: Boolean,
-        default: true
+    cancelDate:{
+        type: Date
     },
 
     comments: {
         type: String
     }
     
-
 }, { timestamps: true })
 
 const subscriber = mongoose.model('Subscriber', subscriberSchema);
