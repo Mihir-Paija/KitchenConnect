@@ -7,7 +7,7 @@ import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
 import { getOrders } from '../../utils/provider/orderAPI';
 
-const OrdersScreen = ({navigation}) => {
+const PreparationScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
   const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -32,7 +32,7 @@ const OrdersScreen = ({navigation}) => {
   }
 
   useEffect(() =>{
-    fetchSubscribers()
+    //fetchSubscribers()
   },[])
 
   useEffect(() => {
@@ -96,13 +96,13 @@ const OrdersScreen = ({navigation}) => {
   );
 };
 
-export default OrdersScreen;
+export default PreparationScreen;
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight * 1.2
+   // paddingTop: StatusBar.currentHeight * 1.2
 
   },
   flatList: {
