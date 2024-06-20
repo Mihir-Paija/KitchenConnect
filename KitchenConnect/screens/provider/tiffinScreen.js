@@ -147,7 +147,7 @@ const TiffinScreen = ({navigation}) => {
       const newSocket = connectSocket(authState.authToken, authState.authType)  
       setSocket(newSocket)  
     }
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

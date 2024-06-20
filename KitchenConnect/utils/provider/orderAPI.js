@@ -10,3 +10,26 @@ export const getOrders = async(id) =>{
         throw error.response.data;
     }
 }
+
+export const getPendingOrders = async(id) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/provider/order/${id}/pending`)
+        return response.data
+    } catch (error) {
+        console.log('Error in Get Pending Order API', error)
+        throw error.response.data;
+    }
+}
+
+export const decideOrderStatus = async(id, orderID, status) =>{
+    try {
+        const bodyData = {
+            status: status
+        }
+        const response = await axios.post(`${API_BASE_URL}/provider/order/${id}/${orderID}`, bodyData)
+        return response.data
+    } catch (error) {
+        console.log('Error in Decide Order API', error)
+        throw error.response.data;
+    }
+} 

@@ -12,6 +12,7 @@ import LoadingScreen from '../shared/loadingScreen';
 import { windowHeight, windowWidth } from '@/utils/dimensions'
 import SortSubModal from '../../components/provider/sortSubModal';
 import FilterSubModal from '../../components/provider/filterSubModal';
+import CommentModal from './modals/commentModal';
 
 const SubscriberScreen = ({ navigation }) => {
 
@@ -26,6 +27,7 @@ const SubscriberScreen = ({ navigation }) => {
   const [originalActiveSubscribers, setOriginalActiveSubscribers] = useState([])
   const [pendingSubscribers, setPendingSubscribers] = useState([]);
   const [completedSubscribers, setCompletedSubscribers] = useState([]);
+  const [commentModal, setCommentModal] = useState(false);
 
   const [sortModal, setSortModal] = useState(false)
   const [sortCriteria, setSortCriteria] = useState("noSort")
@@ -41,6 +43,7 @@ const SubscriberScreen = ({ navigation }) => {
     try {
       setLoading(true)
       const response = await getSubscribers(authState.authToken)
+      console.log(response)
 
       setActiveSubscribers(response.active);
       setOriginalActiveSubscribers(response.active);
@@ -57,8 +60,40 @@ const SubscriberScreen = ({ navigation }) => {
     }
   }
 
+  const fetchDummySubscribers =() => {
+    const active = [];
+    const pending = [];
+    const completed = [];
+    const tiffinSet = new Set();
+    tiffinSet.add('All')
+    const currentDate = new Date();
+
+    for (const subscriber of DUMMY_DATA) {
+      //console.log(subscriber)
+      if ((new Date(subscriber.endDate) < currentDate && subscriber.status === 'current') || subscriber.status === 'cancelled') {
+        completed.push(subscriber);
+      }
+      else if (subscriber.status === 'current') {
+        tiffinSet.add(subscriber.tiffinName)
+        active.push(subscriber);
+      } else if (subscriber.status === 'pending') {
+        pending.push(subscriber);
+      }
+    }
+
+    console.log(active)
+    setOriginalActiveSubscribers(active);
+    setActiveSubscribers(active);
+    setPendingSubscribers(pending);
+    setCompletedSubscribers(completed);
+    const tiffinArray = Array.from(tiffinSet);
+    setTiffins(tiffinArray)
+
+  }
+
   useEffect(() => {
     fetchSubscribers()
+    //fetchDummySubscribers()
   }, [, refresh])
 
   const handleActive = () => {
@@ -79,11 +114,15 @@ const SubscriberScreen = ({ navigation }) => {
     setCompleted(true)
   }
 
+  const handleRejection = () => {
+    setCommentModal(true);
+  }
+
   const handleStatus = async (id, status, comments) => {
     try {
       setLoading(true)
       bodyData = {
-        accepted: status,
+        status: status,
         comments
       }
       const response = await decideStatus(authState.authToken, id, bodyData)
@@ -93,7 +132,7 @@ const SubscriberScreen = ({ navigation }) => {
 
         for (const subscriber of pendingSubscribers) {
           if (subscriber._id === id) {
-            if (status) {              
+            if (status === 'Current') {
               const active = [...activeSubscribers]
               active.push(subscriber)
               setActiveSubscribers(active)
@@ -181,6 +220,12 @@ const SubscriberScreen = ({ navigation }) => {
     setActiveSubscribers(filteredSubscribers)
 
   }, [sortCriteria, filterCriteria, , originalActiveSubscribers]);
+
+  const handlePress = (subscription) => {
+    navigation.navigate('Subscription Details', {
+      subscription: subscription
+    })
+  }
 
 
   useEffect(() => {
@@ -286,7 +331,8 @@ const SubscriberScreen = ({ navigation }) => {
                   <FlatList
                     data={activeSubscribers}
                     renderItem={({ item }) => (
-                      <AcceptedSubComponent {...item} />
+                      <AcceptedSubComponent {...item} 
+                      onPress = {() => handlePress(item)}/>
 
                     )}
                     keyExtractor={(item) => item._id.toString()}
@@ -311,7 +357,7 @@ const SubscriberScreen = ({ navigation }) => {
                   renderItem={({ item }) => (
                     <PendingSubComponent {...item}
                       onAccept={handleStatus}
-                      onReject={handleStatus} />
+                      onReject={handleRejection} />
                   )}
                   keyExtractor={(item) => item._id.toString()}
                   contentContainerStyle={styles.flatList}
@@ -321,6 +367,10 @@ const SubscriberScreen = ({ navigation }) => {
                   <Text>No Pending Subscriptions</Text>
                 </View>
               }
+              <CommentModal
+                isVisible={commentModal}
+                onClose={() => setCommentModal(false)}
+                onReject={handleStatus} />
             </View>
             : null
           }
@@ -331,7 +381,8 @@ const SubscriberScreen = ({ navigation }) => {
                 <FlatList
                   data={completedSubscribers}
                   renderItem={({ item }) => (
-                    <CompletedSubComponent {...item} />
+                    <CompletedSubComponent {...item} 
+                    onPress = {() => handlePress(item)}/>
                   )}
                   keyExtractor={(item) => item._id.toString()}
                   contentContainerStyle={styles.flatList}

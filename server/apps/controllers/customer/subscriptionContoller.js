@@ -11,7 +11,7 @@ export const subscribe = async (req, res) => {
                 message: `Invalid URL`
             })
 
-        const { customerName, tiffinName, tiffinType, title, number, price, version, startDate, endDate, delivery, address } = req.body
+        const { customerName, title, number, price, startDate, endDate, delivery, address } = req.body
 
         if (!customerName || !tiffinName || !tiffinType || !title || !number || !price || !version || !startDate || !endDate || delivery === undefined)
             return res.status(400).send({

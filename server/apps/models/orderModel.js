@@ -19,27 +19,7 @@ const priceSchema = new mongoose.Schema({
     },
 })
 
-const daySchema = new mongoose.Schema({
-    remaining: {
-        type: [Date],
-
-    },
-
-    completed: {
-        type: [Date]
-    },
-
-    customerOut: {
-        type: [Date]
-    },
-
-    providerOut: {
-        type: [Date]
-    }
-});
-
-
-const subscriberSchema = new Schema({
+const orderSchema = new Schema({
     providerID: {
         type: Schema.Types.ObjectId,
         ref: 'Provider',
@@ -63,12 +43,6 @@ const subscriberSchema = new Schema({
         required: true, 
     },
 
-    subscriptionID:{
-        type: Schema.Types.ObjectId,
-        ref: 'Subscription',
-        required: true, 
-    },
-
     noOfTiffins: { 
         type: Number, 
         required: true 
@@ -76,26 +50,8 @@ const subscriberSchema = new Schema({
 
     status: { 
         type: String,
-        enum: ['Current', 'Pending', 'Rejected', 'Cancelled'],
-    },
-
-    startDate: { 
-        type: Date, 
-        required: true 
-    },
-
-    endDate: { 
-        type: Date, 
-        required: true 
-    },
-
-    days: {
-        type: daySchema,
-    },
-
-    lowerLimit:{
-        type: Number,
-        required: true
+        enum: ['Accepted', 'Pending', 'Rejected'],
+        default: false,
     },
 
     price: {
@@ -112,16 +68,12 @@ const subscriberSchema = new Schema({
         type: String, 
     },
 
-    cancelDate:{
-        type: Date
-    },
-
     comments: {
         type: String
     }
     
 }, { timestamps: true })
 
-const subscriber = mongoose.model('Subscriber', subscriberSchema);
+const order = mongoose.model('Order', orderSchema);
 
-export default subscriber;
+export default order;

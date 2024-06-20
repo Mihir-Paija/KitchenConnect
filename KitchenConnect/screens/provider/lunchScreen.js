@@ -28,12 +28,12 @@ const LunchScreen = ({navigation}) => {
     foodType: "all",
     deactivated: "all",
   });
+  
   const [sortModal, setSortModal] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
   
   const fetchTiffins = async () => {
     try {
-      console.log('Fetching')
       const response = await getLunchTiffins(authState.authToken);
       setTiffins(response);
       setOriginalTiffins(response)

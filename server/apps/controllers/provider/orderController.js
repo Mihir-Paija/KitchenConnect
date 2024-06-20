@@ -1,10 +1,21 @@
 import subscriber from '../../models/subscriberModel.js'
+import tiffins from '../../models/tiffinModel.js';
+import order from '../../models/orderModel.js';
 import mongoose from 'mongoose';
 
 export const getOrders = async (req, res) => {
 
     try {
         const userID = req.user._id;
+
+        const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+
+        const tiffinMap = new Map();
+
+        for(const value of tiffin){
+          const id = value._id.toString() 
+          tiffinMap.set(id, [value.name, value.tiffinType])
+        }
 
         const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
 
@@ -25,9 +36,15 @@ export const getOrders = async (req, res) => {
         }
 
         for (const subscriber of subscribers) {
-            const { tiffinName, tiffinType, noOfTiffins, startDate, endDate, accepted } = subscriber._doc;
+            const { tiffinID, noOfTiffins, startDate, endDate, status } = subscriber._doc;
+            const tiffinName = tiffinMap.get(tiffinID.toString())[0]
+            const tiffinType = tiffinMap.get(tiffinID.toString())[1]
 
-            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && accepted) {
+            subscriber._doc.tiffinName = tiffinName
+            subscriber._doc.tiffinType = tiffinType
+            subscriber._doc.title = 'Subscription'
+
+            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && status === 'Current') {
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
 
@@ -37,16 +54,54 @@ export const getOrders = async (req, res) => {
                     insertInSortedOrder(arr, {
                         tiffinName: tiffinName,
                         number: noOfTiffins,
-                        subscribers: [subscriber]
+                        orders: [subscriber]
                     });
                 } else {
                     arr[index].number += noOfTiffins;
-                    arr[index].subscribers.push(subscriber._doc);
+                    arr[index].orders.push(subscriber._doc);
                     const [updatedItem] = arr.splice(index, 1);
                     insertInSortedOrder(arr, updatedItem);
                 }
             }
         };
+
+        const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+
+        const toDate = currentDate.setHours(0, 0, 0, 0);
+
+        for(const value of orders){
+            if(value.createdAt >= toDate && value.status === 'Accepted'){
+                const tiffinID = value.tiffinID.toString()
+                const tiffinName = tiffinMap.get(tiffinID)[0]
+                const tiffinType = tiffinMap.get(tiffinID)[1]
+                const noOfTiffins = value.noOfTiffins
+                const newValue = {
+                    ...value._doc,
+                    tiffinName: tiffinName,
+                    tiffinType: tiffinType,
+                    title: 'One Time'
+
+                }                
+
+                const arr = tiffinType === 'Lunch' ? lunch : dinner;
+
+                const index = findTiffinIndex(arr, tiffinName);
+
+                if (index === -1) {
+                    insertInSortedOrder(arr, {
+                        tiffinName: tiffinName,
+                        number: noOfTiffins,
+                        orders: [newValue]
+                    });
+                } else {
+                    arr[index].number += noOfTiffins;
+                    arr[index].orders.push(newValue);
+                    const [updatedItem] = arr.splice(index, 1);
+                    insertInSortedOrder(arr, updatedItem);
+                }
+            }
+
+        }
 
         return res.status(200).send({
             lunch: lunch,
@@ -59,4 +114,83 @@ export const getOrders = async (req, res) => {
             message: `Internal Server Error`
         })
     }
+}
+
+export const getPendingOrders = async(req, res) =>{
+    try {
+        const userID = req.user._id;
+
+        const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+
+        const tiffinMap = new Map();
+
+        for(const value of tiffin){
+          const id = value._id.toString()
+          tiffinMap.set(id, [value.name, value.tiffinType])
+        } 
+
+        const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const currentDate = new Date()
+
+        const toDate = currentDate.setHours(0, 0, 0, 0);
+        const pendingOrders = []
+
+        for(const value of orders){
+
+            if(value.createdAt >= toDate && value.status === 'Pending'){
+                const tiffinID = value.tiffinID.toString()
+                const tiffinName = tiffinMap.get(tiffinID)[0]
+                const tiffinType = tiffinMap.get(tiffinID)[1]
+                const newValue = {
+                    ...value._doc,
+                    tiffinName: tiffinName,
+                    tiffinType: tiffinType
+
+                }
+                console.log(newValue)
+                pendingOrders.push(newValue)
+            }
+        }
+
+        return res.status(200).send({
+            pendingOrders: pendingOrders
+        })
+    } catch (error) {
+        console.log('Error in Fetching Pending Orders ', error)
+        return res.status(500).send({
+            message: `Internal Server Error`
+        })
+    }
+}
+
+
+export const decideOrderStatus = async(req, res) =>{
+    try {
+        const userID = req.user._id;
+        const {orderID} = req.params;
+
+        const {status} = req.body
+
+        const current = await order.findById(orderID)
+
+        if (!current)
+            return res.status(404).send({
+                message: `Order Not Found`
+            })
+
+        current.status = status;
+
+        await current.save();
+
+        return res.status(200).send({
+            message: `Updated Successfully`
+        })
+
+    } catch (error) {
+        console.log('Error in Deciding Status - Orders ', error)
+        return res.status(500).send({
+            message: `Internal Server Error`
+        })
+    }
+
 }

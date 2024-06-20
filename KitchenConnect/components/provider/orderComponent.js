@@ -11,7 +11,7 @@ const OrderComponent = ({title, tiffinName, noOfTiffins, customerName, price, de
   const [dayPrice, setDayPrice] = useState(0);
 
   useEffect(() => {
-    const result = price/(dayCount[title] * noOfTiffins)
+    const result = (price.tiffinPrice - price.discount) * noOfTiffins + price.deliveryCharge
     setDayPrice(Math.round(result *100) /100)
   }, [])
 

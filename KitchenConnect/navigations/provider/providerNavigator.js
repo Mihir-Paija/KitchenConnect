@@ -4,8 +4,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { UserTypeContext } from "../../context/userTypeContext";
 import ProviderHomeNavigator from "./providerHomeNavigator";
 import TiffinScreen from "@/screens/provider/tiffinScreen";
-import OrdersScreen from "@/screens/provider/ordersScreen";
-import SubscriberScreen from "@/screens/provider/subscriberScreen";
+import OrderTabNavigator from "./orderNavigator";
+import SubscriberNavigator from "./subscriberNavigator";
 import WalletScreen from "@/screens/provider/walletScreen";
 import icons from "@/utils/customerIconpaths";
 import { RefreshProvider } from '@/context/refreshContext';
@@ -48,8 +48,8 @@ const ProviderNavigator = () => {
         })}
       >
         <Tab.Screen name="My Tiffins" component={ProviderHomeNavigator} />
-        <Tab.Screen name="Subscribers" component={SubscriberScreen} />
-        <Tab.Screen name="Orders" component={OrdersScreen} />
+        <Tab.Screen name="Subscribers" component={SubscriberNavigator} />
+        <Tab.Screen name="Orders" component={OrderTabNavigator} />
         <Tab.Screen name="Wallet" component={WalletScreen} />
       </Tab.Navigator>
     </RefreshProvider>
