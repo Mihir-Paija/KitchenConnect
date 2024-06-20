@@ -31,6 +31,7 @@ const OrderRequestScreen = () =>{
             <LoadingScreen />
           ) : (
             <>
+            {requests.length !== 0 ?
             <FlatList
             data = {requests}
             renderItem={({ item }) => (
@@ -40,7 +41,13 @@ const OrderRequestScreen = () =>{
               )}
               contentContainerStyle={styles.flatList}
               />
-            </> ) }
+              :
+              <View style = {styles.emptyView}>
+              <Text>No Pending Requests</Text>
+              </View>
+              }           
+               </> 
+              ) }
             </>
     ) : <Text>You are not authorised to access this screen</Text> }
     </SafeAreaView>
@@ -58,5 +65,10 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
         alignItems: 'center'
       },
+      emptyView: {
+        flex: 1,
+        marginTop: 20,
+        alignItems: 'center'
+      }
 
 })

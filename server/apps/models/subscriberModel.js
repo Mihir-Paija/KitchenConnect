@@ -77,7 +77,6 @@ const subscriberSchema = new Schema({
     status: { 
         type: String,
         enum: ['Current', 'Pending', 'Rejected', 'Cancelled'],
-        default: false,
     },
 
     startDate: { 

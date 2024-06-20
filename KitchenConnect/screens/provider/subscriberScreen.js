@@ -158,6 +158,7 @@ const SubscriberScreen = ({ navigation }) => {
     try {
       setLoading(true)
       const response = await getSubscribers(authState.authToken)
+      console.log(response)
 
       setActiveSubscribers(response.active);
       setOriginalActiveSubscribers(response.active);
@@ -206,8 +207,8 @@ const SubscriberScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    //fetchSubscribers()
-    fetchDummySubscribers()
+    fetchSubscribers()
+    //fetchDummySubscribers()
   }, [, refresh])
 
   const handleActive = () => {

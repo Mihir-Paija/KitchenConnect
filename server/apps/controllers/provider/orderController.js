@@ -12,8 +12,9 @@ export const getOrders = async (req, res) => {
 
         const tiffinMap = new Map();
 
-        for(value of tiffins){
-          tiffinMap.set(value._id, [value.name, value.tiffinType])
+        for(const value of tiffin){
+          const id = value._id.toString() 
+          tiffinMap.set(id, [value.name, value.tiffinType])
         }
 
         const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
@@ -36,8 +37,8 @@ export const getOrders = async (req, res) => {
 
         for (const subscriber of subscribers) {
             const { tiffinID, noOfTiffins, startDate, endDate, status } = subscriber._doc;
-            const tiffinName = tiffinMap.get(tiffinID)[0]
-            const tiffinType = tiffinMap.get(tiffinID)[1]
+            const tiffinName = tiffinMap.get(tiffinID.toString())[0]
+            const tiffinType = tiffinMap.get(tiffinID.toString())[1]
 
             subscriber._doc.tiffinName = tiffinName
             subscriber._doc.tiffinType = tiffinType
@@ -117,8 +118,9 @@ export const getPendingOrders = async(req, res) =>{
 
         const tiffinMap = new Map();
 
-        for(value of tiffins){
-          tiffinMap.set(value._id, [value.name, value.tiffinType])
+        for(const value of tiffin){
+          const id = value._id.toString()
+          tiffinMap.set(id, [value.name, value.tiffinType])
         } 
 
         const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
@@ -128,7 +130,7 @@ export const getPendingOrders = async(req, res) =>{
 
         for(value of orders){
             if(value.createdAt >= toDate && value.status === 'Pending'){
-                const tiffinID = value.tiffinID
+                const tiffinID = value.tiffinID.toString()
                 const tiffinName = tiffinMap.get(tiffinID)[0]
                 const tiffinType = tiffinMap.get(tiffinID)[1]
                 value.tiffinName = tiffinName

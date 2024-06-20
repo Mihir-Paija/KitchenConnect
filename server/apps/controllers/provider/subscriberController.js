@@ -9,20 +9,26 @@ export const getSubscribers = async (req, res) => {
         const userID = req.user._id;
 
         const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+        console.log(tiffin);
 
         const tiffinMap = new Map();
 
-        for(value of tiffins){
-          tiffinMap.set(value._id, [value.name, value.tiffinType])
+        for(const value of tiffin){
+            const id = value._id.toString();
+          tiffinMap.set(id, [value.name, value.tiffinType])
         }
+        console.log(tiffinMap);
 
         const subscriptions = await subscription.find({providerID: new mongoose.Types.ObjectId(userID) })
         const subMap = new Map();
 
-        for(value of subscriptions){
-            for(title of value.subscriptions)
-                subMap.set(title._id, title.title)
+        for(const value of subscriptions){
+            for(const title of value.subscriptions){
+                const id = title._id.toString()
+                subMap.set(id, title.title)
+            }
         }
+        console.log(subMap)
 
         const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
         
@@ -37,20 +43,22 @@ export const getSubscribers = async (req, res) => {
 
             for (const subscriber of subscribers) {
                 const subscriberData = subscriber._doc
+                console.log(tiffinMap.get(subscriberData.tiffinID.toString()))
                 const formattedSubscriber = {
                   ...subscriberData,
-                  title: subMap.get(subscriberData.subscriptionID),
-                  tiffinName: tiffinMap.get(subscriberData.tiffinID)[0],
-                  tiffinType: tiffinMap.get(subscriberData.tiffinID)[1],
+                  title: subMap.get(subscriberData.subscriptionID.toString()),
+
+                  tiffinName: tiffinMap.get(subscriberData.tiffinID.toString())[0],
+                  tiffinType: tiffinMap.get(subscriberData.tiffinID.toString())[1],
                   formattedStartDate: formatDate(new Date(subscriberData.startDate)),
                   formattedEndDate: formatDate(new Date(subscriberData.endDate)),
                 };
         
-                if ((new Date(subscriberData.endDate) < currentDate && subscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
+                if ((new Date(subscriberData.endDate) < currentDate && surbscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
                   completed.push(formattedSubscriber);
                 }
                 else if (subscriberData.status === 'Current') {
-                    tiffinSet.add(subscriberData.tiffinName)
+                    tiffinSet.add(formattedSubscriber.tiffinName)
                   active.push(formattedSubscriber);
                 } else if (subscriberData.status === 'Pending') {
                   pending.push(formattedSubscriber);
@@ -75,7 +83,7 @@ export const getSubscribers = async (req, res) => {
     } catch (error) {
         console.log('Error in Fetching Subscribers ', error);
         return res.status(500).send({
-            messaeg: `Internal Server Error`
+            message: `Internal Server Error`
         })
     }
 }

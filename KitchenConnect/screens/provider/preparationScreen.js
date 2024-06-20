@@ -16,10 +16,11 @@ const PreparationScreen = ({navigation}) => {
   const [lunch, setLunch] = useState([])
   const [dinner, setDinner] = useState([])
 
-  const fetchSubscribers = async() => {
+  const fetchOrders = async() => {
     try {
       setLoading(true)
       const response = await getOrders(authState.authToken)
+      console.log(response)
 
       setLunch(response.lunch)
       setDinner(response.dinner)
@@ -32,7 +33,7 @@ const PreparationScreen = ({navigation}) => {
   }
 
   useEffect(() =>{
-    //fetchSubscribers()
+    fetchOrders()
   },[])
 
   useEffect(() => {
