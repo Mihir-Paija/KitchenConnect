@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const ItemComponent = ({ name, quantity, unit }) => {
+const ItemComponent = ({ _id, name, quantity, unit, onEdit }) => {
+
   return (
     <View style={styles.foodItem}>
       <View style={styles.foodContent}>
@@ -14,6 +16,10 @@ const ItemComponent = ({ name, quantity, unit }) => {
             {quantity} {unit}
           </Text>
         </View>
+        <Icon
+          name='pencil-outline'
+          style={styles.createButton}
+          onPress={onEdit} />
       </View>
       <View style={styles.line} />
     </View>
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 165, 0,0.5)",
     paddingVertical: windowHeight * 0.015,
     paddingHorizontal: windowWidth * 0.015,
-    width: windowWidth * 0.5,
+    width: windowWidth * 0.45,
     //border
     borderRadius: windowWidth * 0.02,
   },
@@ -60,6 +66,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#3c3636",
   },
+  createButton: {
+    color: '#FFA500',
+    fontSize: windowHeight * 0.035,
+    paddingVertical: windowHeight * 0.015,
+    paddingHorizontal: windowWidth * 0.015,
+
+    marginHorizontal: windowWidth *0.005
+},
   line: {
     borderTopWidth: 1,
     borderTopRadius: 1,

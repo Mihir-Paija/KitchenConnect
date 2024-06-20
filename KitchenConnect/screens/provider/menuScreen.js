@@ -3,17 +3,19 @@ import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList, Alert
 import {AuthContext} from '@/context/authContext'
 import { RefreshContext } from '@/context/refreshContext';
 import AddMenuModal from './addMenuModal';
-import { addMenu } from '@/utils/provider/menuAPI';
 import DaysScrollView from '@/components/shared/menu/dayScrollView';
 import ItemComponent from '../../components/provider/itemComponent';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
-import { getMenu } from '@/utils/provider/menuAPI';
+import { getMenu, addMenu, editMenuDetails } from '@/utils/provider/menuAPI';
 import LoadingScreen from '../shared/loadingScreen';
+import EditMenuModal from './modals/editMenuModal';
 
 const MenuScreen = ({navigation, route}) => {
   const { tiffin } = route.params
   const [authState] = useContext(AuthContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editModal, setEditModal] = useState(false)
+  const [editMenu, setEditMenu] = useState([])
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false)
   const [menu, setMenu] = useState([])
@@ -52,9 +54,8 @@ const MenuScreen = ({navigation, route}) => {
 
   const handleAddMenu = async (menuData) => {
     try {
-      console.log('Adding Menu:', menuData);
+      setLoading(true)
       const response = await addMenu(authState.authToken, tiffin.id, menuData);
-      //console.log(response);
       toggleModal();
       setRefresh(!refresh);
     } catch (error) {
@@ -66,6 +67,29 @@ const MenuScreen = ({navigation, route}) => {
     }
 
   };
+
+  const handleEditModal = (item) =>{
+    setEditMenu(item)
+    setEditModal(true)
+
+  }
+
+  const handleEditMenu = async(menuID, menuData) =>{
+    try {
+      setLoading(true)
+      const response = await editMenuDetails(authState.authToken, tiffin.id, menuID, menuData);
+      //console.log(response);
+      
+    } catch (error) {
+      console.log('Error in Adding menu:', error);
+      Alert.alert(error.message || "An error occurred");
+      setLoading(false);
+    } finally {
+      setLoading(false);
+      setRefresh(!refresh)
+      setEditModal(false);
+    }
+  }
 
   const selectedMenu = menu.find((menuItem) => menuItem.day === selectedDay) || { items: [] }; 
 
@@ -90,6 +114,7 @@ const MenuScreen = ({navigation, route}) => {
                   name={item.itemName}
                   quantity={item.quantity}
                   unit={item.unit}
+                  onEdit={() => handleEditModal(item)}
                 /> 
               )}
             /> :
@@ -98,6 +123,13 @@ const MenuScreen = ({navigation, route}) => {
              <Text style = {{fontSize: windowWidth * 0.05}}>For This Day</Text>
              </View> }
           </View>
+          {editModal ?
+          <EditMenuModal
+          isVisible={editModal}
+          menu={editMenu}
+          day={selectedDay}
+          onClose={() =>setEditModal(false)}
+          onEdit={handleEditMenu} /> : null}
           <AddMenuModal
             isVisible={isModalVisible}
             onClose={toggleModal}

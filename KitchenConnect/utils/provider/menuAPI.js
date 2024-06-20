@@ -20,3 +20,14 @@ export const addMenu = async(id, tiffinID, menu) =>{
     }
 }
 
+export const editMenuDetails = async(id, tiffinID, menuID, bodyData) =>{
+    try {
+        console.log(bodyData)
+        const response = await axios.patch(`${API_BASE_URL}/provider/menu/${id}/${tiffinID}/${menuID}`, bodyData)
+        return response
+    } catch (error) {
+        console.log('Error in Edit Menu API', error)
+        throw error.response.data;
+    }
+}
+

@@ -134,3 +134,55 @@ export const addMenu = async (req, res) => {
         })
     }
 }
+
+export const editMenu = async(req, res) =>{
+    try {
+        const userID = req.user._id
+        const {tiffinID, menuID} = req.params
+        console.log(menuID)
+
+        const { day, itemName, quantity, unit } = req.body
+
+        if (!day || !itemName || !quantity || !unit)
+            return res.status(400).send({
+                message: "Please Enter All Required Fields"
+            })
+
+        const currentMenu = await menu.find({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) })
+       
+        let dayExists = currentMenu[0].menu.find(menuItem => menuItem.day === day);
+        
+
+        for(const item of dayExists.items){
+            console.log(item)
+            if(item._id.toString() === menuID){
+                item.itemName = itemName
+                item.quantity = quantity
+                item.unit = unit
+                break;
+            }
+        }
+
+        console.log(dayExists)
+
+        const updatedMenu = await currentMenu[0].save();
+
+        if (updatedMenu)
+            return res.status(201).send({
+                message: `Item Edited Succesfully`
+            })
+
+        return res.status(500).send({
+            message: "Couldn't Add Menu! Please Try Again"
+        })
+       
+
+
+
+    } catch (error) {
+        console.log("Error in Editing Menu", error)
+        return res.status(500).send({
+            message: "Internal Server Error"
+        })
+    }
+}
