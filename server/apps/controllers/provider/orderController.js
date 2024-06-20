@@ -54,11 +54,11 @@ export const getOrders = async (req, res) => {
                     insertInSortedOrder(arr, {
                         tiffinName: tiffinName,
                         number: noOfTiffins,
-                        subscribers: [subscriber]
+                        orders: [subscriber]
                     });
                 } else {
                     arr[index].number += noOfTiffins;
-                    arr[index].subscribers.push(subscriber._doc);
+                    arr[index].orders.push(subscriber._doc);
                     const [updatedItem] = arr.splice(index, 1);
                     insertInSortedOrder(arr, updatedItem);
                 }
@@ -69,14 +69,20 @@ export const getOrders = async (req, res) => {
 
         const toDate = currentDate.setHours(0, 0, 0, 0);
 
-        for(value of orders){
+        for(const value of orders){
             if(value.createdAt >= toDate && value.status === 'Accepted'){
-                const tiffinID = value.tiffinID
+                const tiffinID = value.tiffinID.toString()
                 const tiffinName = tiffinMap.get(tiffinID)[0]
                 const tiffinType = tiffinMap.get(tiffinID)[1]
-                value.tiffinName = tiffinName
-                value.tiffinType = tiffinType
-                value.title = 'One Time'
+                const noOfTiffins = value.noOfTiffins
+                const newValue = {
+                    ...value._doc,
+                    tiffinName: tiffinName,
+                    tiffinType: tiffinType,
+                    title: 'One Time'
+
+                }                
+
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
 
                 const index = findTiffinIndex(arr, tiffinName);
@@ -85,11 +91,11 @@ export const getOrders = async (req, res) => {
                     insertInSortedOrder(arr, {
                         tiffinName: tiffinName,
                         number: noOfTiffins,
-                        subscribers: [subscriber]
+                        orders: [newValue]
                     });
                 } else {
                     arr[index].number += noOfTiffins;
-                    arr[index].subscribers.push(subscriber._doc);
+                    arr[index].orders.push(newValue);
                     const [updatedItem] = arr.splice(index, 1);
                     insertInSortedOrder(arr, updatedItem);
                 }
@@ -124,22 +130,29 @@ export const getPendingOrders = async(req, res) =>{
         } 
 
         const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const currentDate = new Date()
 
         const toDate = currentDate.setHours(0, 0, 0, 0);
         const pendingOrders = []
 
-        for(value of orders){
+        for(const value of orders){
+
             if(value.createdAt >= toDate && value.status === 'Pending'){
                 const tiffinID = value.tiffinID.toString()
                 const tiffinName = tiffinMap.get(tiffinID)[0]
                 const tiffinType = tiffinMap.get(tiffinID)[1]
-                value.tiffinName = tiffinName
-                value.tiffinType = tiffinType
-                pendingOrders.push(value)
+                const newValue = {
+                    ...value._doc,
+                    tiffinName: tiffinName,
+                    tiffinType: tiffinType
+
+                }
+                console.log(newValue)
+                pendingOrders.push(newValue)
             }
         }
 
-        return req.status(200).send({
+        return res.status(200).send({
             pendingOrders: pendingOrders
         })
     } catch (error) {

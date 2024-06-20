@@ -9,7 +9,6 @@ export const getSubscribers = async (req, res) => {
         const userID = req.user._id;
 
         const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
-        console.log(tiffin);
 
         const tiffinMap = new Map();
 
@@ -17,7 +16,6 @@ export const getSubscribers = async (req, res) => {
             const id = value._id.toString();
           tiffinMap.set(id, [value.name, value.tiffinType])
         }
-        console.log(tiffinMap);
 
         const subscriptions = await subscription.find({providerID: new mongoose.Types.ObjectId(userID) })
         const subMap = new Map();
@@ -28,7 +26,6 @@ export const getSubscribers = async (req, res) => {
                 subMap.set(id, title.title)
             }
         }
-        console.log(subMap)
 
         const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
         
@@ -43,7 +40,7 @@ export const getSubscribers = async (req, res) => {
 
             for (const subscriber of subscribers) {
                 const subscriberData = subscriber._doc
-                console.log(tiffinMap.get(subscriberData.tiffinID.toString()))
+                
                 const formattedSubscriber = {
                   ...subscriberData,
                   title: subMap.get(subscriberData.subscriptionID.toString()),
@@ -54,7 +51,7 @@ export const getSubscribers = async (req, res) => {
                   formattedEndDate: formatDate(new Date(subscriberData.endDate)),
                 };
         
-                if ((new Date(subscriberData.endDate) < currentDate && surbscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
+                if ((new Date(subscriberData.endDate) < currentDate && subscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
                   completed.push(formattedSubscriber);
                 }
                 else if (subscriberData.status === 'Current') {

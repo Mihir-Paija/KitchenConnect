@@ -34,7 +34,7 @@ const PreparationScreen = ({navigation}) => {
 
   useEffect(() =>{
     fetchOrders()
-  },[])
+  },[,refresh])
 
   useEffect(() => {
     

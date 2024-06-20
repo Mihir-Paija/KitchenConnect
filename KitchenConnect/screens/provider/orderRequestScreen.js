@@ -3,6 +3,8 @@ import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList,
 import { AuthContext } from "@/context/authContext";
 import {RefreshContext} from '@/context/refreshContext'
 import OrderRequestComponent from '../../components/provider/orderRequestComponent';
+import { getPendingOrders, decideOrderStatus } from '../../utils/provider/orderAPI';
+import LoadingScreen from '../shared/loadingScreen';
 
 const OrderRequestScreen = () =>{
     const [authState] = useContext(AuthContext)
@@ -11,12 +13,38 @@ const OrderRequestScreen = () =>{
     const [requests, setRequests] = useState([]);
     const [refresh, setRefresh] = useContext(RefreshContext)
 
-    const fetchRequests = () =>{
-        console.log('Fetching Requests')
+    const fetchRequests = async() =>{
+      try {
+        setLoading(true)
+        const response = await getPendingOrders(authState.authToken)
+        console.log(response)
+  
+        setRequests(response.pendingOrders)
+  
+      } catch (error) {
+        console.log('Error in Fetching Orders ', error);
+        Alert.alert(error.message || "An error occurred");
+        setLoading(false);
+      }finally{
+        setLoading(false)
+      }
     }
 
-    const handleStatus = () =>{
-        console.log('Handling Status')
+    const handleStatus = async(orderID, status) =>{
+      try {
+        console.log(status)
+        setLoading(true)
+        const response = await decideOrderStatus(authState.authToken, orderID, status)
+        console.log(response)
+  
+      } catch (error) {
+        console.log('Error in Fetching Orders ', error);
+        Alert.alert(error.message || "An error occurred");
+        setLoading(false);
+      }finally{
+        setLoading(false)
+        setRefresh(!refresh)
+      }
     }
 
     useEffect (() =>{
@@ -36,8 +64,8 @@ const OrderRequestScreen = () =>{
             data = {requests}
             renderItem={({ item }) => (
                 <OrderRequestComponent {...item} 
-                onAccept={() =>handleStatus}
-                onReject={() =>handleStatus}/>
+                onAccept={handleStatus}
+                onReject={handleStatus}/>
               )}
               contentContainerStyle={styles.flatList}
               />
