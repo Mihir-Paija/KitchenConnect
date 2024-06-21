@@ -5,6 +5,9 @@ import { AuthContext } from "@/context/authContext";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import TiffinTypeComponent from "../../components/customer/tiffinTypeComponent";
 import SubmitButton from "../../components/shared/forms/submitButton";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import CalendarComponent from "../../components/shared/calendarComponent";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const dayCount = {
   'Weekly': 7,
@@ -23,6 +26,11 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     delivery: 0,
     total: 0
   })
+  const [calendar, setCalendar] = useState(false)
+
+  const toggleCalendar = () => [
+    setCalendar(!calendar)
+  ]
 
   const backHandler = () => {
     navigation.goBack();
@@ -73,24 +81,24 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   { paddingHorizontal: windowWidth * 0.01 },
                 ]}
               >
-                <View style={[styles.paymentLineBox, {paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth *0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight *0.011}]}>
+                <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
                   <Text style={styles.paymentTxt}>Customer Name: </Text>
                   <Text style={styles.paymentValueTxt}>{subscription.customerName}</Text>
                 </View>
 
-                <View style={[styles.paymentLineBox, {paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth *0.01}]}>
+                <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth * 0.01 }]}>
                   <Text style={styles.paymentTxt}>Number of {subscription.noOfTiffins > 1 ? 'tiffins' : 'tiffin'}: </Text>
                   <Text style={styles.paymentValueTxt}>{subscription.noOfTiffins}</Text>
                 </View>
 
-                <View style={{paddingVertical: windowHeight * 0.002, marginTop: windowHeight * 0.005, paddingLeft: windowWidth *0.01}}>
+                <View style={{ paddingVertical: windowHeight * 0.002, marginTop: windowHeight * 0.005, paddingLeft: windowWidth * 0.01 }}>
                   {subscription.delivery ?
-                  <>
-                  <Text style={styles.paymentTxt}>Deliver To:</Text>
-                  <Text style={styles.paymentTxt}>{subscription.address}</Text>
-                  </>
-                  :
-                  <Text style={styles.paymentTxt}>No Delivery</Text>}
+                    <>
+                      <Text style={styles.paymentTxt}>Deliver To:</Text>
+                      <Text style={styles.paymentTxt}>{subscription.address}</Text>
+                    </>
+                    :
+                    <Text style={styles.paymentTxt}>No Delivery</Text>}
                 </View>
 
 
@@ -101,7 +109,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   { flexDirection: "row", justifyContent: "space-between" },
                 ]}
               >
-                
+
                 <View style={styles.DateContent}>
                   <Text style={styles.DateText}> Start Date </Text>
                   <Text style={styles.DateValueText}>
@@ -116,7 +124,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </Text>
                 </View>
               </View>
-              
+
             </View>
 
             <View style={[styles.bookingBox]}>
@@ -172,6 +180,31 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
 
                 </View>
               </View>
+              <View style={styles.calendarButton}>
+                {calendar ?
+  
+                  <Icon
+                    name="close"
+                    type="ionicon"
+                    style={{fontSize: windowWidth * 0.08}}
+                    onPress={toggleCalendar}
+                  />
+      
+                  :
+                  <TouchableOpacity onPress={toggleCalendar}>
+                    <Text style={[styles.calendarText, { color: 'blue' }]}>View In Calendar</Text>
+                  </TouchableOpacity>
+                }
+                </View>
+              {calendar ?
+                <CalendarComponent
+                  startDate={subscription.startDate}
+                  endDate={subscription.endDate}
+                  completed={subscription.days.completed}
+                  customerOut={subscription.days.customerOut}
+                  providerOut={subscription.days.providerOut}
+                />
+                : null}
             </View>
 
 
@@ -387,6 +420,23 @@ const styles = StyleSheet.create({
     fontFamily: "NunitoExtraBold",
     textAlign: "center",
     marginBottom: windowHeight * 0.01,
+  },
+  calendarButton: {
+    paddingTop: windowHeight * 0.02,
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center'
+  },
+  closeButtonHeader: {
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: windowHeight * 0.04,
+    paddingHorizontal: windowWidth * 0.03,
+    fontSize: windowWidth * 0.07,
+  },
+  calendarText: {
+    fontSize: windowWidth * 0.04,
   },
   priceContainer: {
     flexDirection: "row",
