@@ -17,7 +17,7 @@ const PendingSubComponent = ({ _id, title, customerName, tiffinName, tiffinType,
     }
 
     const handleReject = () =>{
-        onReject(subID, 'Rejected', null)
+        onReject(subID, 'Rejected')
     }
 
     const [totalPrice, setTotalPrice] = useState(0)

@@ -167,11 +167,17 @@ export const getProfile = async(req, res) =>{
   try {
     const user = req.user
 
+    return res.status(200).send(user)
+
    return res.status(200).send({
     name: user.name,
-    shortDescription: user.shortDescription,
-    fcmToken: user.fcmToken
-  })
+    email: user.email,
+    mobile: user.mobile,
+    city: user.city,
+    kitchenName: user.kitchenName,
+    delivery: user.provideDelivery,
+
+   })
 
 
 

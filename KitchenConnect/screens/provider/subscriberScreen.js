@@ -28,6 +28,11 @@ const SubscriberScreen = ({ navigation }) => {
   const [originalActiveSubscribers, setOriginalActiveSubscribers] = useState([])
   const [pendingSubscribers, setPendingSubscribers] = useState([]);
   const [completedSubscribers, setCompletedSubscribers] = useState([]);
+  const [rejectData, setRejectData]  = useState({
+    id: '',
+    status: '',
+    comments: '',
+  })
   const [commentModal, setCommentModal] = useState(false);
 
   const [sortModal, setSortModal] = useState(false)
@@ -115,9 +120,17 @@ const SubscriberScreen = ({ navigation }) => {
     setCompleted(true)
   }
 
-  const handleRejection = () => {
+  const handleRejection = (id, status) => {
+    try{
+    setRejectData((prevState) =>({
+      ...prevState,
+      id: id,
+      status: status
+    }))
+  }finally{
     setCommentModal(true);
   }
+}
 
   const handleStatus = async (id, status, comments) => {
     try {
@@ -130,13 +143,16 @@ const SubscriberScreen = ({ navigation }) => {
       if (response) {
 
         let pending = []
+        let tiffinName = ''
 
         for (const subscriber of pendingSubscribers) {
           if (subscriber._id === id) {
             if (status === 'Current') {
+              tiffinName = subscriber.tiffinName
               const active = [...activeSubscribers]
               active.push(subscriber)
               setActiveSubscribers(active)
+              setOriginalActiveSubscribers(active)
             }
             pending = pendingSubscribers.filter(item => item !== subscriber)
             break;
@@ -144,7 +160,9 @@ const SubscriberScreen = ({ navigation }) => {
           }
         }
 
-
+        if (!tiffins.includes(tiffinName)) {
+          tiffins.push(tiffinName);
+      }
         setPendingSubscribers(pending)
       }
     } catch (error) {
@@ -388,6 +406,7 @@ const SubscriberScreen = ({ navigation }) => {
                     }
                     <CommentModal
                       isVisible={commentModal}
+                      data={rejectData}
                       onClose={() => setCommentModal(false)}
                       onReject={handleStatus} />
                   </View>

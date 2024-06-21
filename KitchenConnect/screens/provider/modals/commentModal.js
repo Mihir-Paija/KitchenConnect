@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 
-const CommentModal = ({ isVisible, onClose, onReject}) => {
+const CommentModal = ({ isVisible, data, onClose, onReject}) => {
     const [comment, setComment] = useState("")
+
+    const handleReject = () =>{
+        console.log(data)
+        onReject(data.id, data.status, comment)
+    }
 
     return (
         <Modal
@@ -20,7 +25,7 @@ const CommentModal = ({ isVisible, onClose, onReject}) => {
                    placeholder='Enter Reason'
                    value={comment}
                    onChangeText={(text) => setComment(text)}/>
-                    <TouchableOpacity style={styles.closeButton} onPress={onReject}>
+                    <TouchableOpacity style={styles.closeButton} onPress={handleReject}>
                         <Text style={styles.buttonText}>Reject</Text>
                     </TouchableOpacity>
                 </View>

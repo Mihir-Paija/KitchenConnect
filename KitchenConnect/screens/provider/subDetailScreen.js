@@ -182,20 +182,20 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               </View>
               <View style={styles.calendarButton}>
                 {calendar ?
-  
+
                   <Icon
                     name="close"
                     type="ionicon"
-                    style={{fontSize: windowWidth * 0.08}}
+                    style={{ fontSize: windowWidth * 0.08 }}
                     onPress={toggleCalendar}
                   />
-      
+
                   :
                   <TouchableOpacity onPress={toggleCalendar}>
                     <Text style={[styles.calendarText, { color: 'blue' }]}>View In Calendar</Text>
                   </TouchableOpacity>
                 }
-                </View>
+              </View>
               {calendar ?
                 <CalendarComponent
                   startDate={subscription.startDate}

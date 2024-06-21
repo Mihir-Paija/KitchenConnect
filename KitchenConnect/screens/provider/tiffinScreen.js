@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Alert, BackHandler, TouchableOpacity, StatusBar } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import TiffinTabNavigator from '@/navigations/provider/providerTiffinNavigator';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
@@ -15,6 +15,7 @@ import messaging from '@react-native-firebase/messaging';
 import { useIsFocused } from "@react-navigation/native";
 import { SocketContext } from '../../context/socketContext';
 import { connectSocket } from '../../utils/socket';
+import HomeHeader from '../../components/provider/homeHeaderComponent';
 
 
 const TiffinScreen = ({navigation}) => {
@@ -93,10 +94,8 @@ const TiffinScreen = ({navigation}) => {
   const fetchProfile = async () => {
     try {
       const response = await getProfile(authState.authToken);
-      setProfile({
-        name: response.name,
-        shortDescription: response.shortDescription,
-      });
+      
+      setProfile(response);
 
       if(!response.fcmToken){
         const token = await messaging().getToken();
@@ -116,6 +115,13 @@ const TiffinScreen = ({navigation}) => {
       setLoading(false);
     }
   };
+
+  const navigateProfile = () =>{
+    console.log('Navigating')
+    navigation.navigate('Profile', {
+      profile: profile
+    })
+  }
 
 
   const backAction = () => {
@@ -166,11 +172,14 @@ const TiffinScreen = ({navigation}) => {
             <LoadingScreen />
           ) : (
             <>
-              <View style={styles.providerInfo}>
-                <Text style={styles.providerName}>
-                  Hello {profile.name}
-                </Text>
-              </View>
+            <View style={styles.providerInfo}>
+              <HomeHeader 
+              profile={profile}
+              onPress={navigateProfile}
+              />
+
+            </View>
+              
               <View style={styles.divider} />
               <View style={styles.menuTabs}>
                 <TiffinTabNavigator />
@@ -212,12 +221,10 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop: StatusBar.currentHeight * 1.2
   },
   providerInfo: {
     flex: 2, 
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: windowWidth * 0.05,
   },
   providerName: {
     color: 'black',
