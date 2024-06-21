@@ -25,6 +25,7 @@ const ProfileInputBox = ({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        placeholderTextColor={"#C7C7CD"}
         keyboardType={keyboardType}
       />
       {showChange && (
