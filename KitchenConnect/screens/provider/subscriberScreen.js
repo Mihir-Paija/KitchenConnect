@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert, TouchableOpacity, Image } from 'react-native';
 import activeScreenStyles from '@/styles/shared/activeScreen';
 import { AuthContext } from "@/context/authContext";
 import { RefreshContext } from '@/context/refreshContext'
+import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
 import SubStatusComponent from '@/components/provider/subStatusComponent';
 import AcceptedSubComponent from '../../components/provider/acceptedSubComponent';
 import PendingSubComponent from '../../components/provider/pendingSubComponent';
@@ -60,7 +61,7 @@ const SubscriberScreen = ({ navigation }) => {
     }
   }
 
-  const fetchDummySubscribers =() => {
+  const fetchDummySubscribers = () => {
     const active = [];
     const pending = [];
     const completed = [];
@@ -227,6 +228,21 @@ const SubscriberScreen = ({ navigation }) => {
     })
   }
 
+  const pullDownGesture = Gesture.Pan()
+    .onEnd((event) => {
+      console.log(event)
+      if (event.translationY > 100) {
+        onRefresh();
+      }
+    });
+
+  const onRefresh = useCallback(() => {
+    
+    setRefresh(!refresh)
+    setLoading(true)
+  }, []);
+
+
 
   useEffect(() => {
 
@@ -245,159 +261,164 @@ const SubscriberScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.screen}>
-      {loading ?
-        <LoadingScreen />
-        :
-        (<>
-          <SubStatusComponent
-            active={active}
-            onPressActive={handleActive}
-            pending={pending}
-            onPressPending={handlePending}
-            completed={completed}
-            onPressCompleted={handleCompleted}
-          />
-          {active ?
-            (<>
-              <View style={styles.filterSortContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.sortContainer,
-                    sortCriteria !== "noSort" && {
-                      borderColor: "#ffa500",
-                      backgroundColor: "#FFECEC",
-                    },
-                  ]}
-                  onPress={() => setSortModal(true)}
-                >
-                  <Text style={styles.filterSortText}>Sort</Text>
-                  <Image
-                    source={
-                      sortCriteria === "noSort"
-                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
-                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+      <SafeAreaView style={styles.screen}>
+        {loading ?
+          <LoadingScreen />
+          :
+          (
+
+              <>
+
+                <SubStatusComponent
+                  active={active}
+                  onPressActive={handleActive}
+                  pending={pending}
+                  onPressPending={handlePending}
+                  completed={completed}
+                  onPressCompleted={handleCompleted}
+                />
+                {active ?
+                  (<>
+                    <View style={styles.filterSortContainer}>
+                      <TouchableOpacity
+                        style={[
+                          styles.sortContainer,
+                          sortCriteria !== "noSort" && {
+                            borderColor: "#ffa500",
+                            backgroundColor: "#FFECEC",
+                          },
+                        ]}
+                        onPress={() => setSortModal(true)}
+                      >
+                        <Text style={styles.filterSortText}>Sort</Text>
+                        <Image
+                          source={
+                            sortCriteria === "noSort"
+                              ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                              : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                          }
+                          style={styles.icon}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.sortContainer,
+                          filterCriteria.subscription !== "all" && {
+                            backgroundColor: "#FFECEC",
+                            borderColor: "#ffa500",
+                          },
+                          filterCriteria.tiffin !== "All" && {
+                            backgroundColor: "#FFECEC",
+                            borderColor: "#ffa500",
+                          },
+                          filterCriteria.tiffinType !== "all" && {
+                            backgroundColor: "#FFECEC",
+                            borderColor: "#ffa500",
+                          },
+                        ]}
+                        onPress={() => setFilterModal(true)}
+                      >
+                        <Text style={styles.filterSortText}>Filter</Text>
+                        <Image
+                          source={
+                            filterCriteria.subscription === "all"
+                              ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
+                              : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                          }
+                          style={styles.icon}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <SortSubModal
+                      visible={sortModal}
+                      onClose={toggleSortModal}
+                      onSortChange={handleSort}
+                      sortCriteria={sortCriteria}
+                    />
+                    <FilterSubModal
+                      visible={filterModal}
+                      onClose={toggleFilterModal}
+                      onFilterChange={handleFilter}
+                      filterCriteria={filterCriteria}
+                      tiffins={tiffins}
+                    />
+                    {activeSubscribers.length !== 0 ?
+                      <>
+                        <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                          <Text style={styles.number}>{activeSubscribers.length} Subscribers</Text>
+                        </View>
+                        <FlatList
+                          data={activeSubscribers}
+                          renderItem={({ item }) => (
+                            <AcceptedSubComponent {...item}
+                              onPress={() => handlePress(item)} />
+
+                          )}
+                          keyExtractor={(item) => item._id.toString()}
+                          contentContainerStyle={styles.flatList}
+                        />
+                      </>
+                      :
+                      <View style={styles.emptyView}>
+                        <Text>No Active Subscriptions</Text>
+                      </View>
+
                     }
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.sortContainer,
-                    filterCriteria.subscription !== "all" && {
-                      backgroundColor: "#FFECEC",
-                      borderColor: "#ffa500",
-                    },
-                    filterCriteria.tiffin !== "All" && {
-                      backgroundColor: "#FFECEC",
-                      borderColor: "#ffa500",
-                    },
-                    filterCriteria.tiffinType !== "all" && {
-                      backgroundColor: "#FFECEC",
-                      borderColor: "#ffa500",
-                    },
-                  ]}
-                  onPress={() => setFilterModal(true)}
-                >
-                  <Text style={styles.filterSortText}>Filter</Text>
-                  <Image
-                    source={
-                      filterCriteria.subscription === "all"
-                        ? require("../../assets/sort_filter/icons8-filter-ios-17-outlined/icons8-filter-100.png")
-                        : require("../../assets/sort_filter/icons8-filter-ios-17-filled/icons8-filter-100.png")
+                  </>)
+                  : null
+                }
+
+                {pending ?
+                  <View style={styles.view}>
+                    {pendingSubscribers.length !== 0 ?
+                      <FlatList
+                        data={pendingSubscribers}
+                        renderItem={({ item }) => (
+                          <PendingSubComponent {...item}
+                            onAccept={handleStatus}
+                            onReject={handleRejection} />
+                        )}
+                        keyExtractor={(item) => item._id.toString()}
+                        contentContainerStyle={styles.flatList}
+                      />
+                      :
+                      <View style={styles.emptyView}>
+                        <Text>No Pending Subscriptions</Text>
+                      </View>
                     }
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              </View>
-              <SortSubModal
-                visible={sortModal}
-                onClose={toggleSortModal}
-                onSortChange={handleSort}
-                sortCriteria={sortCriteria}
-              />
-              <FilterSubModal
-                visible={filterModal}
-                onClose={toggleFilterModal}
-                onFilterChange={handleFilter}
-                filterCriteria={filterCriteria}
-                tiffins={tiffins}
-              />
-              {activeSubscribers.length !== 0 ?
-                <>
-                  <View style={{ alignItems: 'center', marginBottom: 10 }}>
-                    <Text style={styles.number}>{activeSubscribers.length} Subscribers</Text>
+                    <CommentModal
+                      isVisible={commentModal}
+                      onClose={() => setCommentModal(false)}
+                      onReject={handleStatus} />
                   </View>
-                  <FlatList
-                    data={activeSubscribers}
-                    renderItem={({ item }) => (
-                      <AcceptedSubComponent {...item} 
-                      onPress = {() => handlePress(item)}/>
+                  : null
+                }
 
-                    )}
-                    keyExtractor={(item) => item._id.toString()}
-                    contentContainerStyle={styles.flatList}
-                  />
-                </>
-                :
-                <View style={styles.emptyView}>
-                  <Text>No Active Subscriptions</Text>
-                </View>
+                {completed ?
+                  <>
+                    {completedSubscribers.length !== 0 ?
+                      <FlatList
+                        data={completedSubscribers}
+                        renderItem={({ item }) => (
+                          <CompletedSubComponent {...item}
+                            onPress={() => handlePress(item)} />
+                        )}
+                        keyExtractor={(item) => item._id.toString()}
+                        contentContainerStyle={styles.flatList}
+                      />
+                      :
+                      <View style={styles.emptyView}>
+                        <Text>No Completed Subscriptions</Text>
+                      </View>
+                    }
+                  </>
+                  : null
+                }
+              </>
+  
+          )}
+      </SafeAreaView>
 
-              }
-            </>)
-            : null
-          }
-
-          {pending ?
-            <View style={styles.view}>
-              {pendingSubscribers.length !== 0 ?
-                <FlatList
-                  data={pendingSubscribers}
-                  renderItem={({ item }) => (
-                    <PendingSubComponent {...item}
-                      onAccept={handleStatus}
-                      onReject={handleRejection} />
-                  )}
-                  keyExtractor={(item) => item._id.toString()}
-                  contentContainerStyle={styles.flatList}
-                />
-                :
-                <View style={styles.emptyView}>
-                  <Text>No Pending Subscriptions</Text>
-                </View>
-              }
-              <CommentModal
-                isVisible={commentModal}
-                onClose={() => setCommentModal(false)}
-                onReject={handleStatus} />
-            </View>
-            : null
-          }
-
-          {completed ?
-            <>
-              {completedSubscribers.length !== 0 ?
-                <FlatList
-                  data={completedSubscribers}
-                  renderItem={({ item }) => (
-                    <CompletedSubComponent {...item} 
-                    onPress = {() => handlePress(item)}/>
-                  )}
-                  keyExtractor={(item) => item._id.toString()}
-                  contentContainerStyle={styles.flatList}
-                />
-                :
-                <View style={styles.emptyView}>
-                  <Text>No Completed Subscriptions</Text>
-                </View>
-              }
-            </>
-            : null
-          }
-
-        </>)}
-    </SafeAreaView>
   );
 };
 

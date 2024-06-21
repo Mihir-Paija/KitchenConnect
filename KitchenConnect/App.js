@@ -7,6 +7,7 @@ import ProviderAuthNavigator from "./navigations/provider/providerAuthNavigator"
 import LoadingScreen from "./screens/shared/loadingScreen";
 import WelcomeScreen from "./screens/shared/welcomeScreen";
 import loadFonts from "./utils/fontLoader";
+import { GestureHandlerRootView} from 'react-native-gesture-handler';
 import { CustomerAuthProvider } from "./context/customerAuthContext";
 import {AuthProvider} from "./context/authContext";
 import { UserTypeProvider } from "./context/userTypeContext";
@@ -43,7 +44,7 @@ export default function App() {
         </NavigationContainer>
       </UserTypeProvider>
     </CustomerAuthProvider> */
-
+    <GestureHandlerRootView style={{flex: 1}}>
     <AuthProvider>
       <UserTypeProvider>
         <SocketProvider>
@@ -53,5 +54,6 @@ export default function App() {
         </SocketProvider>
       </UserTypeProvider>
     </AuthProvider>
+    </GestureHandlerRootView>
   );
 }

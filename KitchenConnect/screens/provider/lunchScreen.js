@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native"
 const LunchScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext)
+  const [globalRefresh, setGlobalRefresh]= useContext(RefreshContext)
 
   const [tiffins, setTiffins] = useState([]);
   const [originalTiffins, setOriginalTiffins] = useState([]);
@@ -48,7 +48,7 @@ const LunchScreen = ({navigation}) => {
   useEffect(() => {
     setLoading(true);
     fetchTiffins();
-  }, [refresh]);
+  }, [globalRefresh]);
 
   useEffect(() => {
     let sortedTiffins = [...originalTiffins];

@@ -11,7 +11,7 @@ const OrderRequestScreen = () =>{
     const [loading, setLoading] = useState(false)
 
     const [requests, setRequests] = useState([]);
-    const [refresh, setRefresh] = useContext(RefreshContext)
+    const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
 
     const fetchRequests = async() =>{
       try {
@@ -43,13 +43,13 @@ const OrderRequestScreen = () =>{
         setLoading(false);
       }finally{
         setLoading(false)
-        setRefresh(!refresh)
+        setGlobalRefresh(!globalRefresh);
       }
     }
 
     useEffect (() =>{
         fetchRequests()
-    }, [, refresh])
+    }, [, globalRefresh])
     
     return (
         <SafeAreaView style={styles.screen}>

@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert } from 'react-native';
 import { AuthContext } from "@/context/authContext";
-import { RefreshContext } from '@/context/refreshContext'
 import OrderHeader from '@/components/provider/orderHeader';
 import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';

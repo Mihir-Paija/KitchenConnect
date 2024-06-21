@@ -6,10 +6,10 @@ export const RefreshContext = createContext();
 
 export const RefreshProvider = ({ children }) => {
 
-  const [refresh, setRefresh] = useState(false);
+  const [globalRefresh, setGlobalRefresh] = useState(false);
 
   return (
-    <RefreshContext.Provider value={[refresh, setRefresh]}>
+    <RefreshContext.Provider value={[globalRefresh, setGlobalRefresh]}>
       {children}
     </RefreshContext.Provider>
   );

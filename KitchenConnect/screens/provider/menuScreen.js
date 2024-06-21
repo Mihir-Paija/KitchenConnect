@@ -86,7 +86,7 @@ const MenuScreen = ({navigation, route}) => {
       setLoading(false);
     } finally {
       setLoading(false);
-      setRefresh(!refresh)
+      setRefresh(!refresh);
       setEditModal(false);
     }
   }

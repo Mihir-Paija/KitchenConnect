@@ -50,6 +50,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
 
   const handleCreate = async(newSubscription) =>{
     try {
+      setLoading(true)
       toggleCreateModal()
       if(subscriptions.find(item => item.title === newSubscription.title)){
         Alert.alert("Subscription Already Exists!");
@@ -61,8 +62,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
     } catch (error) {
       
     } finally{
-      
-      setRefresh(!refresh)
+      setLoading(false)
+      setRefresh(!refresh);
     }
   }
 
@@ -87,7 +88,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
     }
     finally{
       setLoading(false);
-      setRefresh(!refresh)
+      setRefresh(!refresh);
     }
   }
 
@@ -110,6 +111,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
 
   const handleDelete = async(title)=>{
     try {
+      setLoading(true)
       const bodyData = {
         title: title
       }
@@ -119,6 +121,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
     } catch (error) {
       
     }finally{
+      setLoading(false)
       setRefresh(!refresh);
     }
   }

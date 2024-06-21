@@ -21,7 +21,7 @@ const InsideTiffinScreen = ({ route, navigation }) => {
   const { tiffin } = route.params
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useContext(RefreshContext)
+  const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
   const [authState] = useContext(AuthContext);
 
   const [editModal1, setEditModal1] = useState(false);
@@ -72,7 +72,7 @@ const InsideTiffinScreen = ({ route, navigation }) => {
       setLoading(true)
       const response = await editTiffins(authState.authToken, tiffin.id, tiffin)
       setLoading(false);
-      setRefresh(!refresh);
+      setGlobalRefresh(!globalRefresh);
     } catch (error) {
       console.log('Error in editing Tiffin ', error);
       Alert.alert(error.message || "An error occurred");
@@ -113,7 +113,7 @@ const InsideTiffinScreen = ({ route, navigation }) => {
       setLoading(true)
       const response = await deleteTiffin(authState.authToken, tiffinID)
       setLoading(false);
-      setRefresh(!refresh);
+      setGlobalRefresh(!globalRefresh);
     } catch (error) {
       console.log('Error in Deleting Tiffin ', error);
       Alert.alert(error.message || "An error occurred");
@@ -130,7 +130,7 @@ const InsideTiffinScreen = ({ route, navigation }) => {
       setLoading(true)
       const response = await deactivateTiffin(authState.authToken, tiffinID)
       setLoading(false);
-      setRefresh(!refresh);
+      setGlobalRefresh(!globalRefresh);
     } catch (error) {
       console.log('Error in Deactivating Tiffin ', error);
       Alert.alert(error.message || "An error occurred");
