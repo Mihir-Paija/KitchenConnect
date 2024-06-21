@@ -50,7 +50,12 @@ const subscriptionPlans = [
   },
 ];
 
-const SubscriptionModalCustomer = ({ visible, onClose }) => {
+const SubscriptionModalCustomer = ({
+  navigation,
+  visible,
+  setVisible,
+  onClose,
+}) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [navigationBarColor, setnavigationBarColor] = useState("#ffffff");
 
@@ -58,6 +63,12 @@ const SubscriptionModalCustomer = ({ visible, onClose }) => {
     const discountedPrice =
       parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100;
     return discountedPrice.toFixed(2);
+  };
+
+  const submitHandler = () => {
+    console.log("submit clicked");
+    setVisible(!visible);
+    navigation.navigate("SubscribeCustomer");
   };
 
   useEffect(() => {
@@ -168,9 +179,12 @@ const SubscriptionModalCustomer = ({ visible, onClose }) => {
             {benefit}
           </Text>
         ))}
-        <View style={styles.getStartedButton}>
+        <TouchableOpacity
+          onPress={submitHandler}
+          style={styles.getStartedButton}
+        >
           <Text style={styles.getStartedText}>Get Started</Text>
-        </View>
+        </TouchableOpacity>
       </Animated.View>
     );
   };

@@ -174,7 +174,9 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                     loading={loading}
                   />
                   <SubscriptionModalCustomer
+                    navigation={navigation}
                     visible={subscriptionModalVisible}
+                    setVisible={setSubscriptionModalVisible}
                     onClose={() => setSubscriptionModalVisible(false)}
                   />
                 </>

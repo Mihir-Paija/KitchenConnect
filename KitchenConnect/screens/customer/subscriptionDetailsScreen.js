@@ -75,6 +75,27 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </Text>
               </View>
             </View>
+            <View
+              style={[
+                styles.paymentLineBox,
+                {
+                  backgroundColor: "rgba(128,128,128,0.2)",
+                  borderRadius: windowWidth * 0.02,
+                  width: windowWidth * 0.9,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.paymentTxt,
+                  { fontSize: windowWidth * 0.045, textAlign: "center" },
+                ]}
+              >
+                You have cancelled this subscription of [date].
+              </Text>
+            </View>
             <View style={styles.kitchenBox}>
               <View style={styles.kitchenContentBox}>
                 <Text style={styles.providerName}>
@@ -200,7 +221,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <Text
                   style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
                 >
-                  ₹ 250 + {subscription.priceBreakdown.deliveryCharge} will be
+                  ₹ 250 + {subscription.priceBreakdown.deliveryCharge}{" "}
+                  {subscription.status === "completed" ? "was" : "will be"}{" "}
                   automatically deducted from your wallet for each tiffin
                   received.
                 </Text>
@@ -209,7 +231,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
             {(subscription.status === "current" ||
               subscription.status === "completed") && (
               <View style={[styles.bookingBox]}>
-                <Text style={styles.bookingTitleTxt}>Status</Text>
+                <Text style={styles.bookingTitleTxt}>{}Status</Text>
                 <View style={styles.statusLineBox}>
                   <View style={styles.dayBox}>
                     <View style={[styles.dayTxtBox, { flexDirection: "row" }]}>
@@ -253,7 +275,12 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </View>
 
                 <View style={styles.statusLineBox}>
-                  <Text style={styles.paymentTxt}>Paid till now : </Text>
+                  <Text style={styles.paymentTxt}>
+                    {subscription.status === "current"
+                      ? "Paid till now"
+                      : "Paid amount"}{" "}
+                    :{" "}
+                  </Text>
                   <Text style={styles.paymentValueTxt}>₹ 500</Text>
                 </View>
                 {subscription.status === "current" && (
