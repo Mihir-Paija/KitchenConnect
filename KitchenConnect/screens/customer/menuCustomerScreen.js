@@ -29,6 +29,7 @@ import { FontAwesome, Feather } from "@expo/vector-icons";
 import MenuItemComponent from "../../components/customer/menuItemComponent";
 import DaysScrollView from "../../components/customer/dayScrollViewMenuCustomer";
 import SubmitButton from "../../components/shared/forms/submitButton";
+import OrderModalCustomer from "../../components/customer/orderModalCustomer";
 
 const MenuCustomerScreen = ({ navigation, route }) => {
   //dummyy data
@@ -87,7 +88,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
   //   };
 
   // route params
-  const { tiffin } = route.params;
+  const { tiffin, kitchen } = route.params;
 
   const [authState, setAuthState] = useContext(AuthContext);
   //states
@@ -96,6 +97,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
   const [menuList, setMenuList] = useState([]);
   const [subscriptionModalVisible, setSubscriptionModalVisible] =
     useState(false);
+  const [orderModalVisible, setOrderModalVisible] = useState(false);
 
   //functions
   const backHandler = () => {
@@ -107,6 +109,10 @@ const MenuCustomerScreen = ({ navigation, route }) => {
     setSubscriptionModalVisible(true);
   };
 
+  const orderHandler = () => {
+    console.log("click on order");
+    setOrderModalVisible(true);
+  };
   const onDayChange = (day) => {
     setSelectedDay(day);
   };
@@ -169,9 +175,22 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                     contentContainerStyle={styles.mealList}
                   />
                   <SubmitButton
+                    btnTitle={"Order"}
+                    handleSubmitBtn={orderHandler}
+                    loading={loading}
+                  />
+                  <SubmitButton
                     btnTitle={"Subscriptions"}
                     handleSubmitBtn={subscriptionHandler}
                     loading={loading}
+                  />
+                  <OrderModalCustomer
+                    kitchen={kitchen}
+                    tiffin={tiffin}
+                    navigation={navigation}
+                    visible={orderModalVisible}
+                    setVisible={setOrderModalVisible}
+                    onClose={() => setOrderModalVisible(false)}
                   />
                   <SubscriptionModalCustomer
                     navigation={navigation}
