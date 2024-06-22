@@ -1,8 +1,15 @@
 import { Router } from "express";
 const router = Router();
-import { subscribe } from "../../controllers/customer/subscriptionContoller.js";
+import {
+  subscribe,
+  subscriptionsGet,
+} from "../../controllers/customer/subscriptionContoller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 
-router.route('/:id/:kitchenID/:tiffinID/:subscriptionID').post(subscribe)
+router
+  .route("/:customerID/:kitchenID/:tiffinID/:subscriptionID")
+  .post(subscribe);
 
-export default router
+router.route("/:customerID").get(subscriptionsGet);
+
+export default router;

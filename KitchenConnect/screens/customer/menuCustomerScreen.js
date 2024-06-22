@@ -110,7 +110,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
   };
 
   const orderHandler = () => {
-    console.log("click on order");
+    // console.log("click on order");
     setOrderModalVisible(true);
   };
   const onDayChange = (day) => {
@@ -193,6 +193,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                     onClose={() => setOrderModalVisible(false)}
                   />
                   <SubscriptionModalCustomer
+                    tiffin={tiffin}
                     navigation={navigation}
                     visible={subscriptionModalVisible}
                     setVisible={setSubscriptionModalVisible}
