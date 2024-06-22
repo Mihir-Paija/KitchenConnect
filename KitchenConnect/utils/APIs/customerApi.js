@@ -76,3 +76,16 @@ export const getMenuCustomer = async (kitchenID, tiffinID) => {
     throw error.response.data;
   }
 };
+
+// customer -> getSubscriptionPlanCustomer : GET
+export const getSubscriptionPlanCustomer = async (kitchenID, tiffinID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/subscriptionPlans/${kitchenID}/${tiffinID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getSubscriptionPlan Customer API:", error);
+    throw error.response.data;
+  }
+};

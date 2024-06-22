@@ -1,127 +1,128 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
-
 const priceSchema = new mongoose.Schema({
-    tiffinPrice: {
-        type: Number,
-        required: true,
-    },
-
-    discount: {
-        type: Number,
-        required: true,
-    },
-
-    deliveryCharge: {
-        type: Number,
-        required: true,
-    },
-})
-
-const daySchema = new mongoose.Schema({
-    remaining: {
-        type: [Date],
-
-    },
-
-    completed: {
-        type: [Date]
-    },
-
-    customerOut: {
-        type: [Date]
-    },
-
-    providerOut: {
-        type: [Date]
-    }
+  tiffinPrice: {
+    type: Number,
+    required: [true, "Please enter the tiffin price"],
+  },
+  deliveryCharge: {
+    type: Number,
+    required: [true, "Please enter the delivery charge"],
+  },
+  platformCommission: {
+    type: Number,
+    default: 0.1,
+  },
+  GST_on_tiffin: { type: Number, default: 0.05 },
+  GST_on_service: { type: Number, default: 0.18 },
+  serviceDiscount: { type: Number, default: null },
+  kitchenDiscount: { type: Number, default: null },
+  lowerLimit: {
+    type: Number,
+    required: [true, "Please enter the lower limit"],
+  },
 });
 
+const subcriptionStatusSchema = new mongoose.Schema({
+  status: {
+    type: String,
+    enum: ["Current", "Pending", "Rejected", "Cancelled"],
+    required: [true, "Please enter the status"],
+  },
+  daysRemaining: { type: [Date], default: [] },
+  daysOptedOut: { type: [Date], default: [] },
+  daysCompleted: { type: [Date], default: [] },
+  cancelDate: { type: Date, default: null },
+});
 
-const subscriberSchema = new Schema({
-    providerID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Provider',
-        required: true
-    },
+const paymentBreakdownSchema = new mongoose.Schema({
+  subscriptionPrice: {
+    type: Number,
+    required: [true, "Please enter the subscription price"],
+  },
+  platformCharge: {
+    type: Number,
+    required: [true, "Please enter the platform charge"],
+  },
+  tax: { type: Number, required: [true, "Please enter the tax amount"] },
+  deliveryCharge: {
+    type: Number,
+    required: [true, "Please enter the delivery charge"],
+  },
+  discount: {
+    type: Number,
+    required: [true, "Please enter the discount amount"],
+  },
+  total: { type: Number, required: [true, "Please enter the total amount"] },
+  moneyTransferTillNow: { type: Number, default: 0 },
+  perOrderPrice: {
+    type: Number,
+    required: [true, "Please enter the per-order price"],
+  },
+});
 
+const subscriberSchema = new Schema(
+  {
     customerID: {
-        type: Schema.Types.ObjectId,
-        ref: 'customer',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
+      required: [true, "Please enter the customer ID"],
     },
-
-    customerName: {
-        type: String,
-        required: true
+    kitchenID: {
+      type: Schema.Types.ObjectId,
+      ref: "Kitchen",
+      required: [true, "Please enter the kitchen ID"],
     },
-    
-    tiffinID: { 
-        type: Schema.Types.ObjectId,
-        ref: 'Tiffins',
-        required: true, 
+    tiffinID: {
+      type: Schema.Types.ObjectId,
+      ref: "Tiffin",
+      required: [true, "Please enter the tiffin ID"],
     },
-
-    subscriptionID:{
-        type: Schema.Types.ObjectId,
-        ref: 'Subscription',
-        required: true, 
+    subscriptionID: {
+      type: Schema.Types.ObjectId,
+      ref: "Subscription",
+      required: [true, "Please enter the subscription ID"],
     },
-
-    noOfTiffins: { 
-        type: Number, 
-        required: true 
+    subscriberFirstName: {
+      type: String,
+      required: [true, "Please enter the subscriber's first name"],
     },
-
-    status: { 
-        type: String,
-        enum: ['Current', 'Pending', 'Rejected', 'Cancelled'],
+    subscriberLastName: {
+      type: String,
+      required: [true, "Please enter the subscriber's last name"],
     },
-
-    startDate: { 
-        type: Date, 
-        required: true 
+    startDate: { type: Date, required: [true, "Please enter the start date"] },
+    endDate: { type: Date, required: [true, "Please enter the end date"] },
+    wantDelivery: {
+      type: Boolean,
+      required: [true, "Please specify if delivery is wanted"],
     },
-
-    endDate: { 
-        type: Date, 
-        required: true 
+    noOfTiffins: {
+      type: Number,
+      required: [true, "Please enter the number of tiffins"],
     },
-
-    days: {
-        type: daySchema,
+    address: { type: String, required: [true, "Please enter the address"] },
+    subcriptionStatus: {
+      type: subcriptionStatusSchema,
+      required: [true, "Please enter the subscription status"],
     },
-
-    lowerLimit:{
-        type: Number,
-        required: true
-    },
-
     price: {
-        type: priceSchema,
-        required: true
+      type: priceSchema,
+      required: [true, "Please enter the price details"],
     },
-
-    delivery: { 
-        type: Boolean, 
-        required: true 
+    customerPaymentBreakdown: {
+      type: paymentBreakdownSchema,
+      required: [true, "Please enter the customer payment breakdown"],
     },
-    
-    address: { 
-        type: String, 
+    kitchenPaymentBreakdown: {
+      type: paymentBreakdownSchema,
+      required: [true, "Please enter the kitchen payment breakdown"],
     },
+  },
+  { timestamps: true }
+);
 
-    cancelDate:{
-        type: Date
-    },
+const Subscriber = mongoose.model("Subscriber", subscriberSchema);
 
-    comments: {
-        type: String
-    }
-    
-}, { timestamps: true })
-
-const subscriber = mongoose.model('Subscriber', subscriberSchema);
-
-export default subscriber;
+export default Subscriber;

@@ -25,8 +25,21 @@ router.use("/customer/tiffin", getTiffinRouter);
 import getMenuRouter from "./customer/getMenuRouter.js";
 router.use("/customer/menu", getMenuRouter);
 
-import subscribeRouter from './customer/subscribeRouter.js'
-router.use('/customer/subscribe', subscribeRouter)
+//getSubscriptionRouter -> customer
+import getSubscriptionPlanRouter from "./customer/getSubscriptionPlanRouter.js";
+router.use("/customer/subscriptionPlans", getSubscriptionPlanRouter);
+
+//subscribeRouter -> customer (POST)
+import subscribeRouter from "./customer/subscribeRouter.js";
+router.use("/customer/subscription", subscribeRouter);
+
+//subscriptionDetailsRouter -> customer (GET)
+import subscriptionDetailsRouter from "./customer/getSubscriptionDetails.js";
+router.use("/customer/subscriptionDetail", subscriptionDetailsRouter);
+
+//subscriptionDetailsRouter -> customer (GET)
+import subscriptionsRouter from "./customer/subscribeRouter.js";
+router.use("/customer/subscription", subscriptionsRouter);
 
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
@@ -34,13 +47,13 @@ import { tiffinRouter } from "./provider/tiffinRouter.js";
 import { menuRouter } from "./provider/menuRouter.js";
 import { subscriptionRouter } from "./provider/subscriptionRouter.js";
 import { subscriberRouter } from "./provider/subscriberRouter.js";
-import {orderRouter} from './provider/orderRouter.js'
+import { orderRouter } from "./provider/orderRouter.js";
 router.use("/provider", providerAuthRouter);
-router.use('/provider/profile', profileRouter)
+router.use("/provider/profile", profileRouter);
 router.use("/provider/tiffin", tiffinRouter);
 router.use("/provider/menu", menuRouter);
-router.use('/provider/subscription', subscriptionRouter)
-router.use('/provider/subscriber', subscriberRouter)
-router.use('/provider/order', orderRouter)
+router.use("/provider/subscription", subscriptionRouter);
+router.use("/provider/subscriber", subscriberRouter);
+router.use("/provider/order", orderRouter);
 
 export default router;

@@ -39,7 +39,7 @@ const OrderModalCustomer = ({
   setVisible,
   onClose,
 }) => {
-  console.log(tiffin);
+  //   console.log(tiffin);
   const iconKey = foodTypeMapping[tiffin.foodType];
   const iconData = foodTypeIcon[iconKey];
 

@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as NavigationBar from "expo-navigation-bar";
+import { getSubscriptionPlanCustomer } from "@/utils/APIs/customerApi";
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get("window");
 
@@ -51,11 +52,14 @@ const subscriptionPlans = [
 ];
 
 const SubscriptionModalCustomer = ({
+  tiffin,
   navigation,
   visible,
   setVisible,
   onClose,
 }) => {
+  const [loading, setLoading] = useState(true);
+  const [subPlans, setSubPlans] = useState([]);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [navigationBarColor, setnavigationBarColor] = useState("#ffffff");
 
@@ -64,6 +68,24 @@ const SubscriptionModalCustomer = ({
       parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100;
     return discountedPrice.toFixed(2);
   };
+
+  const fetchSubPlans = async (kitchenID, tiffinID) => {
+    try {
+      console.log("hi");
+      const response = await getSubscriptionPlanCustomer(kitchenID, tiffinID);
+      setSubPlans(response.data.subscriptions);
+      console.log(response.data.subscriptions);
+    } catch (error) {
+      console.error("Failed to fetch menu:", error);
+    } finally {
+      // console.log("subPlans:", subPlans);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubPlans(tiffin.providerID, tiffin._id);
+  }, [tiffin]);
 
   const submitHandler = () => {
     console.log("submit clicked");
