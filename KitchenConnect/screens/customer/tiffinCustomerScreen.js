@@ -112,8 +112,8 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
     }
   };
 
-  const tiffinHandler = (item) => {
-    navigation.navigate("MenuCustomer", { tiffin: item });
+  const tiffinHandler = (item, KitchenData) => {
+    navigation.navigate("MenuCustomer", { tiffin: item, kitchen: KitchenData });
     // console.log("tiffin item pressed : ", item.name);
   };
 
@@ -164,18 +164,21 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
   };
 
   // render flatlist item
-  const renderItem = ({ item }) => (
-    <TiffinComponent
-      title={item.name}
-      price={item.price}
-      deliveryCharge={item.deliveryDetails.deliveryCharge}
-      foodType={item.foodType}
-      tiffinType={item.tiffinType}
-      description={item.shortDescription}
-      rating={3.5}
-      onPress={() => tiffinHandler(item)}
-    />
-  );
+  const renderItem = ({ item }) => {
+    KitchenData = { kitchenName: kitchen.kitchenName };
+    return (
+      <TiffinComponent
+        title={item.name}
+        price={item.price}
+        deliveryCharge={item.deliveryDetails.deliveryCharge}
+        foodType={item.foodType}
+        tiffinType={item.tiffinType}
+        description={item.shortDescription}
+        rating={3.5}
+        onPress={() => tiffinHandler(item, KitchenData)}
+      />
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
