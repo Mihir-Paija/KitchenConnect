@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList } from 'react-native';
 
-const OrderComponent = ({title, tiffinName, noOfTiffins, customerName, price, delivery, address}) =>{
+const OrderComponent = ({title, tiffinName, noOfTiffins, customerName, price, delivery, address, customerOut, providerOut}) =>{
   const dayCount = {
     Weekly: 7,
     Fortnightly: 15,
@@ -24,6 +24,8 @@ return (
       <Text style={styles.address}>Deliver To: {address}</Text>
     : 
     <Text style={styles.address}>You Don't Provide Delivery</Text>}
+    {customerOut ? <Text>Customer Has Opted Out</Text> :  null}
+    {providerOut ? <Text>You Have Opted Out</Text> :  null}
     </View>
   );
 };

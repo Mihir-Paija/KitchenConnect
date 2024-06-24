@@ -1,10 +1,11 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert, Touchable } from 'react-native';
 import { AuthContext } from "@/context/authContext";
 import OrderHeader from '@/components/provider/orderHeader';
 import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
-import { getOrders } from '../../utils/provider/orderAPI';
+import { getOrders, optOut } from '../../utils/provider/orderAPI';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const PreparationScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
@@ -35,6 +36,29 @@ const PreparationScreen = ({navigation}) => {
     fetchOrders()
   },[,refresh])
 
+  const handleOut = async(type) =>{
+    try {
+      const bodyData = {
+        order: type === 'Lunch' ? lunch : dinner,
+        type
+      }
+
+      const response = await optOut(authState.authToken, bodyData)
+
+      if(response && response.status === 200){
+          Alert.alert(`Opted Out of ${type} Orders`)
+        }
+
+      else {
+        Alert.alert(`Couldn't Opt Out`)
+      }
+      
+    } catch (error) {
+      console.log('Error in Opting Out Screen ', error)
+      console.log(error.message || 'An Error Occured')
+    }
+  }
+
   useEffect(() => {
     
     const backAction = () => {
@@ -61,6 +85,7 @@ const PreparationScreen = ({navigation}) => {
       {type === 'Lunch' ?
       <>
       { lunch.length !== 0 ?
+      <>
        <FlatList
        data={lunch}
        renderItem={({ item }) => (
@@ -68,6 +93,10 @@ const PreparationScreen = ({navigation}) => {
        )}
        contentContainerStyle={styles.flatList}
      />
+     <TouchableOpacity onPress={() => handleOut('Lunch')} style = {styles.btn}>
+      <Text style={styles.btnText}>Opt Out for Lunch</Text>
+     </TouchableOpacity>
+     </>
      :
      <View style={styles.emptyView}>
        <Text>No Lunch Deliveries Today</Text>
@@ -78,6 +107,7 @@ const PreparationScreen = ({navigation}) => {
       {type === 'Dinner' ?
       <>
       { dinner.length !== 0 ?
+      <>
        <FlatList
        data={dinner}
        renderItem={({ item }) => (
@@ -85,6 +115,10 @@ const PreparationScreen = ({navigation}) => {
        )}
        contentContainerStyle={styles.flatList}
      />
+     <TouchableOpacity onPress={() => handleOut('Dinner')} style = {styles.btn}>
+      <Text style={styles.btnText}>Opt Out for Dinner</Text>
+     </TouchableOpacity>
+     </>
      :
      <View style={styles.emptyView}>
        <Text>No Dinner Deliveries Today</Text>
@@ -115,8 +149,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center'
   },
-
-
+  btn:{
+    color: 'red',
+    alignContent: 'center',
+    alignItems: 'center'
+  },
+  btnText:{
+    fontSize: 18
+  },
   emptyView: {
     flex: 1,
     marginTop: 20,

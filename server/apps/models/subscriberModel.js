@@ -32,7 +32,9 @@ const subcriptionStatusSchema = new mongoose.Schema({
   },
   daysRemaining: { type: [Date], default: [] },
   daysOptedOut: { type: [Date], default: [] },
+  providerOptedOut: { type: [Date], default: [] },
   daysCompleted: { type: [Date], default: [] },
+  comments: {type: String, default: ''},
   cancelDate: { type: Date, default: null },
 });
 
