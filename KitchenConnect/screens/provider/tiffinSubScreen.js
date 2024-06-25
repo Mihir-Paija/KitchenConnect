@@ -11,7 +11,6 @@ import CreateSubModal from './createSubModal';
 import EditSubModal from './editSubModal';
 import { deleteSubscription, editSub } from '../../utils/provider/subscriptionAPI';
 
-
 const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const {tiffin} = route.params
   const [subscriptions, setSubscriptions] = useState([])
@@ -142,6 +141,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
           title= {item.title}
           price={item.price}
           days={item.days}
+          deliveryCharge={item.deliveryCharge}
+          discount={item.discount}
           description={item.description}
           onEdit={() =>openEditModal(item)}/>
         )}
@@ -154,6 +155,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
        isVisible={createModal}
        onClose={toggleCreateModal}
        onCreate={handleCreate} 
+       tiffin={tiffin}
       />
       : null}
 

@@ -7,21 +7,27 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import PriceInfoModal from './priceInfoModal';
 
-const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
+const CreateSubModal = ({ isVisible, onClose, onCreate, tiffin}) => {
     const [subscription, setSubscription] = useState({
         title: "",
-        price: "",
-        days: "",
+        price: tiffin.price,
+        days: 0,
         description: "",
-        perTiffin: "",
+        discount: 0,
+        deliveryCharge: "",
     });
 
+    const [perTiffin, setPerTiffin] = useState(0);
+
     const handleCreate = async () => {
-        const { title, price, days, description } = subscription;
-        if (!title || !price || !days || !description) {
+        const { title, price, deliveryCharge, days, description } = subscription;
+        if (!title || !price || !days || !description || !deliveryCharge) {
+            console.log(subscription)
             Alert.alert("Please Fill All Fields");
             return;
         }
+
+        subscription.discount = subscription.price - perTiffin
 
         onCreate(subscription);
     };
@@ -106,7 +112,7 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                             
                         </View>
                         <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
-                            <Text style={styles.daysText}>Total Price</Text>
+                            <Text style={styles.daysText}>Total</Text>
                         </View>
                     </View>
                     <View style={styles.subscriptionRow}>
@@ -114,16 +120,52 @@ const CreateSubModal = ({ isVisible, onClose, onCreate }) => {
                         <TextInput
                         style={[styles.input, {height: windowHeight *0.065 }]}
                         placeholder="Enter Price"
-                        value={subscription.perTiffin}
+                        value={perTiffin}
                         onChangeText={(text) =>
-                            setSubscription({ ...subscription, perTiffin: text, price: text * subscription.days })
+                            setPerTiffin(text)
                         }
                         keyboardType="numeric"
                     />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.dayCount}>{subscription.price}</Text>
+                            <Text style={styles.dayCount}>{perTiffin * subscription.days}</Text>
                         </View>
+                    </View>
+                    <View style={styles.subscriptionRow}>
+                        <View style={styles.pickerContainer}>
+                            <View style = {styles.priceContainer}>
+                            <Text style={[styles.daysText, {fontSize: windowHeight *0.016}]}>Enter Per Delivery Price</Text>
+                            <Icon2
+                                name='infocirlceo'
+                                style={styles.infoIcon}
+                                onPress={toggleInfoModal}
+                            />
+                            </View>
+                            
+                        </View>
+                        <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
+                            <Text style={styles.daysText}>Total</Text>
+                        </View>
+                    </View>
+                    <View style={styles.subscriptionRow}>
+                        <View style={[styles.pickerContainer, {flex: 2.5}]}>
+                        <TextInput
+                        style={[styles.input, {height: windowHeight *0.065 }]}
+                        placeholder="Enter Price"
+                        value={subscription.deliveryCharge}
+                        onChangeText={(text) =>
+                            setSubscription({ ...subscription, deliveryCharge: text})
+                        }
+                        keyboardType="numeric"
+                    />
+                        </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.dayCount}>{subscription.deliveryCharge * subscription.days}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.totalPrice}>
+                        <Text style={styles.daysText}>Total Subscription Price</Text>
+                        <Text style={styles.dayCount}>{subscription.days ? (parseInt(perTiffin, 10) + parseInt(subscription.deliveryCharge, 10)) * subscription.days: 0}</Text>
                     </View>
                     
 
@@ -179,6 +221,9 @@ const styles = StyleSheet.create({
         height: windowHeight * 0.04,
         paddingHorizontal: windowWidth * 0.03,
         fontSize: windowWidth * 0.07,
+    },
+    totalPrice:{
+        alignItems: 'center',
     },
     closeButton: {
         fontSize: windowWidth * 0.08,

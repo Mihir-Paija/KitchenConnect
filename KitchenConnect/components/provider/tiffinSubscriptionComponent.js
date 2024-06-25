@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions'; 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
-const TiffinSubscription = ({ title, price, days, description, onEdit}) => {
-  
+const TiffinSubscription = ({ title, price, deliveryCharge, discount, days, description, onEdit}) => {
   return (
     <View style={styles.container}>
     <View style={styles.headerContainer}>
@@ -17,7 +16,7 @@ const TiffinSubscription = ({ title, price, days, description, onEdit}) => {
         </View>
       <Text>{description}</Text>
       <View style={styles.infoContainer}>
-        <Text style={styles.price}>Price: ₹{price}</Text>
+        <Text style={styles.price}>Price: ₹{(parseInt(price, 10) - parseInt(discount, 10) + parseInt(deliveryCharge, 10)) * parseInt(days, 10)}</Text>
         <Text style={styles.days}>Days: {days}</Text>
       </View>
     </View>

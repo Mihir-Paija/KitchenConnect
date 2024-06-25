@@ -6,6 +6,7 @@ import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
 import { getOrders, optOut } from '../../utils/provider/orderAPI';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import {windowWidth, windowHeight} from '@/utils/dimensions'
 
 const PreparationScreen = ({navigation}) => {
   const [authState] = useContext(AuthContext)
@@ -39,7 +40,7 @@ const PreparationScreen = ({navigation}) => {
   const handleOut = async(type) =>{
     try {
       const bodyData = {
-        order: type === 'Lunch' ? lunch : dinner,
+        orders: type === 'Lunch' ? lunch : dinner,
         type
       }
 
@@ -93,9 +94,12 @@ const PreparationScreen = ({navigation}) => {
        )}
        contentContainerStyle={styles.flatList}
      />
+     <View style = {styles.btnView}>
      <TouchableOpacity onPress={() => handleOut('Lunch')} style = {styles.btn}>
-      <Text style={styles.btnText}>Opt Out for Lunch</Text>
+      <Text style={styles.btnText}>Opt Out</Text>
+      <Text style={styles.btnText}>For Lunch</Text>
      </TouchableOpacity>
+     </View>
      </>
      :
      <View style={styles.emptyView}>
@@ -115,9 +119,12 @@ const PreparationScreen = ({navigation}) => {
        )}
        contentContainerStyle={styles.flatList}
      />
+     <View style = {styles.btnView}>
      <TouchableOpacity onPress={() => handleOut('Dinner')} style = {styles.btn}>
       <Text style={styles.btnText}>Opt Out for Dinner</Text>
+      <Text style={styles.btnText}>For Dinner</Text>
      </TouchableOpacity>
+     </View>
      </>
      :
      <View style={styles.emptyView}>
@@ -149,13 +156,24 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center'
   },
+  btnView:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: windowHeight * 0.03,
+  },
   btn:{
-    color: 'red',
+    height: windowHeight * 0.1, 
+    width: windowWidth * 0.3,
+    backgroundColor: 'red',
     alignContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15
   },
   btnText:{
-    fontSize: 18
+    fontSize: 18,
+    color: '#FFFFFF',
+    fontWeight: 'bold'
   },
   emptyView: {
     flex: 1,

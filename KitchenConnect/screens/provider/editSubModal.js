@@ -7,13 +7,18 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import PriceInfoModal from './priceInfoModal';
 
-const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item }) => {
+const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
     const [subscription, setSubscription] = useState({
+        days: item.days,
         title: item.title,
         price: item.price,
+        discount: item.discount,
+        deliveryCharge: item.deliveryCharge,
         description: item.description,
-        perTiffin: item.price / item.days,
     });
+
+    const [perTiffin, setPerTiffin] = useState(item.price - item.discount)
+    console.log(perTiffin)
 
     const handleEdit = async () => {
         const { title, price, description } = subscription;
@@ -22,6 +27,7 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item }) => {
             return;
         }
 
+        subscription.discount = item.price - perTiffin
         onEdit(subscription);
     };
 
@@ -59,38 +65,75 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item }) => {
                             setSubscription({ ...subscription, description: text })
                         }
                     />
-                    <View style={styles.subscriptionRow}>
+                   <View style={styles.subscriptionRow}>
                         <View style={styles.pickerContainer}>
-                            <View style={styles.priceContainer}>
-                                <Text style={[styles.daysText, { fontSize: windowHeight * 0.016 }]}>Enter Per Tiffin Price</Text>
-                                <Icon2
-                                    name='infocirlceo'
-                                    style={styles.infoIcon}
-                                    onPress={toggleInfoModal}
-                                />
+                            <View style = {styles.priceContainer}>
+                            <Text style={[styles.daysText, {fontSize: windowHeight *0.016}]}>Enter Per Tiffin Price</Text>
+                            <Icon2
+                                name='infocirlceo'
+                                style={styles.infoIcon}
+                                onPress={toggleInfoModal}
+                            />
                             </View>
+                            
                         </View>
-                        <View style={[styles.textContainer, { marginRight: windowWidth * 0.025 }]}>
-                            <Text style={styles.daysText}>Total Price</Text>
+                        <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
+                            <Text style={styles.daysText}>Total</Text>
                         </View>
                     </View>
                     <View style={styles.subscriptionRow}>
-                        <View style={[styles.pickerContainer, { flex: 2.5 }]}>
-                            <TextInput
-                                style={[styles.input, { height: windowHeight * 0.065 }]}
-                                value={subscription.price}
-                                onChangeText={(text) =>
-                                    setSubscription({ ...subscription, perTiffin: text, price: text * item.days })
-                                }
-                                keyboardType="numeric"
-                            />
+                        <View style={[styles.pickerContainer, {flex: 2.5}]}>
+                        <TextInput
+                        style={[styles.input, {height: windowHeight *0.065 }]}
+                        placeholder="Enter Price"
+                        value={perTiffin}
+                        onChangeText={(text) =>
+                            setPerTiffin(text)
+                        }
+                        keyboardType="numeric"
+                    />
                         </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.dayCount}>{subscription.price}</Text>
+                            <Text style={styles.dayCount}>{perTiffin * subscription.days}</Text>
                         </View>
                     </View>
-
-
+                    <View style={styles.subscriptionRow}>
+                        <View style={styles.pickerContainer}>
+                            <View style = {styles.priceContainer}>
+                            <Text style={[styles.daysText, {fontSize: windowHeight *0.016}]}>Enter Per Delivery Price</Text>
+                            <Icon2
+                                name='infocirlceo'
+                                style={styles.infoIcon}
+                                onPress={toggleInfoModal}
+                            />
+                            </View>
+                            
+                        </View>
+                        <View style={[styles.textContainer, {marginRight: windowWidth * 0.025}]}>
+                            <Text style={styles.daysText}>Total</Text>
+                        </View>
+                    </View>
+                    <View style={styles.subscriptionRow}>
+                        <View style={[styles.pickerContainer, {flex: 2.5}]}>
+                        <TextInput
+                        style={[styles.input, {height: windowHeight *0.065 }]}
+                        placeholder="Enter Price"
+                        value={subscription.deliveryCharge}
+                        onChangeText={(text) =>
+                            setSubscription({ ...subscription, deliveryCharge: text})
+                        }
+                        keyboardType="numeric"
+                    />
+                        </View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.dayCount}>{subscription.deliveryCharge * subscription.days}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.totalPrice}>
+                        <Text style={styles.daysText}>Total Subscription Price</Text>
+                        <Text style={styles.dayCount}>{subscription.days ? (parseInt(perTiffin, 10) + parseInt(subscription.deliveryCharge, 10)) * parseInt(subscription.days, 10): 0}</Text>
+                    </View>
+                    
                     <View style={styles.btnContainer}>
                         <TouchableOpacity style={styles.submitButton} onPress={handleEdit}>
                             <Text style={styles.buttonText}>Edit</Text>
@@ -136,6 +179,9 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: windowWidth * 0.055,
         fontWeight: 'bold',
+    },
+    totalPrice:{
+        alignItems: 'center',
     },
     closeButtonHeader: {
         backgroundColor: '#FFFFFF',

@@ -27,7 +27,7 @@ export const getSubscribers = async (req, res) => {
             }
         }
 
-        const subscribers = await Subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
         
         const active = [];
         const pending = [];
@@ -60,25 +60,16 @@ export const getSubscribers = async (req, res) => {
                 } else if (subscriberData.subscriptionStatus.status === 'Pending') {
                   pending.push(formattedSubscriber);
                 }
-            }
-
-            const tiffins = Array.from(tiffinSet)
-
-            return res.status(200).send({
-                active: active,
-                pending: pending,
-                completed: completed,
-                tiffins: tiffins
-            })
+            }         
         }
 
-        const tiffins = Array.from(tiffinSet)
+        const tiffinArray = Array.from(tiffinSet)
 
         return res.status(200).send({
                 active: active,
                 pending: pending,
                 completed: completed,
-                tiffins: tiffins
+                tiffins: tiffinArray
             })
     } catch (error) {
         console.log('Error in Fetching Subscribers ', error);
@@ -93,6 +84,7 @@ export const decideStatus = async (req, res) => {
         const { subscriptionID } = req.params;
         console.log(subscriptionID)
         const { status, comments } = req.body
+        console.log(status)
 
         const current = await Subscriber.findById(subscriptionID)
 
@@ -101,8 +93,8 @@ export const decideStatus = async (req, res) => {
                 message: `Subscriber Not Found`
             })
 
-        current.status = status;
-        current.comments = comments ? comments : null
+        current._doc.subscriptionStatus.status = status;
+        current._doc.subscriptionStatus.comments = comments ? comments : null
 
         await current.save();
 
@@ -112,7 +104,7 @@ export const decideStatus = async (req, res) => {
     } catch (error) {
         console.log('Error in Deciding Status ', error);
         return res.status(500).send({
-            messaeg: `Internal Server Error`
+            message: `Internal Server Error`
         })
     }
 }

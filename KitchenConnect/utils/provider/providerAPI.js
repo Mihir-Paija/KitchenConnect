@@ -36,6 +36,7 @@ export const logoutProvider = async() =>{
   }
 };
 
+
 export const getProfile = async(authToken) =>{
   try {
     const response = await axios.get(`${API_BASE_URL}/provider/${authToken}`);

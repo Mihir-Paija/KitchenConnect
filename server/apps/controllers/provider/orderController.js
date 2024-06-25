@@ -3,6 +3,11 @@ import tiffins from '../../models/tiffinModel.js';
 import order from '../../models/orderModel.js';
 import mongoose from 'mongoose';
 
+const isDateInArray = (array, date) => {
+    return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
+  };
+  
+
 export const getOrders = async (req, res) => {
 
     try {
@@ -17,12 +22,13 @@ export const getOrders = async (req, res) => {
           tiffinMap.set(id, [value.name, value.tiffinType])
         }
 
-        const subscribers = await Subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
         const lunch = [];
         const dinner = [];
         const currentDate = new Date()
         currentDate.setHours(0, 0, 0, 0)
+        console.log(currentDate)
 
         function findTiffinIndex(arr, tiffinName) {
             return arr.findIndex(item => item.tiffinName === tiffinName);
@@ -37,26 +43,31 @@ export const getOrders = async (req, res) => {
         }
 
         for (const subscriber of subscribers) {
-            const { tiffinID, noOfTiffins, startDate, endDate, status } = subscriber._doc;
+            const { tiffinID, noOfTiffins, startDate, endDate, subscriptionStatus } = subscriber._doc;
             const tiffinName = tiffinMap.get(tiffinID.toString())[0]
             const tiffinType = tiffinMap.get(tiffinID.toString())[1]
 
-            subscriber._doc.tiffinName = tiffinName
-            subscriber._doc.tiffinType = tiffinType
-            subscriber._doc.title = 'Subscription'
-            subscriber._doc.providerOut =  false
-            subscriber._doc.customerOut = false
-            const out = false;
+            const formattedSubscriber = {
+                ...subscriber._doc,
+            tiffinName: tiffinName,
+            tiffinType: tiffinType,
+            title: 'Subscription',
+            providerOut: false,
+            customerOut: false,
+            }
 
-            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && status === 'Current') {
+            let out = false;
 
-                if(subscriber._doc.days.customerOut.includes(currentDate)){
-                    subscriber._doc.customerOut = true
+            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && subscriptionStatus.status === 'Current') {
+
+                if(isDateInArray(subscriptionStatus.daysOptedOut, currentDate)){
+                    formattedSubscriber.customerOut = true
                     out = true;
                 }
 
-                if(subscriber._doc.days.providerOut.includes(currentDate)){
-                    subscriber._doc.providerOut = true
+                if(isDateInArray(subscriptionStatus.providerOptedOut, currentDate)){
+                    console.log('True')
+                    formattedSubscriber.providerOut = true
                     out = true;
                 }
 
@@ -68,11 +79,11 @@ export const getOrders = async (req, res) => {
                     insertInSortedOrder(arr, {
                         tiffinName: tiffinName,
                         number: out ? 0 : noOfTiffins,
-                        orders: [subscriber]
+                        orders: [formattedSubscriber]
                     });
                 } else {
                     arr[index].number += out ? 0 : noOfTiffins;
-                    arr[index].orders.push(subscriber._doc);
+                    arr[index].orders.push(formattedSubscriber);
                     const [updatedItem] = arr.splice(index, 1);
                     insertInSortedOrder(arr, updatedItem);
                 }
@@ -93,7 +104,9 @@ export const getOrders = async (req, res) => {
                     ...value._doc,
                     tiffinName: tiffinName,
                     tiffinType: tiffinType,
-                    title: 'One Time'
+                    title: 'One Time',
+                    providerOut: false,
+                    customerOut: false,
 
                 }                
 
@@ -181,6 +194,7 @@ export const getPendingOrders = async(req, res) =>{
 export const decideOrderStatus = async(req, res) =>{
     try {
         const userID = req.user._id;
+        console.log(userID)
         const {orderID} = req.params;
 
         const {status} = req.body
@@ -214,14 +228,18 @@ export const optOut = async(req, res) =>{
         const userID = req.user._id
 
         const orderSet = new Set();
+        
 
         const {orders, type} = req.body;
+        console.log(orders)
 
-        for (const order of orders)
-            orderSet.add(order._id.toString())
+        for (const order of orders){
+            for(const value of order.orders){
+            orderSet.add(value._id.toString())
+        }}
         
-        const subscribers = await Subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
-        const currentDate = newDate();
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
+        const currentDate = new Date();
         currentDate.setHours(0,0,0,0)
 
         const bulkOperations = [];
@@ -230,18 +248,19 @@ export const optOut = async(req, res) =>{
             const subscriberData = subscriber._doc
             const orderID = subscriberData._id.toString()
             if(orderSet.has(orderID)){
-                subscriberData.days.providerOut.push(currentDate)
-                subscriberData.days.remaining = subscriberData.days.remaining.filter(item => new Date(item) != currentDate())
+                subscriberData.subscriptionStatus.providerOptedOut.push(currentDate)
+                subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item) != currentDate())
                 orderSet.delete(orderID)
 
                 bulkOperations.push({
                     updateOne: {
                         filter: { _id: subscriberData._id },
-                        update: { $set: { 'days.providerOut': subscriberData.days.providerOut, 'days.remaining': subscriberData.days.remaining } }
+                        update: { $set: { 'subscriptionStatus.providerOptedOut': subscriberData.subscriptionStatus.providerOptedOut, 'subscriptionStatus.daysRemaining': subscriberData.subscriptionStatus.daysRemaining } }
                     }
                 });
             }
         }
+
 
         if (bulkOperations.length > 0) {
             try {
