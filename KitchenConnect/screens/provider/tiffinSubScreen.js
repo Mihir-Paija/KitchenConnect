@@ -56,9 +56,12 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
         return;
         //stop going from finally
       }
+      console.log(newSubscription)
       const response = await addSubscription(authState.authToken, tiffin.id, newSubscription)
 
     } catch (error) {
+      console.log('Error in Creating Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
       
     } finally{
       setLoading(false)
@@ -83,7 +86,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
       const response = await editSub(authState.authToken, tiffinID, sub);
       
     } catch (error) {
-      
+      console.log('Error in Editing Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
     }
     finally{
       setLoading(false);
@@ -118,7 +122,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
       const tiffinID = tiffin.id;
       const response = await deleteSubscription(authState.authToken, tiffinID, bodyData)
     } catch (error) {
-      
+      console.log('Error in Deleting Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
     }finally{
       setLoading(false)
       setRefresh(!refresh);

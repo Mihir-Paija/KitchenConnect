@@ -3,13 +3,16 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native
 import OrderComponent from './orderComponent';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const OrderCard = ({tiffinName, number, orders}) => {
+const OrderCard = ({tiffinName, number, orders, onPress}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  const generateOTP = (item) =>{
+    onPress(item)
+  }
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleDropdown} style={styles.dropdown}>
@@ -21,7 +24,8 @@ const OrderCard = ({tiffinName, number, orders}) => {
             data={orders}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-              <OrderComponent {...item}/>
+              <OrderComponent {...item}
+              onPress={() => generateOTP(item)}/>
             )}
             contentContainerStyle={styles.flatList}
           />

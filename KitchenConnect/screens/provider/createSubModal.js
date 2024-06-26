@@ -14,22 +14,33 @@ const CreateSubModal = ({ isVisible, onClose, onCreate, tiffin}) => {
         days: 0,
         description: "",
         discount: 0,
-        deliveryCharge: "",
+        deliveryCharge: 0,
     });
 
     const [perTiffin, setPerTiffin] = useState(0);
 
     const handleCreate = async () => {
-        const { title, price, deliveryCharge, days, description } = subscription;
+        try {
+            const { title, price, deliveryCharge, days, description } = subscription;
         if (!title || !price || !days || !description || !deliveryCharge) {
             console.log(subscription)
             Alert.alert("Please Fill All Fields");
             return;
         }
 
-        subscription.discount = subscription.price - perTiffin
+        const updatedSubscription = {
+            ...subscription,
+            discount: tiffin.price - perTiffin,
+        };
 
-        onCreate(subscription);
+        onCreate(updatedSubscription);
+        } catch (error) {
+            console.log(error)
+            Alert.alert('An error occurred')
+        }
+        
+
+        
     };
 
     const dayCount = {

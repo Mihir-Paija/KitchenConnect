@@ -321,3 +321,24 @@ export const optOut = async(req, res) =>{
         }) 
     }
 }
+
+export const sendOTP = async(req, res) =>{
+    try{
+        const userID = req.user._id
+        const {otp, order} = req.body
+        console.log(otp)
+        const customerID = order.customerID;
+        console.log(customerID)
+
+        //send OTP to customer
+
+        return res.status(200).send({
+            message: 'OTP Sent Successfully'
+        })
+    } catch(error){
+        console.log('Error in Sending OTP ', error)
+        return res.status(500).send({
+            message: 'Internal Server Error'
+        })
+    }
+}

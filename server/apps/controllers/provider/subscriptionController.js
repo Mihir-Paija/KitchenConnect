@@ -37,7 +37,7 @@ export const addSubscription = async (req, res) => {
 
         const { title, price, deliveryCharge, discount, days, description } = req.body;
 
-        if (!title || !price || !days || !description || !deliveryCharge || !discount) {
+        if (!title || !price || !days || !description || deliveryCharge.toString().length === 0 || discount.toString().length === 0) {
             return res.status(400).send({
                 message: "Please Enter All Required Fields"
             })

@@ -18,7 +18,6 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
     });
 
     const [perTiffin, setPerTiffin] = useState(item.price - item.discount)
-    console.log(perTiffin)
 
     const handleEdit = async () => {
         const { title, price, description } = subscription;
@@ -27,8 +26,12 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
             return;
         }
 
-        subscription.discount = item.price - perTiffin
-        onEdit(subscription);
+        const updatedSubscription = {
+            ...subscription,
+            discount: tiffin.price - perTiffin,
+        };
+
+        onEdit(updatedSubscription);
     };
 
 
@@ -86,7 +89,7 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
                         <TextInput
                         style={[styles.input, {height: windowHeight *0.065 }]}
                         placeholder="Enter Price"
-                        value={perTiffin}
+                        value={perTiffin.toString()}
                         onChangeText={(text) =>
                             setPerTiffin(text)
                         }
@@ -118,7 +121,7 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
                         <TextInput
                         style={[styles.input, {height: windowHeight *0.065 }]}
                         placeholder="Enter Price"
-                        value={subscription.deliveryCharge}
+                        value={subscription.deliveryCharge.toString()}
                         onChangeText={(text) =>
                             setSubscription({ ...subscription, deliveryCharge: text})
                         }
