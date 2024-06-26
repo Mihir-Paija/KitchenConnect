@@ -201,8 +201,6 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                   />
                 </>
               )}
-              {/* <Text>MenuCustomerScreen</Text>
-            <Text>{JSON.stringify(tiffin)}</Text> */}
             </>
           )}
         </>

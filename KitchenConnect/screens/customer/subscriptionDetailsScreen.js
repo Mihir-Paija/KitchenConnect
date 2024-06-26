@@ -20,13 +20,47 @@ import { AuthContext } from "@/context/authContext";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import TiffinTypeComponent from "../../components/customer/tiffinTypeComponent";
 import SubmitButton from "../../components/shared/forms/submitButton";
+import { getSubscriptionDetailsCustomer } from "@/utils/APIs/customerApi";
+import LoadingScreen from "@/screens/shared/loadingScreen";
+import { formatDate, formatTime } from "../../utils/formateDateTime";
 
 const SubscriptionDetailsScreen = ({ navigation, route }) => {
-  const subscription = route.params.subscription;
   //global state
   const [authState, setAuthState] = useContext(AuthContext);
+  // console.log("authdata :", AuthContext);
+  // const customerID = authState.authData.
+  const subscription = route.params.subscription;
+  const subscriptionID = route.params.subscriptionID;
+  console.log("subscriptionID", subscriptionID);
+
+  //state
+  const [loading, setLoading] = useState(true);
+  const [subDetails, setSubDetails] = useState({});
 
   //functions
+  const fetchSubDetails = async (subscriptionID) => {
+    try {
+      console.log("hi");
+      const response = await getSubscriptionDetailsCustomer(subscriptionID);
+      // console.log(response);
+      setSubDetails(response.data);
+      console.log("response data", response.data);
+    } catch (error) {
+      console.error("Failed to fetch sub details customer:", error);
+    } finally {
+      // console.log("subDetails:", subDetails);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubDetails(subscriptionID);
+  }, [subscriptionID]);
+
+  // useEffect(() => {
+  //   console.log("subDetails updated:", subDetails); // Log subDetails whenever it changes
+  // }, [subDetails]);
+
   const backHandler = () => {
     navigation.goBack();
   };
@@ -44,262 +78,357 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container}>
       {authState.authToken ? (
         <>
-          <BackButtonComponent onPress={backHandler} />
-          <ScrollView>
-            <View style={styles.subBox}>
-              <Text style={styles.subNameText}>
-                {" "}
-                {subscription.subscriptionName}{" "}
-              </Text>
-              <View style={styles.priceContainer}>
-                {subscription.discount && (
-                  <Text style={styles.originalPrice}>
-                    ₹{subscription.price}
-                  </Text>
-                )}
-                <Text
-                  style={
-                    subscription.discount
-                      ? styles.discountedPrice
-                      : styles.planPrice
-                  }
-                >
-                  ₹
-                  {subscription.discount
-                    ? calculateDiscountedPrice(
-                        subscription.price,
-                        subscription.discount
-                      )
-                    : subscription.price}{" "}
-                  / {"fortNight"}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={[
-                styles.paymentLineBox,
-                {
-                  backgroundColor: "rgba(128,128,128,0.2)",
-                  borderRadius: windowWidth * 0.02,
-                  width: windowWidth * 0.9,
-                  alignSelf: "center",
-                  justifyContent: "center",
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.paymentTxt,
-                  { fontSize: windowWidth * 0.045, textAlign: "center" },
-                ]}
-              >
-                You have cancelled this subscription of [date].
-              </Text>
-            </View>
-            <View style={styles.kitchenBox}>
-              <View style={styles.kitchenContentBox}>
-                <Text style={styles.providerName}>
-                  {subscription.providerName}
-                </Text>
-                <Text style={styles.tiffinName}>{subscription.tiffinName}</Text>
-                <View style={{ alignSelf: "flex-start" }}>
-                  <TiffinTypeComponent tiffinType={subscription.tiffinType} />
-                </View>
-              </View>
-              <Image
-                source={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
-                style={styles.tiffinImage}
-              />
-            </View>
-
-            <View style={styles.bookingBox}>
-              <Text style={styles.bookingTitleTxt}>Booking Details</Text>
-              <View
-                style={[
-                  styles.bookingDetialBox,
-                  { flexDirection: "row", justifyContent: "space-between" },
-                ]}
-              >
-                <View style={styles.DateContent}>
-                  <Text style={styles.DateText}> Start Date </Text>
-                  <Text style={styles.DateValueText}>
+          {loading ? (
+            <LoadingScreen />
+          ) : (
+            <>
+              <BackButtonComponent onPress={backHandler} />
+              <ScrollView>
+                <View style={styles.subBox}>
+                  <Text style={styles.subNameText}>
                     {" "}
-                    {subscription.startDate}{" "}
+                    {subDetails.SubscriptionPlan.title}{" "}
                   </Text>
-                </View>
-                <View style={styles.DateContent}>
-                  <Text style={[styles.DateText]}>End Date</Text>
-                  <Text style={[styles.DateValueText]}>
-                    {subscription.endDate}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.bookingDetialBox,
-                  { paddingHorizontal: windowWidth * 0.01 },
-                ]}
-              >
-                <Text style={styles.detailText}>
-                  {subscription.numberOfTiffins} Tiffins
-                </Text>
-              </View>
-              <View style={styles.bookingIDBox}>
-                <Text style={styles.bookingIDText}>
-                  Booking ID : KC45687987646
-                </Text>
-              </View>
-            </View>
-
-            <View style={[styles.bookingBox]}>
-              <Text style={styles.bookingTitleTxt}>Payment Details</Text>
-              <View
-                style={[
-                  styles.paymentLineBox,
-                  { marginTop: windowHeight * 0.01 },
-                ]}
-              >
-                <Text style={styles.paymentTxt}>Basic Price : </Text>
-                <Text style={styles.paymentValueTxt}>
-                  {" "}
-                  ₹ {subscription.price}
-                </Text>
-              </View>
-              <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>
-                  Taxes and Service Charge :{" "}
-                </Text>
-                <Text style={styles.paymentValueTxt}> ₹ 300</Text>
-              </View>
-              <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>Discount : </Text>
-                <Text style={styles.paymentValueTxt}> - ₹ 500</Text>
-              </View>
-              <View
-                style={[
-                  styles.paymentLineBox,
-                  { borderTopWidth: 1, borderTopColor: "#ccc" },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.paymentTxt,
-                    { fontFamily: "NunitoBold", fontSize: windowWidth * 0.048 },
-                  ]}
-                >
-                  Grand Total :{" "}
-                </Text>
-                <Text
-                  style={[
-                    styles.paymentValueTxt,
-                    {
-                      fontFamily: "NunitoExtraBold",
-                      fontSize: windowWidth * 0.048,
-                    },
-                  ]}
-                >
-                  ₹ 2200
-                </Text>
-              </View>
-              {subscription.deliveryIncluded && (
-                <View style={styles.paymentLineBox}>
-                  <Text style={styles.paymentTxt}>Delivery Charge : </Text>
-                  <Text style={styles.paymentValueTxt}>
-                    ₹ {subscription.priceBreakdown.deliveryCharge} / delivery
-                  </Text>
-                </View>
-              )}
-              <View
-                style={[
-                  styles.paymentLineBox,
-                  {
-                    backgroundColor: "rgba(256,156,0,0.1)",
-                    borderRadius: windowWidth * 0.02,
-                  },
-                ]}
-              >
-                <Text
-                  style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
-                >
-                  ₹ 250 + {subscription.priceBreakdown.deliveryCharge}{" "}
-                  {subscription.status === "completed" ? "was" : "will be"}{" "}
-                  automatically deducted from your wallet for each tiffin
-                  received.
-                </Text>
-              </View>
-            </View>
-            {(subscription.status === "current" ||
-              subscription.status === "completed") && (
-              <View style={[styles.bookingBox]}>
-                <Text style={styles.bookingTitleTxt}>{}Status</Text>
-                <View style={styles.statusLineBox}>
-                  <View style={styles.dayBox}>
-                    <View style={[styles.dayTxtBox, { flexDirection: "row" }]}>
-                      <Text style={styles.dayvalueText}>
-                        {subscription.daysCompleted}
+                  <View style={styles.priceContainer}>
+                    {subDetails.Subscription.customerPaymentBreakdown
+                      .discount && (
+                      <Text style={styles.originalPrice}>
+                        ₹
+                        {
+                          subDetails.Subscription.customerPaymentBreakdown
+                            .subscriptionPrice
+                        }
                       </Text>
-                      <Text style={styles.dayText}> days</Text>
-                    </View>
-                    <View style={styles.dayTxtBox}>
-                      <Text style={styles.daykeyText}>Completed</Text>
+                    )}
+                    <Text
+                      style={
+                        subDetails.Subscription.customerPaymentBreakdown
+                          .discount
+                          ? styles.discountedPrice
+                          : styles.planPrice
+                      }
+                    >
+                      ₹
+                      {subDetails.Subscription.customerPaymentBreakdown.discount
+                        ? subDetails.Subscription.customerPaymentBreakdown
+                            .subscriptionPrice +
+                          subDetails.Subscription.customerPaymentBreakdown
+                            .discount
+                        : subDetails.Subscription.customerPaymentBreakdown
+                            .price}{" "}
+                      / {subDetails.SubscriptionPlan.days}
+                    </Text>
+                  </View>
+                </View>
+                {subDetails.Subscription.subcriptionStatus.status ===
+                  "Completed" && (
+                  <View
+                    style={[
+                      styles.paymentLineBox,
+                      {
+                        backgroundColor: "rgba(128,128,128,0.2)",
+                        borderRadius: windowWidth * 0.02,
+                        width: windowWidth * 0.9,
+                        alignSelf: "center",
+                        justifyContent: "center",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.paymentTxt,
+                        { fontSize: windowWidth * 0.045, textAlign: "center" },
+                      ]}
+                    >
+                      You have cancelled this subscription of [date].
+                    </Text>
+                  </View>
+                )}
+
+                <View style={styles.kitchenBox}>
+                  <View style={styles.kitchenContentBox}>
+                    <Text style={styles.providerName}>
+                      {subDetails.Kitchen.name}
+                    </Text>
+                    <Text style={styles.tiffinName}>
+                      {subDetails.Tiffin.name}
+                    </Text>
+                    <View style={{ alignSelf: "flex-start" }}>
+                      <TiffinTypeComponent
+                        tiffinType={subDetails.Tiffin.tiffinType}
+                      />
                     </View>
                   </View>
+                  <Image
+                    source={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+                    style={styles.tiffinImage}
+                  />
+                </View>
 
-                  {subscription.status === "current" && (
-                    <View style={styles.dayBox}>
-                      <View
-                        style={[styles.dayTxtBox, { flexDirection: "row" }]}
-                      >
-                        <Text style={styles.dayvalueText}>
-                          {subscription.remainingDays}
-                        </Text>
-                        <Text style={styles.dayText}> days</Text>
-                      </View>
-                      <View style={styles.dayTxtBox}>
-                        <Text style={styles.daykeyText}>Remaining</Text>
-                      </View>
+                <View style={styles.bookingBox}>
+                  <Text style={styles.bookingTitleTxt}>Booking Details</Text>
+                  <View
+                    style={[
+                      styles.bookingDetialBox,
+                      { flexDirection: "row", justifyContent: "space-between" },
+                    ]}
+                  >
+                    <View style={styles.DateContent}>
+                      <Text style={styles.DateText}> Start Date </Text>
+                      <Text style={styles.DateValueText}>
+                        {" "}
+                        {formatDate(subDetails.Subscription.startDate)}{" "}
+                      </Text>
+                    </View>
+                    <View style={styles.DateContent}>
+                      <Text style={[styles.DateText]}>End Date</Text>
+                      <Text style={[styles.DateValueText]}>
+                        {formatDate(subDetails.Subscription.endDate)}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={[
+                      styles.bookingDetialBox,
+                      { paddingHorizontal: windowWidth * 0.01 },
+                    ]}
+                  >
+                    <Text style={styles.detailText}>
+                      {subDetails.Subscription.noOfTiffins} Tiffins
+                    </Text>
+                  </View>
+                  <View style={styles.bookingIDBox}>
+                    <Text style={styles.bookingIDText}>
+                      Booking ID : {subDetails.Subscription._id}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={[styles.bookingBox]}>
+                  <Text style={styles.bookingTitleTxt}>Payment Details</Text>
+                  <View
+                    style={[
+                      styles.paymentLineBox,
+                      { marginTop: windowHeight * 0.01 },
+                    ]}
+                  >
+                    <Text style={styles.paymentTxt}>Basic Price : </Text>
+                    <Text style={styles.paymentValueTxt}>
+                      {" "}
+                      ₹{" "}
+                      {
+                        subDetails.Subscription.customerPaymentBreakdown
+                          .subscriptionPrice
+                      }
+                    </Text>
+                  </View>
+                  <View style={styles.paymentLineBox}>
+                    <Text style={styles.paymentTxt}>Taxes : </Text>
+                    <Text style={styles.paymentValueTxt}>
+                      {" "}
+                      ₹ {subDetails.Subscription.customerPaymentBreakdown.tax}
+                    </Text>
+                  </View>
+                  <View style={styles.paymentLineBox}>
+                    <Text style={styles.paymentTxt}>Service Charge : </Text>
+                    <Text style={styles.paymentValueTxt}>
+                      {" "}
+                      ₹{" "}
+                      {
+                        subDetails.Subscription.customerPaymentBreakdown
+                          .platformCharge
+                      }
+                    </Text>
+                  </View>
+                  <View style={styles.paymentLineBox}>
+                    <Text style={styles.paymentTxt}>Discount : </Text>
+                    <Text style={styles.paymentValueTxt}>
+                      {" "}
+                      - ₹{" "}
+                      {
+                        subDetails.Subscription.customerPaymentBreakdown
+                          .discount
+                      }
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.paymentLineBox,
+                      { borderTopWidth: 1, borderTopColor: "#ccc" },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.paymentTxt,
+                        {
+                          fontFamily: "NunitoBold",
+                          fontSize: windowWidth * 0.048,
+                        },
+                      ]}
+                    >
+                      Grand Total :{" "}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.paymentValueTxt,
+                        {
+                          fontFamily: "NunitoExtraBold",
+                          fontSize: windowWidth * 0.048,
+                        },
+                      ]}
+                    >
+                      ₹ {subDetails.Subscription.customerPaymentBreakdown.total}
+                    </Text>
+                  </View>
+                  {subscription.deliveryIncluded && (
+                    <View style={styles.paymentLineBox}>
+                      <Text style={styles.paymentTxt}>Delivery Charge : </Text>
+                      <Text style={styles.paymentValueTxt}>
+                        ₹{" "}
+                        {
+                          subDetails.Subscription.customerPaymentBreakdown
+                            .deliveryCharge
+                        }{" "}
+                        / delivery
+                      </Text>
                     </View>
                   )}
-
-                  <View style={styles.dayBox}>
-                    <View style={[styles.dayTxtBox, { flexDirection: "row" }]}>
-                      <Text style={styles.dayvalueText}>
-                        {subscription.daysOptedOut}
-                      </Text>
-                      <Text style={styles.dayText}> days</Text>
-                    </View>
-                    <View style={styles.dayTxtBox}>
-                      <Text style={styles.daykeyText}>Opted Out</Text>
-                    </View>
+                  <View
+                    style={[
+                      styles.paymentLineBox,
+                      {
+                        backgroundColor: "rgba(256,156,0,0.1)",
+                        borderRadius: windowWidth * 0.02,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.paymentTxt,
+                        { fontSize: windowWidth * 0.035 },
+                      ]}
+                    >
+                      ₹{" "}
+                      {
+                        subDetails.Subscription.customerPaymentBreakdown
+                          .perOrderPrice
+                      }{" "}
+                      {subscription.status === "completed" ? "was" : "will be"}{" "}
+                      automatically deducted from your wallet for each tiffin
+                      received.
+                    </Text>
                   </View>
                 </View>
 
-                <View style={styles.statusLineBox}>
-                  <Text style={styles.paymentTxt}>
-                    {subscription.status === "current"
-                      ? "Paid till now"
-                      : "Paid amount"}{" "}
-                    :{" "}
-                  </Text>
-                  <Text style={styles.paymentValueTxt}>₹ 500</Text>
-                </View>
-                {subscription.status === "current" && (
-                  <>
-                    <TouchableOpacity
-                      style={styles.submitButton}
-                      onPress={handleSubmitBtn}
-                    >
-                      <Text style={styles.submitText}>
-                        Skip Next Tiffin
-                        {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
+                {(subDetails.Subscription.subcriptionStatus.status ===
+                  "Current" ||
+                  subDetails.Subscription.subcriptionStatus.status ===
+                    "Completed") && (
+                  <View style={[styles.bookingBox]}>
+                    <Text style={styles.bookingTitleTxt}>{}Status</Text>
+                    <View style={styles.statusLineBox}>
+                      <View style={styles.dayBox}>
+                        <View
+                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                        >
+                          <Text style={styles.dayvalueText}>
+                            {
+                              subDetails.Subscription.subcriptionStatus
+                                .daysCompleted.length
+                            }
+                          </Text>
+                          <Text style={styles.dayText}> days</Text>
+                        </View>
+                        <View style={styles.dayTxtBox}>
+                          <Text style={styles.daykeyText}>Completed</Text>
+                        </View>
+                      </View>
+
+                      {subDetails.Subscription.subcriptionStatus.status ===
+                        "Current" && (
+                        <View style={styles.dayBox}>
+                          <View
+                            style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                          >
+                            <Text style={styles.dayvalueText}>
+                              {
+                                subDetails.Subscription.subcriptionStatus
+                                  .daysRemaining.length
+                              }
+                            </Text>
+                            <Text style={styles.dayText}> days</Text>
+                          </View>
+                          <View style={styles.dayTxtBox}>
+                            <Text style={styles.daykeyText}>Remaining</Text>
+                          </View>
+                        </View>
+                      )}
+
+                      <View style={styles.dayBox}>
+                        <View
+                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                        >
+                          <Text style={styles.dayvalueText}>
+                            {
+                              subDetails.Subscription.subcriptionStatus
+                                .daysOptedOut.length
+                            }
+                          </Text>
+                          <Text style={styles.dayText}> days</Text>
+                        </View>
+                        <View style={styles.dayTxtBox}>
+                          <Text style={styles.daykeyText}>Opted Out</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={styles.statusLineBox}>
+                      <Text style={styles.paymentTxt}>
+                        {subscription.status === "current"
+                          ? "Paid till now"
+                          : "Paid amount"}{" "}
+                        :{" "}
                       </Text>
-                    </TouchableOpacity>
-                    <Text style={styles.nextDelText}>
-                      The next tiffin will be received on [date] at [time].
-                    </Text>
-                  </>
+                      <Text style={styles.paymentValueTxt}>₹ 500</Text>
+                    </View>
+                    {subDetails.Subscription.subcriptionStatus.status ===
+                      "Current" && (
+                      <>
+                        <TouchableOpacity
+                          style={styles.submitButton}
+                          onPress={handleSubmitBtn}
+                        >
+                          <Text style={styles.submitText}>
+                            Skip Next Tiffin
+                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
+                          </Text>
+                        </TouchableOpacity>
+                        <Text style={styles.nextDelText}>
+                          The next tiffin will be received on [date] at [time].
+                        </Text>
+                      </>
+                    )}
+                    {subDetails.Subscription.subcriptionStatus.status ===
+                      "Pending" && (
+                      <>
+                        <TouchableOpacity
+                          style={styles.submitButton}
+                          onPress={handleSubmitBtn}
+                        >
+                          <Text style={styles.submitText}>
+                            withdraw request
+                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
+                          </Text>
+                        </TouchableOpacity>
+                        <Text style={styles.nextDelText}>
+                          The next tiffin will be received on [date] at [time].
+                        </Text>
+                      </>
+                    )}
+                  </View>
                 )}
-                {subscription.status === "pending" && (
+                {subDetails.Subscription.subcriptionStatus.status ===
+                  "Pending" && (
                   <>
                     <TouchableOpacity
                       style={styles.submitButton}
@@ -307,43 +436,28 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     >
                       <Text style={styles.submitText}>
                         withdraw request
-                        {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
+                        {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
                       </Text>
                     </TouchableOpacity>
-                    <Text style={styles.nextDelText}>
-                      The next tiffin will be received on [date] at [time].
-                    </Text>
                   </>
                 )}
-              </View>
-            )}
-            {subscription.status === "pending" && (
-              <>
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleSubmitBtn}
-                >
-                  <Text style={styles.submitText}>
-                    withdraw request
-                    {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-            {subscription.status === "current" && (
-              <>
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleSubmitBtn}
-                >
-                  <Text style={styles.submitText}>
-                    Cancle Subscription
-                    {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </ScrollView>
+                {subDetails.Subscription.subcriptionStatus.status ===
+                  "Current" && (
+                  <>
+                    <TouchableOpacity
+                      style={styles.submitButton}
+                      onPress={handleSubmitBtn}
+                    >
+                      <Text style={styles.submitText}>
+                        Cancle Subscription
+                        {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </ScrollView>
+            </>
+          )}
         </>
       ) : (
         <Text>You are not authorized to access this screen.</Text>
@@ -555,7 +669,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffa500",
     borderRadius: windowWidth * 0.1,
     justifyContent: "center",
-    marginBottom: windowHeight * 0.01,
+    marginBottom: windowHeight * 0.015,
     marginTop: windowHeight * 0.015,
     // marginVertical: windowHeight * 0.015,
     width: windowWidth * 0.7,

@@ -9,7 +9,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import FooterMenu from "../../components/shared/menu/footerMenu";
 import { AuthContext } from "@/context/authContext";
 import FilterModalTiffinCustomer from "@/components/customer/FilterModalTiffinCustomer";
@@ -17,10 +17,12 @@ import { windowWidth, windowHeight } from "@/utils/dimensions";
 import DownButton from "../../components/shared/DownButton";
 import UpButton from "../../components/shared/UpButton";
 import SubscriptionCard from "../../components/customer/subscriptionCard";
+import { getSubscriptionsList } from "@/utils/APIs/customerApi";
+import LoadingScreen from "@/screens/shared/loadingScreen";
 
 const DUMMY_DATA = [
   {
-    id: 1,
+    id: "667babbabe047a6f717c5c3d",
     type: "Pending",
     providerName: "Phoenix Kitchen",
     tiffinName: "Veg Thali",
@@ -192,7 +194,15 @@ const DUMMY_DATA = [
 const SubscriptionCustomerScreen = ({ navigation }) => {
   // global states
   const [authState] = useContext(AuthContext);
+  console.log(authState.authData._id);
+  const customerID = authState.authData._id;
   // states
+  //state
+  const [currentSubscriptions, setCurrentSubscriptions] = useState([]);
+  const [completedSubscriptions, setCompletedSubscriptions] = useState([]);
+  const [pendingSubscriptions, setPendingSubscriptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [subList, setSubList] = useState([]);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filterCriteria, setFilterCriteria] = useState({
     tiffinType: "all",
@@ -212,17 +222,47 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   const pendingRef = useRef();
 
   // States for each subscription type
-  const [currentSubscriptions, setCurrentSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "Current")
-  );
-  const [completedSubscriptions, setCompletedSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "Completed")
-  );
-  const [pendingSubscriptions, setPendingSubscriptions] = useState(
-    DUMMY_DATA.filter((item) => item.type === "Pending")
-  );
+  useEffect(() => {
+    setCurrentSubscriptions(
+      subList.filter(
+        (item) => item.Subscription.subscriptionStatus === "Current"
+      )
+    );
+    setCompletedSubscriptions(
+      subList.filter(
+        (item) => item.Subscription.subscriptionStatus === "Completed"
+      )
+    );
+    setPendingSubscriptions(
+      subList.filter(
+        (item) => item.Subscription.subscriptionStatus === "Pending"
+      )
+    );
+  }, [subList]);
 
   // functions
+  const fetchSubList = async (customerID) => {
+    try {
+      console.log("hi");
+      const response = await getSubscriptionsList(customerID);
+      // console.log(response);
+      setSubList(response.data);
+      console.log("response data", response.data);
+    } catch (error) {
+      console.error("Failed to fetch sub List customer:", error);
+    } finally {
+      console.log("subList:", subList);
+      console.log("Current Subscriptions:", currentSubscriptions);
+      console.log("Completed Subscriptions:", completedSubscriptions);
+      console.log("Pending Subscriptions:", pendingSubscriptions);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubList(customerID);
+  }, [customerID]);
+
   const onFilterChange = (type, value) => {
     setFilterCriteria((prev) => ({ ...prev, [type]: value }));
     setFilterModalVisible(false);
@@ -247,177 +287,199 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   };
 
   const cardHandler = (subscription) => {
-    navigation.navigate("SubscriptionDetailsCustomer", { subscription });
+    console.log("subscriptionID from list : ", subscription.Subscription._id);
+    navigation.navigate("SubscriptionDetailsCustomer", {
+      subscription,
+      subscriptionID: subscription.Subscription._id,
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {authState.authToken ? (
         <>
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={[
-                styles.filterContainer,
-                (filterCriteria.tiffinType !== "all" ||
-                  filterCriteria.foodType !== "all") && {
-                  backgroundColor: "#FFECEC",
-                  borderColor: "#ffa500",
-                },
-              ]}
-              onPress={() => setFilterModalVisible(true)}
-            >
-              <Image
-                source={
-                  filterCriteria.tiffinType === "all" &&
-                  filterCriteria.foodType === "all"
-                    ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
-                    : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
-                }
-                style={styles.icon}
+          {loading ? (
+            <LoadingScreen />
+          ) : (
+            <>
+              <View style={styles.header}>
+                <TouchableOpacity
+                  style={[
+                    styles.filterContainer,
+                    (filterCriteria.tiffinType !== "all" ||
+                      filterCriteria.foodType !== "all") && {
+                      backgroundColor: "#FFECEC",
+                      borderColor: "#ffa500",
+                    },
+                  ]}
+                  onPress={() => setFilterModalVisible(true)}
+                >
+                  <Image
+                    source={
+                      filterCriteria.tiffinType === "all" &&
+                      filterCriteria.foodType === "all"
+                        ? require("../../assets/sort_filter/icons8-tune-ios-17-outlined/icons8-tune-100.png")
+                        : require("../../assets/sort_filter/icons8-tune-ios-17-filled/icons8-tune-100.png")
+                    }
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+                <View style={styles.tabs}>
+                  <TouchableOpacity
+                    onPress={() => scrollToSection(currentRef, "current")}
+                    style={
+                      activeTab === "current"
+                        ? styles.activeTab
+                        : styles.inactiveTab
+                    }
+                  >
+                    <Text
+                      style={
+                        activeTab === "current"
+                          ? styles.activeTabText
+                          : styles.inactiveTabText
+                      }
+                    >
+                      Current
+                    </Text>
+                    {activeTab === "current" && (
+                      <View style={styles.tabIndicator} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => scrollToSection(completedRef, "completed")}
+                    style={
+                      activeTab === "completed"
+                        ? styles.activeTab
+                        : styles.inactiveTab
+                    }
+                  >
+                    <Text
+                      style={
+                        activeTab === "completed"
+                          ? styles.activeTabText
+                          : styles.inactiveTabText
+                      }
+                    >
+                      Completed
+                    </Text>
+                    {activeTab === "completed" && (
+                      <View style={styles.tabIndicator} />
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => scrollToSection(pendingRef, "pending")}
+                    style={
+                      activeTab === "pending"
+                        ? styles.activeTab
+                        : styles.inactiveTab
+                    }
+                  >
+                    <Text
+                      style={
+                        activeTab === "pending"
+                          ? styles.activeTabText
+                          : styles.inactiveTabText
+                      }
+                    >
+                      Pending
+                    </Text>
+                    {activeTab === "pending" && (
+                      <View style={styles.tabIndicator} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <ScrollView ref={scrollViewRef} style={styles.ScrollContent}>
+                <View ref={currentRef} style={styles.section}>
+                  <TouchableOpacity onPress={() => toggleSection("current")}>
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionTitle}>
+                        Current ({currentSubscriptions.length})
+                      </Text>
+                      {collapsedSections.current ? (
+                        <DownButton />
+                      ) : (
+                        <UpButton />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                  {!collapsedSections.current && (
+                    <View>
+                      {currentSubscriptions.map((sub) => (
+                        <SubscriptionCard
+                          key={sub.Subscription._id}
+                          onPress={() => cardHandler(sub)}
+                          subscriptionItem={sub}
+                        />
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <View ref={completedRef} style={styles.section}>
+                  <TouchableOpacity onPress={() => toggleSection("completed")}>
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionTitle}>
+                        Completed ({completedSubscriptions.length})
+                      </Text>
+                      {collapsedSections.completed ? (
+                        <DownButton />
+                      ) : (
+                        <UpButton />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                  {!collapsedSections.completed && (
+                    <View>
+                      {completedSubscriptions.map((subscription) => (
+                        <SubscriptionCard
+                          key={subscription.Subscription._id}
+                          onPress={() => cardHandler(subscription)}
+                          subscriptionItem={subscription}
+                        />
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <View ref={pendingRef} style={styles.section}>
+                  <TouchableOpacity onPress={() => toggleSection("pending")}>
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionTitle}>
+                        Pending ({pendingSubscriptions.length})
+                      </Text>
+                      {collapsedSections.pending ? (
+                        <DownButton />
+                      ) : (
+                        <UpButton />
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                  {!collapsedSections.pending && (
+                    <View>
+                      {pendingSubscriptions.map((subscription) => (
+                        <SubscriptionCard
+                          key={subscription.Subscription._id}
+                          onPress={() => cardHandler(subscription)}
+                          subscriptionItem={subscription}
+                        />
+                      ))}
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+
+              <FooterMenu active="Subscriptions" navigation={navigation} />
+              <FilterModalTiffinCustomer
+                visible={filterModalVisible}
+                onClose={() => setFilterModalVisible(false)}
+                onFilterChange={onFilterChange}
+                filterCriteria={filterCriteria}
               />
-            </TouchableOpacity>
-            <View style={styles.tabs}>
-              <TouchableOpacity
-                onPress={() => scrollToSection(currentRef, "current")}
-                style={
-                  activeTab === "current"
-                    ? styles.activeTab
-                    : styles.inactiveTab
-                }
-              >
-                <Text
-                  style={
-                    activeTab === "current"
-                      ? styles.activeTabText
-                      : styles.inactiveTabText
-                  }
-                >
-                  Current
-                </Text>
-                {activeTab === "current" && (
-                  <View style={styles.tabIndicator} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => scrollToSection(completedRef, "completed")}
-                style={
-                  activeTab === "completed"
-                    ? styles.activeTab
-                    : styles.inactiveTab
-                }
-              >
-                <Text
-                  style={
-                    activeTab === "completed"
-                      ? styles.activeTabText
-                      : styles.inactiveTabText
-                  }
-                >
-                  Completed
-                </Text>
-                {activeTab === "completed" && (
-                  <View style={styles.tabIndicator} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => scrollToSection(pendingRef, "pending")}
-                style={
-                  activeTab === "pending"
-                    ? styles.activeTab
-                    : styles.inactiveTab
-                }
-              >
-                <Text
-                  style={
-                    activeTab === "pending"
-                      ? styles.activeTabText
-                      : styles.inactiveTabText
-                  }
-                >
-                  Pending
-                </Text>
-                {activeTab === "pending" && (
-                  <View style={styles.tabIndicator} />
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <ScrollView ref={scrollViewRef} style={styles.ScrollContent}>
-            <View ref={currentRef} style={styles.section}>
-              <TouchableOpacity onPress={() => toggleSection("current")}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>
-                    Current ({currentSubscriptions.length})
-                  </Text>
-                  {collapsedSections.current ? <DownButton /> : <UpButton />}
-                </View>
-              </TouchableOpacity>
-              {!collapsedSections.current && (
-                <View>
-                  {currentSubscriptions.map((subscription) => (
-                    <SubscriptionCard
-                      key={subscription.id}
-                      onPress={() => cardHandler(subscription)}
-                      subscription={subscription}
-                    />
-                  ))}
-                </View>
-              )}
-            </View>
-
-            <View ref={completedRef} style={styles.section}>
-              <TouchableOpacity onPress={() => toggleSection("completed")}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>
-                    Completed ({completedSubscriptions.length})
-                  </Text>
-                  {collapsedSections.completed ? <DownButton /> : <UpButton />}
-                </View>
-              </TouchableOpacity>
-              {!collapsedSections.completed && (
-                <View>
-                  {completedSubscriptions.map((subscription) => (
-                    <SubscriptionCard
-                      key={subscription.id}
-                      onPress={() => cardHandler(subscription)}
-                      subscription={subscription}
-                    />
-                  ))}
-                </View>
-              )}
-            </View>
-
-            <View ref={pendingRef} style={styles.section}>
-              <TouchableOpacity onPress={() => toggleSection("pending")}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>
-                    Pending ({pendingSubscriptions.length})
-                  </Text>
-                  {collapsedSections.pending ? <DownButton /> : <UpButton />}
-                </View>
-              </TouchableOpacity>
-              {!collapsedSections.pending && (
-                <View>
-                  {pendingSubscriptions.map((subscription) => (
-                    <SubscriptionCard
-                      key={subscription.id}
-                      onPress={() => cardHandler(subscription)}
-                      subscription={subscription}
-                    />
-                  ))}
-                </View>
-              )}
-            </View>
-          </ScrollView>
-
-          <FooterMenu active="Subscriptions" navigation={navigation} />
-          <FilterModalTiffinCustomer
-            visible={filterModalVisible}
-            onClose={() => setFilterModalVisible(false)}
-            onFilterChange={onFilterChange}
-            filterCriteria={filterCriteria}
-          />
+            </>
+          )}
         </>
       ) : (
         <Text style={{ color: "red" }}>Please Login</Text>

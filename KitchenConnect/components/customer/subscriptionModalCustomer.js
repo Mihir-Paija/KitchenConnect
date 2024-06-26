@@ -63,6 +63,12 @@ const SubscriptionModalCustomer = ({
   const scrollX = useRef(new Animated.Value(0)).current;
   const [navigationBarColor, setnavigationBarColor] = useState("#ffffff");
 
+  const subscriptionTypes = {
+    7: "week",
+    14: "fortNight",
+    30: "month",
+  };
+
   const calculateDiscountedPrice = (price, discount) => {
     const discountedPrice =
       parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100;
@@ -74,9 +80,9 @@ const SubscriptionModalCustomer = ({
       console.log("hi");
       const response = await getSubscriptionPlanCustomer(kitchenID, tiffinID);
       setSubPlans(response.data.subscriptions);
-      console.log(response.data.subscriptions);
+      console.log(response.data);
     } catch (error) {
-      console.error("Failed to fetch menu:", error);
+      console.error("Failed to fetch subsription plan :", error);
     } finally {
       // console.log("subPlans:", subPlans);
       setLoading(false);
@@ -87,10 +93,14 @@ const SubscriptionModalCustomer = ({
     fetchSubPlans(tiffin.providerID, tiffin._id);
   }, [tiffin]);
 
-  const submitHandler = () => {
-    console.log("submit clicked");
+  const submitHandler = (item) => {
+    // console.log("submit clicked");
     setVisible(!visible);
-    navigation.navigate("SubscribeCustomer");
+    navigation.navigate("SubscribeCustomer", {
+      subscriptionPlan: item,
+      kitchenID: tiffin.providerID,
+      tiffinID: tiffin._id,
+    });
   };
 
   useEffect(() => {
@@ -184,25 +194,23 @@ const SubscriptionModalCustomer = ({
         <Text style={styles.planTitle}>{item.title}</Text>
         <View style={styles.priceContainer}>
           {item.discount && (
-            <Text style={styles.originalPrice}>₹{item.price}</Text>
+            <Text style={styles.originalPrice}>₹{item.price * item.days}</Text>
           )}
           <Text
             style={item.discount ? styles.discountedPrice : styles.planPrice}
           >
             ₹
             {item.discount
-              ? calculateDiscountedPrice(item.price, item.discount)
-              : item.price}{" "}
-            / {item.duration}
+              ? calculateDiscountedPrice(item.price, item.discount) * item.days
+              : item.price * item.days}{" "}
+            / {subscriptionTypes[item.days]}
           </Text>
         </View>
-        {item.benefits.map((benefit, index) => (
-          <Text key={index} style={styles.benefitText}>
-            {benefit}
-          </Text>
-        ))}
+
+        <Text style={styles.benefitText}>{item.description}</Text>
+
         <TouchableOpacity
-          onPress={submitHandler}
+          onPress={() => submitHandler(item)}
           style={styles.getStartedButton}
         >
           <Text style={styles.getStartedText}>Get Started</Text>
@@ -229,9 +237,9 @@ const SubscriptionModalCustomer = ({
         <View style={styles.modalContainer}>
           {/* <Text style={styles.title}>Choose Your Plan</Text> */}
           <Animated.FlatList
-            data={subscriptionPlans}
+            data={subPlans}
             renderItem={renderPlan}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             horizontal
             pagingEnabled
             // snapToInterval={windowWidth * 0.85} // Ensure snapping to each card
@@ -247,7 +255,7 @@ const SubscriptionModalCustomer = ({
             ]}
           />
           <View style={styles.dotContainer}>
-            {subscriptionPlans.map((_, index) => {
+            {subPlans.map((_, index) => {
               const opacity = scrollX.interpolate({
                 inputRange: [
                   (index - 1) * windowWidth,
