@@ -80,7 +80,7 @@ const SubscriptionModalCustomer = ({
       console.log("hi");
       const response = await getSubscriptionPlanCustomer(kitchenID, tiffinID);
       setSubPlans(response.data.subscriptions);
-      console.log(response.data.subscriptions);
+      console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch subsription plan :", error);
     } finally {
@@ -94,9 +94,13 @@ const SubscriptionModalCustomer = ({
   }, [tiffin]);
 
   const submitHandler = (item) => {
-    console.log("submit clicked");
+    // console.log("submit clicked");
     setVisible(!visible);
-    navigation.navigate("SubscribeCustomer", { subscriptionPlan: item });
+    navigation.navigate("SubscribeCustomer", {
+      subscriptionPlan: item,
+      kitchenID: tiffin.providerID,
+      tiffinID: tiffin._id,
+    });
   };
 
   useEffect(() => {

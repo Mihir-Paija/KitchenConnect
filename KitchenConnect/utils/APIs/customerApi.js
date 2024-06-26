@@ -107,7 +107,8 @@ export const subscribeCustomer = async (
     return response.data;
   } catch (error) {
     console.error("Error subscribeCustomer POST Customer API:", error);
-    throw error.response.data;
+    console.error("Error subscribeCustomer POST Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
   }
 };
 

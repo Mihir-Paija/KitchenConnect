@@ -24,6 +24,7 @@ import SubmitButton from "../../components/shared/forms/submitButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import CheckBox from "react-native-check-box";
 import Icon from "react-native-vector-icons/AntDesign";
+import { subscribeCustomer } from "../../utils/APIs/customerApi";
 
 const subscription = {
   id: 1,
@@ -43,7 +44,7 @@ const subscription = {
   },
   orderDate: "2024-06-12",
   orderTime: "12:00",
-  numberOfTiffins: 30,
+  noOfTiffins: 30,
   startDate: "2024-06-14",
   endDate: "2024-07-13",
   pricePerTiffinDelivery: 50,
@@ -58,21 +59,25 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
   const [authState, setAuthState] = useContext(AuthContext);
   //route param
   const subscriptionPlan = route.params.subscriptionPlan;
-  // console.log(subscriptionPlan);
+  const tiffinID = route.params.tiffinID;
+  const kitchenID = route.params.kitchenID;
 
-  //price breakdown
+  // console.log(subscriptionPlan);
 
   // local state
   const [isChecked, setIsChecked] = useState(false);
-  const [subscriberFirstName, setSubscriberFirstName] = useState("");
+  const [subscriberFirstName, setSubscriberFirstName] = useState(
+    authState.authData.name
+  );
   const [subscriberLastName, setSubscriberLastName] = useState("");
   const [startDate, setStartDate] = useState(new Date());
+  // console.log("start date : ", startDate);
   const [endDate, setEndDate] = useState(
     new Date(new Date().getTime() + subscription.duration * 24 * 60 * 60 * 1000)
   );
   const [wantDelivery, setWantDelivery] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [numberOfTiffins, setNumberOfTiffins] = useState(1);
+  const [noOfTiffins, setNumberOfTiffins] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const subscriptionTypes = {
@@ -81,11 +86,129 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     30: "month",
   };
 
+  //priamry ids
+  const customerID = authState.authData._id;
+  const subscriptionID = subscriptionPlan._id;
+
+  // Calculate prices
+  const price = {
+    tiffinPrice: subscriptionPlan.price,
+    deliveryCharge: subscriptionPlan.deliveryCharge,
+    platformCommission: 2,
+    GST_on_tiffin: 5,
+    GST_on_service: 18,
+    serviceDiscount: 0,
+    kitchenDiscount: subscriptionPlan.discount,
+    lowerLimit: parseFloat(
+      (
+        (subscriptionPlan.price * subscriptionPlan.days * noOfTiffins) /
+        2
+      ).toFixed(2)
+    ),
+  };
+  const updatedSubscriptionPrice = parseFloat(
+    (noOfTiffins * subscriptionPlan.days * price.tiffinPrice).toFixed(2)
+  );
+  const updatedServicePrice = parseFloat(
+    ((price.platformCommission / 100) * updatedSubscriptionPrice).toFixed(2)
+  );
+  const updatedTaxPriceCustomer = parseFloat(
+    (
+      (price.GST_on_tiffin * updatedSubscriptionPrice +
+        price.GST_on_service * updatedServicePrice) /
+      100
+    ).toFixed(2)
+  );
+  const updatedTaxPriceProvider = parseFloat(
+    (
+      (price.GST_on_tiffin * updatedSubscriptionPrice -
+        price.GST_on_service * updatedServicePrice) /
+      100
+    ).toFixed(2)
+  );
+  const updatedDeliveryCharge = wantDelivery
+    ? parseFloat(price.deliveryCharge * subscriptionPlan.days.toFixed(2))
+    : 0;
+  const updatedDiscountCustomer = parseFloat(
+    (
+      (((price.serviceDiscount || 0) + (price.kitchenDiscount || 0)) *
+        updatedSubscriptionPrice) /
+      100
+    ).toFixed(2)
+  );
+  const updatedDiscountProvider = parseFloat(
+    ((price.serviceDiscount || 0) * updatedSubscriptionPrice).toFixed(2)
+  );
+  const updatedTotalCustomer = parseFloat(
+    (
+      updatedSubscriptionPrice +
+      updatedServicePrice +
+      updatedTaxPriceCustomer +
+      updatedDeliveryCharge -
+      updatedDiscountCustomer
+    ).toFixed(2)
+  );
+  const updatedTotalProvider = parseFloat(
+    (
+      updatedSubscriptionPrice -
+      updatedServicePrice +
+      updatedTaxPriceProvider +
+      updatedDeliveryCharge -
+      updatedDiscountProvider
+    ).toFixed(2)
+  );
+  const updatedPerOrderPriceCustomer = parseFloat(
+    (updatedTotalCustomer / subscriptionPlan.days).toFixed(2)
+  );
+  const updatedPerOrderPriceProvider = parseFloat(
+    (updatedTotalProvider / subscriptionPlan.days).toFixed(2)
+  );
+
+  const customerPaymentBreakdown = {
+    subscriptionPrice: updatedSubscriptionPrice,
+    platformCharge: updatedServicePrice,
+    tax: updatedTaxPriceCustomer,
+    deliveryCharge: updatedDeliveryCharge,
+    discount: updatedDiscountCustomer,
+    total: updatedTotalCustomer,
+    perOrderPrice: updatedPerOrderPriceCustomer,
+  };
+  const kitchenPaymentBreakdown = {
+    subscriptionPrice: updatedSubscriptionPrice,
+    platformCharge: updatedServicePrice,
+    tax: updatedTaxPriceProvider,
+    deliveryCharge: updatedDeliveryCharge,
+    discount: updatedDiscountProvider,
+    total: updatedTotalProvider,
+    perOrderPrice: updatedPerOrderPriceProvider,
+  };
+
+  //body Data
+  const bodyData = {
+    subscriberFirstName,
+    subscriberLastName,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    wantDelivery,
+    noOfTiffins,
+    address: "123 Main St, City, State, ZIP",
+    subcriptionStatus: { status: "Pending" },
+    price,
+    customerPaymentBreakdown,
+    kitchenPaymentBreakdown,
+  };
+
   //functions
+  displayDate = (date) => {
+    const options = { weekday: "short", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   useEffect(() => {
     // Set end date based on the start date and duration
     const newEndDate = new Date(startDate);
-    newEndDate.setDate(newEndDate.getDate() + subscription.duration);
+    newEndDate.setDate(newEndDate.getDate() + subscriptionPlan.days - 1);
+    // console.log("start date:", startDate);
     setEndDate(newEndDate);
   }, [startDate]);
 
@@ -93,6 +216,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     const currentDate = selectedDate || startDate;
     setShowDatePicker(Platform.OS === "ios");
     setStartDate(currentDate);
+
     setEndDate(
       new Date(
         currentDate.getTime() + subscription.duration * 24 * 60 * 60 * 1000
@@ -104,19 +228,23 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     navigation.goBack();
   };
   const plusTiffin = () => {
-    setNumberOfTiffins(numberOfTiffins + 1);
+    setNumberOfTiffins(noOfTiffins + 1);
   };
   const minusTiffin = () => {
-    if (numberOfTiffins > 1) setNumberOfTiffins(numberOfTiffins - 1);
+    if (noOfTiffins > 1) setNumberOfTiffins(noOfTiffins - 1);
   };
   const handleSubmitBtn = () => {
     if (agreed) {
       console.log("click on submit");
-      console.log("Subscriber Name:", subscriberName);
-      console.log("Start Date:", startDate);
-      console.log("End Date:", endDate);
-      console.log("Number of Tiffins:", numberOfTiffins);
-      console.log("Want Delivery:", wantDelivery);
+      console.log(bodyData);
+
+      subscribeCustomer(
+        customerID,
+        kitchenID,
+        tiffinID,
+        subscriptionID,
+        bodyData
+      );
     } else {
       alert("Please agree to the terms and conditions.");
     }
@@ -137,25 +265,22 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
             <View style={styles.subBox}>
               <Text style={styles.subNameText}> {subscriptionPlan.title} </Text>
               <View style={styles.priceContainer}>
-                {subscription.discount && (
+                {updatedDiscountCustomer > 0 && (
                   <Text style={styles.originalPrice}>
-                    ₹{subscription.price}
+                    ₹{updatedSubscriptionPrice}
                   </Text>
                 )}
                 <Text
                   style={
-                    subscription.discount
+                    updatedDiscountCustomer > 0
                       ? styles.discountedPrice
                       : styles.planPrice
                   }
                 >
                   ₹
                   {subscription.discount
-                    ? calculateDiscountedPrice(
-                        subscription.price,
-                        subscription.discount
-                      )
-                    : subscription.price}{" "}
+                    ? updatedSubscriptionPrice - updatedDiscountCustomer
+                    : updatedSubscriptionPrice}{" "}
                   / {subscriptionTypes[subscriptionPlan.days]}
                 </Text>
               </View>
@@ -200,7 +325,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                       onPress={() => setShowDatePicker(true)}
                     >
                       <Text style={styles.inputvalueTxt}>
-                        {startDate.toDateString()}
+                        {displayDate(startDate)}
                       </Text>
                     </TouchableOpacity>
                     {showDatePicker && (
@@ -221,7 +346,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                       ]}
                     >
                       <Text style={styles.inputvalueTxt}>
-                        {endDate.toDateString()}
+                        {displayDate(endDate)}
                       </Text>
                     </View>
                   </View>
@@ -241,7 +366,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                       { alignSelf: "center", marginRight: windowWidth * 0.02 },
                     ]}
                   >
-                    {numberOfTiffins}
+                    {noOfTiffins}
                   </Text>
                   <Icon
                     name="pluscircleo"
@@ -272,19 +397,45 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                 <Text style={styles.paymentTxt}>Basic Price : </Text>
                 <Text style={styles.paymentValueTxt}>
                   {" "}
-                  ₹ {subscription.price}
+                  ₹ {updatedSubscriptionPrice}
                 </Text>
               </View>
               <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>
-                  Taxes and Service Charge :{" "}
+                <Text style={styles.paymentTxt}>Taxes : </Text>
+                <Text style={styles.paymentValueTxt}>
+                  {" "}
+                  ₹ {updatedTaxPriceCustomer}
                 </Text>
-                <Text style={styles.paymentValueTxt}> ₹ 300</Text>
               </View>
               <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>Discount : </Text>
-                <Text style={styles.paymentValueTxt}> - ₹ 500</Text>
+                <Text style={styles.paymentTxt}>Service Charge : </Text>
+                <Text style={styles.paymentValueTxt}>
+                  {" "}
+                  ₹ {updatedServicePrice}
+                </Text>
               </View>
+              {updatedDiscountCustomer > 0 && (
+                <View style={styles.paymentLineBox}>
+                  <Text style={styles.paymentTxt}>Discount : </Text>
+                  <Text style={styles.paymentValueTxt}>
+                    {" "}
+                    - ₹ {updatedDiscountCustomer}
+                  </Text>
+                </View>
+              )}
+
+              {wantDelivery && (
+                <View style={styles.paymentLineBox}>
+                  <Text style={styles.paymentTxt}>Delivery Charge :</Text>
+                  <Text style={styles.paymentValueTxt}>
+                    {" "}
+                    {updatedDeliveryCharge
+                      ? "₹ " + updatedDeliveryCharge
+                      : "FREE"}
+                  </Text>
+                </View>
+              )}
+
               <View
                 style={[
                   styles.paymentLineBox,
@@ -308,17 +459,17 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                     },
                   ]}
                 >
-                  ₹ 2200
+                  ₹ {updatedTotalCustomer}
                 </Text>
               </View>
-              {subscription.deliveryIncluded && (
+              {/* {subscription.deliveryIncluded && (
                 <View style={styles.paymentLineBox}>
                   <Text style={styles.paymentTxt}>Delivery Charge : </Text>
                   <Text style={styles.paymentValueTxt}>
                     ₹ {subscription.priceBreakdown.deliveryCharge} / delivery
                   </Text>
                 </View>
-              )}
+              )} */}
               <View
                 style={[
                   styles.paymentLineBox,
@@ -331,10 +482,8 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                 <Text
                   style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
                 >
-                  ₹ 250 + {subscription.priceBreakdown.deliveryCharge}{" "}
-                  {subscription.status === "completed" ? "was" : "will be"}{" "}
-                  automatically deducted from your wallet for each tiffin
-                  received.
+                  ₹ {updatedPerOrderPriceCustomer} will be automatically
+                  deducted from your wallet for each tiffin received.
                 </Text>
               </View>
             </View>
