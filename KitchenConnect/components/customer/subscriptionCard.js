@@ -2,14 +2,15 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
+import { formatDate, formatTime } from "../../utils/formateDateTime";
 
-const SubscriptionCard = ({ onPress, subscription }) => {
-  const navScreen = subscription.type + "SubScreen";
-
+const SubscriptionCard = ({ onPress, subscriptionItem }) => {
+  // const navScreen = subscriptionItem.type + "SubScreen";
+  // console.log(subscriptionItem);
   const renderStatusMessage = (status) => {
     switch (status) {
       case "pending":
-        return "Expect a response within 12 hours of subscription.";
+        return "Expect a response within 12 hours of subscriptionItem.";
       case "declined":
         return "Unfortunately, your request was declined by the provider.";
       default:
@@ -17,20 +18,25 @@ const SubscriptionCard = ({ onPress, subscription }) => {
     }
   };
 
-  const statusMessage = renderStatusMessage(subscription.status);
+  const statusMessage = renderStatusMessage(
+    subscriptionItem.Subscription.subscriptionStatus
+  );
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
       <View style={styles.SubBox}>
-        <Text style={styles.subText}>{subscription.subscriptionName}</Text>
+        <Text style={styles.subText}>
+          {subscriptionItem.subscriptionPlanData.title}
+        </Text>
       </View>
       <View style={styles.contentBox}>
         <View style={styles.detailBox}>
           <Text style={styles.detailText}>
-            {subscription.orderDate + " " + subscription.orderTime}
+            {formatDate(subscriptionItem.Subscription.orderDate)}{" "}
+            {formatTime(subscriptionItem.Subscription.orderDate)}
           </Text>
           <Text style={styles.detailText}>
-            {subscription.numberOfTiffins} Tiffins
+            {subscriptionItem.Subscription.noOfTiffins} Tiffins
           </Text>
         </View>
 
@@ -42,27 +48,34 @@ const SubscriptionCard = ({ onPress, subscription }) => {
             />
             <View style={styles.titleContent}>
               <Text style={styles.providerName}>
-                {subscription.providerName}
+                {subscriptionItem.Kitchen.name}
               </Text>
-              <Text style={styles.tiffinName}>{subscription.tiffinName}</Text>
+              <Text style={styles.tiffinName}>
+                {subscriptionItem.Tiffin.name}
+              </Text>
             </View>
           </View>
           <View style={styles.tiffinTypeBox}>
-            <Text style={styles.tiffinType}>{subscription.tiffinType}</Text>
+            <Text style={styles.tiffinType}>
+              {subscriptionItem.Tiffin.tiffinType}
+            </Text>
             <Text style={styles.tiffinType}>Tiffin</Text>
           </View>
         </View>
         <View style={styles.DateBox}>
           <View style={styles.DateContent}>
             <Text style={styles.DateText}> Start Date </Text>
-            <Text style={styles.DateValueText}> {subscription.startDate} </Text>
+            <Text style={styles.DateValueText}>
+              {" "}
+              {formatDate(subscriptionItem.Subscription.startDate)}{" "}
+            </Text>
           </View>
           <View style={styles.DateContent}>
             <Text style={[styles.DateText, { textAlign: "right" }]}>
               End Date
             </Text>
             <Text style={[styles.DateValueText, { textAlign: "right" }]}>
-              {subscription.endDate}
+              {formatDate(subscriptionItem.Subscription.endDate)}
             </Text>
           </View>
         </View>

@@ -4,8 +4,8 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
-import { createServer } from 'http';
-import { Server } from 'socket.io';
+import { createServer } from "http";
+import { Server } from "socket.io";
 import { connectDB } from "./configs/dbConnect.js";
 import router from "./routes/index.js";
 import { verifyJwt } from "./utils/jwt.js";
@@ -40,37 +40,35 @@ server.listen(port, () => {
   console.log(`Server for KitchenConnect is listening on port ${port}...`);
 });
 
-export const io = new Server(server,{
-  cors:{
+export const io = new Server(server, {
+  cors: {
     origin: "*",
-    methods:["GET", "POST"]
-  }
-})
+    methods: ["GET", "POST"],
+  },
+});
 
-export let providers = {}
+export let providers = {};
 
+io.on("connection", (socket) => {
+  console.log("Socket Connected ", socket.id);
 
-io.on('connection', (socket) =>{
-  console.log('Socket Connected ', socket.id)
-
-  socket.on('register-provider', (data) => {
-    const providerID = verifyJwt(data.userID).decoded.userID
+  socket.on("register-provider", (data) => {
+    const providerID = verifyJwt(data.userID).decoded.userID;
     providers[providerID] = socket.id;
-    console.log(providerID, " registered with ", socket.id)
+    console.log(providerID, " registered with ", socket.id);
   });
 
   //socket.on('check-connection', (data))
 
-  socket.on('disconnect-provider', () => {
-    
+  socket.on("disconnect-provider", () => {
     for (let providerID in providers) {
       if (providers[providerID] === socket.id) {
         delete providers[providerID];
         break;
       }
     }
-    console.log('Provider Disconnected!')
+    console.log("Provider Disconnected!");
   });
-})
+});
 
 export default providers;

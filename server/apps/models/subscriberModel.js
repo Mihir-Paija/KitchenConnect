@@ -81,7 +81,6 @@ const subscriberSchema = new Schema(
     },
     subscriptionID: {
       type: Schema.Types.ObjectId,
-      ref: "Subscription",
       required: [true, "Please enter the subscription ID"],
     },
     subscriberFirstName: {

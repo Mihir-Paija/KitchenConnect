@@ -165,8 +165,10 @@ export const subscriptionDetailsGet = async (req, res) => {
         message: "Subscription not found",
       });
     }
-    const subscriptionPlanData = await subscription.findById(
-      subscriptionData.subscriptionID
+
+    const subscriptionPlanData = await subscription.findOne(
+      { "subscriptions._id": subscriptionData.subscriptionID },
+      { "subscriptions.$": 1 }
     );
     if (!subscriptionPlanData) {
       return res.status(404).json({
@@ -199,7 +201,7 @@ export const subscriptionDetailsGet = async (req, res) => {
 
     const subscriptionDetails = {
       Subscription: subscriptionData,
-      SubscriptionPlan: subscriptionPlanData,
+      SubscriptionPlan: subscriptionPlanData.subscriptions[0],
       Kitchen: kitchenData,
       Tiffin: tiffinData,
     };
@@ -241,20 +243,42 @@ export const subscriptionsGet = async (req, res) => {
 
     const detailedSubscriptionsList = await Promise.all(
       subscriptionsList.map(async (sub) => {
-        const subscriptionPlanData = await subscription.findById(
-          sub.subscriptionID
+        const subscriptionPlanData = await subscription.findOne(
+          { "subscriptions._id": sub.subscriptionID },
+          { "subscriptions.$": 1 }
         );
+        if (!subscriptionPlanData) {
+          return res.status(404).json({
+            error: "Not Found",
+            message: "subscriptionPlanData not found",
+          });
+        }
+
         const kitchenData = await provider.findById(sub.kitchenID, "name");
+        if (!kitchenData) {
+          return res.status(404).json({
+            error: "Not Found",
+            message: "Kitchen not found",
+          });
+        }
+
         const tiffinData = await tiffins.findById(
           sub.tiffinID,
           "name foodType tiffinType"
         );
+        if (!tiffinData) {
+          return res.status(404).json({
+            error: "Not Found",
+            message: "Tiffin not found",
+          });
+        }
 
         return {
           // subscriptionPlan: {
           //   subscriptionPlanTittle: subscriptionPlanData.title,
           // },
-          subscriptionPlanData,
+          subscriptionPlanData: subscriptionPlanData.subscriptions[0],
+          // Subscription: subscriptionData,
           Subscription: {
             _id: sub._id,
             subscriberFirstName: sub.subscriberFirstName,
@@ -265,22 +289,24 @@ export const subscriptionsGet = async (req, res) => {
             subscriptionStatus: sub.subcriptionStatus.status,
             orderDate: sub.createdAt,
           },
-          Kitchen: kitchenData
-            ? {
-                kitchenName: kitchenData.name,
-              }
-            : null,
-          Tiffin: tiffinData
-            ? {
-                tiffinName: tiffinData.name,
-                foodType: tiffinData.foodType,
-                tiffinType: tiffinData.tiffinType,
-              }
-            : null,
+          Kitchen: kitchenData,
+          Tiffin: tiffinData,
+          // Kitchen: kitchenData
+          //   ? {
+          //       kitchenName: kitchenData.name,
+          //     }
+          //   : null,
+          // Tiffin: tiffinData
+          //   ? {
+          //       tiffinName: tiffinData.name,
+          //       foodType: tiffinData.foodType,
+          //       tiffinType: tiffinData.tiffinType,
+          //     }
+          //   : null,
         };
       })
     );
-
+    // console.log(detailedSubscriptionsList);
     return res.status(200).json(detailedSubscriptionsList);
 
     // return res.status(200).json(subscriptionsList);

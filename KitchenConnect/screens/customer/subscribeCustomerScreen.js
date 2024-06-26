@@ -56,6 +56,11 @@ const subscription = {
 const SubscribeCustomerScreen = ({ navigation, route }) => {
   //global state
   const [authState, setAuthState] = useContext(AuthContext);
+  //route param
+  const subscriptionPlan = route.params.subscriptionPlan;
+  // console.log(subscriptionPlan);
+
+  //price breakdown
 
   // local state
   const [isChecked, setIsChecked] = useState(false);
@@ -69,6 +74,12 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
   const [agreed, setAgreed] = useState(false);
   const [numberOfTiffins, setNumberOfTiffins] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const subscriptionTypes = {
+    7: "week",
+    14: "fortNight",
+    30: "month",
+  };
 
   //functions
   useEffect(() => {
@@ -124,10 +135,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
           <BackButtonComponent onPress={backHandler} />
           <ScrollView>
             <View style={styles.subBox}>
-              <Text style={styles.subNameText}>
-                {" "}
-                {subscription.subscriptionName}{" "}
-              </Text>
+              <Text style={styles.subNameText}> {subscriptionPlan.title} </Text>
               <View style={styles.priceContainer}>
                 {subscription.discount && (
                   <Text style={styles.originalPrice}>
@@ -148,7 +156,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                         subscription.discount
                       )
                     : subscription.price}{" "}
-                  / {"fortNight"}
+                  / {subscriptionTypes[subscriptionPlan.days]}
                 </Text>
               </View>
             </View>

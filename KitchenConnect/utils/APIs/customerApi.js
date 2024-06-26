@@ -25,7 +25,7 @@ export const loginCustomer = async (bodyData) => {
     return response.data;
   } catch (error) {
     // console.log(error);
-    throw error.response.data;
+    throw error.response ? error.response.data : error.message;
   }
 };
 
@@ -43,11 +43,12 @@ export const logoutCustomer = async () => {
 // customer -> getKitchen : GET
 export const getKitchenCustomer = async () => {
   try {
+    console.log(API_BASE_URL);
     const response = await axios.get(`${API_BASE_URL}/customer/kitchen`);
     return response;
   } catch (error) {
     console.error("Error getKitchen Customer API:", error);
-    throw error.response.data;
+    throw error.response ? error.response.data : error.message;
   }
 };
 
@@ -87,5 +88,52 @@ export const getSubscriptionPlanCustomer = async (kitchenID, tiffinID) => {
   } catch (error) {
     console.error("Error getSubscriptionPlan Customer API:", error);
     throw error.response.data;
+  }
+};
+
+// customer -> subscribeCustomer : POST
+export const subscribeCustomer = async (
+  customerID,
+  kitchenID,
+  tiffinID,
+  subscriptionID,
+  bodyData
+) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/subscription/${customerID}/${kitchenID}/${tiffinID}/${subscriptionID}`,
+      bodyData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error subscribeCustomer POST Customer API:", error);
+    throw error.response.data;
+  }
+};
+
+// customer -> getSubscriptionDetails : GET
+export const getSubscriptionDetailsCustomer = async (subscriptionID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/subscriptionDetail/${subscriptionID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getSubscriptionDetailsCustomer Customer API:", error);
+    throw error.response.data;
+  }
+};
+
+// customer -> getSubscriptionsList : GET
+export const getSubscriptionsList = async (customerID) => {
+  try {
+    console.log("got it");
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/subscription/${customerID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getSubscriptionsList Customer API:", error);
+    throw error.response ? error.response.data : error.message;
   }
 };
