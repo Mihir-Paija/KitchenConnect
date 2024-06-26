@@ -13,6 +13,16 @@ const detailsSchema = new mongoose.Schema({
         required: [true, "Please Enter Price"]
     },
 
+    discount:{
+        type: Number,
+        default: 0,
+    },
+
+    deliveryCharge:{
+        type: Number,
+        default: 0,
+    },
+
     days: {
         type: Number,
         required: [true, "Please Enter Number of Days"]

@@ -33,3 +33,23 @@ export const decideOrderStatus = async(id, orderID, status) =>{
         throw error.response.data;
     }
 } 
+
+export const optOut = async(id, bodyData) =>{
+    try {
+        const response = await axios.post(`${API_BASE_URL}/provider/order/${id}/out`, bodyData)
+        return response
+    } catch (error) {
+        console.log('Error in Opt Out API', error)
+        throw error.response.data;
+    }
+}
+
+export const sendOTP = async(id, bodyData) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/provider/order/${id}/otp`, bodyData)
+        return response
+    } catch (error) {
+        console.log('Error in OTP API', error)
+        throw error.response.data;
+    }
+}

@@ -35,9 +35,9 @@ export const addSubscription = async (req, res) => {
         console.log(userID);
         console.log(tiffinID);
 
-        const { title, price, days, description } = req.body;
+        const { title, price, deliveryCharge, discount, days, description } = req.body;
 
-        if (!title || !price || !days || !description) {
+        if (!title || !price || !days || !description || deliveryCharge.toString().length === 0 || discount.toString().length === 0) {
             return res.status(400).send({
                 message: "Please Enter All Required Fields"
             })
@@ -45,6 +45,8 @@ export const addSubscription = async (req, res) => {
         const details = {
             title,
             price,
+            deliveryCharge,
+            discount,
             days,
             description
         }
@@ -112,7 +114,7 @@ export const editSubscription = async (req, res) => {
         const userID = req.user._id;
         const { tiffinID } = req.params;
 
-        const { title, description, price } = req.body;
+        const { title, description, price, discount, deliveryCharge } = req.body;
 
         let sub = await subscription.findOne({ providerID: new mongoose.Types.ObjectId(userID), tiffinID: new mongoose.Types.ObjectId(tiffinID) });
         if (!sub) {
@@ -130,7 +132,8 @@ export const editSubscription = async (req, res) => {
         }
 
         titleExists.description = description
-        titleExists.price = price;
+        titleExists.deliveryCharge = deliveryCharge
+        titleExists.discount = discount
 
         const updatedSub = sub.save()
 

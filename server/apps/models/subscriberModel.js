@@ -32,7 +32,9 @@ const subcriptionStatusSchema = new mongoose.Schema({
   },
   daysRemaining: { type: [Date], default: [] },
   daysOptedOut: { type: [Date], default: [] },
+  providerOptedOut: { type: [Date], default: [] },
   daysCompleted: { type: [Date], default: [] },
+  comments: {type: String, default: ''},
   cancelDate: { type: Date, default: null },
 });
 
@@ -103,9 +105,8 @@ const subscriberSchema = new Schema(
       required: [true, "Please enter the number of tiffins"],
     },
     address: { type: String, required: [true, "Please enter the address"] },
-    subcriptionStatus: {
+    subscriptionStatus: {
       type: subcriptionStatusSchema,
-      required: [true, "Please enter the subscription status"],
     },
     price: {
       type: priceSchema,

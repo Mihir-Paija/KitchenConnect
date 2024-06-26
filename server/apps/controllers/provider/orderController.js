@@ -1,7 +1,12 @@
-import subscriber from '../../models/subscriberModel.js'
+import Subscriber from '../../models/subscriberModel.js'
 import tiffins from '../../models/tiffinModel.js';
 import order from '../../models/orderModel.js';
 import mongoose from 'mongoose';
+
+const isDateInArray = (array, date) => {
+    return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
+  };
+  
 
 export const getOrders = async (req, res) => {
 
@@ -17,11 +22,13 @@ export const getOrders = async (req, res) => {
           tiffinMap.set(id, [value.name, value.tiffinType])
         }
 
-        const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
         const lunch = [];
         const dinner = [];
         const currentDate = new Date()
+        currentDate.setHours(0, 0, 0, 0)
+        console.log(currentDate)
 
         function findTiffinIndex(arr, tiffinName) {
             return arr.findIndex(item => item.tiffinName === tiffinName);
@@ -36,15 +43,33 @@ export const getOrders = async (req, res) => {
         }
 
         for (const subscriber of subscribers) {
-            const { tiffinID, noOfTiffins, startDate, endDate, status } = subscriber._doc;
+            const { tiffinID, noOfTiffins, startDate, endDate, subscriptionStatus } = subscriber._doc;
             const tiffinName = tiffinMap.get(tiffinID.toString())[0]
             const tiffinType = tiffinMap.get(tiffinID.toString())[1]
 
-            subscriber._doc.tiffinName = tiffinName
-            subscriber._doc.tiffinType = tiffinType
-            subscriber._doc.title = 'Subscription'
+            const formattedSubscriber = {
+                ...subscriber._doc,
+            tiffinName: tiffinName,
+            tiffinType: tiffinType,
+            title: 'Subscription',
+            providerOut: false,
+            customerOut: false,
+            }
 
-            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && status === 'Current') {
+            let out = false;
+
+            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && subscriptionStatus.status === 'Current') {
+
+                if(isDateInArray(subscriptionStatus.daysOptedOut, currentDate)){
+                    formattedSubscriber.customerOut = true
+                    out = true;
+                }
+
+                if(isDateInArray(subscriptionStatus.providerOptedOut, currentDate)){
+                    console.log('True')
+                    formattedSubscriber.providerOut = true
+                    out = true;
+                }
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
 
@@ -53,12 +78,12 @@ export const getOrders = async (req, res) => {
                 if (index === -1) {
                     insertInSortedOrder(arr, {
                         tiffinName: tiffinName,
-                        number: noOfTiffins,
-                        orders: [subscriber]
+                        number: out ? 0 : noOfTiffins,
+                        orders: [formattedSubscriber]
                     });
                 } else {
-                    arr[index].number += noOfTiffins;
-                    arr[index].orders.push(subscriber._doc);
+                    arr[index].number += out ? 0 : noOfTiffins;
+                    arr[index].orders.push(formattedSubscriber);
                     const [updatedItem] = arr.splice(index, 1);
                     insertInSortedOrder(arr, updatedItem);
                 }
@@ -79,7 +104,9 @@ export const getOrders = async (req, res) => {
                     ...value._doc,
                     tiffinName: tiffinName,
                     tiffinType: tiffinType,
-                    title: 'One Time'
+                    title: 'One Time',
+                    providerOut: false,
+                    customerOut: false,
 
                 }                
 
@@ -167,6 +194,7 @@ export const getPendingOrders = async(req, res) =>{
 export const decideOrderStatus = async(req, res) =>{
     try {
         const userID = req.user._id;
+        console.log(userID)
         const {orderID} = req.params;
 
         const {status} = req.body
@@ -193,4 +221,124 @@ export const decideOrderStatus = async(req, res) =>{
         })
     }
 
+}
+
+export const optOut = async(req, res) =>{
+    try {
+        const userID = req.user._id
+
+        const orderSet = new Set();
+        
+
+        const {orders, type} = req.body;
+        console.log(orders)
+
+        for (const order of orders){
+            for(const value of order.orders){
+            orderSet.add(value._id.toString())
+        }}
+        
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
+        const currentDate = new Date();
+        currentDate.setHours(0,0,0,0)
+
+        const bulkOperations = [];
+
+        for(const subscriber of subscribers){
+            const subscriberData = subscriber._doc
+            const orderID = subscriberData._id.toString()
+            if(orderSet.has(orderID)){
+                subscriberData.subscriptionStatus.providerOptedOut.push(currentDate)
+                subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item) != currentDate())
+                orderSet.delete(orderID)
+
+                bulkOperations.push({
+                    updateOne: {
+                        filter: { _id: subscriberData._id },
+                        update: { $set: { 'subscriptionStatus.providerOptedOut': subscriberData.subscriptionStatus.providerOptedOut, 'subscriptionStatus.daysRemaining': subscriberData.subscriptionStatus.daysRemaining } }
+                    }
+                });
+            }
+        }
+
+
+        if (bulkOperations.length > 0) {
+            try {
+                const result = await Subscriber.bulkWrite(bulkOperations);
+                console.log('Bulk update result:', result);
+            } catch (error) {
+                console.error('Error during bulk update:', error);
+                return res.status(500).send({
+                    message: `Couldn't Opt Out`
+                })
+            }
+        }
+
+        const oneTimeorders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+
+        const oneTimeOrdersBulkOperations = []
+        for(const value of oneTimeorders){
+            const orderID = value._id.toString()
+            if(orderSet.has(orderID)){
+                value.status = 'Rejected'
+                value.comments = 'Provider Opted Out'
+                orderSet.delete(orderID)
+
+                oneTimeOrdersBulkOperations.push({
+                    updateOne: {
+                        filter: { _id: value._id },
+                        update: { $set: { status: value.status, comments: value.comments } }
+                    }
+                });
+            }
+        }
+
+        if (oneTimeOrdersBulkOperations.length > 0) {
+            try {
+                const result = await order.bulkWrite(oneTimeOrdersBulkOperations);
+                console.log('One-time orders bulk update result:', result);
+            } catch (error) {
+                console.error('Error during one-time orders bulk update:', error);
+                return res.status(500).send({
+                    message: `Couldn't Opt Out`
+                })
+            }
+        }
+
+        //send socket to consumer to refresh
+
+        return res.status(200).send({
+            message: `Opt Out Successfull`
+        })
+
+
+
+
+    } catch (error) {
+        console.log('Error in Opting Out ', error)
+        return res.status(500).send({
+            message: `Internal Server Error`
+        }) 
+    }
+}
+
+export const sendOTP = async(req, res) =>{
+    try{
+        const userID = req.user._id
+        const {otp, order} = req.body
+        console.log(otp)
+        const customerID = order.customerID;
+        console.log(customerID)
+
+        //send OTP to customer
+
+        return res.status(200).send({
+            message: 'OTP Sent Successfully'
+        })
+    } catch(error){
+        console.log('Error in Sending OTP ', error)
+        return res.status(500).send({
+            message: 'Internal Server Error'
+        })
+    }
 }
