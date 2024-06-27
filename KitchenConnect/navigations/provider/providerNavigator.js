@@ -10,6 +10,7 @@ import WalletScreen from "@/screens/provider/walletScreen";
 import icons from "@/utils/customerIconpaths";
 import { RefreshProvider } from '@/context/refreshContext';
 import { NavigationContainer } from "@react-navigation/native";
+import HistoryScreen from "../../screens/provider/historyScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +36,11 @@ const ProviderNavigator = () => {
                 iconSource = focused ? icons.Subscription.active : icons.Subscription.inactive;
                 break;
               case 'Orders':
-                iconSource = focused ? icons.History.active : icons.History.inactive;
+                iconSource = focused ? icons.Orders.active : icons.Orders.inactive;
                 break;
+              case 'History':
+                  iconSource = focused ? icons.History.active : icons.History.inactive;
+                  break;
               case 'Wallet':
                 iconSource = focused ? icons.Wallet.active : icons.Wallet.inactive;
                 break;
@@ -50,6 +54,7 @@ const ProviderNavigator = () => {
         <Tab.Screen name="My Tiffins" component={ProviderHomeNavigator} />
         <Tab.Screen name="Subscribers" component={SubscriberNavigator} />
         <Tab.Screen name="Orders" component={OrderTabNavigator} />
+        <Tab.Screen name='History' component={HistoryScreen} />
         <Tab.Screen name="Wallet" component={WalletScreen} />
       </Tab.Navigator>
     </RefreshProvider>

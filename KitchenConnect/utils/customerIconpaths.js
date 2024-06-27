@@ -6,6 +6,10 @@ export default {
     active: require("@assets/shared/icons8-restaurant-ios-17-filled/icons8-restaurant-100.png"),
     inactive: require("@assets/shared/icons8-restaurant-ios-17-outlined/icons8-restaurant-100.png"),
   },
+  Orders:{
+    active: require("@assets/shared/icons8-take-away-food-ios-17-filled/icons8-take-away-food-100.png"),
+    inactive: require("@assets/shared/icons8-take-away-food-ios-17-outlined/icons8-take-away-food-100.png"),
+  },
   History: {
     navigator: "",
     screen: "HistoryCustomer",

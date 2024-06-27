@@ -53,3 +53,13 @@ export const sendOTP = async(id, bodyData) => {
         throw error.response.data;
     }
 }
+
+export const completeOrder = async(id, bodyData) =>{
+    try {
+        const response = await axios.post(`${API_BASE_URL}/provider/order/${id}/complete`, bodyData)
+        return response
+    } catch (error) {
+        console.log('Error in Completeing Order API', error)
+        throw error.response.data;
+    }
+}

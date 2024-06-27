@@ -4,7 +4,7 @@ import { AuthContext } from "@/context/authContext";
 import OrderHeader from '@/components/provider/orderHeader';
 import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
-import { getOrders, optOut, sendOTP } from '../../utils/provider/orderAPI';
+import { getOrders, optOut, sendOTP, completeOrder } from '../../utils/provider/orderAPI';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { windowWidth, windowHeight } from '@/utils/dimensions'
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -73,17 +73,26 @@ const PreparationScreen = ({ navigation }) => {
 
   const verifyOTP = async (otp, order) => {
     try {
+      setLoading(true)
       setModalVisible(false)
       const storedOTP = await AsyncStorage.getItem("@otp")
       if (otp === storedOTP){
-        console.log('OTP Verified')
-        //complete order
+        const response = await completeOrder(authState.authToken, order)
+        if(response && response.status == 200){
+          await AsyncStorage.removeItem("@otp");
+          Alert.alert(`Order Completed`)
+        }
+
+        else Alert.alert(`Couldn't Complete Order! Please Try Again`)
       }
 
       else Alert.alert('Incorrect OTP')
     } catch (error) {
       console.log('Error Generating OTP ', error)
       Alert.alert(`Couldn't Verify OTP! Please Try Again`)
+    }finally{
+      setLoading(false)
+      setRefresh(!refresh)
     }
 
   }

@@ -1,11 +1,72 @@
 import Subscriber from '../../models/subscriberModel.js'
 import tiffins from '../../models/tiffinModel.js';
 import order from '../../models/orderModel.js';
-import mongoose from 'mongoose';
+import wallet from '../../models/walletModel.js'
+import mongoose, { Mongoose } from 'mongoose';
+import transaction from '../../models/transactionModel.js';
 
 const isDateInArray = (array, date) => {
     return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
-  };
+};
+
+const completeTransaction = async(orderID, kitchenID, customerID, customerAmount, kitchenAmount) =>{
+    try {
+       const customerWallet = await wallet.findOne({userID: new Mongoose.Types.ObjectId(customerID)})
+       
+       if(!customerWallet){
+        return 0;
+      }
+
+      if(customerWallet.amount < customerAmount)
+        return 0;
+      
+      const providerWallet = await wallet.findOne({userID: new Mongoose.Types.ObjectId(kitchenID)})
+
+      if(!providerWallet){
+        return 0;
+      }
+
+      customerWallet.amount -=customerAmount
+      let updatedCustomerWallet = await customerWallet.save();
+
+      let updatedProviderWallet
+
+      if(updatedCustomerWallet){
+      providerWallet.amount += kitchenAmount
+      updatedProviderWallet = await providerWallet.save();
+      } 
+      else return 0;
+
+      updatedCustomerWallet = null
+      if(!updatedProviderWallet){
+        while(!updatedCustomerWallet){
+            customerWallet.amount +=customerAmount
+            updatedCustomerWallet = await customerWallet.save()
+        }
+
+        return 0;
+      }
+
+      const newTransaction ={
+        orderID: orderID,
+        payerID: customerID,
+        recieverID: kitchenID,
+        amounPaid: customerAmount,
+        amountRecieved: kitchenAmount,
+      }
+
+      const record = await transaction.create(newTransaction)
+
+      if(!record)
+         return 0;
+
+      return 1;
+
+    } catch (error) {
+        console.log('Error in Completing Transaction ', error)
+        return 0;
+    }
+}
   
 
 export const getOrders = async (req, res) => {
@@ -28,7 +89,6 @@ export const getOrders = async (req, res) => {
         const dinner = [];
         const currentDate = new Date()
         currentDate.setHours(0, 0, 0, 0)
-        console.log(currentDate)
 
         function findTiffinIndex(arr, tiffinName) {
             return arr.findIndex(item => item.tiffinName === tiffinName);
@@ -58,7 +118,7 @@ export const getOrders = async (req, res) => {
 
             let out = false;
 
-            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && subscriptionStatus.status === 'Current') {
+            if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && subscriptionStatus.status === 'Current' && !isDateInArray(subscriptionStatus.daysCompleted, currentDate)) {
 
                 if(isDateInArray(subscriptionStatus.daysOptedOut, currentDate)){
                     formattedSubscriber.customerOut = true
@@ -338,6 +398,79 @@ export const sendOTP = async(req, res) =>{
         })
     } catch(error){
         console.log('Error in Sending OTP ', error)
+        return res.status(500).send({
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+export const completeOrder = async(req, res) =>{
+    try{
+        const userID = req.user._id
+        const {_id, title, customerID, kitchenID, customerPaymentBreakdown, kitchenPaymentBreakdown} = req.body
+        if(title === 'Subscription'){
+
+            const subscriber = await Subscriber.findById(_id)
+            if(!subscriber){
+                return res.status(400).send({
+                    message: `Subscription Doesn't Exist`
+                })
+            }
+
+            console.log(subscriber)
+            const currentDate = new Date()
+            currentDate.setHours(0,0,0,0)
+
+            subscriber.subscriptionStatus.daysCompleted.push(currentDate);
+            subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item) != currentDate())
+
+            const updatedSubscriber = await subscriber.save()
+
+            //also update history Schema
+            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPice, kitchenPaymentBreakdown.perOrderPrice)
+
+            if(updatedSubscriber && record){
+                return res.status(200).send({
+                    message: `Order Completed`
+                })
+            }
+
+            return res.status(500).send({
+                message: `Couldn't Complete Order`
+            })
+
+
+        }
+
+        else{
+            const value = await order.findById(_id)
+            if(!value){
+                return res.status(400).send({
+                    message: `Order Doesn't Exist`
+                })
+            }
+
+            value.status = 'Completed'
+            value.orderDate = new Date()
+            const updatedOrder = value.save()
+
+            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.total, kitchenPaymentBreakdown.total)
+
+            if(updatedOrder){
+                return res.status(200).send({
+                    message: `Order Completed`
+                })
+            }
+
+            return res.status(500).send({
+                message: `Couldn't Complete Order`
+            })
+
+
+        }
+        
+    } catch(error){
+        console.log('Error in Completing Order ', error)
         return res.status(500).send({
             message: 'Internal Server Error'
         })

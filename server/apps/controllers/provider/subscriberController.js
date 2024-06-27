@@ -39,7 +39,9 @@ export const getSubscribers = async (req, res) => {
             const currentDate = new Date();
 
             for (const subscriber of subscribers) {
+                console.log(subscriber)
                 const subscriberData = subscriber._doc
+                console.log(subscriberData)
                 
                 const formattedSubscriber = {
                   ...subscriberData,

@@ -42,6 +42,7 @@ const paymentBreakdownSchema = new mongoose.Schema({
 
 });
 
+//One Time
 const orderSchema = new Schema(
     {
         customerID: {
@@ -90,6 +91,9 @@ const orderSchema = new Schema(
             type: paymentBreakdownSchema,
             required: [true, "Please enter the kitchen payment breakdown"],
         },
+        orderDate:{
+            type: Date
+        }
     },
     { timestamps: true }
 );

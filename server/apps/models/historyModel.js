@@ -2,11 +2,22 @@ import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
 const historySchema = new Schema({
-    orderID: {
+    orderID: { //_id of subscriber
         type: Schema.Types.ObjectId,
         ref: 'Subscriber',
         required: [true, "Please enter the order ID"],
     },
+    kitchenID:{
+        type: Schema.Types.ObjectId,
+        ref: 'Provider',
+        required: [true, "Please enter the kitchen ID"],
+    },
+    customerID:{
+        type: Schema.Types.ObjectId,
+        ref: 'Customer',
+        required: [true, "Please enter the customer ID"],
+    },
+
 
     orderDate:{
         type: Date,
