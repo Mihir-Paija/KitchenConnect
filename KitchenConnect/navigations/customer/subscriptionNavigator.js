@@ -2,7 +2,7 @@ import React from "react";
 import { createStackNavigator, TransitionSpecs } from "@react-navigation/stack";
 import SubscriptionCustomerScreen from "../../screens/customer/subscriptionCustomerScreen";
 import SubscriptionDetailsScreen from "../../screens/customer/subscriptionDetailsScreen";
-
+import SubscriptionOrderCustomerScreen from "../../screens/customer/subscriptionOrderCustomerScreen";
 const SubscriptionStack = createStackNavigator();
 
 const SubscriptionCustomerNavigator = () => {
@@ -27,6 +27,11 @@ const SubscriptionCustomerNavigator = () => {
       <SubscriptionStack.Screen
         name="SubscriptionDetailsCustomer"
         component={SubscriptionDetailsScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <SubscriptionStack.Screen
+        name="SubscriptionOrderCustomer"
+        component={SubscriptionOrderCustomerScreen}
         options={{ presentation: "transparentModal" }}
       />
     </SubscriptionStack.Navigator>

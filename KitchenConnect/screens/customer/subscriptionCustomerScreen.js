@@ -194,7 +194,7 @@ const DUMMY_DATA = [
 const SubscriptionCustomerScreen = ({ navigation }) => {
   // global states
   const [authState] = useContext(AuthContext);
-  console.log(authState.authData._id);
+
   const customerID = authState.authData._id;
   // states
   //state
@@ -243,18 +243,18 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   // functions
   const fetchSubList = async (customerID) => {
     try {
-      console.log("hi");
+      // console.log("hi");
       const response = await getSubscriptionsList(customerID);
       // console.log(response);
       setSubList(response.data);
-      console.log("response data", response.data);
+      // console.log("response data", response.data);
     } catch (error) {
       console.error("Failed to fetch sub List customer:", error);
     } finally {
-      console.log("subList:", subList);
-      console.log("Current Subscriptions:", currentSubscriptions);
-      console.log("Completed Subscriptions:", completedSubscriptions);
-      console.log("Pending Subscriptions:", pendingSubscriptions);
+      // console.log("subList:", subList);
+      // console.log("Current Subscriptions:", currentSubscriptions);
+      // console.log("Completed Subscriptions:", completedSubscriptions);
+      // console.log("Pending Subscriptions:", pendingSubscriptions);
       setLoading(false);
     }
   };
@@ -287,8 +287,15 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   };
 
   const cardHandler = (subscription) => {
-    console.log("subscriptionID from list : ", subscription.Subscription._id);
+    // console.log("subscriptionID from list : ", subscription.Subscription._id);
     navigation.navigate("SubscriptionDetailsCustomer", {
+      subscription,
+      subscriptionID: subscription.Subscription._id,
+    });
+  };
+  const orderHandler = (subscription) => {
+    console.log("subscriptionID from list : ", subscription.Subscription._id);
+    navigation.navigate("SubscriptionOrderCustomer", {
       subscription,
       subscriptionID: subscription.Subscription._id,
     });
@@ -412,6 +419,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
                           key={sub.Subscription._id}
                           onPress={() => cardHandler(sub)}
                           subscriptionItem={sub}
+                          orderHandler={() => orderHandler(sub)}
                         />
                       ))}
                     </View>

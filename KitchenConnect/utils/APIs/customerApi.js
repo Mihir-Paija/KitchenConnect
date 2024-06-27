@@ -43,7 +43,7 @@ export const logoutCustomer = async () => {
 // customer -> getKitchen : GET
 export const getKitchenCustomer = async () => {
   try {
-    console.log(API_BASE_URL);
+    // console.log(API_BASE_URL);
     const response = await axios.get(`${API_BASE_URL}/customer/kitchen`);
     return response;
   } catch (error) {
@@ -128,7 +128,7 @@ export const getSubscriptionDetailsCustomer = async (subscriptionID) => {
 // customer -> getSubscriptionsList : GET
 export const getSubscriptionsList = async (customerID) => {
   try {
-    console.log("got it");
+    // console.log("got it");
     const response = await axios.get(
       `${API_BASE_URL}/customer/subscription/${customerID}`
     );
