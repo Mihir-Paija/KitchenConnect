@@ -35,6 +35,7 @@ export default OrderHeader
 const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
+    marginTop: windowHeight * 0.01,
     width: '100%',
   },
   button: {
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     borderBottomWidth: 4,
-    borderColor: "#FFA500"
+    borderColor: 'green'
   },
   buttonText: {
     fontSize: 16,

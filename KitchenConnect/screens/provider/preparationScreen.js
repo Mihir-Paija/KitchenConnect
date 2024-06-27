@@ -10,12 +10,14 @@ import { windowWidth, windowHeight } from '@/utils/dimensions'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OTPModal from './modals/OTPModal';
 import LoadingScreen from '../shared/loadingScreen'
+import Icon from "react-native-vector-icons/Ionicons";
 
 const PreparationScreen = ({ navigation }) => {
   const [authState] = useContext(AuthContext)
   const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
+  const [optVisible, setOptVisible] = useState(false)
   const [order, setOrder] = useState([])
 
   const [type, setType] = useState('Lunch')
@@ -86,6 +88,10 @@ const PreparationScreen = ({ navigation }) => {
 
   }
 
+  const toggleOpt = () =>{
+    setOptVisible(!optVisible)
+  }
+
   const handleOut = async (type) => {
     try {
       const bodyData = {
@@ -148,12 +154,14 @@ const PreparationScreen = ({ navigation }) => {
                     )}
                     contentContainerStyle={styles.flatList}
                   />
+                  {optVisible ?
                   <View style={styles.btnView}>
                     <TouchableOpacity onPress={() => handleOut('Lunch')} style={styles.btn}>
                       <Text style={styles.btnText}>Opt Out</Text>
                       <Text style={styles.btnText}>For Lunch</Text>
                     </TouchableOpacity>
                   </View>
+                  : null}
                 </>
                 :
                 <View style={styles.emptyView}>
@@ -173,12 +181,15 @@ const PreparationScreen = ({ navigation }) => {
                     )}
                     contentContainerStyle={styles.flatList}
                   />
+                  {optVisible?
                   <View style={styles.btnView}>
                     <TouchableOpacity onPress={() => handleOut('Dinner')} style={styles.btn}>
-                      <Text style={styles.btnText}>Opt Out for Dinner</Text>
+                      <Text style={styles.btnText}>Opt Out</Text>
                       <Text style={styles.btnText}>For Dinner</Text>
                     </TouchableOpacity>
                   </View>
+                  :
+                  null}
                 </>
                 :
                 <View style={styles.emptyView}>
@@ -187,6 +198,21 @@ const PreparationScreen = ({ navigation }) => {
               }
             </>
             : null}
+            {optVisible ?
+            <Icon
+            name="close"
+            type="ionicon"
+            style={styles.settings}
+            onPress={toggleOpt}
+          />
+            :
+            <Icon
+                name="settings-outline"
+                type="ionicon"
+                style={styles.settings}
+                onPress={toggleOpt}
+              />
+}
           {modalVisible ?
             <OTPModal
               isVisible={modalVisible}
@@ -218,6 +244,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 10,
     alignItems: 'center'
+  },
+  settings:{
+    position: 'absolute',
+    right: windowWidth * 0.07,
+    bottom: windowHeight * 0.05,
+    fontSize: windowHeight * 0.04,
   },
   btnView: {
     alignItems: 'center',

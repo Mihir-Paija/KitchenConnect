@@ -364,7 +364,7 @@ const SubscriberScreen = ({ navigation }) => {
                 {activeSubscribers.length !== 0 ?
                   <>
                     <View style={{ alignItems: 'center', marginBottom: 10 }}>
-                      <Text style={styles.number}>{activeSubscribers.length} Subscribers</Text>
+                      <Text style={styles.number}>{activeSubscribers.length} {activeSubscribers.length > 1 ? 'Subscribers' :  'Subscriber'}</Text>
                     </View>
                     <FlatList
                       data={activeSubscribers}

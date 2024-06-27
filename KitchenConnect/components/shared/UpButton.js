@@ -19,7 +19,7 @@ export default UpButton;
 const styles = StyleSheet.create({
   upButton: {
     marginLeft: windowWidth * 0.01,
-    fontSize: windowWidth * 0.05,
+    fontSize: windowWidth * 0.06,
     color: "#3C3636",
     fontFamily: "NunitoLight",
   },

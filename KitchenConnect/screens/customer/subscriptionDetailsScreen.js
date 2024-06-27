@@ -120,7 +120,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     </Text>
                   </View>
                 </View>
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Completed" && (
                   <View
                     style={[
@@ -140,7 +140,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         { fontSize: windowWidth * 0.045, textAlign: "center" },
                       ]}
                     >
-                      You have cancelled this subscription of [date].
+                      You have cancelled this subscription on [date].
                     </Text>
                   </View>
                 )}
@@ -313,16 +313,16 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         subDetails.Subscription.customerPaymentBreakdown
                           .perOrderPrice
                       }{" "}
-                      {subscription.status === "completed" ? "was" : "will be"}{" "}
+                      {subDetails.Subscription.subscriptionStatus.status === "completed" ? "was" : "will be"}{" "}
                       automatically deducted from your wallet for each tiffin
                       received.
                     </Text>
                   </View>
                 </View>
 
-                {(subDetails.Subscription.subcriptionStatus.status ===
+                {(subDetails.Subscription.subscriptionStatus.status ===
                   "Current" ||
-                  subDetails.Subscription.subcriptionStatus.status ===
+                  subDetails.Subscription.subscriptionStatus.status ===
                     "Completed") && (
                   <View style={[styles.bookingBox]}>
                     <Text style={styles.bookingTitleTxt}>{}Status</Text>
@@ -333,7 +333,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         >
                           <Text style={styles.dayvalueText}>
                             {
-                              subDetails.Subscription.subcriptionStatus
+                              subDetails.Subscription.subscriptionStatus
                                 .daysCompleted.length
                             }
                           </Text>
@@ -344,7 +344,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         </View>
                       </View>
 
-                      {subDetails.Subscription.subcriptionStatus.status ===
+                      {subDetails.Subscription.subscriptionStatus.status ===
                         "Current" && (
                         <View style={styles.dayBox}>
                           <View
@@ -352,7 +352,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                           >
                             <Text style={styles.dayvalueText}>
                               {
-                                subDetails.Subscription.subcriptionStatus
+                                subDetails.Subscription.subscriptionStatus
                                   .daysRemaining.length
                               }
                             </Text>
@@ -370,7 +370,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         >
                           <Text style={styles.dayvalueText}>
                             {
-                              subDetails.Subscription.subcriptionStatus
+                              subDetails.Subscription.subscriptionStatus
                                 .daysOptedOut.length
                             }
                           </Text>
@@ -391,7 +391,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       </Text>
                       <Text style={styles.paymentValueTxt}>₹ 500</Text>
                     </View>
-                    {subDetails.Subscription.subcriptionStatus.status ===
+                    {subDetails.Subscription.subscriptionStatus.status ===
                       "Current" && (
                       <>
                         <TouchableOpacity
@@ -408,7 +408,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         </Text>
                       </>
                     )}
-                    {subDetails.Subscription.subcriptionStatus.status ===
+                    {subDetails.Subscription.subscriptionStatus.status ===
                       "Pending" && (
                       <>
                         <TouchableOpacity
@@ -427,7 +427,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     )}
                   </View>
                 )}
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Pending" && (
                   <>
                     <TouchableOpacity
@@ -441,7 +441,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                   </>
                 )}
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Current" && (
                   <>
                     <TouchableOpacity
@@ -449,7 +449,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       onPress={handleSubmitBtn}
                     >
                       <Text style={styles.submitText}>
-                        Cancle Subscription
+                        Cancel Subscription
                         {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
                       </Text>
                     </TouchableOpacity>

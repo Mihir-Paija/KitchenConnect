@@ -90,7 +90,7 @@ export const getOrders = async (req, res) => {
             }
         };
 
-        const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const orders = await order.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
         const toDate = currentDate.setHours(0, 0, 0, 0);
 
@@ -156,7 +156,8 @@ export const getPendingOrders = async(req, res) =>{
           tiffinMap.set(id, [value.name, value.tiffinType])
         } 
 
-        const orders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const orders = await order.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
+
         const currentDate = new Date()
 
         const toDate = currentDate.setHours(0, 0, 0, 0);

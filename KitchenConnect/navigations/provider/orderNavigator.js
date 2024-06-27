@@ -18,7 +18,7 @@ const OrderTabNavigator = ({}) => {
         },
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor: 'gray',
-      tabBarLabelStyle: { fontSize: 12 },
+      tabBarLabelStyle: { fontSize: 15 },
       tabBarIndicatorStyle: {
         backgroundColor: '#ffa500', 
       },
