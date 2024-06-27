@@ -19,7 +19,7 @@ export default DownButton;
 const styles = StyleSheet.create({
   downButton: {
     marginLeft: windowWidth * 0.01,
-    fontSize: windowWidth * 0.05,
+    fontSize: windowWidth * 0.06,
     color: "#3C3636",
     fontFamily: "NunitoLight",
   },

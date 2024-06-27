@@ -2,19 +2,13 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate,delivery, address, onPress}) => {
+const AcceptedSubComponent = ({ title, subscriberFirstName, subscriberLastName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate, wantDelivery, address, kitchenPaymentBreakdown, onPress}) => {
     const dayCount = {
         'Weekly': 7,
         'Fortnightly': 15,
         'Monthly': 30,
     };
 
-    const [totalPrice, setTotalPrice] = useState(0)
-
-    useEffect(() =>{
-        const grandTotal = ((price.tiffinPrice - price.discount) * noOfTiffins + price.deliveryCharge) * dayCount[title]
-        setTotalPrice(grandTotal)
-    }, [])
     return (
         <TouchableOpacity
             style={[styles.container, Platform.OS === 'android' ? styles.androidShadow : styles.iosShadow]}
@@ -27,9 +21,9 @@ const AcceptedSubComponent = ({ title, customerName, tiffinName, tiffinType, noO
             <View style={{ justifyContent: "space-between", flexDirection: "row", paddingTop: 10 }}>
           <View style={styles.titleBox}>
             <View style={styles.titleContent}>
-              <Text style={styles.tiffinName}>Customer: {customerName}</Text>
+              <Text style={styles.tiffinName}>Customer: {subscriberFirstName + ' ' + subscriberLastName}</Text>
               <Text style={styles.detail}>{noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}</Text>
-              <Text style ={styles.price}>Price: ₹{totalPrice}</Text>
+              <Text style ={styles.price}>Price: ₹{kitchenPaymentBreakdown.total}</Text>
             </View>
           </View>
           <View style={styles.tiffinTypeBox}>

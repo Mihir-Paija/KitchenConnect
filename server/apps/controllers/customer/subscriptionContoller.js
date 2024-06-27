@@ -92,7 +92,7 @@ export const subscribe = async (req, res) => {
       wantDelivery,
       noOfTiffins,
       address,
-      subcriptionStatus: {
+      subscriptionStatus: {
         ...subcriptionStatus,
         daysRemaining,
       },
@@ -273,6 +273,8 @@ export const subscriptionsGet = async (req, res) => {
           });
         }
 
+        console.log(sub)
+
         return {
           // subscriptionPlan: {
           //   subscriptionPlanTittle: subscriptionPlanData.title,
@@ -286,7 +288,7 @@ export const subscriptionsGet = async (req, res) => {
             startDate: sub.startDate,
             endDate: sub.endDate,
             noOfTiffins: sub.noOfTiffins,
-            subscriptionStatus: sub.subcriptionStatus.status,
+            subscriptionStatus: sub.subscriptionStatus.status,
             orderDate: sub.createdAt,
           },
           Kitchen: kitchenData,

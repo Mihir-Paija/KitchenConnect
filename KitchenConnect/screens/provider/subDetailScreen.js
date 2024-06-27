@@ -49,9 +49,12 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     }));
   };
 
-  const handleSubmitBtn = () => {
-    console.log("click on submit");
-  };
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
+};
 
   useEffect(() => {
     calculatePrice()
@@ -66,24 +69,46 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
             <View style={styles.kitchenBox}>
               <View style={styles.kitchenContentBox}>
                 <Text style={styles.tiffinName}>{subscription.tiffinName}</Text>
-                <Text style={styles.subscription}>{subscription.title} Subscription - {dayCount[subscription.title]} days</Text>
+                <Text style={styles.subscription}>{subscription.title} Subscription</Text>
+                <Text style={styles.subscription}>{dayCount[subscription.title]} days</Text>
                 <View style={{ alignSelf: "flex-start" }}>
                   <TiffinTypeComponent tiffinType={subscription.tiffinType} />
                 </View>
               </View>
+              <View style={styles.stampBox}>
+                {subscription.subscriptionStatus.daysRemaining.length == 0?
+              <Image source={require('@/assets/shared/stamps/completed_stamp.png')} 
+              style={styles.stamp}/>
+              : null}
+              {subscription.subscriptionStatus.status == 'Cancelled'?
+              <Image source={require('@/assets/shared/stamps/cancelled_stamp.png')} 
+              style={styles.stamp}/>
+              : null}
+
             </View>
+            </View>
+          
 
             <View style={styles.bookingBox}>
               <Text style={styles.bookingTitleTxt}>Subscription Details</Text>
+              <View style={[styles.bookingIDBox,  {backgroundColor: "rgba(256,156,0,0.1)"}]}>
+                    <Text style={styles.bookingIDText}>
+                      Booking ID 
+                    </Text>
+                    <Text style={styles.bookingIDText}>
+                    {subscription._id}
+                    </Text>
+                    
+                  </View>
               <View
                 style={[
                   styles.bookingDetialBox,
                   { paddingHorizontal: windowWidth * 0.01 },
                 ]}
               >
-                <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
+                <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.001, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
                   <Text style={styles.paymentTxt}>Customer Name: </Text>
-                  <Text style={styles.paymentValueTxt}>{subscription.customerName}</Text>
+                  <Text style={styles.paymentValueTxt}>{subscription.subscriberFirstName + " " + subscription.subscriberLastName }</Text>
                 </View>
 
                 <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth * 0.01 }]}>
@@ -92,13 +117,15 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </View>
 
                 <View style={{ paddingVertical: windowHeight * 0.002, marginTop: windowHeight * 0.005, paddingLeft: windowWidth * 0.01 }}>
-                  {subscription.delivery ?
+                  {subscription.wantDelivery ?
                     <>
                       <Text style={styles.paymentTxt}>Deliver To:</Text>
                       <Text style={styles.paymentTxt}>{subscription.address}</Text>
                     </>
                     :
-                    <Text style={styles.paymentTxt}>No Delivery</Text>}
+                    <View style={{alignItems:'center'}}>
+                    <Text style={styles.paymentTxt}>No Delivery</Text>
+                    </View>}
                 </View>
 
 
@@ -124,6 +151,12 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </Text>
                 </View>
               </View>
+              {subscription.subscriptionStatus.status == 'Cancelled'?
+              <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.001, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
+              <Text style={styles.paymentTxt}>Cancelled On: </Text>
+              <Text style={styles.paymentValueTxt}>{formatDate(subscription.subscriptionStatus.cancelDate)}</Text>
+            </View>
+              :null}
 
             </View>
 
@@ -133,7 +166,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <View style={styles.dayBox}>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>
-                      {subscription.days.completed.length}
+                      {subscription.subscriptionStatus.daysCompleted.length}
                     </Text>
                     <Text style={styles.dayText}> days</Text>
                   </View>
@@ -145,7 +178,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <View style={styles.dayBox}>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>
-                      {subscription.days.remaining.length}
+                      {subscription.subscriptionStatus.daysRemaining.length}
                     </Text>
                     <Text style={styles.dayText}> days</Text>
                   </View>
@@ -163,7 +196,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text>Opted Out</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
-                    <Text style={styles.dayvalueText}>{subscription.days.customerOut.length}</Text>
+                    <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.daysOptedOut.length}</Text>
                     <Text style={styles.dayText}>days</Text>
                   </View>
 
@@ -174,7 +207,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text>Opted Out</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
-                    <Text style={styles.dayvalueText}>{subscription.days.providerOut.length}</Text>
+                    <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.providerOptedOut.length}</Text>
                     <Text style={styles.dayText}>days</Text>
                   </View>
 
@@ -200,9 +233,9 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <CalendarComponent
                   startDate={subscription.startDate}
                   endDate={subscription.endDate}
-                  completed={subscription.days.completed}
-                  customerOut={subscription.days.customerOut}
-                  providerOut={subscription.days.providerOut}
+                  completed={subscription.subscriptionStatus.daysCompleted}
+                  customerOut={subscription.subscriptionStatus.daysOptedOut}
+                  providerOut={subscription.subscriptionStatus.providerOptedOut}
                 />
                 : null}
             </View>
@@ -216,24 +249,32 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   { marginTop: windowHeight * 0.01 },
                 ]}
               >
-                <Text style={styles.paymentTxt}>Tiffin Price: </Text>
+                <Text style={styles.paymentTxt}>Subscription Price: </Text>
                 <Text style={styles.paymentValueTxt}>
                   {" "}
-                  ₹ {priceBreakdown.perTiffin}
+                  + ₹ {subscription.kitchenPaymentBreakdown.subscriptionPrice}
                 </Text>
               </View>
               <View style={styles.paymentLineBox}>
                 <Text style={styles.paymentTxt}>Delivery: </Text>
-                <Text style={styles.paymentValueTxt}>₹ {priceBreakdown.delivery}</Text>
+                <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.deliveryCharge}</Text>
               </View>
               <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>Duration: </Text>
-                <Text style={styles.paymentValueTxt}>{dayCount[subscription.title]}</Text>
+                <Text style={styles.paymentTxt}>GST: </Text>
+                <Text style={styles.paymentValueTxt}> + ₹ {subscription.kitchenPaymentBreakdown.tax}</Text>
+              </View>
+              <View style={styles.paymentLineBox}>
+                <Text style={styles.paymentTxt}>Service Charge: </Text>
+                <Text style={styles.paymentValueTxt}> - ₹ {subscription.kitchenPaymentBreakdown.platformCharge}</Text>
+              </View>
+              <View style={styles.paymentLineBox}>
+                <Text style={styles.paymentTxt}>Your Discount: </Text>
+                <Text style={styles.paymentValueTxt}> - ₹ {subscription.kitchenPaymentBreakdown.discount}</Text>
               </View>
               <View
                 style={[
                   styles.paymentLineBox,
-                  { borderTopWidth: 1, borderTopColor: "#ccc" },
+                  { borderTopWidth: 1, borderTopColor: "#ccc", paddingVertical: windowHeight *0.015 },
                 ]}
               >
                 <Text
@@ -253,8 +294,15 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     },
                   ]}
                 >
-                  ₹ {priceBreakdown.total}
+                  ₹ {subscription.kitchenPaymentBreakdown.total}
                 </Text>
+              </View>
+              <View style={[
+                  styles.paymentLineBox,
+                  { borderTopWidth: 1, borderTopColor: "#ccc" },
+                ]}>
+                <Text style={styles.paymentTxt}>Recieved Till Now: </Text>
+                <Text style={styles.paymentValueTxt}> ₹ {subscription.kitchenPaymentBreakdown.moneyTransferTillNow}</Text>
               </View>
               <View
                 style={[
@@ -268,9 +316,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <Text
                   style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
                 >
-                  ₹ 250 + {priceBreakdown.delivery} will be
-                  automatically deducted from your wallet for each tiffin
-                  received.
+                  ₹ {subscription.kitchenPaymentBreakdown.perOrderPrice} will be
+                  automatically credited to your wallet for each delivered tiffin.
                 </Text>
               </View>
             </View>
@@ -293,7 +340,11 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
     alignContent: "center",
   },
+  header:{
+    flexDirection: 'row',
+  },
   kitchenBox: {
+    flexDirection: 'row',
     justifyContent: "space-between",
     alignSelf: "center",
     alignContent: "center",
@@ -316,6 +367,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   kitchenContentBox: {
+    flex: 2,
     // backgroundColor: "#ffaa",
     // alignContent: "flex-start",
     // alignItems: "flex-start",
@@ -331,6 +383,14 @@ const styles = StyleSheet.create({
     fontFamily: "NunitoSemiBold",
     marginVertical: windowHeight * 0.002,
     color: "#505050",
+  },
+  stampBox:{
+    flex:1,
+    justifyContent: 'center',
+  },
+  stamp:{
+    width: windowWidth * 0.3,
+    height: windowWidth * 0.3,
   },
   tiffinImage: {
     height: windowWidth * 0.2,
@@ -396,13 +456,14 @@ const styles = StyleSheet.create({
   },
   bookingIDBox: {
     marginVertical: windowHeight * 0.005,
+    paddingVertical: windowHeight * 0.005,
     // paddingVertical: windowHeight * 0.01,
   },
   bookingIDText: {
     color: "#000",
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: windowWidth * 0.042,
-    fontFamily: "NunitoRegular",
+    fontFamily: "NunitoBold",
   },
   subBox: {
     padding: windowWidth * 0.03,

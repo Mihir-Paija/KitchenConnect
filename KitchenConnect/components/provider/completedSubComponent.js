@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, status, noOfTiffins, price, formattedEndDate, onPress}) => {
+const CompletedSubComponent = ({title, subscriberFirstName, subscriberLastName, tiffinName, tiffinType, subscriptionStatus, noOfTiffins, price, formattedEndDate, kitchenPaymentBreakdown, onPress}) => {
     const dayCount = {
         'Weekly': 7,
         'Fortnightly': 15,
@@ -10,6 +10,12 @@ const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, sta
     };
 
     const [totalPrice, setTotalPrice] = useState(0)
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${day}/${month}/${year}`;
+  };
 
     useEffect(() =>{
         const grandTotal = ((price.tiffinPrice - price.discount) * noOfTiffins + price.deliveryCharge) * dayCount[title]
@@ -28,9 +34,9 @@ const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, sta
             <View style={{ justifyContent: "space-between", flexDirection: "row", paddingTop: 10 }}>
           <View style={styles.titleBox}>
             <View style={styles.titleContent}>
-              <Text style={styles.tiffinName}>Customer: {customerName}</Text>
+              <Text style={styles.tiffinName}>Customer: {subscriberFirstName + " " + subscriberLastName}</Text>
               <Text style={styles.detail}>{noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}</Text>
-              <Text style ={styles.price}>Price: ₹{totalPrice}</Text>
+              <Text style ={styles.price}>Price: ₹{kitchenPaymentBreakdown.total}</Text>
             </View>
           </View>
           <View style={styles.tiffinTypeBox}>
@@ -38,8 +44,8 @@ const CompletedSubComponent = ({title, customerName, tiffinName, tiffinType, sta
             <Text style={styles.tiffinType}>Tiffin</Text>
           </View>
         </View>
-        {status === 'Cancelled' ?
-        <Text style={styles.dateDetail}>Cancelled on {formattedEndDate}</Text>
+        {subscriptionStatus.status === 'Cancelled' ?
+        <Text style={styles.dateDetail}>Cancelled on {formatDate(new Date())}</Text>
         :
             <Text style={styles.dateDetail}>Completed on {formattedEndDate}</Text>}
         </TouchableOpacity>
