@@ -13,7 +13,7 @@ const walletSchema = new Schema({
 
     },
 
-    lasttName:{
+    lastName:{
         type: String,
         required: [true, "Please enter the last name"],
 

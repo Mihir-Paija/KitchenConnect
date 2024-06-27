@@ -56,4 +56,8 @@ router.use("/provider/subscription", subscriptionRouter);
 router.use("/provider/subscriber", subscriberRouter);
 router.use("/provider/order", orderRouter);
 
+
+import { walletRouter } from "./shared/walletRouter.js";
+router.use('/wallet', walletRouter)
+
 export default router;

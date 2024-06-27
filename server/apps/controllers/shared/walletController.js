@@ -1,42 +1,51 @@
-import wallet from "../../models/walletModel";
-import provider from "../../models/providerModel";
-import customer from '../../models/customerModel';
-import { hashPassword } from "../../utils/bcrypt";
+import wallet from "../../models/walletModel.js";
+import provider from "../../models/providerModel.js";
+import customer from '../../models/customerModel.js';
+import { hashPassword } from "../../utils/bcrypt.js";
+import mongoose from 'mongoose';
+import { verifyJwt } from "../../utils/jwt.js";
 
 export const getWallet = async(req, res) =>{
     try{
-        const {userID} = req.body
+        const {id} = req.params
+        const userID = verifyJwt(id).decoded.userID
+        console.log(userID)
         if(!userID)
             return res.status(400).send({
                 message: `Please Fill All Feilds`
             })
         
-        const exists = await wallet.findOne({userID})
+        if (!mongoose.Types.ObjectId.isValid(userID)) {
+                throw new Error('Invalid userID format');
+        }
+        
+        const exists = await wallet.findOne({ userID: new mongoose.Types.ObjectId(userID) });
 
-        if(exists.length === 0){
-            return res.status(400).send({
-                message: `Wallet Hasn't Been Created For User`
+
+        if(!exists){
+            return res.status(200).send({
+                wallet: false
             })
         }
 
+        console.log(exists)
+
         const walletDetails = {
+            wallet: true,
             walletID: exists._id,
             userID: exists.userID,
             amount: exists.amount,
             firstName: exists.firstName,
-            lastName: exists.lasttName,
+            lastName: exists.lastName,
             cardNumber: exists.cardNumber
         }
 
         return res.status(200).json(walletDetails)
 
-
-
-
     }catch(error){
-        console/log('Error in creating wallet ', error);
+        console.log('Error in fetching wallet ', error);
         return res.status(500).send({
-            message: `Couldn't Create Wallet`
+            message: `Couldn't Fetch Wallet`
         })
     }
 
@@ -44,9 +53,11 @@ export const getWallet = async(req, res) =>{
 
 export const createWallet = async(req, res) =>{
     try {
-        const {userID, firstName, lastName, PIN, type, cardNumber} = req.body
+        const {id} = req.params
+        const {firstName, lastName, PIN, type, cardNumber} = req.body
+        const userID = verifyJwt(id).decoded.userID
 
-        if(!userID || PIN.toString.length() === 0 || !firstName || !lastName || !type)
+        if(!userID || PIN.toString().length === 0 || !firstName || !lastName || !type)
             return res.status(400).send({
                 message: `Please Fill All Feilds`
             })
@@ -57,20 +68,20 @@ export const createWallet = async(req, res) =>{
             user = await provider.findById(userID);
         else user = await customer.findById(userID)
     
-        if(user.length === 0)
+        if(!user)
             return res.status(400).send({
                 message: `User Doesn't Exist`
             })
         
-        const exists = await wallet.findOne({userID})
+        const exists = await wallet.findOne({ userID: new mongoose.Types.ObjectId(userID) })
 
-        if(exists.length !== 0){
+        if(exists){
             return res.status(400).send({
                 message: `Wallet already Exists`
             })
         }
 
-        const hashedPIN = hashPassword(PIN)
+        const hashedPIN = await hashPassword(PIN)
 
         const newWallet = {
             userID,
@@ -93,7 +104,7 @@ export const createWallet = async(req, res) =>{
             })
   
     } catch (error) {
-        console/log('Error in creating wallet ', error);
+        console.log('Error in creating wallet ', error);
         return res.status(500).send({
             message: `Couldn't Create Wallet`
         })
