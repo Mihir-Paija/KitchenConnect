@@ -137,7 +137,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     ).toFixed(2)
   );
   const updatedDiscountProvider = parseFloat(
-    ((price.serviceDiscount || 0) * updatedSubscriptionPrice).toFixed(2)
+    (((price.kitchenDiscount || 0) * updatedSubscriptionPrice) / 100).toFixed(2)
   );
   const updatedTotalCustomer = parseFloat(
     (
@@ -192,7 +192,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     wantDelivery,
     noOfTiffins,
     address: "123 Main St, City, State, ZIP",
-    subcriptionStatus: { status: "Pending" },
+    subscriptionStatus: { status: "Pending" },
     price,
     customerPaymentBreakdown,
     kitchenPaymentBreakdown,

@@ -66,7 +66,7 @@ export const subscribe = async (req, res) => {
       wantDelivery,
       noOfTiffins,
       address,
-      subcriptionStatus,
+      subscriptionStatus,
       price,
       customerPaymentBreakdown,
       kitchenPaymentBreakdown,
@@ -92,8 +92,8 @@ export const subscribe = async (req, res) => {
       wantDelivery,
       noOfTiffins,
       address,
-      subcriptionStatus: {
-        ...subcriptionStatus,
+      subscriptionStatus: {
+        ...subscriptionStatus,
         daysRemaining,
       },
       price,
@@ -286,23 +286,11 @@ export const subscriptionsGet = async (req, res) => {
             startDate: sub.startDate,
             endDate: sub.endDate,
             noOfTiffins: sub.noOfTiffins,
-            subscriptionStatus: sub.subcriptionStatus.status,
+            subscriptionStatus: sub.subscriptionStatus.status,
             orderDate: sub.createdAt,
           },
           Kitchen: kitchenData,
           Tiffin: tiffinData,
-          // Kitchen: kitchenData
-          //   ? {
-          //       kitchenName: kitchenData.name,
-          //     }
-          //   : null,
-          // Tiffin: tiffinData
-          //   ? {
-          //       tiffinName: tiffinData.name,
-          //       foodType: tiffinData.foodType,
-          //       tiffinType: tiffinData.tiffinType,
-          //     }
-          //   : null,
         };
       })
     );
@@ -312,6 +300,7 @@ export const subscriptionsGet = async (req, res) => {
     // return res.status(200).json(subscriptionsList);
   } catch (error) {
     console.log("Error in Fetching subscriptionsList ", error);
+
     return res.status(500).send({
       error: `Internal Server Error in GET subscriptionsList`,
       message: error.message,

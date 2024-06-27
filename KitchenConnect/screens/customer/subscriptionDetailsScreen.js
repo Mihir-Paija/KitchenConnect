@@ -31,7 +31,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   // const customerID = authState.authData.
   const subscription = route.params.subscription;
   const subscriptionID = route.params.subscriptionID;
-  console.log("subscriptionID", subscriptionID);
+  // console.log("subscriptionID", subscriptionID);
 
   //state
   const [loading, setLoading] = useState(true);
@@ -40,11 +40,11 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   //functions
   const fetchSubDetails = async (subscriptionID) => {
     try {
-      console.log("hi");
+      // console.log("hi");
       const response = await getSubscriptionDetailsCustomer(subscriptionID);
       // console.log(response);
       setSubDetails(response.data);
-      console.log("response data", response.data);
+      // console.log("response data", response.data);
     } catch (error) {
       console.error("Failed to fetch sub details customer:", error);
     } finally {
@@ -120,7 +120,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     </Text>
                   </View>
                 </View>
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Completed" && (
                   <View
                     style={[
@@ -320,9 +320,9 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                 </View>
 
-                {(subDetails.Subscription.subcriptionStatus.status ===
+                {(subDetails.Subscription.subscriptionStatus.status ===
                   "Current" ||
-                  subDetails.Subscription.subcriptionStatus.status ===
+                  subDetails.Subscription.subscriptionStatus.status ===
                     "Completed") && (
                   <View style={[styles.bookingBox]}>
                     <Text style={styles.bookingTitleTxt}>{}Status</Text>
@@ -333,7 +333,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         >
                           <Text style={styles.dayvalueText}>
                             {
-                              subDetails.Subscription.subcriptionStatus
+                              subDetails.Subscription.subscriptionStatus
                                 .daysCompleted.length
                             }
                           </Text>
@@ -344,7 +344,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         </View>
                       </View>
 
-                      {subDetails.Subscription.subcriptionStatus.status ===
+                      {subDetails.Subscription.subscriptionStatus.status ===
                         "Current" && (
                         <View style={styles.dayBox}>
                           <View
@@ -352,7 +352,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                           >
                             <Text style={styles.dayvalueText}>
                               {
-                                subDetails.Subscription.subcriptionStatus
+                                subDetails.Subscription.subscriptionStatus
                                   .daysRemaining.length
                               }
                             </Text>
@@ -370,7 +370,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         >
                           <Text style={styles.dayvalueText}>
                             {
-                              subDetails.Subscription.subcriptionStatus
+                              subDetails.Subscription.subscriptionStatus
                                 .daysOptedOut.length
                             }
                           </Text>
@@ -391,7 +391,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       </Text>
                       <Text style={styles.paymentValueTxt}>₹ 500</Text>
                     </View>
-                    {subDetails.Subscription.subcriptionStatus.status ===
+                    {subDetails.Subscription.subscriptionStatus.status ===
                       "Current" && (
                       <>
                         <TouchableOpacity
@@ -408,7 +408,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         </Text>
                       </>
                     )}
-                    {subDetails.Subscription.subcriptionStatus.status ===
+                    {subDetails.Subscription.subscriptionStatus.status ===
                       "Pending" && (
                       <>
                         <TouchableOpacity
@@ -427,7 +427,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     )}
                   </View>
                 )}
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Pending" && (
                   <>
                     <TouchableOpacity
@@ -441,7 +441,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                   </>
                 )}
-                {subDetails.Subscription.subcriptionStatus.status ===
+                {subDetails.Subscription.subscriptionStatus.status ===
                   "Current" && (
                   <>
                     <TouchableOpacity

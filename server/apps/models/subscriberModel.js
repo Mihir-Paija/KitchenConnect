@@ -102,7 +102,7 @@ const subscriberSchema = new Schema(
       required: [true, "Please enter the number of tiffins"],
     },
     address: { type: String, required: [true, "Please enter the address"] },
-    subcriptionStatus: {
+    subscriptionStatus: {
       type: subcriptionStatusSchema,
       required: [true, "Please enter the subscription status"],
     },
