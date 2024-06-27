@@ -14,6 +14,7 @@ import { firebaseAdmin } from "./utils/firebaseAdmin.js";
 // Call the connectToDB function
 connectDB();
 firebaseAdmin();
+
 // Create an Express application
 const app = express();
 export const server = createServer(app);

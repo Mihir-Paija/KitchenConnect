@@ -11,7 +11,6 @@ import CreateSubModal from './createSubModal';
 import EditSubModal from './editSubModal';
 import { deleteSubscription, editSub } from '../../utils/provider/subscriptionAPI';
 
-
 const TiffinSubscriptionScreen = ({ route, navigation}) => {
   const {tiffin} = route.params
   const [subscriptions, setSubscriptions] = useState([])
@@ -57,9 +56,12 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
         return;
         //stop going from finally
       }
+      console.log(newSubscription)
       const response = await addSubscription(authState.authToken, tiffin.id, newSubscription)
 
     } catch (error) {
+      console.log('Error in Creating Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
       
     } finally{
       setLoading(false)
@@ -84,7 +86,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
       const response = await editSub(authState.authToken, tiffinID, sub);
       
     } catch (error) {
-      
+      console.log('Error in Editing Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
     }
     finally{
       setLoading(false);
@@ -119,7 +122,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
       const tiffinID = tiffin.id;
       const response = await deleteSubscription(authState.authToken, tiffinID, bodyData)
     } catch (error) {
-      
+      console.log('Error in Deleting Subscription ', error)
+      Alert.alert(error.message || 'An error occured! Please Try Again')
     }finally{
       setLoading(false)
       setRefresh(!refresh);
@@ -142,6 +146,8 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
           title= {item.title}
           price={item.price}
           days={item.days}
+          deliveryCharge={item.deliveryCharge}
+          discount={item.discount}
           description={item.description}
           onEdit={() =>openEditModal(item)}/>
         )}
@@ -154,6 +160,7 @@ const TiffinSubscriptionScreen = ({ route, navigation}) => {
        isVisible={createModal}
        onClose={toggleCreateModal}
        onCreate={handleCreate} 
+       tiffin={tiffin}
       />
       : null}
 

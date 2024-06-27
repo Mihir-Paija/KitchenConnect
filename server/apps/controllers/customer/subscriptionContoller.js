@@ -273,6 +273,8 @@ export const subscriptionsGet = async (req, res) => {
           });
         }
 
+        console.log(sub)
+
         return {
           // subscriptionPlan: {
           //   subscriptionPlanTittle: subscriptionPlanData.title,

@@ -140,7 +140,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         { fontSize: windowWidth * 0.045, textAlign: "center" },
                       ]}
                     >
-                      You have cancelled this subscription of [date].
+                      You have cancelled this subscription on [date].
                     </Text>
                   </View>
                 )}
@@ -313,7 +313,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         subDetails.Subscription.customerPaymentBreakdown
                           .perOrderPrice
                       }{" "}
-                      {subscription.status === "completed" ? "was" : "will be"}{" "}
+                      {subDetails.Subscription.subscriptionStatus.status === "completed" ? "was" : "will be"}{" "}
                       automatically deducted from your wallet for each tiffin
                       received.
                     </Text>
@@ -449,7 +449,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       onPress={handleSubmitBtn}
                     >
                       <Text style={styles.submitText}>
-                        Cancle Subscription
+                        Cancel Subscription
                         {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
                       </Text>
                     </TouchableOpacity>

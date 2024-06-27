@@ -1,4 +1,4 @@
-import subscriber from "../../models/subscriberModel.js";
+import Subscriber from "../../models/subscriberModel.js";
 import tiffins from "../../models/tiffinModel.js";
 import subscription from "../../models/subscriptionModel.js";
 import mongoose from 'mongoose';
@@ -27,7 +27,7 @@ export const getSubscribers = async (req, res) => {
             }
         }
 
-        const subscribers = await subscriber.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
         
         const active = [];
         const pending = [];
@@ -51,31 +51,25 @@ export const getSubscribers = async (req, res) => {
                   formattedEndDate: formatDate(new Date(subscriberData.endDate)),
                 };
         
-                if ((new Date(subscriberData.endDate) < currentDate && subscriberData.status === 'Current') || subscriberData.status === 'Cancelled') {
+                if ((new Date(subscriberData.endDate) < currentDate && subscriberData.subscriptionStatus.status === 'Current') || subscriberData.subscriptionStatus.status === 'Cancelled') {
                   completed.push(formattedSubscriber);
                 }
-                else if (subscriberData.status === 'Current') {
+                else if (subscriberData.subscriptionStatus.status === 'Current') {
                     tiffinSet.add(formattedSubscriber.tiffinName)
                   active.push(formattedSubscriber);
-                } else if (subscriberData.status === 'Pending') {
+                } else if (subscriberData.subscriptionStatus.status === 'Pending') {
                   pending.push(formattedSubscriber);
                 }
-            }
-
-            const tiffins = Array.from(tiffinSet)
-
-            return res.status(200).send({
-                active: active,
-                pending: pending,
-                completed: completed,
-                tiffins: tiffins
-            })
+            }         
         }
+
+        const tiffinArray = Array.from(tiffinSet)
 
         return res.status(200).send({
                 active: active,
                 pending: pending,
                 completed: completed,
+                tiffins: tiffinArray
             })
     } catch (error) {
         console.log('Error in Fetching Subscribers ', error);
@@ -90,16 +84,17 @@ export const decideStatus = async (req, res) => {
         const { subscriptionID } = req.params;
         console.log(subscriptionID)
         const { status, comments } = req.body
+        console.log(status)
 
-        const current = await subscriber.findById(subscriptionID)
+        const current = await Subscriber.findById(subscriptionID)
 
         if (!current)
             return res.status(404).send({
                 message: `Subscriber Not Found`
             })
 
-        current.status = status;
-        current.comments = comments ? comments : null
+        current._doc.subscriptionStatus.status = status;
+        current._doc.subscriptionStatus.comments = comments ? comments : null
 
         await current.save();
 
@@ -109,7 +104,7 @@ export const decideStatus = async (req, res) => {
     } catch (error) {
         console.log('Error in Deciding Status ', error);
         return res.status(500).send({
-            messaeg: `Internal Server Error`
+            message: `Internal Server Error`
         })
     }
 }

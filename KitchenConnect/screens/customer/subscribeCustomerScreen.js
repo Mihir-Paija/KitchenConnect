@@ -137,7 +137,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     ).toFixed(2)
   );
   const updatedDiscountProvider = parseFloat(
-    (((price.kitchenDiscount || 0) * updatedSubscriptionPrice) / 100).toFixed(2)
+    ((price.kitchenDiscount || 0) * updatedSubscriptionPrice/100).toFixed(2)
   );
   const updatedTotalCustomer = parseFloat(
     (

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, price, onAccept, onReject, }) => {
+const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, kitchenPaymentBreakdown, onAccept, onReject, }) => {
     
     const handleAccept = () =>{
         console.log('Accepted')
@@ -15,11 +15,6 @@ const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinTyp
 
     const [totalPrice, setTotalPrice] = useState(0)
 
-    useEffect(() =>{
-        const grandTotal = ((price.tiffinPrice - price.discount) * noOfTiffins + price.deliveryCharge) 
-        setTotalPrice(grandTotal)
-    }, [])
-
 
     return (
         <View
@@ -30,7 +25,7 @@ const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinTyp
                 {tiffinName} - {tiffinType} x {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}
             </Text>
             <Text style={styles.detail}>Customer: {customerName}</Text>
-            <Text style={styles.detail}>Price: ₹{totalPrice}</Text>
+            <Text style={styles.detail}>Price: ₹{kitchenPaymentBreakdown.total}</Text>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>
