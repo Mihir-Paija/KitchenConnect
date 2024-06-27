@@ -9,13 +9,19 @@ import React from "react";
 
 import { windowWidth, windowHeight } from "@utils/dimensions";
 
-const SubmitButton = ({ btnTitle, handleSubmitBtn, loading, style }) => {
+const SubmitButton = ({
+  btnTitle,
+  handleSubmitBtn,
+  loading,
+  style,
+  txtStyle,
+}) => {
   return (
     <TouchableOpacity
       style={[styles.submitButton, style]}
       onPress={handleSubmitBtn}
     >
-      <Text style={styles.submitText}>
+      <Text style={[styles.submitText, txtStyle]}>
         {loading ? "Please Wait..." : btnTitle}
       </Text>
     </TouchableOpacity>
@@ -34,6 +40,8 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.75,
     height: windowHeight * 0.06,
     alignSelf: "center",
+    alignItems: "center",
+    alignContent: "center",
   },
   submitText: {
     color: "#fff",

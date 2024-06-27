@@ -192,7 +192,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     wantDelivery,
     noOfTiffins,
     address: "123 Main St, City, State, ZIP",
-    subcriptionStatus: { status: "Pending" },
+    subscriptionStatus: { status: "Pending" },
     price,
     customerPaymentBreakdown,
     kitchenPaymentBreakdown,

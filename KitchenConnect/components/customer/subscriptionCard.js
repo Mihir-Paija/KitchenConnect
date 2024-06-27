@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
-
-const SubscriptionCard = ({ onPress, subscriptionItem }) => {
+import SubmitButton from "../../components/shared/forms/submitButton";
+import RightButton from "../../components/shared/RightButton";
+const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
   // const navScreen = subscriptionItem.type + "SubScreen";
   // console.log(subscriptionItem);
   const renderStatusMessage = (status) => {
@@ -23,7 +24,8 @@ const SubscriptionCard = ({ onPress, subscriptionItem }) => {
   );
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card}>
+    <View style={styles.card}>
+      {/* <TouchableOpacity onPress={onPress} style={styles.card}> */}
       <View style={styles.SubBox}>
         <Text style={styles.subText}>
           {subscriptionItem.subscriptionPlanData.title}
@@ -80,13 +82,34 @@ const SubscriptionCard = ({ onPress, subscriptionItem }) => {
           </View>
         </View>
 
+        {/* <TouchableOpacity style={styles.btnBox} onPress={orderHandler}>
+          <Text style={styles.submitTextStyle}>View Order</Text>
+          <RightButton />
+        </TouchableOpacity> */}
+
+        <View style={styles.btnBox}>
+          <SubmitButton
+            btnTitle={"View Orders"}
+            style={styles.orderBtnStyle}
+            txtStyle={styles.orderBtnTextStyle}
+            handleSubmitBtn={orderHandler}
+          />
+          <SubmitButton
+            btnTitle={"View Details"}
+            style={styles.detailsBtnStyle}
+            txtStyle={styles.detailsBtnTextStyle}
+            handleSubmitBtn={onPress}
+          />
+        </View>
+
         {statusMessage && (
           <View style={styles.statusBox}>
             <Text style={styles.statusText}>{statusMessage}</Text>
           </View>
         )}
       </View>
-    </TouchableOpacity>
+      {/* </TouchableOpacity> */}
+    </View>
   );
 };
 
@@ -222,6 +245,43 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: windowWidth * 0.035,
     fontFamily: "NunitoRegular",
+  },
+  btnBox: {
+    // backgroundColor: "#afff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: windowHeight * 0.005,
+    paddingVertical: windowHeight * 0.01,
+    borderColor: "#ccc",
+    borderTopWidth: windowWidth * 0.0015,
+    // borderBottomWidth: windowWidth * 0.0015,
+  },
+  orderBtnStyle: {
+    marginBottom: 0,
+    marginTop: 0,
+    width: windowWidth * 0.4,
+    height: windowHeight * 0.04,
+    backgroundColor: "#ffff",
+    borderColor: "#ffa500",
+    borderWidth: 1,
+  },
+  orderBtnTextStyle: {
+    // color: "#3C3636",
+    color: "#ffa500",
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
+  },
+  detailsBtnStyle: {
+    marginBottom: 0,
+    marginTop: 0,
+    width: windowWidth * 0.4,
+    height: windowHeight * 0.04,
+    borderColor: "#ffa500",
+    borderWidth: 1,
+  },
+  detailsBtnTextStyle: {
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
   },
 });
 

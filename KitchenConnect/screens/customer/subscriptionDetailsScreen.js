@@ -31,7 +31,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   // const customerID = authState.authData.
   const subscription = route.params.subscription;
   const subscriptionID = route.params.subscriptionID;
-  console.log("subscriptionID", subscriptionID);
+  // console.log("subscriptionID", subscriptionID);
 
   //state
   const [loading, setLoading] = useState(true);
@@ -40,11 +40,11 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   //functions
   const fetchSubDetails = async (subscriptionID) => {
     try {
-      console.log("hi");
+      // console.log("hi");
       const response = await getSubscriptionDetailsCustomer(subscriptionID);
       // console.log(response);
       setSubDetails(response.data);
-      console.log("response data", response.data);
+      // console.log("response data", response.data);
     } catch (error) {
       console.error("Failed to fetch sub details customer:", error);
     } finally {

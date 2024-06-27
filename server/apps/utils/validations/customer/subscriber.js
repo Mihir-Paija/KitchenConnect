@@ -23,7 +23,7 @@ const subscriberJoiSchema = Joi.object({
   address: Joi.string().required().messages({
     "any.required": "Please enter the address",
   }),
-  subcriptionStatus: Joi.object({
+  subscriptionStatus: Joi.object({
     status: Joi.string()
       .valid("Current", "Pending", "Rejected", "Cancelled")
       .required()
