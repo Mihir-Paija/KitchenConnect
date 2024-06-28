@@ -26,7 +26,9 @@ const KitchenComponent = ({
       <View style={styles.kitchenContent}>
         <View style={styles.content}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <Text style={styles.subtitle} numberOfLines={1} ellipsizeMode="tail">
+            {subtitle}
+          </Text>
         </View>
         <View style={styles.rightSideBox}>
           <RatingComponent rating={rating} />
