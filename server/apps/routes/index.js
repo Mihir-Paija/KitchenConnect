@@ -41,6 +41,10 @@ router.use("/customer/subscriptionDetail", subscriptionDetailsRouter);
 import subscriptionsRouter from "./customer/subscribeRouter.js";
 router.use("/customer/subscription", subscriptionsRouter);
 
+//OrderRouter -> customer (POST)
+import OrderRouter from "./customer/orderRouter.js";
+router.use("/customer/order", OrderRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
@@ -56,8 +60,7 @@ router.use("/provider/subscription", subscriptionRouter);
 router.use("/provider/subscriber", subscriberRouter);
 router.use("/provider/order", orderRouter);
 
-
 import { walletRouter } from "./shared/walletRouter.js";
-router.use('/wallet', walletRouter)
+router.use("/wallet", walletRouter);
 
 export default router;

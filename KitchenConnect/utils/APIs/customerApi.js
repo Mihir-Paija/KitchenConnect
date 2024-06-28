@@ -138,3 +138,18 @@ export const getSubscriptionsList = async (customerID) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+// customer -> placeOrder : POST
+export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/order/${customerID}/${kitchenID}/${tiffinID}/`,
+      bodyData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error placeOrder POST Customer API:", error);
+    console.error("Error placeOrder POST Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
+  }
+};

@@ -165,7 +165,7 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
 
   // render flatlist item
   const renderItem = ({ item }) => {
-    KitchenData = { kitchenName: kitchen.kitchenName };
+    KitchenData = { kitchenID: kitchen._id, kitchenName: kitchen.kitchenName };
     return (
       <TiffinComponent
         title={item.name}

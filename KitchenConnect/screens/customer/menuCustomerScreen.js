@@ -91,6 +91,13 @@ const MenuCustomerScreen = ({ navigation, route }) => {
   const { tiffin, kitchen } = route.params;
 
   const [authState, setAuthState] = useContext(AuthContext);
+
+  //customerData
+  const customerData = {
+    customerID: authState.authData._id,
+    customerName: authState.authData.name,
+  };
+
   //states
   const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState("Mon");
@@ -187,6 +194,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                   <OrderModalCustomer
                     kitchen={kitchen}
                     tiffin={tiffin}
+                    customerData={customerData}
                     navigation={navigation}
                     visible={orderModalVisible}
                     setVisible={setOrderModalVisible}

@@ -21,7 +21,7 @@ import { windowHeight, windowWidth } from "@/utils/dimensions";
 import foodTypeIcon from "@/utils/foodTypeIconPath";
 import CheckBox from "react-native-check-box";
 import SubmitButton from "../shared/forms/submitButton";
-
+import { placeOrder } from "../../utils/APIs/customerApi";
 // Mapping object
 const foodTypeMapping = {
   Veg: "Veg",
@@ -34,17 +34,17 @@ const foodTypeMapping = {
 const OrderModalCustomer = ({
   kitchen,
   tiffin,
+  customerData,
   navigation,
   visible,
   setVisible,
   onClose,
 }) => {
-  //   console.log(tiffin);
   const iconKey = foodTypeMapping[tiffin.foodType];
   const iconData = foodTypeIcon[iconKey];
 
   // states
-  const [numberOfTiffins, setNumberOfTiffins] = useState(1);
+  const [noOfTiffins, setNumberOfTiffins] = useState(1);
   const [tiffinPrice, setTiffinPrice] = useState(
     tiffin && tiffin.price ? parseFloat(tiffin.price.toFixed(2)) : 0
   );
@@ -59,51 +59,94 @@ const OrderModalCustomer = ({
   const discount = tiffin && tiffin.discount ? parseFloat(tiffin.discount) : 10;
 
   // Calculate prices
-  const commission = 0.02;
-  const updatedTiffinPrice = parseFloat(
-    (numberOfTiffins * tiffinPrice).toFixed(2)
+  const price = {
+    tiffinPrice: tiffin.price,
+    deliveryCharge: tiffin.deliveryDetails.deliveryCharge,
+    platformCommission: 0.02,
+    GST_on_tiffin: 0.05,
+    GST_on_service: 0.18,
+    serviceDiscount: 0,
+    kitchenDiscount: 0,
+  };
+
+  const updatedOrderPrice = parseFloat(
+    (noOfTiffins * price.tiffinPrice).toFixed(2)
   );
   const updatedServicePrice = parseFloat(
-    (commission * updatedTiffinPrice).toFixed(2)
+    (price.platformCommission * updatedOrderPrice).toFixed(2)
   );
-  const updatedTaxPrice = parseFloat(
-    (0.05 * updatedTiffinPrice + 0.18 * updatedServicePrice).toFixed(2)
-  );
-  const updatedDeliveryCharge = wantDelivery ? deliveryCharge : 0;
-  const updatedDiscount = discount || 0;
-  const updatedTotal = parseFloat(
+  const updatedTaxPriceCustomer = parseFloat(
     (
-      updatedTiffinPrice +
+      price.GST_on_tiffin * updatedOrderPrice +
+      price.GST_on_service * updatedServicePrice
+    ).toFixed(2)
+  );
+  const updatedTaxPriceProvider = parseFloat(
+    (
+      price.GST_on_tiffin * updatedOrderPrice -
+      price.GST_on_service * updatedServicePrice
+    ).toFixed(2)
+  );
+  const updatedDeliveryCharge = wantDelivery ? price.deliveryCharge : 0;
+  const updatedDiscountCustomer = parseFloat(
+    (
+      ((price.serviceDiscount || 0) + (price.kitchenDiscount || 0)) *
+      updatedOrderPrice
+    ).toFixed(2)
+  );
+  const updatedDiscountProvider = parseFloat(
+    ((price.kitchenDiscount || 0) * updatedOrderPrice).toFixed(2)
+  );
+  const updatedTotalCustomer = parseFloat(
+    (
+      updatedOrderPrice +
       updatedServicePrice +
-      updatedTaxPrice +
+      updatedTaxPriceCustomer +
       updatedDeliveryCharge -
-      updatedDiscount
+      updatedDiscountCustomer
+    ).toFixed(2)
+  );
+  const updatedTotalProvider = parseFloat(
+    (
+      updatedOrderPrice -
+      updatedServicePrice +
+      updatedTaxPriceProvider +
+      updatedDeliveryCharge -
+      updatedDiscountProvider
     ).toFixed(2)
   );
 
   // Payment breakdown JSON data
-  const paymentBreakdown = {
-    tiffinPrice: updatedTiffinPrice,
-    servicePrice: updatedServicePrice,
-    taxPrice: updatedTaxPrice,
+  const customerPaymentBreakdown = {
+    orderPrice: updatedOrderPrice,
+    platformCharge: updatedServicePrice,
+    tax: updatedTaxPriceCustomer,
     deliveryCharge: updatedDeliveryCharge,
-    discount: updatedDiscount,
-    total: updatedTotal,
+    discount: updatedDiscountCustomer,
+    total: updatedTotalCustomer,
+  };
+  const kitchenPaymentBreakdown = {
+    orderPrice: updatedOrderPrice,
+    platformCharge: updatedServicePrice,
+    tax: updatedTaxPriceProvider,
+    deliveryCharge: updatedDeliveryCharge,
+    discount: updatedDiscountProvider,
+    total: updatedTotalProvider,
   };
 
   //function
   const plusTiffin = () => {
-    setNumberOfTiffins(numberOfTiffins + 1);
+    setNumberOfTiffins(noOfTiffins + 1);
   };
 
   const minusTiffin = () => {
-    if (numberOfTiffins > 1) setNumberOfTiffins(numberOfTiffins - 1);
+    if (noOfTiffins > 1) setNumberOfTiffins(noOfTiffins - 1);
   };
 
   // Update tiffin price when number of tiffins changes
   //   useEffect(() => {
-  //     setTiffinPrice(parseFloat((numberOfTiffins * tiffinPrice).toFixed(2)));
-  //   }, [numberOfTiffins]);
+  //     setTiffinPrice(parseFloat((noOfTiffins * tiffinPrice).toFixed(2)));
+  //   }, [noOfTiffins]);
 
   useEffect(() => {
     if (visible) {
@@ -116,9 +159,27 @@ const OrderModalCustomer = ({
   }, [visible]);
 
   const handleSubmitBtn = () => {
-    console.log("click on submit");
-    console.log(JSON.stringify(paymentBreakdown, null, 2));
-    () => onClose();
+    //priamry IDs
+    const customerID = customerData.customerID;
+    const kitchenID = kitchen.kitchenID;
+    const tiffinID = tiffin._id;
+    // console.log({ customerID, kitchenID, tiffinID });
+    //body Data
+    const bodyData = {
+      customerName: customerData.customerName,
+      orderDate: new Date().toISOString(),
+      wantDelivery,
+      noOfTiffins,
+      address: "123 Main St, City, State, ZIP",
+      status: "Pending",
+      price,
+      customerPaymentBreakdown,
+      kitchenPaymentBreakdown,
+    };
+    // console.log("click on submit");
+    // console.log(bodyData);
+    placeOrder(customerID, kitchenID, tiffinID, bodyData);
+    onClose();
   };
 
   return (
@@ -166,7 +227,7 @@ const OrderModalCustomer = ({
                   style={styles.icon}
                   onPress={minusTiffin}
                 />
-                <Text style={styles.noTiffins}>{numberOfTiffins}</Text>
+                <Text style={styles.noTiffins}>{noOfTiffins}</Text>
                 <Icon
                   name="plus"
                   type="AntDesign"
@@ -180,14 +241,14 @@ const OrderModalCustomer = ({
             <Text style={styles.sectionTitleTxt}>Payment Details</Text>
             <View style={styles.paymentLineBox}>
               <Text style={styles.paymentTxt}>Tiffin Price : </Text>
-              <Text style={styles.paymentValueTxt}>
-                {" "}
-                ₹ {updatedTiffinPrice}
-              </Text>
+              <Text style={styles.paymentValueTxt}> ₹ {updatedOrderPrice}</Text>
             </View>
             <View style={styles.paymentLineBox}>
               <Text style={styles.paymentTxt}>GST :</Text>
-              <Text style={styles.paymentValueTxt}> ₹ {updatedTaxPrice}</Text>
+              <Text style={styles.paymentValueTxt}>
+                {" "}
+                ₹ {updatedTaxPriceCustomer}
+              </Text>
             </View>
             <View style={styles.paymentLineBox}>
               <Text style={styles.paymentTxt}>Platform Charge :</Text>
@@ -196,12 +257,12 @@ const OrderModalCustomer = ({
                 ₹ {updatedServicePrice}
               </Text>
             </View>
-            {updatedDiscount > 0 && (
+            {updatedDiscountCustomer > 0 && (
               <View style={styles.paymentLineBox}>
                 <Text style={styles.paymentTxt}>Discount :</Text>
                 <Text style={styles.paymentValueTxt}>
                   {" "}
-                  - ₹ {updatedDiscount}
+                  - ₹ {updatedDiscountCustomer}
                 </Text>
               </View>
             )}
@@ -225,7 +286,10 @@ const OrderModalCustomer = ({
               ]}
             >
               <Text style={styles.paymentTxt}>Grand Total:</Text>
-              <Text style={styles.paymentValueTxt}> ₹ {updatedTotal}</Text>
+              <Text style={styles.paymentValueTxt}>
+                {" "}
+                ₹ {updatedTotalCustomer}
+              </Text>
             </View>
 
             {tiffin.deliveryDetails.availability && (
@@ -293,8 +357,8 @@ const OrderModalCustomer = ({
             ]}
           >
             <Text style={[styles.paymentTxt, { fontSize: windowWidth * 0.04 }]}>
-              ₹ {updatedTotal} will be automatically deducted from your wallet
-              when you receive tiffin.
+              ₹ {updatedTotalCustomer} will be automatically deducted from your
+              wallet when you receive tiffin.
             </Text>
           </View>
           <SubmitButton
