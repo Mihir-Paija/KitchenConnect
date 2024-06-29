@@ -45,6 +45,18 @@ router.use("/customer/subscription", subscriptionsRouter);
 import OrderRouter from "./customer/orderRouter.js";
 router.use("/customer/order", OrderRouter);
 
+//OrderRouter -> customer (GET)
+import OrderListRouter from "./customer/orderRouter.js";
+router.use("/customer/order", OrderListRouter);
+
+//OrderDetailsRouter -> customer (GET)
+import OrderDetailsRouter from "./customer/getOrderDetails.js";
+router.use("/customer/orderDetails", OrderDetailsRouter);
+
+//profileRouter -> customer (PATCH)
+import profileCustomerRouter from "./customer/profileRoute.js";
+router.use("/customer/profile", profileCustomerRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";

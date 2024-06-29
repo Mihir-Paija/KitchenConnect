@@ -17,6 +17,7 @@ import ProfileInputBox from "@/components/shared/profileInputBox";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
+import { updateProfileCustomer } from "../../utils/APIs/customerApi";
 
 const ProfileDetailsCustomerScreen = ({ navigation }) => {
   const [authState, setAuthState] = useContext(AuthContext);
@@ -54,6 +55,12 @@ const ProfileDetailsCustomerScreen = ({ navigation }) => {
   const handleUpdateProfile = () => {
     // Update profile logic
     console.log("Profile updated");
+    const customerID = authState.authData._id;
+    //body data
+    const bodyData = {
+      name,
+    };
+    updateProfileCustomer(customerID, bodyData);
   };
 
   return (
@@ -90,7 +97,7 @@ const ProfileDetailsCustomerScreen = ({ navigation }) => {
                 onChangeText={setMobile}
                 placeholder="Mobile"
                 keyboardType="phone-pad"
-                showChange={true}
+                // showChange={true}
                 onChangePress={() => console.log("Change mobile")}
               />
 
@@ -99,7 +106,7 @@ const ProfileDetailsCustomerScreen = ({ navigation }) => {
                 onChangeText={setEmail}
                 placeholder="Email"
                 keyboardType="email-address"
-                showChange={true}
+                // showChange={true}
                 onChangePress={() => console.log("Change email")}
               />
               <TouchableOpacity

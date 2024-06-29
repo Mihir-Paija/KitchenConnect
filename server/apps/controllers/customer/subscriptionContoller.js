@@ -254,7 +254,10 @@ export const subscriptionsGet = async (req, res) => {
           });
         }
 
-        const kitchenData = await provider.findById(sub.kitchenID, "name");
+        const kitchenData = await provider.findById(
+          sub.kitchenID,
+          "kitchenName"
+        );
         if (!kitchenData) {
           return res.status(404).json({
             error: "Not Found",
@@ -273,7 +276,7 @@ export const subscriptionsGet = async (req, res) => {
           });
         }
 
-        console.log(sub)
+        console.log(sub);
 
         return {
           // subscriptionPlan: {
