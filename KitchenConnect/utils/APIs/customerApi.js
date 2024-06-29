@@ -154,7 +154,7 @@ export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
   }
 };
 
-// customer -> placeOrder : POST
+// customer -> OrderList : GET
 export const getOrderList = async (customerID) => {
   try {
     const response = await axios.get(
@@ -168,9 +168,26 @@ export const getOrderList = async (customerID) => {
   }
 };
 
+// customer -> orderDetails : GET
+export const getOrderDetails = async (orderID) => {
+  try {
+    // console.log("got it");
+
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/orderDetails/${orderID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getOrderDetails Customer API:", error);
+    console.error("Error getOrderDetails Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
 // customer -> updateProfileCustomer : PATCH
 export const updateProfileCustomer = async (customerID, bodyData) => {
   try {
+    // console.log("got it");
     const response = await axios.patch(
       `${API_BASE_URL}/customer/profile/details/${customerID}`,
       bodyData

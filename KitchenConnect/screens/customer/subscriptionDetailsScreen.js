@@ -148,7 +148,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <View style={styles.kitchenBox}>
                   <View style={styles.kitchenContentBox}>
                     <Text style={styles.providerName}>
-                      {subDetails.Kitchen.name}
+                      {subDetails.Kitchen.kitchenName}
                     </Text>
                     <Text style={styles.tiffinName}>
                       {subDetails.Tiffin.name}
@@ -313,7 +313,10 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                         subDetails.Subscription.customerPaymentBreakdown
                           .perOrderPrice
                       }{" "}
-                      {subDetails.Subscription.subscriptionStatus.status === "completed" ? "was" : "will be"}{" "}
+                      {subDetails.Subscription.subscriptionStatus.status ===
+                      "completed"
+                        ? "was"
+                        : "will be"}{" "}
                       automatically deducted from your wallet for each tiffin
                       received.
                     </Text>

@@ -25,7 +25,9 @@ const OrderCard = ({ orderItem, onPress }) => {
       <View style={[styles.contentBox, { paddingBottom: windowHeight * 0.01 }]}>
         <View style={styles.titleDetails}>
           <Image source={iconData.path} style={iconData.foodTypeStyle} />
-          <Text style={styles.kitchenName}>{orderItem.Kitchen.name}</Text>
+          <Text style={styles.kitchenName}>
+            {orderItem.Kitchen.kitchenName}
+          </Text>
           <Text style={styles.tiffinName}>
             {orderItem.order.noOfTiffins > 1 &&
               orderItem.order.noOfTiffins + " x "}{" "}

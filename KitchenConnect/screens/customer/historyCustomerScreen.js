@@ -58,7 +58,7 @@ const HistoryCustomerScreen = ({ navigation }) => {
       const response = await getOrderList(customerID);
       // console.log(response);
       setOrderList(response.data);
-      console.log("response data", response.data);
+      // console.log("response data", response.data);
     } catch (error) {
       console.error("Failed to fetch order List customer:", error);
     } finally {
@@ -73,7 +73,8 @@ const HistoryCustomerScreen = ({ navigation }) => {
   const cardHandler = (Order) => {
     // console.log("subscriptionID from list : ", subscription.Subscription._id);
     navigation.navigate("OrderDetailsCustomer", {
-      Order,
+      OrderID: Order.order._id,
+      Tiffin: Order.Tiffin,
     });
   };
 

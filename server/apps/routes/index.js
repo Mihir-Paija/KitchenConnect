@@ -49,6 +49,10 @@ router.use("/customer/order", OrderRouter);
 import OrderListRouter from "./customer/orderRouter.js";
 router.use("/customer/order", OrderListRouter);
 
+//OrderDetailsRouter -> customer (GET)
+import OrderDetailsRouter from "./customer/getOrderDetails.js";
+router.use("/customer/orderDetails", OrderDetailsRouter);
+
 //profileRouter -> customer (PATCH)
 import profileCustomerRouter from "./customer/profileRoute.js";
 router.use("/customer/profile", profileCustomerRouter);

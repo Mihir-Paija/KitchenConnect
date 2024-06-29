@@ -50,7 +50,7 @@ const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
             />
             <View style={styles.titleContent}>
               <Text style={styles.providerName}>
-                {subscriptionItem.Kitchen.name}
+                {subscriptionItem.Kitchen.kitchenName}
               </Text>
               <Text style={styles.tiffinName}>
                 {subscriptionItem.Tiffin.name}
