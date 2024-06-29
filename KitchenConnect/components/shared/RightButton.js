@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
-import Icon from "react-native-vector-icons/FontAwesome5";
+import Icon from "react-native-vector-icons/FontAwesome6";
 
-const RightButton = ({ onPress }) => {
+const RightButton = ({ onPress, iconStyle }) => {
   return (
     <Icon
       name="chevron-right"
-      type="FontAwesome5"
-      style={styles.downButton}
+      type="FontAwesome6"
+      style={[styles.downButton, iconStyle]}
       onPress={onPress}
     />
   );

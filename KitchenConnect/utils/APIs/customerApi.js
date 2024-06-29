@@ -153,3 +153,35 @@ export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+// customer -> placeOrder : POST
+export const getOrderList = async (customerID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/order/${customerID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getOrderList Customer API:", error);
+    console.error("Error getOrderList Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
+// customer -> updateProfileCustomer : PATCH
+export const updateProfileCustomer = async (customerID, bodyData) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/customer/profile/details/${customerID}`,
+      bodyData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updateProfileCustomer PATCH Customer API:", error);
+    console.error(
+      "Error updateProfileCustomer PATCH Customer API:",
+      error.message
+    );
+    throw error.response ? error.response.data : error.message;
+  }
+};

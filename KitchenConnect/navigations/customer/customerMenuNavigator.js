@@ -8,7 +8,7 @@ import HistoryCustomerScreen from "../../screens/customer/historyCustomerScreen"
 import SubscriptionCustomerScreen from "../../screens/customer/subscriptionCustomerScreen";
 import HomeCustomerNavigator from "./customerHomeNavigator";
 import SubscriptionCustomerNavigator from "./subscriptionNavigator";
-
+import OrderDetailsScreen from "../../screens/customer/orderDetailsScreen";
 const menuStack = createStackNavigator();
 
 const CustomerMenuNavigator = ({ route }) => {
@@ -41,6 +41,11 @@ const CustomerMenuNavigator = ({ route }) => {
       <menuStack.Screen
         name="HistoryCustomer"
         component={HistoryCustomerScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <menuStack.Screen
+        name="OrderDetailsCustomer"
+        component={OrderDetailsScreen}
         options={{ presentation: "transparentModal" }}
       />
       <menuStack.Screen

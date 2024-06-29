@@ -105,3 +105,72 @@ export const placeOrder = async (req, res) => {
     });
   }
 };
+
+export const orderListGet = async (req, res) => {
+  try {
+    const { customerID } = req.params;
+    if (!customerID) {
+      return res.status(404).send({
+        error: "Invalid URL",
+        message: "customerID missing in pramas",
+      });
+    }
+
+    //   Check if _id is a valid ObjectId
+
+    if (!ObjectId.isValid(customerID)) {
+      return res.status(400).json({
+        error: "Invalid customerID",
+        message: "The provided customerID is not a valid MongoDB ObjectId",
+      });
+    }
+
+    const orderList = await order.find({ customerID });
+
+    if (!orderList) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "orderList not found",
+      });
+    }
+
+    const detailedOrderList = await Promise.all(
+      orderList.map(async (order) => {
+        const kitchenData = await provider.findById(order.kitchenID, "name");
+        if (!kitchenData) {
+          return res.status(404).json({
+            error: "Not Found",
+            message: "Kitchen not found",
+          });
+        }
+
+        const tiffinData = await tiffins.findById(
+          order.tiffinID,
+          "name foodType tiffinType time deliveryDetails"
+        );
+        if (!tiffinData) {
+          return res.status(404).json({
+            error: "Not Found",
+            message: "Tiffin not found",
+          });
+        }
+
+        return {
+          order,
+          Kitchen: kitchenData,
+          Tiffin: tiffinData,
+        };
+      })
+    );
+
+    // console.log(detailedOrderList);
+    return res.status(200).json(detailedOrderList);
+  } catch (error) {
+    console.log("Error in Fetching orderList ", error);
+
+    return res.status(500).send({
+      error: `Internal Server Error in GET orderList`,
+      message: error.message,
+    });
+  }
+};
