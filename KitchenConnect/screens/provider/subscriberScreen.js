@@ -207,9 +207,9 @@ const SubscriberScreen = ({ navigation }) => {
     } else if (sortCriteria === "edd") {
       sortedSubscribers.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
     } else if (sortCriteria === "priceLTH") {
-      sortedSubscribers.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      sortedSubscribers.sort((a, b) => parseFloat(a.kitchenPaymentBreakdown.total) - parseFloat(b.kitchenPaymentBreakdown.total));
     } else if (sortCriteria === "priceHTL") {
-      sortedSubscribers.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      sortedSubscribers.sort((a, b) => parseFloat(b.kitchenPaymentBreakdown.total) - parseFloat(a.kitchenPaymentBreakdown.total));
     } else if (sortCriteria === "tiffinsLTH") {
       sortedSubscribers.sort((a, b) => parseFloat(a.noOfTiffins) - parseFloat(b.noOfTiffins));
     } else if (sortCriteria === "tiffinsHTL") {

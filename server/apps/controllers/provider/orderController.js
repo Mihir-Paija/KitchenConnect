@@ -88,7 +88,8 @@ export const getOrders = async (req, res) => {
         const lunch = [];
         const dinner = [];
         const currentDate = new Date()
-        currentDate.setHours(0, 0, 0, 0)
+        currentDate.setUTCHours(0, 0, 0, 0)
+        const updatedDate = currentDate.toISOString().replace('Z', '+00:00');
 
         function findTiffinIndex(arr, tiffinName) {
             return arr.findIndex(item => item.tiffinName === tiffinName);
@@ -126,7 +127,6 @@ export const getOrders = async (req, res) => {
                 }
 
                 if(isDateInArray(subscriptionStatus.providerOptedOut, currentDate)){
-                    console.log('True')
                     formattedSubscriber.providerOut = true
                     out = true;
                 }
@@ -292,16 +292,16 @@ export const optOut = async(req, res) =>{
         
 
         const {orders, type} = req.body;
-        console.log(orders)
 
         for (const order of orders){
             for(const value of order.orders){
             orderSet.add(value._id.toString())
         }}
+        console.log(orderSet)
         
         const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
         const currentDate = new Date();
-        currentDate.setHours(0,0,0,0)
+        currentDate.setUTCHours(0,0,0,0)
 
         const bulkOperations = [];
 
@@ -309,8 +309,12 @@ export const optOut = async(req, res) =>{
             const subscriberData = subscriber._doc
             const orderID = subscriberData._id.toString()
             if(orderSet.has(orderID)){
+                console.log(orderID)
+                console.log(orderSet)
                 subscriberData.subscriptionStatus.providerOptedOut.push(currentDate)
-                subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item) != currentDate())
+                console.log(subscriberData.subscriptionStatus.daysRemaining)
+                console.log(currentDate)
+                //subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item).toDateString !== new Date(currentDate).toDateString)
                 orderSet.delete(orderID)
 
                 bulkOperations.push({
@@ -335,12 +339,14 @@ export const optOut = async(req, res) =>{
             }
         }
 
-        const oneTimeorders = await order.find({ providerID: new mongoose.Types.ObjectId(userID) })
+        const oneTimeorders = await order.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
         const oneTimeOrdersBulkOperations = []
         for(const value of oneTimeorders){
             const orderID = value._id.toString()
+
             if(orderSet.has(orderID)){
+                
                 value.status = 'Rejected'
                 value.comments = 'Provider Opted Out'
                 orderSet.delete(orderID)

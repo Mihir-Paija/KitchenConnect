@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList,
 import {windowHeight, windowWidth} from '@/utils/dimensions'
 import { formatDate, formatTime } from '../../utils/formateDateTime';
 
-const OrderComponent = ({title, tiffinName, customerName, noOfTiffins, price, subscriberFirstName, subscriberLastName, wantDelivery, address, customerOut, providerOut, kitchenPaymentBreakdown, orderDate, onPress}) =>{
+const HistoryComponent = ({title, tiffinName, customerName, noOfTiffins, transactionID, subscriberFirstName, subscriberLastName, kitchenPaymentBreakdown, orderDate}) =>{
   const dayCount = {
     Weekly: 7,
     Fortnightly: 15,
@@ -27,24 +27,28 @@ const OrderComponent = ({title, tiffinName, customerName, noOfTiffins, price, su
           <Text style={styles.customer}>Customer: {customerName}</Text>
           <Text style={styles.amount}>Amount: ₹{kitchenPaymentBreakdown.total}</Text>
           </>}
-          <Text>Delivered On: {formatDate(orderDate)} at {formatTime(orderDate)}</Text>
+          <Text>TransacationID: {transactionID}</Text>
+          <Text style={styles.delivery}>Delivered On: {formatDate(orderDate)} at {formatTime(orderDate)}</Text>
+          
         </View>
       </View>
     </View>
   );
 }
 
-export default OrderComponent
+export default HistoryComponent
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
+    //flex: 1,
+    padding: 10,
+    paddingHorizontal: 20,
     paddingBottom: 2,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff', 
-    borderBottomWidth: 1
+    borderTopWidth: 1,
+    width: windowWidth 
   },
   itemContainer: {
     flexDirection: 'row',
@@ -78,6 +82,10 @@ const styles = StyleSheet.create({
   },
   amount:{
     fontSize: windowHeight * 0.018, 
+  },
+  delivery:{
+    marginTop: windowHeight*0.01,
+    fontSize: windowHeight *0.02,
   },
   address: {
     marginTop: windowHeight * 0.01,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, Alert, Touchable } from 'react-native';
 import { AuthContext } from "@/context/authContext";
+import { RefreshContext } from "@/context/refreshContext";
 import OrderHeader from '@/components/provider/orderHeader';
 import OrderComponent from '@/components/provider/orderComponent';
 import OrderCard from '@/components/provider/orderCard';
@@ -15,6 +16,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 const PreparationScreen = ({ navigation }) => {
   const [authState] = useContext(AuthContext)
   const [refresh, setRefresh] = useState(false)
+  const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [optVisible, setOptVisible] = useState(false)
@@ -44,7 +46,7 @@ const PreparationScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchOrders()
-  }, [, refresh])
+  }, [, globalRefresh, refresh])
 
   const generateOTP = async (item) => {
     const OTP = Math.floor(Math.random() * 9000) + 1000
@@ -103,6 +105,7 @@ const PreparationScreen = ({ navigation }) => {
 
   const handleOut = async (type) => {
     try {
+      setLoading(true)
       const bodyData = {
         orders: type === 'Lunch' ? lunch : dinner,
         type
@@ -112,6 +115,7 @@ const PreparationScreen = ({ navigation }) => {
 
       if (response && response.status === 200) {
         Alert.alert(`Opted Out of ${type} Orders`)
+        setRefresh(!refresh)
       }
 
       else {
@@ -121,6 +125,8 @@ const PreparationScreen = ({ navigation }) => {
     } catch (error) {
       console.log('Error in Opting Out Screen ', error)
       console.log(error.message || 'An Error Occured')
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -248,6 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 12,
     paddingBottom: 20,
+    marginBottom: 30,
   },
   view: {
     flex: 1,
@@ -255,14 +262,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   settings:{
-    position: 'absolute',
-    right: windowWidth * 0.07,
-    bottom: windowHeight * 0.05,
+    position: 'relative',
+    alignItems: 'flex-end',
+    marginBottom: windowHeight * 0.03,
+    marginLeft: windowWidth * 0.87,
+    //right: windowWidth * 0.07,
+    //bottom: windowHeight * 0.05,
     fontSize: windowHeight * 0.04,
   },
   btnView: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: 'relative',
+    alignItems: 'flex-end',
+    //marginTop: windowHeight * 0.3,
+    marginRight: windowWidth * 0.05,
+    //alignItems: 'center',
     marginBottom: windowHeight * 0.03,
   },
   btn: {

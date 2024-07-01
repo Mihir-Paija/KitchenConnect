@@ -23,6 +23,7 @@ const TiffinScreen = ({navigation}) => {
   const [isModal2Visible, setIsModal2Visible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false)
+  const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
   const [authState, setAuthState] = useContext(AuthContext);
   const [socket, setSocket] = useContext(SocketContext)
   const isFocused = useIsFocused();
@@ -153,7 +154,7 @@ const TiffinScreen = ({navigation}) => {
       const newSocket = connectSocket(authState.authToken, authState.authType)  
       setSocket(newSocket)  
     }
-  }, []);
+  }, [,globalRefresh, refresh]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
