@@ -87,6 +87,8 @@ export const getOrders = async (req, res) => {
 
         const lunch = [];
         const dinner = [];
+        const lunchAdresses = [];
+        const dinnerAdresses = [];
         const currentDate = new Date()
         currentDate.setUTCHours(0, 0, 0, 0)
         const updatedDate = currentDate.toISOString().replace('Z', '+00:00');
@@ -132,6 +134,10 @@ export const getOrders = async (req, res) => {
                 }
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
+                
+                if(subscriber._doc.wantDelivery){
+                    tiffinType === 'Lunch' ? lunchAdresses.push(subscriber._doc.address) : dinnerAdresses(subscriber._doc.address)
+                }
 
                 const index = findTiffinIndex(arr, tiffinName);
 
@@ -172,6 +178,10 @@ export const getOrders = async (req, res) => {
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
 
+                if(value._doc.wantDelivery){
+                    tiffinType === 'Lunch' ? lunchAdresses.push(value._doc.address) : dinnerAdresses(value._doc.address)
+                }
+
                 const index = findTiffinIndex(arr, tiffinName);
 
                 if (index === -1) {
@@ -192,7 +202,9 @@ export const getOrders = async (req, res) => {
 
         return res.status(200).send({
             lunch: lunch,
-            dinner: dinner
+            dinner: dinner,
+            lunchAdresses: lunchAdresses,
+            dinnerAdresses: dinnerAdresses,
         })
 
     } catch (error) {
