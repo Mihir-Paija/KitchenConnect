@@ -219,3 +219,28 @@ export const updateProfileCustomer = async (customerID, bodyData) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+export const getWalletCustomer = async (customerID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/wallet/${customerID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in Get Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const createWalletCustomer = async (customerID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/wallet/${customerID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in Create Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};

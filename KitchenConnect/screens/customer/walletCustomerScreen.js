@@ -14,10 +14,15 @@ import FooterMenu from "../../components/shared/menu/footerMenu";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
-import { getWallet, createWallet } from "../../utils/walletAPI";
+import {
+  getWalletCustomer,
+  createWalletCustomer,
+} from "../../utils/APIs/customerApi";
 import CreateWalletModal from "../shared/createWalletModal";
 import LoadingScreen from "../shared/loadingScreen";
-
+import SubmitButton from "../../components/shared/forms/submitButton";
+import BackButtonComponent from "../../components/shared/BackButton";
+import WalletDetailsScreen from "../shared/walletDetailsScreen";
 const WalletCustomerScreen = ({ navigation }) => {
   //gloabal states
   const [authState, setAuthState] = useContext(AuthContext);
@@ -27,11 +32,12 @@ const WalletCustomerScreen = ({ navigation }) => {
   const [refresh, setRefresh] = useState(false);
   const [wallet, setWallet] = useState([]);
 
+  const customerID = authState.authData._id;
   //functions
   const fetchWallet = async () => {
     try {
       setLoading(true);
-      const response = await getWallet(authState.authToken);
+      const response = await getWalletCustomer(customerID);
 
       if (response && response.status === 200) {
         console.log(response.data);
@@ -59,7 +65,7 @@ const WalletCustomerScreen = ({ navigation }) => {
       toggleCreateModal();
       setLoading(true);
       console.log(details);
-      const response = await createWallet(authState.authToken, details);
+      const response = await createWalletCustomer(customerID, details);
 
       if (response && response.status === 201) {
         Alert.alert("Wallet Created Successfully");
@@ -73,6 +79,10 @@ const WalletCustomerScreen = ({ navigation }) => {
     }
   };
 
+  const backHandler = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {authState.authToken ? (
@@ -82,26 +92,31 @@ const WalletCustomerScreen = ({ navigation }) => {
           ) : (
             <>
               {isWallet ? (
-                <View>
-                  <Text style={{ fontSize: 20 }}>
-                    {wallet.firstName + " " + wallet.lastName}'s Wallet
-                  </Text>
-                  <Text style={{ fontSize: 20 }}>Amount: ₹{wallet.amount}</Text>
-                </View>
+                <>
+                  <BackButtonComponent onPress={backHandler} />
+                  <WalletDetailsScreen
+                    navigation={navigation}
+                    walletDetials={wallet}
+                  />
+                  <FooterMenu navigation={navigation} />
+                </>
               ) : (
                 <>
-                  <View style={styles.btnView}>
-                    <TouchableOpacity
-                      onPress={toggleCreateModal}
-                      style={styles.btn}
-                    >
-                      <Text style={styles.btnText}>Create Wallet</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <BackButtonComponent onPress={backHandler} />
+                  <SafeAreaView
+                    style={[styles.container, { justifyContent: "center" }]}
+                  >
+                    <SubmitButton
+                      btnTitle={"Get Started"}
+                      style={styles.submitBtnStyle}
+                      txtStyle={styles.submitBtnTextStyle}
+                      handleSubmitBtn={() => setCreateModal(true)}
+                    />
+                  </SafeAreaView>
                   {createModal ? (
                     <CreateWalletModal
                       isVisible={createModal}
-                      onClose={toggleCreateModal}
+                      onClose={() => setCreateModal(false)}
                       onCreate={handleCreate}
                       type={authState.authType}
                     />
@@ -123,25 +138,26 @@ export default WalletCustomerScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  submitBtnStyle: {
+    marginBottom: 0,
+    marginTop: 0,
+    // width: windowWidth * 0.4,
+    // height: windowHeight * 0.04,
+    backgroundColor: "#ffa500",
+    borderColor: "#ffa500",
+    borderWidth: 1,
+  },
+  submitBtnTextStyle: {
+    color: "#ffff",
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
   },
   btnView: {
     position: "absolute",
     right: windowWidth * 0.33,
     bottom: windowHeight * 0.05,
-  },
-  btn: {
-    height: windowHeight * 0.1,
-    width: windowWidth * 0.34,
-    backgroundColor: "#4DAF7C",
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 15,
-  },
-  btnText: {
-    fontSize: 18,
-    color: "#FFFFFF",
   },
 });
