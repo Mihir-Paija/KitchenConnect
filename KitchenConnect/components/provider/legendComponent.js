@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Legend = ({ colorMap }) => {
+const LegendComponent = ({ colorMap }) => {
   return (
     <View style={styles.legendContainer}>
       {Array.from(colorMap.entries()).map(([key, color]) => (
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Legend;
+export default LegendComponent;

@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
   },
   header: {
     textAlign: 'center',
-    fontSize: windowHeight * 0.03,
+    fontSize: windowHeight * 0.025,
     marginBottom: 8,
   },
   insights: {
