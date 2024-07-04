@@ -206,15 +206,25 @@ const HistoryScreen = ({ navigation }) => {
   //const [graphLabel, setGraphLabel] = useState([])
   const [originalColors, setOriginalColors] = useState([
     `rgba(255, 195, 0, 1)`,     // Vivid Yellow
-    `rgba(199, 0, 57, 1)`,      // Vivid Red
-    `rgba(144, 12, 63, 1)`,     // Vivid Burgundy
-    `rgba(88, 24, 69, 1)`,      // Vivid Purple
-    `rgba(30, 132, 73, 1)`,     // Vivid Green
-    `rgba(52, 152, 219, 1)`,    // Vivid Blue
-    `rgba(155, 89, 182, 1)`,    // Vivid Violet
-    `rgba(243, 156, 18, 1)`,    // Vivid Orange Yellow
-    `rgba(39, 174, 96, 1)`,     // Vivid Green Cyan
-    `rgba(231, 76, 60, 1)`,     // Vivid Red Pink
+  `rgba(199, 0, 57, 1)`,      // Vivid Red
+  `rgba(144, 12, 63, 1)`,     // Vivid Burgundy
+  `rgba(88, 24, 69, 1)`,      // Vivid Purple
+  `rgba(30, 132, 73, 1)`,     // Vivid Green
+  `rgba(52, 152, 219, 1)`,    // Vivid Blue
+  `rgba(155, 89, 182, 1)`,    // Vivid Violet
+  `rgba(243, 156, 18, 1)`,    // Vivid Orange Yellow
+  `rgba(39, 174, 96, 1)`,     // Vivid Green Cyan
+  `rgba(231, 76, 60, 1)`,     // Vivid Red Pink
+  `rgba(255, 105, 180, 1)`,   // Hot Pink
+  `rgba(0, 128, 128, 1)`,     // Teal
+  `rgba(0, 255, 127, 1)`,     // Spring Green
+  `rgba(75, 0, 130, 1)`,      // Indigo
+  `rgba(240, 128, 128, 1)`,   // Light Coral
+  `rgba(0, 191, 255, 1)`,     // Deep Sky Blue
+  `rgba(218, 112, 214, 1)`,   // Orchid
+  `rgba(124, 252, 0, 1)`,     // Lawn Green
+  `rgba(139, 0, 139, 1)`,     // Dark Magenta
+  `rgba(0, 206, 209, 1)`,     // Dark Turquoise
   ])
   const [legendMap, setLegendMap] = useState(new Map(colorMap))
 
@@ -719,6 +729,7 @@ const HistoryScreen = ({ navigation }) => {
               <Text style={styles.noInsights}>No Insights</Text>
             )}
           </View>
+  
           <Text style={styles.header}>History</Text>
           <FlatList
             data={DUMMY_DATA}
@@ -743,6 +754,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: windowHeight * 0.025,
     marginBottom: 8,
+    paddingBottom: 10,
+   borderBottomWidth: 1,
+    borderColor: 'black'
   },
   insights: {
     backgroundColor: '#FFFFFF',
@@ -777,13 +791,14 @@ const styles = StyleSheet.create({
   },
   noInsights:{
     textAlign: 'center',
-    fontSize: windowHeight * 0.03,
+    fontSize: windowHeight * 0.02,
   },
+
   flatList: {
     flexGrow: 1,
-    paddingBottom: 30,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
+    //paddingBottom: 30,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
   },
 });
 

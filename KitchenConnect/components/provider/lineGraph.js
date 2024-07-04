@@ -17,8 +17,8 @@ const LineGraph = ({ data, scroll, value }) => {
       borderRadius: 16,
     },
     propsForDots: {
-      r: '6',
-      strokeWidth: '2',
+      r: '4',
+      strokeWidth: '1',
       //stroke: '#ffa726',
     },
     propsForBackgroundLines: {
