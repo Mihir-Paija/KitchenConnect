@@ -61,6 +61,10 @@ router.use("/customer/orderDetails", OrderDetailsRouter);
 import profileCustomerRouter from "./customer/profileRoute.js";
 router.use("/customer/profile", profileCustomerRouter);
 
+//walletRouter -> customer (GET)(POST)
+import walletCustomerRouter from "./customer/walletRouter.js";
+router.use("/customer/wallet", walletCustomerRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
