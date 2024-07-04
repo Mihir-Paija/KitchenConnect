@@ -139,6 +139,23 @@ export const getSubscriptionsList = async (customerID) => {
   }
 };
 
+// customer -> SubOrderList : GET
+export const getSubscriptionOrderList = async (subscriptionID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/subscriptionOrders/${subscriptionID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error getSubscriptionOrderList Customer API:", error);
+    console.error(
+      "Error getSubscriptionOrderList Customer API:",
+      error.message
+    );
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
 // customer -> placeOrder : POST
 export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
   try {

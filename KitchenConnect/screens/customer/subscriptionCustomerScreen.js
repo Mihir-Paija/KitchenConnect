@@ -294,9 +294,16 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
     });
   };
   const orderHandler = (subscription) => {
-    console.log("subscriptionID from list : ", subscription.Subscription._id);
+    // console.log(subscription);
+    // console.log("subscriptionID from list : ", subscription.Subscription._id);
     navigation.navigate("SubscriptionOrderCustomer", {
-      subscription,
+      startDate: subscription.Subscription.startDate,
+      endDate: subscription.Subscription.endDate,
+      noOfTiffins: subscription.Subscription.noOfTiffins,
+      wantDelivery: subscription.Subscription.wantDelivery,
+      tiffinTime: subscription.Subscription.wantDelivery
+        ? subscription.Tiffin.deliveryDetails.deliveryTime
+        : subscription.Tiffin.time,
       subscriptionID: subscription.Subscription._id,
     });
   };

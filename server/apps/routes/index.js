@@ -37,9 +37,13 @@ router.use("/customer/subscription", subscribeRouter);
 import subscriptionDetailsRouter from "./customer/getSubscriptionDetails.js";
 router.use("/customer/subscriptionDetail", subscriptionDetailsRouter);
 
-//subscriptionDetailsRouter -> customer (GET)
+//subscriptionsListRouter -> customer (GET)
 import subscriptionsRouter from "./customer/subscribeRouter.js";
 router.use("/customer/subscription", subscriptionsRouter);
+
+//subscriptionOrdersRouter -> customer (GET)
+import subscriptionOrdersRouter from "./customer/getSubscriptionOrderRouter.js";
+router.use("/customer/subscriptionOrders", subscriptionOrdersRouter);
 
 //OrderRouter -> customer (POST)
 import OrderRouter from "./customer/orderRouter.js";

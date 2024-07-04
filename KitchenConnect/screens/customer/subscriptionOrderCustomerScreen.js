@@ -17,6 +17,7 @@ import DownButton from "../../components/shared/DownButton";
 import UpButton from "../../components/shared/UpButton";
 import LoadingScreen from "@/screens/shared/loadingScreen";
 import SubscriptionOrderCard from "../../components/customer/subscriptionOrderCard";
+import { getSubscriptionOrderList } from "../../utils/APIs/customerApi";
 
 const DUMMY_DATA = [
   {
@@ -87,21 +88,38 @@ const DUMMY_DATA = [
   },
 ];
 
-const SubscriptionOrderCustomerScreen = ({ navigation }) => {
+const SubscriptionOrderCustomerScreen = ({ navigation, route }) => {
   // global states
   const [authState] = useContext(AuthContext);
 
+  // const subscription = route.params.subscription;
+  const {
+    startDate,
+    endDate,
+    noOfTiffins,
+    wantDelivery,
+    tiffinTime,
+    subscriptionID,
+  } = route.params;
+  const subDetails = {
+    startDate,
+    endDate,
+    noOfTiffins,
+    wantDelivery,
+    tiffinTime,
+  };
   //state
   const [optedOutOrders, setOptedOutOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [upcomingOrders, setUpcomingOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [collapsedSections, setCollapsedSections] = useState({
     Completed: false,
     OptedOut: false,
     Upcoming: false,
   });
   const [activeTab, setActiveTab] = useState("Upcoming");
+  const [loading, setLoading] = useState(true);
+  const [subOrders, setSubOrders] = useState([]);
 
   // Refs for scrolling
   const scrollViewRef = useRef();
@@ -116,12 +134,10 @@ const SubscriptionOrderCustomerScreen = ({ navigation }) => {
 
   // States for each subscription type
   useEffect(() => {
-    setUpcomingOrders(DUMMY_DATA.filter((item) => item.status === "Upcoming"));
-    setCompletedOrders(
-      DUMMY_DATA.filter((item) => item.status === "Completed")
-    );
-    setOptedOutOrders(DUMMY_DATA.filter((item) => item.status === "OptedOut"));
-  }, [DUMMY_DATA]);
+    setUpcomingOrders(subOrders.filter((item) => item.status === "Upcoming"));
+    setCompletedOrders(subOrders.filter((item) => item.status === "Completed"));
+    setOptedOutOrders(subOrders.filter((item) => item.status === "OptedOut"));
+  }, [subOrders]);
 
   const scrollToSection = (ref, tab) => {
     setActiveTab(tab);
@@ -140,6 +156,26 @@ const SubscriptionOrderCustomerScreen = ({ navigation }) => {
       [section]: !prev[section],
     }));
   };
+
+  const fetchSubOrderList = async (subscriptionID) => {
+    try {
+      // console.log("hi");
+      const response = await getSubscriptionOrderList(subscriptionID);
+      // console.log(response);
+      if (response.data.subOrders) {
+        setSubOrders(response.data.subOrders);
+      }
+      // console.log("response data", response.data);
+    } catch (error) {
+      console.error("Failed to fetch sub order List customer:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubOrderList(subscriptionID);
+  }, [subscriptionID]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -244,6 +280,7 @@ const SubscriptionOrderCustomerScreen = ({ navigation }) => {
                           key={order._id}
                           //   onPress={() => cardHandler(sub)}
                           orderItem={order}
+                          subDetails={subDetails}
                           //   orderHandler={() => orderHandler(sub)}
                         />
                       ))}
@@ -271,6 +308,7 @@ const SubscriptionOrderCustomerScreen = ({ navigation }) => {
                           key={order._id}
                           //   onPress={() => cardHandler(subscription)}
                           orderItem={order}
+                          subDetails={subDetails}
                         />
                       ))}
                     </View>
@@ -297,6 +335,7 @@ const SubscriptionOrderCustomerScreen = ({ navigation }) => {
                           key={order._id}
                           //   onPress={() => cardHandler(subscription)}
                           orderItem={order}
+                          subDetails={subDetails}
                         />
                       ))}
                     </View>

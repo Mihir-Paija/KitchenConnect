@@ -86,21 +86,29 @@ const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
           <Text style={styles.submitTextStyle}>View Order</Text>
           <RightButton />
         </TouchableOpacity> */}
-
-        <View style={styles.btnBox}>
-          <SubmitButton
-            btnTitle={"View Orders"}
-            style={styles.orderBtnStyle}
-            txtStyle={styles.orderBtnTextStyle}
-            handleSubmitBtn={orderHandler}
-          />
+        {subscriptionItem.Subscription.subscriptionStatus === "Pending" ? (
           <SubmitButton
             btnTitle={"View Details"}
-            style={styles.detailsBtnStyle}
-            txtStyle={styles.detailsBtnTextStyle}
+            // style={styles.detailsBtnStyle}
+            // txtStyle={styles.detailsBtnTextStyle}
             handleSubmitBtn={onPress}
           />
-        </View>
+        ) : (
+          <View style={styles.btnBox}>
+            <SubmitButton
+              btnTitle={"View Orders"}
+              style={styles.orderBtnStyle}
+              txtStyle={styles.orderBtnTextStyle}
+              handleSubmitBtn={orderHandler}
+            />
+            <SubmitButton
+              btnTitle={"View Details"}
+              style={styles.detailsBtnStyle}
+              txtStyle={styles.detailsBtnTextStyle}
+              handleSubmitBtn={onPress}
+            />
+          </View>
+        )}
 
         {statusMessage && (
           <View style={styles.statusBox}>

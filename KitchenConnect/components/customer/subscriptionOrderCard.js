@@ -5,7 +5,7 @@ import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import RightButton from "../../components/shared/RightButton";
-const SubscriptionOrderCard = ({ orderItem }) => {
+const SubscriptionOrderCard = ({ orderItem, subDetails }) => {
   // const navScreen = subscriptionItem.type + "SubScreen";
   // console.log(subscriptionItem);
   const renderStatusMessage = (status) => {
@@ -28,8 +28,12 @@ const SubscriptionOrderCard = ({ orderItem }) => {
       {/* <TouchableOpacity onPress={onPress} style={styles.card}> */}
       <View style={styles.SubBox}>
         <Text style={styles.subText}>
-          {orderItem.day}
-          {" Day"}
+          {"Day "}
+          {Math.floor(
+            (new Date(orderItem.orderDate).getTime() -
+              new Date(subDetails.startDate).getTime()) /
+              (1000 * 60 * 60 * 24)
+          ) + 1}
         </Text>
       </View>
       <View style={styles.contentBox}>
@@ -41,11 +45,14 @@ const SubscriptionOrderCard = ({ orderItem }) => {
         >
           <View style={styles.DateContent}>
             <Text style={styles.DateText}> Order Date </Text>
-            <Text style={styles.DateValueText}> {orderItem.orderDate} </Text>
+            <Text style={styles.DateValueText}>
+              {" "}
+              {formatDate(orderItem.orderDate)}{" "}
+            </Text>
           </View>
           <View style={styles.DateContent}>
             <Text style={[styles.DateText]}>Order Time</Text>
-            <Text style={[styles.DateValueText]}>{orderItem.orderTime}</Text>
+            <Text style={[styles.DateValueText]}>{subDetails.tiffinTime}</Text>
           </View>
         </View>
         <View
@@ -55,7 +62,7 @@ const SubscriptionOrderCard = ({ orderItem }) => {
           ]}
         >
           <Text style={styles.detailText}>
-            {orderItem.numberOfTiffins} Tiffins
+            {subDetails.noOfTiffins} Tiffins
           </Text>
         </View>
         {/* {orderItem.status === "Completed" && (
