@@ -268,7 +268,7 @@ export const subscriptionsGet = async (req, res) => {
 
         const tiffinData = await tiffins.findById(
           sub.tiffinID,
-          "name foodType tiffinType"
+          "name foodType tiffinType time deliveryDetails.deliveryTime"
         );
         if (!tiffinData) {
           return res.status(404).json({
@@ -277,7 +277,7 @@ export const subscriptionsGet = async (req, res) => {
           });
         }
 
-        console.log(sub);
+        // console.log(sub);
 
         return {
           // subscriptionPlan: {
@@ -292,6 +292,7 @@ export const subscriptionsGet = async (req, res) => {
             startDate: sub.startDate,
             endDate: sub.endDate,
             noOfTiffins: sub.noOfTiffins,
+            wantDelivery: sub.wantDelivery,
             subscriptionStatus: sub.subscriptionStatus.status,
             orderDate: sub.createdAt,
           },
@@ -337,9 +338,9 @@ export const subscriptionOrderGet = async (req, res) => {
     });
     // console.log(subscriptionOrders);
     if (!subscriptionOrders) {
-      return res.status(404).json({
-        error: "Not Found",
-        message: "subscriptionOrders not found",
+      return res.status(200).json({
+        // error: "Not Found",
+        // message: "subscriptionOrders not found",
       });
     }
 
