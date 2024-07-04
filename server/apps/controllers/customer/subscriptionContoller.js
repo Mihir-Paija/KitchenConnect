@@ -4,6 +4,7 @@ import tiffins from "../../models/tiffinModel.js";
 import subscription from "../../models/subscriptionModel.js";
 import { sendNotification } from "../provider/subscriptionController.js";
 import subscriberJoiValidate from "../../utils/validations/customer/subscriber.js";
+import subscriptionOrder from "../../models/subscriptionOrderModel.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 
@@ -308,6 +309,49 @@ export const subscriptionsGet = async (req, res) => {
 
     return res.status(500).send({
       error: `Internal Server Error in GET subscriptionsList`,
+      message: error.message,
+    });
+  }
+};
+
+export const subscriptionOrderGet = async (req, res) => {
+  try {
+    const { subscriptionID } = req.params;
+
+    if (!subscriptionID)
+      return res.status(404).send({
+        message: `Invalid URL`,
+      });
+
+    //   Check if _id is a valid ObjectId
+
+    if (!ObjectId.isValid(subscriptionID)) {
+      return res.status(400).json({
+        error: "Invalid subscriptionID",
+        message: "The provided subscriptionID is not a valid MongoDB ObjectId",
+      });
+    }
+
+    const subscriptionOrders = await subscriptionOrder.findOne({
+      subscriptionID,
+    });
+    // console.log(subscriptionOrders);
+    if (!subscriptionOrders) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "subscriptionOrders not found",
+      });
+    }
+
+    // console.log(detailedSubscriptionsList);
+    return res.status(200).json(subscriptionOrders);
+
+    // return res.status(200).json(subscriptionsList);
+  } catch (error) {
+    console.log("Error in Fetching subscriptionOrders ", error);
+
+    return res.status(500).send({
+      error: `Internal Server Error in GET subscriptionOrders`,
       message: error.message,
     });
   }
