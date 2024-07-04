@@ -11,6 +11,7 @@ import LineGraph from '../../components/provider/lineGraph';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate } from '../../utils/formateDateTime';
 import RNPickerSelect from "react-native-picker-select";
+import LegendComponent from '../../components/provider/legendComponent';
 
 const DUMMY_DATA = [
   {
@@ -81,7 +82,7 @@ const GRAPH_DATA = [
     noOfTiffins: 1
   },
   {
-    date: new Date(2024, 6, 2),
+    date: new Date(2024, 6, 7),
     tiffinType: "Lunch",
     title: 'Subscription',
     tiffinName: "Full Tiffin",
@@ -90,21 +91,21 @@ const GRAPH_DATA = [
   {
     date: new Date(2024, 5, 30),
     tiffinType: "Dinner",
-    title: 'One Time',
+    title: 'One-Time',
     tiffinName: "Full Tiffin",
     noOfTiffins: 3
   },
   {
     date: new Date(2024, 5, 29),
     tiffinType: "Lunch",
-    title: 'One Time',
+    title: 'One-Time',
     tiffinName: "Deluxe Tiffin",
     noOfTiffins: 5
   },
   {
     date: new Date(2024, 5, 29),
     tiffinType: "Lunch",
-    title: 'One Time',
+    title: 'One-Time',
     tiffinName: "Deluxe Tiffin",
     noOfTiffins: 2
   },
@@ -118,7 +119,7 @@ const GRAPH_DATA = [
   {
     date: new Date(2024, 6, 1),
     tiffinType: "Lunch",
-    title: 'One Time',
+    title: 'One-Time',
     tiffinName: "Half Tiffin",
     noOfTiffins: 1
   },
@@ -166,41 +167,44 @@ const monthMap = {
 };
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const monthDivision = ['1-5', '6-10', '11-15', '16-20', '21-25', '25-']
+const monthDivision = ['1-5', '6-10', '11-15', '16-20', '21-25', '26-']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+let dateSet = new Set()
+let dateIndexMap = new Map();
+let colorMap = new Map()
+let tiffinNameValueMap = new Map()
+let tempNameSet = new Set()
+let tempValueMap = new Map()
+let tempColorMap = new Map()
 
 const HistoryScreen = ({ navigation }) => {
-  const [authState, setAuthState] = useContext(AuthContext);
+  //const [authState, setAuthState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false)
-  const [refresh, setRefresh] = useState(false)
+  //const [refresh, setRefresh] = useState(false)
   const [history, setHistory] = useState(GRAPH_DATA)
 
-  const [graphData, setGraphData] = useState([])
+  const [graphData, setGraphData] = useState({
+    labels: [],
+    datasets: []
+  })
+  const [scroll, setScroll] = useState(false)
   const [tiffinName, setTiffinName] = useState('All')
   const [tiffinNameOptions, setTiffinNameOptions] = useState([{ label: 'All', value: 'All' }])
   const [tiffinType, setTiffinType] = useState('All')
-  const [tiffinTypeOptions, setTiffinTypeOptions] = useState([
-    { label: 'All', value: 'All' },
-    { label: 'Lunch', value: 'Lunch' },
-    { label: 'Dinner', value: 'Dinner' }
-  ])
+
   const [orderType, setOrderType] = useState('All')
-  const [orderTypeOptions, setOrderTypeOptions] = useState([
-    { label: 'All', value: 'All' },
-    { label: 'Subscription', value: 'Subscription' },
-    { label: 'One Time', value: 'One Time' }
-  ])
+
   const [duration, setDuration] = useState({ label: 'Last 7 days', value: 'Last 7' });
   const [durationOptions, setDurationOptions] = useState([
     { label: 'Last 7 days', value: 'Last 7' },
     { label: 'Last 14 days', value: 'Last 14' },
   ])
 
+  const [durationToggle, setDurationToggle] = useState(false)
   const [durationSize, setDurationSize] = useState(7);
-  const [graphLabel, setGraphLabel] = useState([])
+  //const [graphLabel, setGraphLabel] = useState([])
   const [originalColors, setOriginalColors] = useState([
-    `rgba(255, 87, 51, 1)`,      // Vivid Orange
     `rgba(255, 195, 0, 1)`,     // Vivid Yellow
     `rgba(199, 0, 57, 1)`,      // Vivid Red
     `rgba(144, 12, 63, 1)`,     // Vivid Burgundy
@@ -212,9 +216,25 @@ const HistoryScreen = ({ navigation }) => {
     `rgba(39, 174, 96, 1)`,     // Vivid Green Cyan
     `rgba(231, 76, 60, 1)`,     // Vivid Red Pink
   ])
-  const orders = [];
-  const colorMap = new Map()
-  const tiffinNameValueMap = new Map()
+  const [legendMap, setLegendMap] = useState(new Map(colorMap))
+
+
+  const [originalOrders, setOriginalOrders] = useState([])
+  //const [orders, setOrders] = useState([])
+
+
+  const tiffinTypeOptions = [
+    { label: 'All', value: 'All' },
+    { label: 'Lunch', value: 'Lunch' },
+    { label: 'Dinner', value: 'Dinner' }
+  ]
+  const orderTypeOptions = [
+    { label: 'All', value: 'All' },
+    { label: 'Subscription', value: 'Subscription' },
+    { label: 'One-Time', value: 'One-Time' }
+  ]
+
+
 
   const createDuration = () => {
     const currentMonth = new Date().getMonth()
@@ -247,19 +267,25 @@ const HistoryScreen = ({ navigation }) => {
     setDurationOptions(arr);
   }
 
-  const handleGraphData = () => {
+  const handleDuration = () => {
+    setTiffinName('All')
+    setTiffinType('All')
+    setOrderType('All')
+    setOriginalOrders([])
+    const graphLabels = [];
+    dateSet.clear();
+    dateIndexMap.clear();
+
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    const graphLabels = [];
-    const dateSet = new Set();
-    const dateIndexMap = new Map();
+
     if (duration.label === 'Last 7 days') {
 
       const currentDate = new Date(today);
 
       for (let i = 6; i >= 0; --i) {
         const dayName = currentDate.getDay();
-        console.log(dayName)
+        //console.log(dayName)
         graphLabels.unshift(weekMap[dayName]);
         const currentDateString = currentDate.toISOString()
         dateSet.add(currentDateString);
@@ -268,116 +294,331 @@ const HistoryScreen = ({ navigation }) => {
       }
 
       setDurationSize(7)
-      setGraphLabel(graphLabels)
+      setScroll(false)
+      setGraphData({ ...graphData, labels: graphLabels })
     }
 
+    else if (duration.label === 'Last 14 days') {
 
-    if (tiffinName === 'All') {
-      const tiffinNameSet = new Set();
-      tiffinNameSet.add('All')
-      let colors = [...originalColors]
-      colorMap.set('All', '#FFA500')
+      const currentDate = new Date(today);
 
+      for (let i = 13; i >= 0; --i) {
+        const dayName = currentDate.getDay();
+        //console.log(dayName)
+        graphLabels.unshift(weekMap[dayName]);
+        const currentDateString = currentDate.toISOString()
+        dateSet.add(currentDateString);
+        dateIndexMap.set(currentDateString, i);
+        currentDate.setDate(currentDate.getDate() - 1);
+      }
 
-      for (const value of history) {
+      setDurationSize(14)
+      setGraphData({ ...graphData, labels: graphLabels })
+      setScroll(true)
+    }
 
-        const orderDate = new Date(value.date)
-        orderDate.setHours(0, 0, 0, 0)
-        orderDateString = orderDate.toISOString()
+    else if (duration.label === 'This Year') {
+      for (let i = 0; i < 12; ++i) {
+        dateSet.add(i);
+        dateIndexMap.set(i, i);
+      }
+      setDurationSize(12)
+      setGraphData({ ...graphData, labels: months })
+      setScroll(true)
+    }
+    else {
+      for (let i = 1; i <= 26; i = i + 5) {
+        dateSet.add(i);
+        dateIndexMap.set(i, i / 5)
+      }
+      if (durationSize === 6)
+        setDurationToggle(!durationToggle)
+      else {
+        setDurationSize(6)
+      }
+      setGraphData({ ...graphData, labels: monthDivision })
+    }
 
+    console.log(dateSet)
+    console.log(dateIndexMap)
+  }
+
+  const handleInitialTiffins = () => {
+
+    if (!durationSize)
+      return;
+
+    const initialOrders = []
+    const tiffinNameSet = new Set();
+    tiffinNameSet.add('All')
+    let colors = [...originalColors]
+    colorMap.clear();
+    colorMap.set('All', '#FFA500')
+
+    for (const value of history) {
+
+      const orderDate = new Date(value.date)
+      orderDate.setHours(0, 0, 0, 0)
+      orderDateString = orderDate.toISOString()
+
+      if (duration.label === 'Last 7 days' || duration.label === 'Last 14 days') {
         if (dateSet.has(orderDateString)) {
-          console.log(value)
-          if (tiffinType === 'All' && orderType === 'All') {
-            tiffinNameSet.add(value.tiffinName)
-            const randomIndex = Math.floor(Math.random() * colors.length);
-            colorMap.set(value.tiffinName, colors[randomIndex]);
-            const setColor = colors[randomIndex]
-            colors = colors.filter(item => item != setColor)
-            orders.push(value);
+          addToSet(tiffinNameSet, value, initialOrders, colors, colorMap)
+        }
+      }
+      else if (duration.label === 'This Year') {
+        const orderYear = orderDate.getFullYear()
+        const currentYear = duration.value
+
+        if (orderYear === currentYear)
+          addToSet(tiffinNameSet, value, initialOrders, colors, colorMap)
+      }
+      else {
+        const orderYear = orderDate.getFullYear()
+        const orderMonth = orderDate.getMonth()
+        const currentYear = new Date(duration.value).getFullYear()
+        const currentMonth = new Date(duration.value).getMonth()
+
+        if (currentMonth === orderMonth && currentYear === orderYear)
+          addToSet(tiffinNameSet, value, initialOrders, colors, colorMap)
+
+      }
+    }
+
+    setOriginalOrders(initialOrders)
+
+    const tiffinNameOptionsArray = []
+    tiffinNameValueMap.clear()
+    for (const value of tiffinNameSet) {
+      tiffinNameOptionsArray.push({ label: value, value: value })
+      tiffinNameValueMap.set(value, new Array(durationSize).fill(0))
+    }
+
+    setTiffinNameOptions(tiffinNameOptionsArray)
+
+    fillBins(tiffinNameValueMap, initialOrders, true)
+    handleGraphData(tiffinNameValueMap, colorMap)
+
+  }
+
+  const handleTiffins = () => {
+
+    if (tiffinName === 'All' && tiffinType === 'All' && orderType === 'All') {
+      const finalData = {
+        datasets: []
+      }
+
+      for (const [key, value] of tiffinNameValueMap) {
+        console.log(key)
+        console.log(value)
+        console.log(colorMap.get(key))
+        const singleData = {
+          data: value,
+          color: (opacity = 1) => colorMap.get(key),
+          strokeWidth: 1,
+        }
+        finalData.datasets.push(singleData);
+      }
+
+      console.log(finalData.datasets.length)
+
+        setGraphData({
+          ...graphData,
+          datasets: finalData.datasets
+        });
+      
+
+      setLegendMap(colorMap)
+
+      return;
+    }
+
+    else if (tiffinType === 'All' && orderType === 'All') { //don't want to calculate again
+      const finalData = {
+        datasets: []
+      }
+
+      for (const [key, value] of tiffinNameValueMap) {
+        console.log(key)
+        console.log(value)
+        console.log(colorMap.get(key))
+
+        if (key === tiffinName) {
+          const singleData = {
+            data: value,
+            color: (opacity = 1) => colorMap.get(key),
+            strokeWidth: 1,
           }
-          else if (tiffinType === 'All' && orderType !== 'All') {
-            if (value.title === orderType) {
-              tiffinNameSet.add(value.tiffinName)
-              orders.push(value);
-            }
-          }
-          else if (tiffinType !== 'All' && orderType === 'All') {
-            if (value.tiffinType === tiffinType) {
-              tiffinNameSet.add(value.tiffinName)
-              orders.push(value);
-            }
-          }
-          else {
-            if (value.tiffinType === tiffinType && value.title === orderType) {
-              tiffinNameSet.add(value.tiffinName)
-              orders.push(value);
-            }
-          }
+          finalData.datasets.push(singleData);
         }
       }
 
-      const tiffinNameOptionsArray = []
-      for (const value of tiffinNameSet) {
-        tiffinNameOptionsArray.push({ label: value, value: value })
-        tiffinNameValueMap.set(value, new Array(durationSize).fill(0))
+      console.log(finalData.datasets.length)
+
+      setGraphData({
+          ...graphData,
+          datasets: finalData.datasets
+        });
+
+        setLegendMap(colorMap)
+      
+    }
+    else {
+      let colors = [...originalColors]
+      tempColorMap.clear();
+      
+      tempNameSet.clear()
+      let flag = false;
+      if (tiffinName === 'All') {
+        tempNameSet.add('All')
+        colorMap.set('All', '#FFA500')
+        flag = true
+      }
+     tempValueMap.clear()
+      const orders = []
+      console.log(orderType)
+
+      for (const value of originalOrders) {
+        console.log(value.title)
+        console.log(orderType)
+        console.log(value.title === orderType)
+        let count = true;
+        if (tiffinName !== 'All' && value.tiffinName !== tiffinName)
+          count = false;
+
+        if (count && tiffinType !== 'All' && value.tiffinType !== tiffinType)
+          count = false
+
+        
+        if (count && orderType !== 'All' && value.title !== orderType)
+          count = false;
+
+        if (count) {
+        console.log(value)
+          addToSet(tempNameSet, value, orders, colors, tempColorMap)
+        }
       }
 
-      setTiffinNameOptions(tiffinNameOptionsArray)
+      for (const value of tempNameSet) {
+        tempValueMap.set(value, new Array(durationSize).fill(0))
+      }
 
-
-
+      console.log(orders)
+      fillBins(tempValueMap, orders, flag)
+      console.log(tempValueMap)
+      handleGraphData(tempValueMap, tempColorMap)
     }
+  }
 
+  const addToSet = (set, value, initialOrders, colors, map) => {
+    set.add(value.tiffinName)
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    map.set(value.tiffinName, colors[randomIndex]);
+    const setColor = colors[randomIndex]
+    colors = colors.filter(item => item !== setColor)
+    initialOrders.push(value);
+  }
+
+  const addQuantity = (map, value, index, flag) => {
+
+    if (flag) {
+      let totalQuantity = map.get('All')
+      totalQuantity[index] += value.noOfTiffins;
+      map.set('All', totalQuantity);
+    }
+    let quantity = map.get(value.tiffinName)
+
+    quantity[index] += value.noOfTiffins;
+
+    map.set(value.tiffinName, quantity);
+
+  }
+
+  const fillBins = (map, orders, flag) => {
     for (const value of orders) {
-      if (duration.label === 'Last 7 days') {
-        console.log(value.date)
-        const date = new Date(value.date);
-        date.setHours(0, 0, 0, 0)
+      const date = new Date(value.date);
+      date.setHours(0, 0, 0, 0)
+
+      if (duration.label === 'Last 7 days' || duration.label === 'Last 14 days') {
         dateString = date.toISOString()
-        console.log(dateString)
-        let totalQuantity = tiffinNameValueMap.get('All')
-        let quantity = tiffinNameValueMap.get(value.tiffinName)
         const index = dateIndexMap.get(dateString)
-        quantity[index] += value.noOfTiffins;
-        totalQuantity[index] += value.noOfTiffins;
-        tiffinNameValueMap.set(value.tiffinName, quantity);
-        tiffinNameValueMap.set('All', totalQuantity);
+        addQuantity(map, value, index, flag)
+
+      }
+      else if (duration.label === 'This Year') {
+        const orderMonth = date.getMonth();
+        const index = orderMonth
+        addQuantity(map, value, index, flag)
+      }
+      else {
+        const orderDay = date.getDate();
+        console.log(orderDay)
+        let index = 0;
+
+        if (1 <= orderDay && orderDay <= 5)
+          index = 0;
+
+        else if (6 <= orderDay && orderDay <= 10)
+          index = 1;
+
+        else if (11 <= orderDay && orderDay <= 15)
+          index = 2;
+
+        else if (16 <= orderDay && orderDay <= 20)
+          index = 3;
+
+        else if (21 <= orderDay && orderDay <= 25)
+          index = 4;
+
+        else index = 5;
+
+        addQuantity(map, value, index, flag);
       }
     }
+  }
 
+  const handleGraphData = (map, color_map) => {
     const finalData = {
-      labels: graphLabel,
       datasets: []
     }
 
-    console.log(colorMap)
-
-    for (const [key, value] of tiffinNameValueMap) {
+    console.log(map)
+    for (const [key, value] of map) {
       console.log(key)
       console.log(value)
-      console.log(colorMap.get(key))
-
+      //console.log(colorMap.get(key))
       const singleData = {
         data: value,
-        color: (opacity = 1) => colorMap.get(key)
+        color: (opacity = 1) => color_map.get(key),
+        strokeWidth: 1,
       }
-
-
       finalData.datasets.push(singleData);
-
     }
 
-    console.log(finalData.labels)
-    console.log(finalData.datasets[1])
+    console.log(finalData.datasets.length)
 
-    if(finalData.datasets.length)
-      setGraphData(finalData)
+      setGraphData({
+        ...graphData,
+        datasets: finalData.datasets
+      });
+
+      setLegendMap(colorMap)
   }
 
   useEffect(() => {
-    handleGraphData();
-  }, [, tiffinName, tiffinType, orderType, duration])
+    handleDuration();
+  }, [duration.label])
 
+  useEffect(() => {
+    handleInitialTiffins()
+  }, [durationSize, durationToggle])
+
+
+
+  useEffect(() => {
+    console.log('------')
+    handleTiffins()
+  }, [tiffinName, tiffinType, orderType])
 
   useEffect(() => {
     //fetchHistory()
@@ -409,65 +650,83 @@ const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ?
+      {loading ? (
         <LoadingScreen />
-        :
+      ) : (
         <>
-          <View style={styles.insights} >
+          <View style={styles.insights}>
             <Text style={styles.header}>Insights</Text>
-            <RNPickerSelect
-              placeholder={{ label: 'Select Tiffins', value: null }}
-              value={tiffinName}
-              onValueChange={(value) => setTiffinName(value)}
-              items={tiffinNameOptions}
-              style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
+            <View style={styles.row}>
+              <View style={styles.filters}>
+                <Text>Tiffins</Text>
+                <RNPickerSelect
+                  placeholder={{ label: 'Select Tiffins', value: null }}
+                  value={tiffinName}
+                  onValueChange={value => setTiffinName(value)}
+                  items={tiffinNameOptions}
+                  style={pickerSelectStyles}
+                  useNativeAndroidPickerStyle={false}
+                />
+              </View>
+              <View style={styles.filters}>
+                <Text>Time</Text>
+                <RNPickerSelect
+                  placeholder={{ label: 'Select Type', value: null }}
+                  value={tiffinType}
+                  onValueChange={value => setTiffinType(value)}
+                  items={tiffinTypeOptions}
+                  style={pickerSelectStyles}
+                  useNativeAndroidPickerStyle={false}
+                />
+              </View>
+              <View style={styles.filters}>
+                <Text>Type</Text>
+                <RNPickerSelect
+                  placeholder={{ label: 'Select Order Type', value: null }}
+                  value={orderType}
+                  onValueChange={value => setOrderType(value)}
+                  items={orderTypeOptions}
+                  style={pickerSelectStyles}
+                  useNativeAndroidPickerStyle={false}
+                />
+              </View>
+              <View style={styles.duration}>
+                <Text>Duration</Text>
+                <RNPickerSelect
+                  placeholder={{ label: 'Select Duration', value: null }}
+                  value={duration ? duration.label : null}
+                  onValueChange={label => {
+                    const selectedOption = findOptionByLabel(label, durationOptions);
+                    setDuration(selectedOption);
+                  }}
+                  items={durationOptions.map(option => ({
+                    label: option.label,
+                    value: option.label,
+                  }))}
+                  style={pickerSelectStyles}
+                  useNativeAndroidPickerStyle={false}
+                />
+              </View>
+            </View>
+            <LegendComponent
+            colorMap={legendMap}
             />
-            <RNPickerSelect
-              placeholder={{ label: 'Select Type', value: null }}
-              value={tiffinType}
-              onValueChange={(value) => setTiffinType(value)}
-              items={tiffinTypeOptions}
-              style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
-            />
-            <RNPickerSelect
-              placeholder={{ label: 'Select Order Type', value: null }}
-              value={orderType}
-              onValueChange={(value) => setOrderType(value)}
-              items={orderTypeOptions}
-              style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
-            />
-            <RNPickerSelect
-              placeholder={{ label: 'Select Duration', value: null }}
-              value={duration ? duration.label : null}
-              onValueChange={(label) => {
-                const selectedOption = findOptionByLabel(label);
-                setDuration(selectedOption);
-              }}
-              items={durationOptions.map(option => ({
-                label: option.label,
-                value: option.label,
-              }))}
-              style={pickerSelectStyles}
-              useNativeAndroidPickerStyle={false}
-            />
-            {graphData.length !== 0 ?
-              <LineGraph
-                data={graphData}
-              />
-              : <Text>No Insights</Text>}
+            {graphData.datasets && graphData.datasets.length ? (
+              <LineGraph data={graphData}
+                scroll={scroll}
+                value={'No Of Tiffins'} />
+            ) : (
+              <Text style={styles.noInsights}>No Insights</Text>
+            )}
           </View>
           <Text style={styles.header}>History</Text>
           <FlatList
             data={DUMMY_DATA}
-            renderItem={({ item }) => (
-              <HistoryComponent {...item} />
-            )}
+            renderItem={({ item }) => <HistoryComponent {...item} />}
             contentContainerStyle={styles.flatList}
           />
-        </>}
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -477,40 +736,54 @@ export default HistoryScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     paddingTop: StatusBar.currentHeight * 1.2,
   },
   header: {
     textAlign: 'center',
     fontSize: windowHeight * 0.03,
+    marginBottom: 8,
   },
   insights: {
     backgroundColor: '#FFFFFF',
+    //paddingHorizontal: 5,
+    paddingVertical: 12,
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 12,
+  },
+  tiffinName: {
+    flex: 1,
     alignItems: 'center',
+  },
+  tiffinType: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  orderType: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  duration: {
+    flex: 1.5,
+    alignItems: 'center',
+  },
+  filters: {
+    flex: 1,
+    alignItems: 'center',
+    //marginRight: 8,
+  },
+  noInsights:{
+    textAlign: 'center',
+    fontSize: windowHeight * 0.03,
   },
   flatList: {
-    alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 30,
-    borderBottomWidth: 1
-  },
-  btnView: {
-    position: 'absolute',
-    right: windowWidth * 0.33,
-    bottom: windowHeight * 0.05,
-  },
-  btn: {
-    height: windowHeight * 0.1,
-    width: windowWidth * 0.34,
-    backgroundColor: '#4DAF7C',
-    alignContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 15
-  },
-  btnText: {
-    fontSize: 18,
-    color: '#FFFFFF',
+    flexGrow: 1,
+    paddingBottom: 30,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
   },
 });
 
