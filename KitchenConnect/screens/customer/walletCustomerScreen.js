@@ -96,7 +96,8 @@ const WalletCustomerScreen = ({ navigation }) => {
                   <BackButtonComponent onPress={backHandler} />
                   <WalletDetailsScreen
                     navigation={navigation}
-                    walletDetials={wallet}
+                    walletDetails={wallet}
+                    history={true}
                   />
                   <FooterMenu navigation={navigation} />
                 </>

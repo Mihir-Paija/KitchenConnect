@@ -75,8 +75,8 @@ export const subscribe = async (req, res) => {
 
     const dayStarted = new Date(startDate);
     const dayEnded = new Date(endDate);
-    dayStarted.setUTCHours(0, 0, 0, 0);
-    dayEnded.setUTCHours(0, 0, 0, 0);
+    dayStarted.setHours(0, 0, 0, 0);
+    dayEnded.setHours(0, 0, 0, 0);
 
 
     const daysRemaining = getDatesInRange(dayStarted, dayEnded);
@@ -91,6 +91,7 @@ export const subscribe = async (req, res) => {
       startDate: dayStarted,
       endDate: dayEnded,
       wantDelivery,
+      wantPacking: false,
       noOfTiffins,
       address,
       subscriptionStatus: {

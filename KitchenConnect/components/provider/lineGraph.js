@@ -5,6 +5,7 @@ import { windowWidth, windowHeight } from '@/utils/dimensions';
 
 const LineGraph = ({ data, scroll, value }) => {
   const [selectedPoint, setSelectedPoint] = useState(null);
+  console.log(scroll)
 
   const chartConfig = {
     backgroundColor: '#ffffff',

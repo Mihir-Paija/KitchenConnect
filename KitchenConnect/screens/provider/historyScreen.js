@@ -189,6 +189,7 @@ const HistoryScreen = ({ navigation }) => {
     datasets: []
   })
   const [scroll, setScroll] = useState(false)
+  const [scrollToggle, setScrollToggle] = useState(false)
   const [tiffinName, setTiffinName] = useState('All')
   const [tiffinNameOptions, setTiffinNameOptions] = useState([{ label: 'All', value: 'All' }])
   const [tiffinType, setTiffinType] = useState('All')
@@ -303,7 +304,10 @@ const HistoryScreen = ({ navigation }) => {
         currentDate.setDate(currentDate.getDate() - 1);
       }
 
-      setDurationSize(7)
+      //setDurationSize(7)
+      if(!scroll)
+        setScrollToggle(!scrollToggle)
+      else
       setScroll(false)
       setGraphData({ ...graphData, labels: graphLabels })
     }
@@ -322,9 +326,13 @@ const HistoryScreen = ({ navigation }) => {
         currentDate.setDate(currentDate.getDate() - 1);
       }
 
-      setDurationSize(14)
+      //setDurationSize(14)
       setGraphData({ ...graphData, labels: graphLabels })
+      if(scroll)
+        setScrollToggle(!scrollToggle)
+      else
       setScroll(true)
+
     }
 
     else if (duration.label === 'This Year') {
@@ -332,8 +340,11 @@ const HistoryScreen = ({ navigation }) => {
         dateSet.add(i);
         dateIndexMap.set(i, i);
       }
-      setDurationSize(12)
+      //setDurationSize(12)
       setGraphData({ ...graphData, labels: months })
+      if(scroll)
+        setScrollToggle(!scrollToggle)
+      else
       setScroll(true)
     }
     else {
@@ -341,16 +352,43 @@ const HistoryScreen = ({ navigation }) => {
         dateSet.add(i);
         dateIndexMap.set(i, i / 5)
       }
+      setGraphData({ ...graphData, labels: monthDivision })
+      if(!scroll)
+        setScrollToggle(!scrollToggle)
+      else
+      setScroll(false)
+    }
+
+    console.log(dateSet)
+    console.log(dateIndexMap)
+  }
+
+  const handleDurationSize = () =>{
+    if (duration.label === 'Last 7 days') {
+      setDurationSize(7)
+      
+    }
+
+    else if (duration.label === 'Last 14 days') {
+
+      setDurationSize(14)
+         }
+
+    else if (duration.label === 'This Year') {
+      
+      setDurationSize(12)
+      
+    }
+    else {
+  
       if (durationSize === 6)
         setDurationToggle(!durationToggle)
       else {
         setDurationSize(6)
       }
-      setGraphData({ ...graphData, labels: monthDivision })
+
     }
 
-    console.log(dateSet)
-    console.log(dateIndexMap)
   }
 
   const handleInitialTiffins = () => {
@@ -618,6 +656,10 @@ const HistoryScreen = ({ navigation }) => {
   useEffect(() => {
     handleDuration();
   }, [duration.label])
+
+  useEffect(() =>{
+    handleDurationSize()
+  }, [scroll, scrollToggle])
 
   useEffect(() => {
     handleInitialTiffins()
