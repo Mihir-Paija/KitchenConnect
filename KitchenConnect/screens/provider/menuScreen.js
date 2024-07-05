@@ -69,6 +69,7 @@ const MenuScreen = ({navigation, route}) => {
   };
 
   const handleEditModal = (item) =>{
+    console.log(item)
     setEditMenu(item)
     setEditModal(true)
 

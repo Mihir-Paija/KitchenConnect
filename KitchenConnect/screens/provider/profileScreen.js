@@ -48,13 +48,12 @@ import { logoutProvider } from "../../utils/provider/providerAPI";
   
     
     const settingHandler = () => {
-      // console.log("settingHandler clicked");
+
       navigation.navigate("Settings", {
         profile: profile
       });
     };
     const aboutHandler = () => {
-      // console.log("aboutHandler clicked");
       navigation.navigate("About");
     };
   

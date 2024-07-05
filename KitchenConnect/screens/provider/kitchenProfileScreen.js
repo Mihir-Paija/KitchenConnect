@@ -19,6 +19,7 @@ import {
   import DateTimePicker from "@react-native-community/datetimepicker";
   import RNPickerSelect from "react-native-picker-select";
   import { editKitchenDetails } from "../../utils/provider/profileAPI";
+  import {RefreshContext} from '@/context/refreshContext'
   
   const KitchenProfileScreen = ({ navigation, route }) => {
     const [authState, setAuthState] = useContext(AuthContext);
@@ -32,6 +33,7 @@ import {
         landmark: profile.address.landmark
 
     })
+    const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
     const backHandler = () => {
       navigation.goBack();
     };
@@ -62,6 +64,8 @@ import {
           profile.address = address
           console.log(response)
           Alert.alert("Update Successfull")
+          setGlobalRefresh(!globalRefresh)
+          navigation.navigate('Tiffin')
         }
         else{
           Alert.alert(`Couldn't Update`)

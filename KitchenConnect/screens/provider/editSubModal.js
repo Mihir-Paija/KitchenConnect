@@ -26,9 +26,11 @@ const EditSubModal = ({ isVisible, onClose, onEdit, onDelete, item, }) => {
             return;
         }
 
+        const discountedPrice = ((tiffin.price - perTiffin)/tiffin.price) * 100
+
         const updatedSubscription = {
             ...subscription,
-            discount: tiffin.price - perTiffin,
+            discount: discountedPrice.toFixed(2),
         };
 
         onEdit(updatedSubscription);

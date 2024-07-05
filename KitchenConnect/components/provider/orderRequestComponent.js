@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, kitchenPaymentBreakdown, onAccept, onReject, }) => {
+const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinType, noOfTiffins, wantDelivery, address, kitchenPaymentBreakdown, onAccept, onReject, }) => {
     
     const handleAccept = () =>{
         console.log('Accepted')
@@ -26,6 +26,9 @@ const OrderRequestComponent = ({ _id, title, customerName, tiffinName, tiffinTyp
             </Text>
             <Text style={styles.detail}>Customer: {customerName}</Text>
             <Text style={styles.detail}>Price: ₹{kitchenPaymentBreakdown.total}</Text>
+            {wantDelivery ? (
+            <Text style={styles.address}>Deliver To: {address}</Text>
+          ) : null}
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>

@@ -15,10 +15,13 @@ import {
   import { windowWidth, windowHeight } from "@/utils/dimensions";
   import BackButtonComponent from "@/components/shared/BackButton";
 import { changeStatus, deleteProvider } from "../../utils/provider/profileAPI";
+import {RefreshContext} from '@/context/refreshContext'
   
   const SettingsScreen = ({ navigation, route}) => {
     const [authState, setAuthState] = useContext(AuthContext);
     const {profile} = route.params
+    console.log(profile)
+    const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
   
     //functions
     const backHandler = () => {
@@ -36,6 +39,8 @@ import { changeStatus, deleteProvider } from "../../utils/provider/profileAPI";
           profile.deactivate = !profile.deactivate
           console.log(response)
           Alert.alert("Update Successfull")
+          setGlobalRefresh(!globalRefresh)
+          navigation.navigate('Tiffin')
         }
         else{
           Alert.alert(`Couldn't Update`)
@@ -63,6 +68,26 @@ import { changeStatus, deleteProvider } from "../../utils/provider/profileAPI";
         
       }
     }
+
+    const confirmActivate = () => {
+      Alert.alert(
+        "Activate Account",
+        "Are you sure you want to activate your account?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("activate Cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "Activate",
+            onPress: handleDeactivate,
+            style: "destructive",
+          },
+        ],
+        { cancelable: true }
+      );
+    };
     
     
     const confirmDeactivate = () => {
@@ -112,10 +137,17 @@ import { changeStatus, deleteProvider } from "../../utils/provider/profileAPI";
         {authState.authToken ? (
           <>
             <BackButtonComponent onPress={backHandler} screenTitle={"Settings"} />
-            <TouchableOpacity onPress={confirmDeactivate} style={styles.lineBox}>
+            {profile.deactivate ? 
+            <TouchableOpacity onPress={confirmActivate} style={styles.lineBox}>
               <Text style={styles.labelText}>Account Setting</Text>
-              <Text style={styles.contentText}>Deactivate your account</Text>
+              <Text style={styles.contentText}>Activate your account</Text>
             </TouchableOpacity>
+            : 
+            <TouchableOpacity onPress={confirmDeactivate} style={styles.lineBox}>
+            <Text style={styles.labelText}>Account Setting</Text>
+            <Text style={styles.contentText}>Deactivate your account</Text>
+          </TouchableOpacity>
+            }
            
             <TouchableOpacity onPress={confirmDelete} style={styles.lineBox}>
               <Text style={styles.labelText}>Account Setting</Text>

@@ -10,7 +10,7 @@ const SubscriberNavigator = () =>{
 
     return (
         <SubscriberStack.Navigator
-        initialRouteName="Subscribers"
+        initialRouteName="Subscriber"
           screenOptions={{
             headerShown: false,
             gestureEnabled: true,

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Platform, StatusBar, Image, ScrollView, } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Platform, StatusBar, Image, ScrollView, BackHandler} from "react-native";
 import BackButtonComponent from "../../components/shared/BackButton";
 import { AuthContext } from "@/context/authContext";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
@@ -32,8 +32,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     setCalendar(!calendar)
   ]
 
-  const backHandler = () => {
-    navigation.goBack();
+  const backAction = () => {
+    navigation.navigate('Subscriber');
   };
 
   const calculatePrice = () => {
@@ -60,11 +60,21 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     calculatePrice()
   }, [])
 
+  useEffect(() =>{
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       {authState.authToken ? (
         <>
-          <BackButtonComponent onPress={backHandler} />
+          <BackButtonComponent onPress={backAction} />
           <ScrollView>
             <View style={styles.kitchenBox}>
               <View style={styles.kitchenContentBox}>
@@ -168,7 +178,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text style={styles.dayvalueText}>
                       {subscription.subscriptionStatus.daysCompleted.length}
                     </Text>
-                    <Text style={styles.dayText}> days</Text>
+                    <Text style={styles.dayText}> { subscription.subscriptionStatus.daysCompleted.length === 1 ? 'day' : 'days' }</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.daykeyText}>Completed</Text>
@@ -180,7 +190,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text style={styles.dayvalueText}>
                       {subscription.subscriptionStatus.daysRemaining.length}
                     </Text>
-                    <Text style={styles.dayText}> days</Text>
+                    <Text style={styles.dayText}>{ subscription.subscriptionStatus.daysRemaining.length === 1 ? 'day' : 'days' }</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.daykeyText}>Remaining</Text>
@@ -197,7 +207,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.daysOptedOut.length}</Text>
-                    <Text style={styles.dayText}>days</Text>
+                    <Text style={styles.dayText}>{ subscription.subscriptionStatus.daysOptedOut.length === 1 ? 'day' : 'days' }</Text>
                   </View>
 
                 </View>
@@ -208,7 +218,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.providerOptedOut.length}</Text>
-                    <Text style={styles.dayText}>days</Text>
+                    <Text style={styles.dayText}>{subscription.subscriptionStatus.providerOptedOut.length === 1 ? 'day' : 'days' }</Text>
                   </View>
 
                 </View>
@@ -304,6 +314,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 <Text style={styles.paymentTxt}>Recieved Till Now: </Text>
                 <Text style={styles.paymentValueTxt}> ₹ {subscription.kitchenPaymentBreakdown.moneyTransferTillNow}</Text>
               </View>
+              {subscription.subscriptionStatus.daysRemaining.length !== 0 && subscription.subscriptionStatus.status !== 'Cancelled' ?
               <View
                 style={[
                   styles.paymentLineBox,
@@ -320,7 +331,9 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   automatically credited to your wallet for each delivered tiffin.
                 </Text>
               </View>
+              : null}
             </View>
+            
 
           </ScrollView>
         </>

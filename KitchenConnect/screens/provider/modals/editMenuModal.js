@@ -27,12 +27,12 @@ const EditMenuModal = ({ isVisible, menu, day, onClose, onEdit}) => {
 
     useEffect(() => {
         setMenuData({
-            day: menu.day,
+            day: day,
             itemName: menu.itemName,
             quantity: menu.quantity,
             unit: menu.unit
         });
-    }, [menu]);
+    }, []);
 
     const dayOptions = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(value => ({ label: value, value: value }));
     const unitOptions = ['kg', 'g', 'L', 'ml', 'pcs'].map(value => ({ label: value, value: value }));
@@ -58,7 +58,7 @@ const EditMenuModal = ({ isVisible, menu, day, onClose, onEdit}) => {
                             <TextInput
                                 style={styles.quantity}
                                 placeholder="Quantity"
-                                value={menuData.quantity}
+                                value={menuData.quantity.toString()}
                                 onChangeText={(text) => setMenuData({ ...menuData, quantity: text })}
                                 keyboardType="numeric"
                             />

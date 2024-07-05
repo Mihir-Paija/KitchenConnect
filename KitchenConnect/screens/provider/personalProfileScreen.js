@@ -19,6 +19,7 @@ import {
   import DateTimePicker from "@react-native-community/datetimepicker";
   import RNPickerSelect from "react-native-picker-select";
 import { editPersonalDetails } from "../../utils/provider/profileAPI";
+import {RefreshContext} from '@/context/refreshContext'
   
   const PersonalProfileScreen = ({ navigation, route }) => {
     const [authState, setAuthState] = useContext(AuthContext);
@@ -30,6 +31,8 @@ import { editPersonalDetails } from "../../utils/provider/profileAPI";
         mobile: profile.mobile,
 
     })
+
+    const [globalRefresh, setGlobalRefresh] = useContext(RefreshContext)
 
     const backHandler = () => {
       navigation.goBack();
@@ -49,6 +52,9 @@ import { editPersonalDetails } from "../../utils/provider/profileAPI";
             profile.email = details.email
             profile.mobile = details.mobile
             Alert.alert("Update Successfull")
+            setGlobalRefresh(!globalRefresh)
+            navigation.navigate('Tiffin')
+
           }
           else{
             Alert.alert(`Couldn't Update`)
