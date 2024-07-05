@@ -45,6 +45,14 @@ router.use("/customer/subscription", subscriptionsRouter);
 import subscriptionOrdersRouter from "./customer/getSubscriptionOrderRouter.js";
 router.use("/customer/subscriptionOrders", subscriptionOrdersRouter);
 
+//skipSubscriptionOrdersRouter -> customer (POST)
+import skipSubscriptionOrdersRouter from "./customer/skipSubOrderRouter.js";
+router.use("/customer/subscriptionOrders/skip", skipSubscriptionOrdersRouter);
+
+//cancelSubscripitonRouter -> customer (POST)
+// import cancelSubscripitonRouter from "./customer/skipSubOrderRouter.js";
+// router.use("/customer/subscriptionOrders", cancelSubscripitonRouter);
+
 //OrderRouter -> customer (POST)
 import OrderRouter from "./customer/orderRouter.js";
 router.use("/customer/order", OrderRouter);
