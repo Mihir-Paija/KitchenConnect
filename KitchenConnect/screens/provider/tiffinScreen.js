@@ -36,6 +36,8 @@ const TiffinScreen = ({navigation}) => {
     name: "",
     shortDescription: "",
     price: "",
+    providePacking: false,
+    packingCharge: null,
     
   })
  
@@ -54,6 +56,8 @@ const TiffinScreen = ({navigation}) => {
         name: tiffin.name,
         shortDescription: tiffin.shortDescription,
         price: tiffin.price,
+        providePacking: tiffin.providePacking,
+        packingCharge: tiffin.packingCharge,
       })
     } catch (error) {
       console.log(error)
@@ -71,6 +75,8 @@ const TiffinScreen = ({navigation}) => {
       name: "",
       shortDescription: "",
       price: "",
+      providePacking: false,
+      packingCharge: ""
       
     })
     

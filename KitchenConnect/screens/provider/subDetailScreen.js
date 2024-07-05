@@ -265,10 +265,18 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   + ₹ {subscription.kitchenPaymentBreakdown.subscriptionPrice}
                 </Text>
               </View>
+              {subscription.wantDelivery ?
               <View style={styles.paymentLineBox}>
                 <Text style={styles.paymentTxt}>Delivery: </Text>
                 <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.deliveryCharge}</Text>
               </View>
+              : null} 
+              {subscription.wantPacking ?
+              <View style={styles.paymentLineBox}>
+                <Text style={styles.paymentTxt}>Packing: </Text>
+                <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.packingCharge}</Text>
+              </View>
+              : null }
               <View style={styles.paymentLineBox}>
                 <Text style={styles.paymentTxt}>GST: </Text>
                 <Text style={styles.paymentValueTxt}> + ₹ {subscription.kitchenPaymentBreakdown.tax}</Text>

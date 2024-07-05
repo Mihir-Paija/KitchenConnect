@@ -16,6 +16,7 @@ import CheckBox from "react-native-check-box";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const AddTiffinModal2 = ({ isVisible, tiffin, onBack, onClose, onAddTiffin }) => {
+    console.log(tiffin)
 
     const [tiffinData, setTiffinData] = useState({
         name: tiffin.name,
@@ -29,9 +30,12 @@ const AddTiffinModal2 = ({ isVisible, tiffin, onBack, onClose, onAddTiffin }) =>
         deliveryCharge: 0,
         deliveryTimeHrs: "",
         deliveryTimeMins: "",
+        providePacking: tiffin.providePacking,
+        packingCharge: tiffin.providePacking ? tiffin.packingCharge : null 
     });
 
     const handleAddTiffin = () => {
+        console.log(tiffinData)
         if (!tiffinData.name || !tiffinData.shortDescription || !tiffinData.price || !tiffinData.foodType || !tiffinData.tiffinType || !tiffinData.hours || !tiffinData.mins) {
             Alert.alert("Please Fill All Fields");
             return

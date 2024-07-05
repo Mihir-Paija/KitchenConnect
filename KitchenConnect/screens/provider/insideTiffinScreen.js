@@ -218,6 +218,8 @@ const InsideTiffinScreen = ({ route, navigation }) => {
               <DeliveryDetailsModal
                 isVisible={deliveryModal}
                 info={deliveryDetails}
+                providePacking={tiffin.providePacking}
+                packingCharge={tiffin.packingCharge}
                 onClose={toggleDeliveryModal}
               />)}
 
