@@ -22,6 +22,10 @@ const priceSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please enter the lower limit"],
   },
+  packingCharge: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const subcriptionStatusSchema = new mongoose.Schema({
@@ -51,6 +55,10 @@ const paymentBreakdownSchema = new mongoose.Schema({
   deliveryCharge: {
     type: Number,
     required: [true, "Please enter the delivery charge"],
+  },
+  packingCharge: {
+    type: Number,
+    default: 0,
   },
   discount: {
     type: Number,
@@ -98,6 +106,10 @@ const subscriberSchema = new Schema(
     wantDelivery: {
       type: Boolean,
       required: [true, "Please specify if delivery is wanted"],
+    },
+    wantPacking:{
+      type: Boolean,
+      required: [true, 'Please specify if packing is wanted']
     },
     noOfTiffins: {
       type: Number,

@@ -27,10 +27,11 @@ const CreateSubModal = ({ isVisible, onClose, onCreate, tiffin}) => {
             Alert.alert("Please Fill All Fields");
             return;
         }
+        const discountedPrice = ((tiffin.price - perTiffin)/tiffin.price) * 100
 
         const updatedSubscription = {
             ...subscription,
-            discount: tiffin.price - perTiffin,
+            discount: discountedPrice.toFixed(2),
         };
 
         onCreate(updatedSubscription);

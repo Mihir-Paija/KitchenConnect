@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 
-const DeliveryDetailsModal = ({ isVisible, info, onClose }) => {
+const DeliveryDetailsModal = ({ isVisible, info, onClose, providePacking, packingCharge }) => {
     const [deliveryDetails, setDeliveryDetails] = useState({
         name: '',
         availability: false,
@@ -42,6 +42,17 @@ const DeliveryDetailsModal = ({ isVisible, info, onClose }) => {
                         ) : (
                             <Text style={styles.detailText}>You Don't Provide Delivery for {deliveryDetails.name}</Text>
                         )}
+
+                        <Text style={styles.modalTitle}>Packing Details for {deliveryDetails.name}</Text>
+                        {providePacking ? (
+                            <>
+                                <Text style={styles.detailText}>Delivery Charge: {packingCharge}</Text>
+
+                            </>
+                        ) : (
+                            <Text style={styles.detailText}>You Don't Provide Packing for {deliveryDetails.name}</Text>
+                        )}
+
                         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                             <Text style={styles.buttonText}>Close</Text>
                         </TouchableOpacity>

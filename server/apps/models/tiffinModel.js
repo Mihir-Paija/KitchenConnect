@@ -62,6 +62,16 @@ const tiffinSchema = new Schema(
       required: [true, "Please Add Delivery Details"],
     },
 
+    providePacking:{
+      type: Boolean,
+      required: [true, 'Please Mention if you will provide packing or not']
+    },
+
+    packingCharge:{
+      type: Number,
+      default: null
+    },
+
     deactivate: {
       type: Boolean,
       default: false,

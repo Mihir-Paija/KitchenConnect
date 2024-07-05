@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { StyleSheet, ActivityIndicator, View, Text } from "react-native";
 import {windowWidth, windowHeight} from '@/utils/dimensions'
+//import {AuthContext} from '@/context/authContext'
 
 const facts = [
   "Experience the Goodness of Home Cooked Food",
@@ -12,16 +13,17 @@ const facts = [
 
 const LoadingScreen = () => {
   const [fact, setFact] = useState(null)
+  //const [authState] = useContext(AuthContext)
 
   useEffect(() =>{
     const randomIndex = Math.floor(Math.random() * facts.length);
-    setFact(facts[randomIndex])
+    setFact(facts[randomIndex]) 
   }, [])
 
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#ffa500" />
-      <Text style = {styles.fact}>{fact}</Text>
+      <Text style = {styles.fact}>{fact}</Text> 
     </View>
   );
 };

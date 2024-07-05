@@ -20,11 +20,14 @@ const AddTiffinModal1 = ({ isVisible, onClose, onNext }) => {
     name: "",
     shortDescription: "",
     price: "",
+    providePacking: false,
+    packingCharge: 0
 
   });
 
   const handleNext = () => {
-    if (!tiffinData.name || !tiffinData.shortDescription || !tiffinData.price) {
+    console.log(tiffinData)
+    if (!tiffinData.name || !tiffinData.shortDescription || !tiffinData.price || tiffinData.providePacking === undefined ) {
       Alert.alert("Please Fill All Fields");
       return
     }
@@ -76,6 +79,25 @@ const AddTiffinModal1 = ({ isVisible, onClose, onNext }) => {
             }
             keyboardType="numeric"
           />
+          <View style={styles.checkboxContainer}>
+          <CheckBox
+                            isChecked={tiffinData.providePacking}
+                            onClick={() => setTiffinData({ ...tiffinData, providePacking: !tiffinData.providePacking })}
+                            checkBoxColor="orange"
+                        />
+                        <Text style={styles.labels}>Would you provide Brown Bag?</Text>
+                        </View>   
+                    {tiffinData.providePacking ? (
+                        <>
+                            <Text style={styles.label}>Brown Bag Charge</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter Brown Bag Charge"
+                                value={tiffinData.packingCharge.toString()}
+                                onChangeText={(text) => setTiffinData({ ...tiffinData, packingCharge: text })}
+                                keyboardType="numeric"
+                            />
+                            </> ): null}
           <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.submitButton} onPress={handleNext}>
               <Text style={styles.buttonText}>Next</Text>
@@ -133,6 +155,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: windowWidth * 0.03,
     marginBottom: windowHeight * 0.01,
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: windowHeight * 0.02,
+},
+checkbox: {
+    padding: 0,
+    margin: 0,
+},
 
   pickerContainer: {
     marginBottom: windowHeight * 0.01,

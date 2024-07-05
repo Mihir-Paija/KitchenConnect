@@ -4,7 +4,8 @@ import { windowWidth, windowHeight } from '@/utils/dimensions';
 
 const HomeHeader = ({profile, onPress}) =>{
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={profile.deactivate ? styles.deactivatedContainer : styles.container}>
+            {profile.deactivate ? <Text>Kitchen is Deactivated</Text> : null}
             <View>
                 <Text style={styles.providerName}>{profile.kitchenName} </Text>
                 <Text numberOfLines={1} adjustsFontSizeToFit>{profile.shortDescription}</Text>
@@ -30,6 +31,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: "#FFFFFF"
 
+    },
+    deactivatedContainer:{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#A9A9A9',
     },
 
     providerName: {

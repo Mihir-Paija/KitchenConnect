@@ -45,14 +45,13 @@ export const getSubscribers = async (req, res) => {
     if (subscribers) {
       const currentDate = new Date();
 
-      for (const subscriber of subscribers) {
-        console.log(subscriber);
-        const subscriberData = subscriber._doc;
-        console.log(subscriberData);
+            for (const subscriber of subscribers) {
 
-        const formattedSubscriber = {
-          ...subscriberData,
-          title: subMap.get(subscriberData.subscriptionID.toString()),
+                const subscriberData = subscriber._doc
+                
+                const formattedSubscriber = {
+                  ...subscriberData,
+                  title: subMap.get(subscriberData.subscriptionID.toString()),
 
           tiffinName: tiffinMap.get(subscriberData.tiffinID.toString())[0],
           tiffinType: tiffinMap.get(subscriberData.tiffinID.toString())[1],

@@ -48,13 +48,18 @@ export const addTiffins = async (req, res) => {
     try {
         const userID = req.user._id
 
-        const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins } = req.body
-        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined))
+        const { name, shortDescription, foodType, price, tiffinType, hours, mins, availability, deliveryCharge, deliveryTimeHrs, deliveryTimeMins, providePacking, packingCharge } = req.body
+        if(!name || !shortDescription || !foodType || !price || !tiffinType || !hours || !mins || (availability === undefined) || (providePacking === undefined))
             return res.status(400).send({
                 message: "Please Enter All Required Fields"
             })
         
-        
+        if(providePacking){
+            if(!packingCharge)
+                return res.status(400).send({
+                    message: `Please Provide Packing Charge`
+                })
+        }
         
         let deliveryTime = undefined
         if (availability) {
@@ -80,7 +85,9 @@ export const addTiffins = async (req, res) => {
             price,
             tiffinType,
             time: readyTime,
-            deliveryDetails
+            deliveryDetails,
+            providePacking,
+            packingCharge: providePacking ? packingCharge : null
         }
 
         const newTiffin = await tiffins.create(tiffin);
