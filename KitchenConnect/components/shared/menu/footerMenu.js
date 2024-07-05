@@ -9,7 +9,7 @@ import {
 import React, { useContext } from "react";
 import customerIconPaths from "../../../utils/customerIconpaths";
 import MenuItem from "../menu/meuItem";
-
+import { windowHeight, windowWidth } from "@/utils/dimensions";
 import { useRoute } from "@react-navigation/native";
 
 const FooterMenu = ({ navigation }) => {
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "#fff",
-    paddingTop: "1%",
-    paddingBottom: "1%",
+    paddingVertical: windowWidth * 0.02,
+    // paddingBottom: "1%",
     // borderTopWidth: 1,
     // borderColor: "#ffa500",
     borderTopLeftRadius: 20,

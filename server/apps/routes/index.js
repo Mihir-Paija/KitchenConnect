@@ -37,9 +37,13 @@ router.use("/customer/subscription", subscribeRouter);
 import subscriptionDetailsRouter from "./customer/getSubscriptionDetails.js";
 router.use("/customer/subscriptionDetail", subscriptionDetailsRouter);
 
-//subscriptionDetailsRouter -> customer (GET)
+//subscriptionsListRouter -> customer (GET)
 import subscriptionsRouter from "./customer/subscribeRouter.js";
 router.use("/customer/subscription", subscriptionsRouter);
+
+//subscriptionOrdersRouter -> customer (GET)
+import subscriptionOrdersRouter from "./customer/getSubscriptionOrderRouter.js";
+router.use("/customer/subscriptionOrders", subscriptionOrdersRouter);
 
 //OrderRouter -> customer (POST)
 import OrderRouter from "./customer/orderRouter.js";
@@ -56,6 +60,10 @@ router.use("/customer/orderDetails", OrderDetailsRouter);
 //profileRouter -> customer (PATCH)
 import profileCustomerRouter from "./customer/profileRoute.js";
 router.use("/customer/profile", profileCustomerRouter);
+
+//walletRouter -> customer (GET)(POST)
+import walletCustomerRouter from "./customer/walletRouter.js";
+router.use("/customer/wallet", walletCustomerRouter);
 
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
