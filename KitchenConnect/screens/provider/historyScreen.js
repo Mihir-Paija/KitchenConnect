@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, Alert, TouchableOpacity, StatusBar, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler, Alert, TouchableOpacity, StatusBar, FlatList, ScrollView } from 'react-native';
 import activeScreenStyles from '../../styles/shared/activeScreen';
 import { AuthContext } from "@/context/authContext";
 import { windowHeight, windowWidth } from '@/utils/dimensions'
@@ -702,84 +702,80 @@ const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        <>
-          <View style={styles.insights}>
-            <Text style={styles.header}>Insights</Text>
-            <View style={styles.row}>
-              <View style={styles.filters}>
-                <Text>Tiffins</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Tiffins', value: null }}
-                  value={tiffinName}
-                  onValueChange={value => setTiffinName(value)}
-                  items={tiffinNameOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.filters}>
-                <Text>Time</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Type', value: null }}
-                  value={tiffinType}
-                  onValueChange={value => setTiffinType(value)}
-                  items={tiffinTypeOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.filters}>
-                <Text>Type</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Order Type', value: null }}
-                  value={orderType}
-                  onValueChange={value => setOrderType(value)}
-                  items={orderTypeOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.duration}>
-                <Text>Duration</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Duration', value: null }}
-                  value={duration ? duration.label : null}
-                  onValueChange={label => {
-                    const selectedOption = findOptionByLabel(label, durationOptions);
-                    setDuration(selectedOption);
-                  }}
-                  items={durationOptions.map(option => ({
-                    label: option.label,
-                    value: option.label,
-                  }))}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
+        <View style={styles.insights}>
+          <Text style={styles.header}>Insights</Text>
+          <View style={styles.row}>
+            <View style={styles.filters}>
+              <Text>Tiffins</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Tiffins', value: null }}
+                value={tiffinName}
+                onValueChange={value => setTiffinName(value)}
+                items={tiffinNameOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
             </View>
-            <LegendComponent
-            colorMap={legendMap}
-            />
-            {graphData.datasets && graphData.datasets.length ? (
-              <LineGraph data={graphData}
-                scroll={scroll}
-                value={'No Of Tiffins'} />
-            ) : (
-              <Text style={styles.noInsights}>No Insights</Text>
-            )}
+            <View style={styles.filters}>
+              <Text>Time</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Time', value: null }}
+                value={tiffinType}
+                onValueChange={value => setTiffinType(value)}
+                items={tiffinTypeOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
+            <View style={styles.filters}>
+              <Text>Type</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Order Type', value: null }}
+                value={orderType}
+                onValueChange={value => setOrderType(value)}
+                items={orderTypeOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
+            <View style={styles.duration}>
+              <Text>Duration</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Duration', value: null }}
+                value={duration ? duration.label : null}
+                onValueChange={label => {
+                  const selectedOption = findOptionByLabel(label, durationOptions);
+                  setDuration(selectedOption);
+                }}
+                items={durationOptions.map(option => ({
+                  label: option.label,
+                  value: option.label,
+                }))}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
           </View>
-  
-          <Text style={styles.header}>History</Text>
-          <FlatList
-            data={DUMMY_DATA}
-            renderItem={({ item }) => <HistoryComponent {...item} />}
-            contentContainerStyle={styles.flatList}
-          />
-        </>
-      )}
+          <LegendComponent colorMap={legendMap} />
+          {graphData.datasets && graphData.datasets.length ? (
+            <View style={styles.graphContainer}>
+              <LineGraph
+                data={graphData}
+                scroll={scroll}
+                value={'No Of Tiffins'}
+              />
+            </View>
+          ) : (
+            <Text style={styles.noInsights}>No Insights</Text>
+          )}
+        </View>
+
+        <Text style={styles.header}>History</Text>
+        <FlatList
+          data={DUMMY_DATA}
+          renderItem={({ item }) => <HistoryComponent {...item} />}
+          contentContainerStyle={styles.flatList}
+        />
     </SafeAreaView>
   );
 };
@@ -797,28 +793,19 @@ const styles = StyleSheet.create({
     fontSize: windowHeight * 0.025,
     marginBottom: 8,
     paddingBottom: 10,
-   borderBottomWidth: 1,
-    borderColor: 'black'
+    borderBottomWidth: 1,
+    borderColor: 'black',
   },
   insights: {
     backgroundColor: '#FFFFFF',
-    //paddingHorizontal: 5,
-    paddingVertical: 12,
-    marginBottom: 12,
+    paddingVertical: 5,
+    marginBottom: 5,
   },
   row: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 5,
   },
-  tiffinName: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  tiffinType: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  orderType: {
+  filters: {
     flex: 1,
     alignItems: 'center',
   },
@@ -826,21 +813,17 @@ const styles = StyleSheet.create({
     flex: 1.5,
     alignItems: 'center',
   },
-  filters: {
-    flex: 1,
-    alignItems: 'center',
-    //marginRight: 8,
-  },
-  noInsights:{
+  noInsights: {
     textAlign: 'center',
     fontSize: windowHeight * 0.02,
   },
-
   flatList: {
     flexGrow: 1,
-    //paddingBottom: 30,
     borderBottomWidth: 1,
     borderColor: '#ccc',
+  },
+  graphContainer: {
+    height: windowHeight * 0.3, // Adjust the height as necessary
   },
 });
 
@@ -868,19 +851,3 @@ const pickerSelectStyles = StyleSheet.create({
     marginBottom: windowHeight * 0.01,
   },
 });
-
-// const [datePicker1, setDatePicker1] = useState(false);
-// const [datePicker2, setDatePicker2] = useState(false);
-// const [fromDate, setFromDate] = useState('');
-// const [toDate, setToDate] = useState('')
-
-// const toggleDatePicker1 = () =>{
-//   setDatePicker2(false)
-//   setDatePicker1(!datePicker1)
-// }
-
-// const toggleDatePicker2 = () =>{
-//   setDatePicker1(false)
-//   setDatePicker2(!datePicker2)
-// }
-
