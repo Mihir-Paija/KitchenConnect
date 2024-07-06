@@ -65,6 +65,7 @@ export const subscribe = async (req, res) => {
       startDate,
       endDate,
       wantDelivery,
+      wantPacking,
       noOfTiffins,
       address,
       subscriptionStatus,
@@ -78,7 +79,6 @@ export const subscribe = async (req, res) => {
     dayStarted.setUTCHours(0, 0, 0, 0);
     dayEnded.setUTCHours(0, 0, 0, 0);
 
-
     const daysRemaining = getDatesInRange(dayStarted, dayEnded);
 
     const subscriberData = {
@@ -91,6 +91,7 @@ export const subscribe = async (req, res) => {
       startDate: dayStarted,
       endDate: dayEnded,
       wantDelivery,
+      wantPacking,
       noOfTiffins,
       address,
       subscriptionStatus: {
@@ -294,6 +295,7 @@ export const subscriptionsGet = async (req, res) => {
             noOfTiffins: sub.noOfTiffins,
             wantDelivery: sub.wantDelivery,
             subscriptionStatus: sub.subscriptionStatus.status,
+            cancelDate: sub.subscriptionStatus.cancelDate || null,
             orderDate: sub.createdAt,
           },
           Kitchen: kitchenData,

@@ -165,6 +165,29 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   />
                 </View>
 
+                {subDetails.Subscription.subscriptionStatus.status ===
+                  "Cancelled" && (
+                  <View
+                    style={[
+                      styles.msgBox,
+                      { backgroundColor: "rgba(255,0,0,0.2)" },
+                    ]}
+                  >
+                    {/* {console.log(subscriptionItem.Subscription.cancelDate)} */}
+                    <Text style={styles.msgText}>
+                      You have cancelled this subscription on{" "}
+                      {formatDate(
+                        subDetails.Subscription.subscriptionStatus.cancelDate
+                      )}{" "}
+                      at{" "}
+                      {formatTime(
+                        subDetails.Subscription.subscriptionStatus.cancelDate
+                      )}
+                      .
+                    </Text>
+                  </View>
+                )}
+
                 <View style={styles.bookingBox}>
                   <Text style={styles.bookingTitleTxt}>Booking Details</Text>
                   <View
@@ -323,10 +346,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                 </View>
 
-                {(subDetails.Subscription.subscriptionStatus.status ===
-                  "Current" ||
-                  subDetails.Subscription.subscriptionStatus.status ===
-                    "Completed") && (
+                {subDetails.Subscription.subscriptionStatus.status !=
+                  "Pending" && (
                   <View style={[styles.bookingBox]}>
                     <Text style={styles.bookingTitleTxt}>{}Status</Text>
                     <View style={styles.statusLineBox}>
@@ -524,6 +545,22 @@ const styles = StyleSheet.create({
     // marginTop: windowWidth * 0.02,
     justifyContent: "center",
     alignSelf: "center",
+  },
+  msgBox: {
+    width: windowWidth * 0.9,
+    alignSelf: "center",
+    backgroundColor: "rgba(255,165,0,0.2)",
+    justifyContent: "center",
+    marginVertical: windowHeight * 0.005,
+    borderRadius: windowWidth * 0.02,
+    paddingVertical: windowWidth * 0.01,
+    paddingHorizontal: windowWidth * 0.02,
+  },
+  msgText: {
+    // textAlign: "center",
+    color: "#000",
+    fontSize: windowWidth * 0.04,
+    fontFamily: "NunitoSemiBold",
   },
   bookingBox: {
     marginVertical: windowHeight * 0.01,

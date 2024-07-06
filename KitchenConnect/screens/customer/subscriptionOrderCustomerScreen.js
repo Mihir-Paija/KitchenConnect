@@ -102,6 +102,7 @@ const SubscriptionOrderCustomerScreen = ({ navigation, route }) => {
     subscriptionID,
   } = route.params;
   const subDetails = {
+    subscriptionID,
     startDate,
     endDate,
     noOfTiffins,
@@ -281,6 +282,9 @@ const SubscriptionOrderCustomerScreen = ({ navigation, route }) => {
                           //   onPress={() => cardHandler(sub)}
                           orderItem={order}
                           subDetails={subDetails}
+                          refreshOrders={() =>
+                            fetchSubOrderList(subscriptionID)
+                          }
                           //   orderHandler={() => orderHandler(sub)}
                         />
                       ))}
