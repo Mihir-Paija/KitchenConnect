@@ -4,6 +4,7 @@ import order from '../../models/orderModel.js';
 import wallet from '../../models/walletModel.js'
 import mongoose, { Mongoose } from 'mongoose';
 import transaction from '../../models/transactionModel.js';
+import subscriptionOrder from '../../models/subscriptionOrderModel.js';
 
 const isDateInArray = (array, date) => {
     return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
@@ -11,17 +12,21 @@ const isDateInArray = (array, date) => {
 
 const completeTransaction = async(orderID, kitchenID, customerID, customerAmount, kitchenAmount) =>{
     try {
-       const customerWallet = await wallet.findOne({userID: new Mongoose.Types.ObjectId(customerID)})
+       const customerWallet = await wallet.findOne({userID: new mongoose.Types.ObjectId(customerID)})
        
        if(!customerWallet){
         return 0;
       }
 
-      if(customerWallet.amount < customerAmount)
+      console.log(customerWallet.amount)
+      console.log(customerAmount)
+      console.log(typeof customerWallet.amount)
+
+      if(parseInt(customerWallet.amount, 10) < customerAmount)
         return 0;
       
-      const providerWallet = await wallet.findOne({userID: new Mongoose.Types.ObjectId(kitchenID)})
-
+      const providerWallet = await wallet.findOne({userID: new mongoose.Types.ObjectId(kitchenID)})
+    console.log(providerWallet)
       if(!providerWallet){
         return 0;
       }
@@ -35,7 +40,7 @@ const completeTransaction = async(orderID, kitchenID, customerID, customerAmount
       providerWallet.amount += kitchenAmount
       updatedProviderWallet = await providerWallet.save();
       } 
-      else return 0;
+      else{
 
       updatedCustomerWallet = null
       if(!updatedProviderWallet){
@@ -46,12 +51,13 @@ const completeTransaction = async(orderID, kitchenID, customerID, customerAmount
 
         return 0;
       }
+    }
 
       const newTransaction ={
         orderID: orderID,
         payerID: customerID,
         recieverID: kitchenID,
-        amounPaid: customerAmount,
+        amountPaid: customerAmount,
         amountRecieved: kitchenAmount,
       }
 
@@ -90,7 +96,7 @@ export const getOrders = async (req, res) => {
         const lunchAdresses = [];
         const dinnerAdresses = [];
         const currentDate = new Date()
-        currentDate.setUTCHours(0, 0, 0, 0)
+        currentDate.setHours(0, 0, 0, 0)
         const updatedDate = currentDate.toISOString().replace('Z', '+00:00');
 
         function findTiffinIndex(arr, tiffinName) {
@@ -409,10 +415,28 @@ export const sendOTP = async(req, res) =>{
         const customerID = order.customerID;
         console.log(customerID)
 
-        //send OTP to customer
+        const currentDate = new Date()
+        currentDate.setHours(0,0,0,0)
+        const currentDateString = currentDate.toISOString()
 
-        return res.status(200).send({
-            message: 'OTP Sent Successfully'
+        const orders = await subscriptionOrder.findOne({subscriptionID: order._id})
+        const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+        console.log(todayOrder)
+        todayOrder.otp = otp;
+
+        const updatedOrders = orders.save()
+
+
+            if(updatedOrders){
+                return res.status(200).send({
+                    message: 'OTP Generated!'
+                })
+            }
+
+
+
+        return res.status(500).send({
+            message: `Couldn't Generate OTP`
         })
     } catch(error){
         console.log('Error in Sending OTP ', error)
@@ -438,18 +462,38 @@ export const completeOrder = async(req, res) =>{
             console.log(subscriber)
             const currentDate = new Date()
             currentDate.setHours(0,0,0,0)
+            const currentDateString = currentDate.toISOString()
 
-            subscriber.subscriptionStatus.daysCompleted.push(currentDate);
-            subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item) != currentDate())
+            const completed = subscriber.subscriptionStatus.daysCompleted.find(item => new Date(item).toISOString() === currentDateString)
+            if(completed)
+                return res.status(400).send({
+                    message: `Order Already Completed`
+                })
+            
+            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
+
+            if(!record)
+                return res.status(500).send({
+                    message: `Couldn't Complete Payment! Please Try Again!`
+                })
+
+            //subscriber.subscriptionStatus.daysCompleted.push(currentDate);
+            subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
 
             const updatedSubscriber = await subscriber.save()
 
-            //also update history Schema
-            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPice, kitchenPaymentBreakdown.perOrderPrice)
+            const orders = await subscriptionOrder.findOne({subscriptionID: _id})
+            const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+            todayOrder.status = 'Completed';
+            todayOrder.amountPaid = customerPaymentBreakdown.perOrderPrice
+            todayOrder.amountRecieved = kitchenPaymentBreakdown.perOrderPrice
 
-            if(updatedSubscriber && record){
+            const updatedOrders = orders.save()
+
+
+            if(updatedOrders){
                 return res.status(200).send({
-                    message: `Order Completed`
+                    message: 'Order Completed'
                 })
             }
 
@@ -467,12 +511,17 @@ export const completeOrder = async(req, res) =>{
                     message: `Order Doesn't Exist`
                 })
             }
+            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
 
+            if(!record)
+                return res.status(500).send({
+                    message: `Couldn't Complete Payment! Please Try Again!`
+                })
+
+                
             value.status = 'Completed'
             value.orderDate = new Date()
             const updatedOrder = value.save()
-
-            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.total, kitchenPaymentBreakdown.total)
 
             if(updatedOrder){
                 return res.status(200).send({

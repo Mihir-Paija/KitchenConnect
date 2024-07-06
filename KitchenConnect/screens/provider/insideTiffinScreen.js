@@ -113,13 +113,14 @@ const InsideTiffinScreen = ({ route, navigation }) => {
       setLoading(true)
       const response = await deleteTiffin(authState.authToken, tiffinID)
       setLoading(false);
-      setGlobalRefresh(!globalRefresh);
+      
     } catch (error) {
       console.log('Error in Deleting Tiffin ', error);
       Alert.alert(error.message || "An error occurred");
       setLoading(false);
     }finally{
       navigation.navigate("Tiffin")
+      setGlobalRefresh(!globalRefresh);
     }
 
   }

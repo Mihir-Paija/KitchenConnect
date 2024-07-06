@@ -11,6 +11,7 @@ import TransactionComponent from '../../components/provider/transactionComponent
 import LegendComponent from '@/components/provider/legendComponent'
 import LineGraph from '@/components/provider/lineGraph'
 import RNPickerSelect from "react-native-picker-select";
+import WalletDetailsScreen from '../shared/walletDetailsScreen';
 
 const DUMMY_DATA = [
   {
@@ -579,8 +580,11 @@ const WalletScreen = ({ navigation }) => {
                 <View style={styles.upperScreen}>
                   {screen === 'Wallet' ?
                     <View>
-                      <Text style={{ fontSize: 20 }}>{wallet.firstName + ' ' + wallet.lastName}'s Wallet</Text>
-                      <Text style={{ fontSize: 20 }}>Amount: ₹{wallet.amount}</Text>
+                      <WalletDetailsScreen
+                      walletDetails={wallet}
+                      
+                      history={false}
+                      />
                     </View>
                     :
                     <View>
@@ -693,7 +697,7 @@ const styles = StyleSheet.create({
     //paddingHorizontal: 5,
     paddingVertical: 12,
     marginBottom: 12,
-    height: windowHeight * 0.4,
+    height: windowHeight * 0.45,
 
   },
   header: {

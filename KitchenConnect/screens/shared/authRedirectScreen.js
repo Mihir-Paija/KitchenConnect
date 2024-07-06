@@ -9,11 +9,11 @@ const AuthRedirect = ({ navigation }) => {
   useEffect(() => {
     if (authState.authToken) {
       if (authState.authType === "customer")
-        navigation.replace("CustomerAuthNavigator");
+        navigation.navigate("CustomerAuthNavigator");
       else if (authState.authType === "provider")
-        navigation.replace("ProviderAuthNavigator");
+        navigation.navigate("ProviderAuthNavigator");
     } else {
-      navigation.replace("Choose");
+      navigation.navigate("Choose");
     }
   }, [authState, navigation]);
 

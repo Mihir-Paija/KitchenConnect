@@ -17,6 +17,9 @@ const subOrderSchema = new Schema(
     amountPaid: {
       type: Number,
     },
+    amountRecieved:{
+      type: Number,
+    }
   },
   { timestamps: true }
 );

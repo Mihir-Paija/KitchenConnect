@@ -25,11 +25,11 @@ import LoadingScreen from "../shared/loadingScreen";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import BackButtonComponent from "../../components/shared/BackButton";
 
-const WalletDetailsScreen = ({ navigation, walletDetials }) => {
+const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
   //gloabal states
   const [authState, setAuthState] = useContext(AuthContext);
   const customerID = authState.authData._id;
-  console.log(walletDetials);
+  console.log(walletDetails);
 
   const [loading, setLoading] = useState(false);
   // const [refresh, setRefresh] = useState(false);
@@ -46,7 +46,7 @@ const WalletDetailsScreen = ({ navigation, walletDetials }) => {
       {loading ? (
         <LoadingScreen />
       ) : (
-        <>
+        <>      
           <View style={styles.headerBox}>
             <Text
               style={[styles.helloTxt, { marginBottom: windowHeight * 0.001 }]}
@@ -54,8 +54,9 @@ const WalletDetailsScreen = ({ navigation, walletDetials }) => {
               Hello,{" "}
             </Text>
             <Text style={styles.nameTxt}>
-              {walletDetials.firstName}
-              {walletDetials.lastName}
+              {walletDetails.firstName}
+              {' '}
+              {walletDetails.lastName}
             </Text>
           </View>
           <View style={styles.amountBox}>
@@ -72,7 +73,7 @@ const WalletDetailsScreen = ({ navigation, walletDetials }) => {
               Total Balance
             </Text>
             <Text style={styles.amountTxt}>
-              ₹ {walletDetials.amount.toFixed(2)}
+              ₹ {walletDetails.amount.toFixed(2)}
             </Text>
           </View>
           <View style={styles.operationLineBox}>
@@ -104,10 +105,12 @@ const WalletDetailsScreen = ({ navigation, walletDetials }) => {
               <Text style={styles.iconTxt}>Withdraw</Text>
             </TouchableOpacity>
           </View>
+          {history ?
           <View style={styles.transactionBox}>
             <Text style={styles.transactionBoxTxt}>Transaction History</Text>
             <ScrollView style={styles.transactionContentBox}></ScrollView>
           </View>
+          : null}
         </>
       )}
     </View>
