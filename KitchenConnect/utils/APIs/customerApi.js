@@ -259,3 +259,29 @@ export const createWalletCustomer = async (customerID, bodyData) => {
     throw error.response.data;
   }
 };
+
+export const addMoneyWalletCustomer = async (walletID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/wallet/add/${walletID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in add money Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const withdrawMoneyWalletCustomer = async (walletID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/wallet/withdraw/${walletID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in withdraw money Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
