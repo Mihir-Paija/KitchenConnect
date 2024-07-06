@@ -10,9 +10,9 @@ const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
   // console.log(subscriptionItem);
   const renderStatusMessage = (status) => {
     switch (status) {
-      case "pending":
+      case "Pending":
         return "Expect a response within 12 hours of subscriptionItem.";
-      case "declined":
+      case "Declined":
         return "Unfortunately, your request was declined by the provider.";
       default:
         return null;
@@ -82,17 +82,43 @@ const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
           </View>
         </View>
 
+        {statusMessage && (
+          <View style={styles.statusBox}>
+            <Text style={styles.statusText}>{statusMessage}</Text>
+          </View>
+        )}
+        {subscriptionItem.Subscription.subscriptionStatus === "Cancelled" && (
+          <View
+            style={[styles.statusBox, { backgroundColor: "rgba(255,0,0,0.2)" }]}
+          >
+            {/* {console.log(subscriptionItem.Subscription.cancelDate)} */}
+            <Text style={styles.statusText}>
+              You have cancelled this subscription on{" "}
+              {formatDate(subscriptionItem.Subscription.cancelDate)} at{" "}
+              {formatTime(subscriptionItem.Subscription.cancelDate)}.
+            </Text>
+          </View>
+        )}
+
         {/* <TouchableOpacity style={styles.btnBox} onPress={orderHandler}>
           <Text style={styles.submitTextStyle}>View Order</Text>
           <RightButton />
         </TouchableOpacity> */}
+
         {subscriptionItem.Subscription.subscriptionStatus === "Pending" ? (
-          <SubmitButton
-            btnTitle={"View Details"}
-            // style={styles.detailsBtnStyle}
-            // txtStyle={styles.detailsBtnTextStyle}
-            handleSubmitBtn={onPress}
-          />
+          <View style={[styles.btnBox, { justifyContent: "center" }]}>
+            <SubmitButton
+              btnTitle={"View Details"}
+              style={{
+                height: windowHeight * 0.04,
+                width: windowWidth * 0.5,
+                marginBottom: 0,
+                marginTop: 0,
+              }}
+              // txtStyle={styles.detailsBtnTextStyle}
+              handleSubmitBtn={onPress}
+            />
+          </View>
         ) : (
           <View style={styles.btnBox}>
             <SubmitButton
@@ -107,12 +133,6 @@ const SubscriptionCard = ({ onPress, subscriptionItem, orderHandler }) => {
               txtStyle={styles.detailsBtnTextStyle}
               handleSubmitBtn={onPress}
             />
-          </View>
-        )}
-
-        {statusMessage && (
-          <View style={styles.statusBox}>
-            <Text style={styles.statusText}>{statusMessage}</Text>
           </View>
         )}
       </View>

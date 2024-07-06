@@ -16,29 +16,79 @@ import FooterMenu from "../../components/shared/menu/footerMenu";
 import { AuthContext } from "@/context/authContext";
 import activeScreenStyles from "@/styles/shared/activeScreen";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
-import {
-  getWalletCustomer,
-  createWalletCustomer,
-} from "../../utils/APIs/customerApi";
-import CreateWalletModal from "../shared/createWalletModal";
 import LoadingScreen from "../shared/loadingScreen";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import BackButtonComponent from "../../components/shared/BackButton";
+import AddMoneyModal from "../shared/addMoneyModal";
+import WithdrawMoneyModal from "../shared/withdrawMoneyModal";
+import {
+  addMoneyWalletCustomer,
+  withdrawMoneyWalletCustomer,
+} from "../../utils/APIs/customerApi";
 
-const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
+const WalletDetailsScreen = ({
+  navigation,
+  walletDetails,
+  history,
+  refreshWallet,
+}) => {
   //gloabal states
   const [authState, setAuthState] = useContext(AuthContext);
   const customerID = authState.authData._id;
-  console.log(walletDetails);
+  const walletID = walletDetails.walletID;
+  // console.log(walletDetails);
+
+  //states
 
   const [loading, setLoading] = useState(false);
+  const [isAddMoneyModalVisible, setAddMoneyModalVisible] = useState(false);
+  const [isWithdrawMoneyModalVisible, setWithdrawMoneyModalVisible] =
+    useState(false);
+
   // const [refresh, setRefresh] = useState(false);
   // const [wallet, setWallet] = useState([]);
 
   //functions
+  const handleAddMoney = async (amount, pin) => {
+    // Add money logic here
+    try {
+      const bodyData = { PIN: pin, amount };
+      // console.log(bodyData);
+      setLoading(true);
+      const response = await addMoneyWalletCustomer(walletID, bodyData);
+      if (response && response.status === 200) {
+        Alert.alert("Money Added Successfully");
+        refreshWallet();
+        // setRefresh(!refresh);
+      } else Alert.alert("An Error Occurred");
+    } catch (error) {
+      console.log("Error adding money Wallet ", error);
+      Alert.alert(error.message || "An Error Occured");
+    } finally {
+      setLoading(false);
+    }
+    setAddMoneyModalVisible(false);
+  };
 
-  const backHandler = () => {
-    navigation.goBack();
+  const handleWithdrawMoney = async (amount, pin) => {
+    // Withdraw money logic here
+    try {
+      const bodyData = { PIN: pin, amount };
+      console.log(bodyData);
+      setLoading(true);
+      const response = await withdrawMoneyWalletCustomer(walletID, bodyData);
+      if (response && response.status === 200) {
+        Alert.alert("Money withdrew Successfully");
+        refreshWallet();
+        // setRefresh(!refresh);
+      } else Alert.alert("An Error Occurred");
+    } catch (error) {
+      console.log("Error withdraw money Wallet ", error);
+      Alert.alert(error.message || "An Error Occured");
+    } finally {
+      setLoading(false);
+    }
+    setWithdrawMoneyModalVisible(false);
   };
 
   return (
@@ -46,7 +96,7 @@ const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
       {loading ? (
         <LoadingScreen />
       ) : (
-        <>      
+        <>
           <View style={styles.headerBox}>
             <Text
               style={[styles.helloTxt, { marginBottom: windowHeight * 0.001 }]}
@@ -54,9 +104,7 @@ const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
               Hello,{" "}
             </Text>
             <Text style={styles.nameTxt}>
-              {walletDetails.firstName}
-              {' '}
-              {walletDetails.lastName}
+              {walletDetails.firstName} {walletDetails.lastName}
             </Text>
           </View>
           <View style={styles.amountBox}>
@@ -77,7 +125,10 @@ const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
             </Text>
           </View>
           <View style={styles.operationLineBox}>
-            <TouchableOpacity style={styles.operationBox}>
+            <TouchableOpacity
+              style={styles.operationBox}
+              onPress={() => setAddMoneyModalVisible(true)}
+            >
               <View style={styles.iconBox}>
                 <Image
                   style={styles.icon}
@@ -95,7 +146,10 @@ const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
               </View>
               <Text style={styles.iconTxt}>Transfer</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.operationBox}>
+            <TouchableOpacity
+              style={styles.operationBox}
+              onPress={() => setWithdrawMoneyModalVisible(true)}
+            >
               <View style={styles.iconBox}>
                 <Image
                   style={styles.icon}
@@ -105,12 +159,23 @@ const WalletDetailsScreen = ({ navigation, walletDetails, history }) => {
               <Text style={styles.iconTxt}>Withdraw</Text>
             </TouchableOpacity>
           </View>
-          {history ?
-          <View style={styles.transactionBox}>
-            <Text style={styles.transactionBoxTxt}>Transaction History</Text>
-            <ScrollView style={styles.transactionContentBox}></ScrollView>
-          </View>
-          : null}
+          <AddMoneyModal
+            isVisible={isAddMoneyModalVisible}
+            onClose={() => setAddMoneyModalVisible(false)}
+            onAddMoney={handleAddMoney}
+          />
+          <WithdrawMoneyModal
+            isVisible={isWithdrawMoneyModalVisible}
+            onClose={() => setWithdrawMoneyModalVisible(false)}
+            onWithdrawMoney={handleWithdrawMoney}
+          />
+
+          {history ? (
+            <View style={styles.transactionBox}>
+              <Text style={styles.transactionBoxTxt}>Transaction History</Text>
+              <ScrollView style={styles.transactionContentBox}></ScrollView>
+            </View>
+          ) : null}
         </>
       )}
     </View>

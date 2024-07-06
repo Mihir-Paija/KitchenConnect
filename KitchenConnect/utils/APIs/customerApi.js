@@ -156,6 +156,21 @@ export const getSubscriptionOrderList = async (subscriptionID) => {
   }
 };
 
+// customer -> skipSubOrder : POST
+export const skipSubOrder = async (subscriptionID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/subscriptionOrders/skip/${subscriptionID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.error("Error skipSubOrder Customer API:", error);
+    console.error("Error skipSubOrder Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
 // customer -> placeOrder : POST
 export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
   try {
@@ -241,6 +256,32 @@ export const createWalletCustomer = async (customerID, bodyData) => {
     return response;
   } catch (error) {
     console.log("Error in Create Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const addMoneyWalletCustomer = async (walletID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/wallet/add/${walletID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in add money Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const withdrawMoneyWalletCustomer = async (walletID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/wallet/withdraw/${walletID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in withdraw money Wallet customer API", error.message);
     throw error.response.data;
   }
 };

@@ -17,28 +17,37 @@ const subscriberJoiSchema = Joi.object({
   wantDelivery: Joi.boolean().required().messages({
     "any.required": "Please specify if delivery is wanted",
   }),
+  wantPacking: Joi.boolean().required().messages({
+    "any.required": "Please specify if Packing is wanted",
+  }),
   noOfTiffins: Joi.number().required().messages({
     "any.required": "Please enter the number of tiffins",
   }),
   address: Joi.string().required().messages({
     "any.required": "Please enter the address",
   }),
+
   subscriptionStatus: Joi.object({
     status: Joi.string()
       .valid("Current", "Pending", "Rejected", "Cancelled")
       .required()
       .messages({
         "any.required": "Please enter the status",
+        "any.only":
+          "Status must be one of 'Current', 'Pending', 'Rejected', 'Cancelled'",
       }),
     daysRemaining: Joi.array().items(Joi.date()).default([]),
     daysOptedOut: Joi.array().items(Joi.date()).default([]),
+    providerOptedOut: Joi.array().items(Joi.date()).default([]),
     daysCompleted: Joi.array().items(Joi.date()).default([]),
+    comments: Joi.string().default(""),
     cancelDate: Joi.date().default(null),
   })
     .required()
     .messages({
       "any.required": "Please enter the subscription status",
     }),
+
   price: Joi.object({
     tiffinPrice: Joi.number().required().messages({
       "any.required": "Please enter the tiffin price",
@@ -59,6 +68,7 @@ const subscriberJoiSchema = Joi.object({
     .messages({
       "any.required": "Please enter the price details",
     }),
+
   customerPaymentBreakdown: Joi.object({
     subscriptionPrice: Joi.number().required().messages({
       "any.required": "Please enter the subscription price",
@@ -87,6 +97,7 @@ const subscriberJoiSchema = Joi.object({
     .messages({
       "any.required": "Please enter the customer payment breakdown",
     }),
+
   kitchenPaymentBreakdown: Joi.object({
     subscriptionPrice: Joi.number().required().messages({
       "any.required": "Please enter the subscription price",
