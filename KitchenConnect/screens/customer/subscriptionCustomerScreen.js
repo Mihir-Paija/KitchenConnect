@@ -230,7 +230,9 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
     );
     setCompletedSubscriptions(
       subList.filter(
-        (item) => item.Subscription.subscriptionStatus === "Completed"
+        (item) =>
+          item.Subscription.subscriptionStatus === "Completed" ||
+          item.Subscription.subscriptionStatus === "Cancelled"
       )
     );
     setPendingSubscriptions(
@@ -453,6 +455,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
                           key={subscription.Subscription._id}
                           onPress={() => cardHandler(subscription)}
                           subscriptionItem={subscription}
+                          orderHandler={() => orderHandler(subscription)}
                         />
                       ))}
                     </View>

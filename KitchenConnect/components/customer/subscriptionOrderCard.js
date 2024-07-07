@@ -1,27 +1,74 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import RightButton from "../../components/shared/RightButton";
-const SubscriptionOrderCard = ({ orderItem, subDetails }) => {
-  // const navScreen = subscriptionItem.type + "SubScreen";
-  // console.log(subscriptionItem);
-  const renderStatusMessage = (status) => {
-    switch (status) {
-      case "pending":
-        return "Expect a response within 12 hours of subscriptionItem.";
-      case "declined":
-        return "Unfortunately, your request was declined by the provider.";
-      default:
-        return null;
-    }
-  };
+import { skipSubOrder } from "../../utils/APIs/customerApi";
+const SubscriptionOrderCard = ({ orderItem, subDetails, refreshOrders }) => {
+  // console.log(subDetails);
 
   //   const statusMessage = renderStatusMessage(
   //     subscriptionItem.Subscription.subscriptionStatus
   //   );
+
+  const skipHandler = async () => {
+    // console.log("click on skip");
+    const bodyData = { subOrderDate: orderItem.orderDate };
+    // console.log(bodyData);
+    try {
+      // setLoading(true);
+      const response = await skipSubOrder(subDetails.subscriptionID, bodyData);
+      // console.log(response.data);
+      Alert.alert("Success", "Order skipped successfully.");
+      refreshOrders();
+    } catch (error) {
+      console.error("Failed to fetch order List customer:", error);
+      Alert.alert("Error", "Failed to skip the order. Please try again.");
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const showConfirmationAlert = async (skipHandler) => {
+    return new Promise((resolve, reject) => {
+      Alert.alert(
+        "Confirm Action",
+        "Are you sure you want to skip this order?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => reject("Action cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => resolve(true),
+          },
+        ],
+        { cancelable: false }
+      );
+    });
+  };
+
+  const handleSkip = async () => {
+    try {
+      const confirmed = await showConfirmationAlert();
+      if (confirmed) {
+        await skipHandler(); // Explicitly call skipHandler here
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.card}>
@@ -75,16 +122,17 @@ const SubscriptionOrderCard = ({ orderItem, subDetails }) => {
         <View style={styles.bookingIDBox}>
           <Text style={styles.bookingIDText}>Order ID : {orderItem._id}</Text>
         </View>
-        {orderItem.status === "Upcoming" && !orderItem.OTP && (
+        {orderItem.status === "Upcoming" && !orderItem.otp && (
           <View style={styles.bookingIDBox}>
             <SubmitButton
               btnTitle={"Skip this Tiffin"}
               style={styles.detailsBtnStyle}
               txtStyle={styles.detailsBtnTextStyle}
+              handleSubmitBtn={handleSkip}
             />
           </View>
         )}
-        {orderItem.status === "Upcoming" && orderItem.OTP && (
+        {orderItem.status === "Upcoming" && orderItem.otp && (
           <>
             <View style={styles.msgBox}>
               <Text style={styles.msgTxt}>
@@ -98,7 +146,7 @@ const SubscriptionOrderCard = ({ orderItem, subDetails }) => {
               ]}
             >
               <Text style={styles.detailText}>OTP : </Text>
-              {orderItem.OTP.split("").map((char, index) => (
+              {orderItem?.otp?.split("").map((char, index) => (
                 <View key={index} style={styles.otpBox}>
                   <Text style={styles.detailText}>{char}</Text>
                 </View>
@@ -134,7 +182,7 @@ const SubscriptionOrderCard = ({ orderItem, subDetails }) => {
               ]}
             >
               <Text style={styles.detailText}>OTP : </Text>
-              {orderItem.OTP.split("").map((char, index) => (
+              {orderItem?.otp?.split("").map((char, index) => (
                 <View
                   key={index}
                   style={[

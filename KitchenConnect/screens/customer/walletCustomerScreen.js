@@ -98,6 +98,7 @@ const WalletCustomerScreen = ({ navigation }) => {
                     navigation={navigation}
                     walletDetails={wallet}
                     history={true}
+                    refreshWallet={() => fetchWallet()}
                   />
                   <FooterMenu navigation={navigation} />
                 </>
