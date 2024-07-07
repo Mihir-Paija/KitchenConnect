@@ -43,8 +43,8 @@ const LineGraph = ({ data, scroll, value }) => {
        <View style={styles.container}>
             <LineChart
               data={data}
-              width={windowWidth} // Double the width to enable scrolling
-              height={windowHeight * 0.3} // Increase height if needed
+              width={windowWidth} 
+              height={windowHeight * 0.3}
               chartConfig={chartConfig}
               bezier
               style={styles.chart}

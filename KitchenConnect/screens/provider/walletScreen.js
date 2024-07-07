@@ -728,6 +728,24 @@ const styles = StyleSheet.create({
     fontSize: windowHeight * 0.025,
     marginBottom: 8,
   },
+  btnView: {
+    position: 'absolute',
+    right: windowWidth * 0.33,
+    bottom: windowHeight * 0.05,
+  },
+  btn: {
+    height: windowHeight * 0.1,
+    width: windowWidth * 0.34,
+    backgroundColor: '#4DAF7C',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15
+  },
+  btnText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+  },
   row: {
     flexDirection: 'row',
     marginBottom: 3,

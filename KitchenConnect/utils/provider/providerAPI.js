@@ -58,6 +58,16 @@ export const getLunchTiffins = async(authToken) =>{
   }
 }
 
+export const getDinnerTiffins = async(authToken) =>{
+  try {
+    const response = await axios.get(`${API_BASE_URL}/provider/tiffin/${authToken}/dinner`);
+    return response.data
+  } catch (error) {
+    console.error('Error In Getting Tiffins:', error);
+    throw error.response.data;
+  }
+}
+
 export const setFCMToken = async(authToken, bodyData) =>{
   try {
     const response = await axios.post(`${API_BASE_URL}/provider/${authToken}/setFCMToken`, bodyData);

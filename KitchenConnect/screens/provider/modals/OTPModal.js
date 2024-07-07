@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   customer:{
-    fontSize: windowHeight * 0.03
+    fontSize: windowHeight * 0.02,
   },
   submitButton: {
     marginTop: windowHeight*0.012,
