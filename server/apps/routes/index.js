@@ -73,6 +73,10 @@ router.use("/customer/profile", profileCustomerRouter);
 import walletCustomerRouter from "./customer/walletRouter.js";
 router.use("/customer/wallet", walletCustomerRouter);
 
+//feedBackRouter -> customer (GET)(POST)
+import feedBackRouter from "./customer/feedBackRouter.js";
+router.use("/customer/feedBack", feedBackRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";
