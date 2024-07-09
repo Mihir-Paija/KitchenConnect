@@ -102,7 +102,7 @@ const OTPModal = ({ isVisible, onClose, onVerify, order }) => {
             />
           </View>
           <View style={styles.info}>
-          <Text>Customer: {order.subscriberFirstName + ' ' + order.subscriberLastName}</Text>
+          <Text style={styles.customer}>Customer: {order.subscriberFirstName + ' ' + order.subscriberLastName}</Text>
          
           <TouchableOpacity onPress={handleVerify} style={styles.submitButton}>
             <Text style={styles.submitButtonText}>Verify</Text>
@@ -172,6 +172,9 @@ const styles = StyleSheet.create({
   },
   info:{
     alignItems: 'center'
+  },
+  customer:{
+    fontSize: windowHeight * 0.02,
   },
   submitButton: {
     marginTop: windowHeight*0.012,

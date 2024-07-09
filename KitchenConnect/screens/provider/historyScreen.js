@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, Alert, TouchableOpacity, StatusBar, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, BackHandler, Alert, TouchableOpacity, StatusBar, FlatList, ScrollView } from 'react-native';
 import activeScreenStyles from '../../styles/shared/activeScreen';
 import { AuthContext } from "@/context/authContext";
 import { windowHeight, windowWidth } from '@/utils/dimensions'
@@ -13,131 +13,144 @@ import { formatDate } from '../../utils/formateDateTime';
 import RNPickerSelect from "react-native-picker-select";
 import LegendComponent from '../../components/provider/legendComponent';
 
-const DUMMY_DATA = [
+const GRAPH_DATA = [
   {
-    _id: "667babbabe047a6f717c5c4d",
+    _id: "667babbabe047a6f717c5d1d",
     title: 'Subscription',
     subscriberFirstName: 'John',
     subscriberLastName: 'Doe',
     tiffinName: 'Full Tiffin',
-    tiffnType: 'Lunch',
-    day: 2,
-    orderDate: "2024-06-13T13:15:00",
+    tiffinType: 'Lunch',
+    day: 5,
+    orderDate: "2024-07-05T12:00:00",
     orderTime: "12:00",
-    noOfTiffins: 3,
+    noOfTiffins: 2,
     pricePerTiffin: 150,
     OTP: null,
-    amountPaid: 0,
+    amountPaid: 300,
     kitchenPaymentBreakdown: {
       perOrderPrice: 300
     },
-    transactionID: "Z339021GR9S"
+    transactionID: "Z339021GR9S",
+    date: new Date(2024, 6, 5),
   },
   {
-    _id: "667babbabe047a6f717c5c3d",
-    subscriberFirstName: 'John',
-    subscriberLastName: 'Doe',
-    title: 'Subscription',
-    tiffinName: 'Deluxe Tiffin',
-    tiffnType: 'Lunch',
-    day: 1,
+    _id: "667babbabe047a6f717c5d2d",
+    title: 'One-Time',
+    customerName: 'Alex',
+    tiffinName: 'Full Tiffin',
+    tiffinType: 'Dinner',
     status: "Completed",
-    orderDate: "2024-06-12T12:00:00",
-    orderTime: "12:00",
+    orderDate: "2024-07-04T13:00:00",
+    orderTime: "13:00",
     noOfTiffins: 3,
     pricePerTiffin: 150,
     OTP: "123456",
+    amountPaid: 450,
     kitchenPaymentBreakdown: {
-      perOrderPrice: 300
+      perOrderPrice: 450
     },
-    transactionID: "A567723YU0P"
+    transactionID: "A567723YU0P",
+    date: new Date(2024, 6, 4),
   },
-
   {
-    _id: "667babbabe047a6f717c5c5d",
-    title: 'One Time',
+    _id: "667babbabe047a6f717c5d3d",
+    title: 'One-Time',
     customerName: 'Alex',
     tiffinName: 'Deluxe Tiffin',
-    tiffnType: 'Dinner',
-    status: "",
-    orderDate: "2024-06-11T13:00:00",
-    orderTime: "12:00",
+    tiffinType: 'Lunch',
+    status: "Completed",
+    orderDate: "2024-07-02T14:00:00",
+    orderTime: "14:00",
     noOfTiffins: 1,
-    pricePerTiffin: 150,
+    pricePerTiffin: 200,
+    OTP: "654321",
+    amountPaid: 200,
+    kitchenPaymentBreakdown: {
+      perOrderPrice: 200
+    },
+    transactionID: "D348229YE5T",
+    date: new Date(2024, 6, 2),
+  },
+  {
+    _id: "667babbabe047a6f717c5d4d",
+    title: 'Subscription',
+    customerName: 'Alex',
+    tiffinName: 'Deluxe Tiffin',
+    tiffinType: 'Lunch',
+    status: "Pending",
+    orderDate: "2024-07-02T15:00:00",
+    orderTime: "15:00",
+    noOfTiffins: 2,
+    pricePerTiffin: 200,
     OTP: null,
     amountPaid: 0,
     kitchenPaymentBreakdown: {
-      total: 150
+      perOrderPrice: 400
     },
-    transactionID: "D348229YE5T"
-  },
-];
-
-const GRAPH_DATA = [
-  {
-    date: new Date(2024, 6, 1),
-    tiffinType: "Lunch",
-    title: 'Subscription',
-    tiffinName: "Full Tiffin",
-    noOfTiffins: 1
-  },
-  {
-    date: new Date(2024, 6, 7),
-    tiffinType: "Lunch",
-    title: 'Subscription',
-    tiffinName: "Full Tiffin",
-    noOfTiffins: 2
-  },
-  {
-    date: new Date(2024, 5, 30),
-    tiffinType: "Dinner",
-    title: 'One-Time',
-    tiffinName: "Full Tiffin",
-    noOfTiffins: 3
-  },
-  {
-    date: new Date(2024, 5, 29),
-    tiffinType: "Lunch",
-    title: 'One-Time',
-    tiffinName: "Deluxe Tiffin",
-    noOfTiffins: 5
-  },
-  {
-    date: new Date(2024, 5, 29),
-    tiffinType: "Lunch",
-    title: 'One-Time',
-    tiffinName: "Deluxe Tiffin",
-    noOfTiffins: 2
-  },
-  {
-    date: new Date(2024, 5, 28),
-    tiffinType: "Dinner",
-    title: 'Subscription',
-    tiffinName: "Deluxe Tiffin",
-    noOfTiffins: 1
-  },
-  {
-    date: new Date(2024, 6, 1),
-    tiffinType: "Lunch",
-    title: 'One-Time',
-    tiffinName: "Half Tiffin",
-    noOfTiffins: 1
-  },
-  {
+    transactionID: "D348229YE6T",
     date: new Date(2024, 6, 2),
-    tiffinType: "Lunch",
-    title: 'Subscription',
-    tiffinName: "Half Tiffin",
-    noOfTiffins: 2
   },
   {
-    date: new Date(2024, 5, 27),
-    tiffinType: "Dinner",
+    _id: "667babbabe047a6f717c5d5d",
     title: 'Subscription',
-    tiffinName: "Half Tiffin",
-    noOfTiffins: 3
+    subscriberFirstName: 'John',
+    subscriberLastName: 'Doe',
+    tiffinName: 'Half Tiffin',
+    tiffinType: 'Dinner',
+    day: 29,
+    orderDate: "2024-06-29T19:00:00",
+    orderTime: "19:00",
+    noOfTiffins: 1,
+    pricePerTiffin: 100,
+    OTP: null,
+    amountPaid: 100,
+    kitchenPaymentBreakdown: {
+      perOrderPrice: 100
+    },
+    transactionID: "A567723YU1P",
+    date: new Date(2024, 5, 29),
+  },
+  {
+    _id: "667babbabe047a6f717c5d6d",
+    title: 'One-Time',
+    customerName: 'Alex',
+    tiffinName: 'Mini Tiffin',
+    tiffinType: 'Dinner',
+    status: "Completed",
+    orderDate: "2024-06-27T20:00:00",
+    orderTime: "20:00",
+    noOfTiffins: 1,
+    pricePerTiffin: 100,
+    OTP: "987654",
+    amountPaid: 100,
+    kitchenPaymentBreakdown: {
+      perOrderPrice: 100
+    },
+    transactionID: "D348229YE7T",
+    date: new Date(2024, 4, 27),
+  },
+  {
+    _id: "667babbabe047a6f717c5d6d",
+    title: 'One-Time',
+    customerName: 'Jane',
+    tiffinName: 'Mini Tiffin',
+    tiffinType: 'Dinner',
+    status: "Completed",
+    orderDate: "2024-05-25T20:00:00",
+    orderTime: "20:00",
+    noOfTiffins: 1,
+    pricePerTiffin: 100,
+    OTP: "987654",
+    amountPaid: 100,
+    kitchenPaymentBreakdown: {
+      perOrderPrice: 100
+    },
+    transactionID: "D348229YE7T",
+    date: new Date(2024, 4, 25),
   }
 ];
+
 
 
 const weekMap = {
@@ -534,6 +547,7 @@ const HistoryScreen = ({ navigation }) => {
         if (tiffinName !== 'All' && value.tiffinName !== tiffinName)
           count = false;
 
+        
         if (count && tiffinType !== 'All' && value.tiffinType !== tiffinType)
           count = false
 
@@ -702,84 +716,80 @@ const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        <>
-          <View style={styles.insights}>
-            <Text style={styles.header}>Insights</Text>
-            <View style={styles.row}>
-              <View style={styles.filters}>
-                <Text>Tiffins</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Tiffins', value: null }}
-                  value={tiffinName}
-                  onValueChange={value => setTiffinName(value)}
-                  items={tiffinNameOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.filters}>
-                <Text>Time</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Type', value: null }}
-                  value={tiffinType}
-                  onValueChange={value => setTiffinType(value)}
-                  items={tiffinTypeOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.filters}>
-                <Text>Type</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Order Type', value: null }}
-                  value={orderType}
-                  onValueChange={value => setOrderType(value)}
-                  items={orderTypeOptions}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
-              <View style={styles.duration}>
-                <Text>Duration</Text>
-                <RNPickerSelect
-                  placeholder={{ label: 'Select Duration', value: null }}
-                  value={duration ? duration.label : null}
-                  onValueChange={label => {
-                    const selectedOption = findOptionByLabel(label, durationOptions);
-                    setDuration(selectedOption);
-                  }}
-                  items={durationOptions.map(option => ({
-                    label: option.label,
-                    value: option.label,
-                  }))}
-                  style={pickerSelectStyles}
-                  useNativeAndroidPickerStyle={false}
-                />
-              </View>
+        <View style={styles.insights}>
+          <Text style={styles.header}>Insights</Text>
+          <View style={styles.row}>
+            <View style={styles.filters}>
+              <Text>Tiffins</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Tiffins', value: null }}
+                value={tiffinName}
+                onValueChange={value => setTiffinName(value)}
+                items={tiffinNameOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
             </View>
-            <LegendComponent
-            colorMap={legendMap}
-            />
-            {graphData.datasets && graphData.datasets.length ? (
-              <LineGraph data={graphData}
-                scroll={scroll}
-                value={'No Of Tiffins'} />
-            ) : (
-              <Text style={styles.noInsights}>No Insights</Text>
-            )}
+            <View style={styles.filters}>
+              <Text>Time</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Time', value: null }}
+                value={tiffinType}
+                onValueChange={value => setTiffinType(value)}
+                items={tiffinTypeOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
+            <View style={styles.filters}>
+              <Text>Type</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Order Type', value: null }}
+                value={orderType}
+                onValueChange={value => setOrderType(value)}
+                items={orderTypeOptions}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
+            <View style={styles.duration}>
+              <Text>Duration</Text>
+              <RNPickerSelect
+                placeholder={{ label: 'Select Duration', value: null }}
+                value={duration ? duration.label : null}
+                onValueChange={label => {
+                  const selectedOption = findOptionByLabel(label, durationOptions);
+                  setDuration(selectedOption);
+                }}
+                items={durationOptions.map(option => ({
+                  label: option.label,
+                  value: option.label,
+                }))}
+                style={pickerSelectStyles}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
           </View>
-  
-          <Text style={styles.header}>History</Text>
-          <FlatList
-            data={DUMMY_DATA}
-            renderItem={({ item }) => <HistoryComponent {...item} />}
-            contentContainerStyle={styles.flatList}
-          />
-        </>
-      )}
+          <LegendComponent colorMap={legendMap} />
+          {graphData.datasets && graphData.datasets.length ? (
+            <View style={styles.graphContainer}>
+              <LineGraph
+                data={graphData}
+                scroll={scroll}
+                value={'No Of Tiffins'}
+              />
+            </View>
+          ) : (
+            <Text style={styles.noInsights}>No Insights</Text>
+          )}
+        </View>
+
+        <Text style={styles.header}>History</Text>
+        <FlatList
+          data={history}
+          renderItem={({ item }) => <HistoryComponent {...item} />}
+          contentContainerStyle={styles.flatList}
+        />
     </SafeAreaView>
   );
 };
@@ -797,28 +807,18 @@ const styles = StyleSheet.create({
     fontSize: windowHeight * 0.025,
     marginBottom: 8,
     paddingBottom: 10,
-   borderBottomWidth: 1,
-    borderColor: 'black'
+    borderColor: 'black',
   },
   insights: {
     backgroundColor: '#FFFFFF',
-    //paddingHorizontal: 5,
-    paddingVertical: 12,
-    marginBottom: 12,
+    paddingVertical: 5,
+    marginBottom: 5,
   },
   row: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 5,
   },
-  tiffinName: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  tiffinType: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  orderType: {
+  filters: {
     flex: 1,
     alignItems: 'center',
   },
@@ -826,21 +826,17 @@ const styles = StyleSheet.create({
     flex: 1.5,
     alignItems: 'center',
   },
-  filters: {
-    flex: 1,
-    alignItems: 'center',
-    //marginRight: 8,
-  },
-  noInsights:{
+  noInsights: {
     textAlign: 'center',
     fontSize: windowHeight * 0.02,
   },
-
   flatList: {
     flexGrow: 1,
-    //paddingBottom: 30,
     borderBottomWidth: 1,
     borderColor: '#ccc',
+  },
+  graphContainer: {
+    height: windowHeight * 0.3, 
   },
 });
 
@@ -855,32 +851,18 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: windowWidth * 0.1,
     marginBottom: windowHeight * 0.01,
+    width: '100%'
   },
   inputAndroid: {
-    fontSize: windowWidth * 0.035,
-    paddingHorizontal: windowWidth * 0.03,
+    fontSize: windowWidth * 0.03,
+    paddingHorizontal: windowWidth * 0.02,
     paddingVertical: windowHeight * 0.01,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: windowWidth * 0.02,
     color: 'black',
-    paddingRight: windowWidth * 0.1,
+    //paddingRight: windowWidth * 0.02,
     marginBottom: windowHeight * 0.01,
+    width: '100%'
   },
 });
-
-// const [datePicker1, setDatePicker1] = useState(false);
-// const [datePicker2, setDatePicker2] = useState(false);
-// const [fromDate, setFromDate] = useState('');
-// const [toDate, setToDate] = useState('')
-
-// const toggleDatePicker1 = () =>{
-//   setDatePicker2(false)
-//   setDatePicker1(!datePicker1)
-// }
-
-// const toggleDatePicker2 = () =>{
-//   setDatePicker1(false)
-//   setDatePicker2(!datePicker2)
-// }
-

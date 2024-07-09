@@ -37,7 +37,49 @@ export const getLunchTiffins = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Error in Getting Tiffins ", error)
+        console.log("Error in Getting Lunch Tiffins ", error)
+        return res.status(500).send({
+            message: "Internal Server Error"
+        })
+    }
+}
+
+export const getDinnerTiffins = async (req, res) => {
+    try {
+        const userID = req.user._id
+        const allDinnerDetails = await tiffins.aggregate([
+            { $match: { providerID: new mongoose.Types.ObjectId(userID), tiffinType: "Dinner" } },
+            { $sort: {price: -1}}
+        ])
+
+
+        const dinner = allDinnerDetails.map(item => ({
+            id: item._id,
+            name: item.name,
+            shortDescription: item.shortDescription,
+            tiffinType: 'Dinner',
+            foodType: item.foodType,
+            price: item.price,
+            hours: item.time[0] + item.time[1],
+            mins: item.time[3] + item.time[4],
+            deactivated: item.deactivate,
+            deliveryDetails: {
+            availability: item.deliveryDetails.availability, 
+            deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
+            deliveryTimeHrs: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[0] + item.deliveryDetails.deliveryTime[1]) : null ,
+            deliveryTimeMins: item.deliveryDetails.availability ? (item.deliveryDetails.deliveryTime[3] + item.deliveryDetails.deliveryTime[4]) : null, 
+            }
+            
+        }))
+
+        if (dinner.length === 0)
+            return res.status(200).json([])
+
+        return res.status(200).json(dinner)
+
+
+    } catch (error) {
+        console.log("Error in Getting Dinner Tiffins ", error)
         return res.status(500).send({
             message: "Internal Server Error"
         })

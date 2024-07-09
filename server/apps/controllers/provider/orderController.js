@@ -477,7 +477,7 @@ export const completeOrder = async(req, res) =>{
                     message: `Couldn't Complete Payment! Please Try Again!`
                 })
 
-            //subscriber.subscriptionStatus.daysCompleted.push(currentDate);
+            subscriber.subscriptionStatus.daysCompleted.push(currentDate);
             subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
 
             const updatedSubscriber = await subscriber.save()

@@ -21,7 +21,12 @@ import TransactionComponent from "../../components/provider/transactionComponent
 import LegendComponent from "@/components/provider/legendComponent";
 import LineGraph from "@/components/provider/lineGraph";
 import RNPickerSelect from "react-native-picker-select";
-import WalletDetailsScreen from "../shared/walletDetailsScreen";
+
+import WalletDetailsScreen from '../shared/walletDetailsScreen';
+import { withdrawMoney } from '../../utils/provider/walletAPI';
+import WalletComponent from '../../components/provider/walletComponent';
+import WithdrawModal from './modals/withdrawModal';
+
 
 const DUMMY_DATA = [
   {
@@ -46,11 +51,13 @@ const DUMMY_DATA = [
     tiffinName: "Deluxe Tiffin",
   },
   {
-    _id: "TXN004",
-    amount: 500.0,
-    payer: "Sarah Brown",
-    date: new Date("2024-07-01"),
-    tiffinName: "Full Tiffin",
+
+    _id: 'TXN004',
+    amount: 500.00,
+    payer: 'Sarah Brown',
+    date: new Date('2024-06-01'),
+    tiffinName: 'Full Tiffin'
+
   },
   {
     _id: "TXN005",
@@ -122,9 +129,12 @@ const WalletScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  const [screen, setScreen] = useState("Wallet");
-  const [wallet, setWallet] = useState([]);
-  const [transactions, setTransactions] = useState(DUMMY_DATA);
+
+  const [screen, setScreen] = useState('Wallet')
+  const [wallet, setWallet] = useState([])
+  const [withdrawModal, setWithdrawModal] = useState(false);
+  const [transactions, setTransactions] = useState(DUMMY_DATA)
+
 
   const [graphData, setGraphData] = useState({
     labels: [],
@@ -191,6 +201,38 @@ const WalletScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  const toggleWithdrawModal = () =>{
+    setWithdrawModal(!withdrawModal)
+  }
+
+  const finalWithdraw = async(amount, PIN) =>{
+    try {
+    console.log(amount)
+    console.log(PIN)
+    console.log(wallet.walletID)
+      const bodyData = {
+        amount,
+        PIN,
+      }
+
+      const response = await withdrawMoney(authState.authToken, wallet.walletID, bodyData)
+      if(response && response.status === 200){
+        toggleWithdrawModal()
+        Alert.alert(`Withdraw Successfull`)
+        setRefresh(!refresh)
+        return
+      }
+
+      Alert.alert(`Couldn't Withdraw Money`)
+
+
+    } catch (error) {
+      console.log('Error In Withdrawing Money ', error)
+      Alert.alert(error.message || `An Error Occured`)
+    }
+
+  }
 
   const createDuration = () => {
     const currentMonth = new Date().getMonth();
@@ -504,8 +546,14 @@ const WalletScreen = ({ navigation }) => {
   useEffect(() => {
     fetchWallet();
     //fetchTransactions()
-    createDuration();
-  }, [, refresh]);
+
+    
+  }, [, refresh])
+
+
+  useEffect(() =>{
+    createDuration()
+  }, [])
 
   const toggleCreateModal = () => {
     setCreateModal(!createModal);
@@ -564,11 +612,13 @@ const WalletScreen = ({ navigation }) => {
                   onPressInsights={() => setScreen("Insights")}
                 />
                 <View style={styles.upperScreen}>
-                  {screen === "Wallet" ? (
+
+                  {screen === 'Wallet' ? (
                     <View>
-                      <WalletDetailsScreen
+                      <WalletComponent
                         walletDetails={wallet}
-                        transactions={[]}
+                        onWithdraw={toggleWithdrawModal}
+
                       />
                     </View>
                   ) : (
@@ -614,11 +664,11 @@ const WalletScreen = ({ navigation }) => {
                       </View>
                       <LegendComponent colorMap={legendMap} />
                       {graphData.datasets && graphData.datasets.length ? (
-                        <LineGraph
-                          data={graphData}
-                          scroll={scroll}
-                          value={"Amount"}
-                        />
+
+                        <View style={styles.graphContainer}>
+                        <LineGraph data={graphData} scroll={scroll} value={'Amount'} />
+                        </View>
+
                       ) : (
                         <Text style={styles.noInsights}>No Insights</Text>
                       )}
@@ -635,6 +685,13 @@ const WalletScreen = ({ navigation }) => {
                   contentContainerStyle={styles.flatList}
                 />
               </View>
+              {withdrawModal && (
+                <WithdrawModal 
+                  isVisible={withdrawModal}
+                  onClose={toggleWithdrawModal}
+                  onWithdraw={finalWithdraw}
+                />
+              )}
             </>
           ) : (
             <>
@@ -646,14 +703,18 @@ const WalletScreen = ({ navigation }) => {
                   <Text style={styles.btnText}>Create Wallet</Text>
                 </TouchableOpacity>
               </View>
-              {createModal ? (
+
+              {createModal && (
+
                 <CreateWalletModal
                   isVisible={createModal}
                   onClose={toggleCreateModal}
                   onCreate={handleCreate}
                   type={authState.authType}
                 />
-              ) : null}
+
+              )}
+
             </>
           )}
         </>
@@ -669,6 +730,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     paddingTop: StatusBar.currentHeight * 1.2,
+  },
+  upperScreen: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 5,
+    marginBottom: 12,
+    height: windowHeight * 0.47,
+  },
+  header: {
+    textAlign: 'center',
+    fontSize: windowHeight * 0.025,
+    marginBottom: 8,
   },
   btnView: {
     position: "absolute",
@@ -688,21 +760,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#FFFFFF",
   },
-  upperScreen: {
-    backgroundColor: "#FFFFFF",
-    //paddingHorizontal: 5,
-    paddingVertical: 12,
-    marginBottom: 12,
-    height: windowHeight * 0.45,
-  },
-  header: {
-    textAlign: "center",
-    fontSize: windowHeight * 0.025,
-    marginBottom: 8,
-  },
+
   row: {
-    flexDirection: "row",
-    marginBottom: 12,
+    flexDirection: 'row',
+    marginBottom: 3,
+
   },
   tiffinName: {
     flex: 1,
@@ -722,21 +784,25 @@ const styles = StyleSheet.create({
   },
   filters: {
     flex: 1,
-    alignItems: "center",
-    //marginRight: 8,
+
+    alignItems: 'center',
+
   },
   noInsights: {
     textAlign: "center",
     fontSize: windowHeight * 0.02,
   },
-  transactions: {
-    //borderWidth: 1,
-    borderColor: "black",
+  graphContainer: {
+    height: windowHeight * 0.3, 
   },
+  transactions: {
 
+   height: windowHeight * 0.53,
+
+  },
   flatList: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
 });
 
