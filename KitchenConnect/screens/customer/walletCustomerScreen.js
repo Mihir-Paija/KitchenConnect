@@ -17,6 +17,7 @@ import { windowHeight, windowWidth } from "@/utils/dimensions";
 import {
   getWalletCustomer,
   createWalletCustomer,
+  getTransactionHistoryCustomer,
 } from "../../utils/APIs/customerApi";
 import CreateWalletModal from "../shared/createWalletModal";
 import LoadingScreen from "../shared/loadingScreen";
@@ -31,9 +32,14 @@ const WalletCustomerScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [wallet, setWallet] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   const customerID = authState.authData._id;
   //functions
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor(styles.container.backgroundColor);
+  }, []);
   const fetchWallet = async () => {
     try {
       setLoading(true);
@@ -56,6 +62,31 @@ const WalletCustomerScreen = ({ navigation }) => {
     fetchWallet();
   }, [, refresh]);
 
+  const fetchTransactions = async (walletID) => {
+    try {
+      setLoading(true);
+      // console.log(walletID);
+      const response = await getTransactionHistoryCustomer(walletID);
+
+      if (response && response.status === 200) {
+        // console.log(response.data);
+        setTransactions(response.data);
+      } else Alert.alert("An Error Occurred");
+    } catch (error) {
+      console.log("Error Fetching Transactions ", error);
+      Alert.alert(error.message || "An Error Occured");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isWallet) {
+      // console.log(wallet);
+      fetchTransactions(wallet.walletID);
+    }
+  }, [wallet, refresh]);
+
   const toggleCreateModal = () => {
     setCreateModal(!createModal);
   };
@@ -64,7 +95,7 @@ const WalletCustomerScreen = ({ navigation }) => {
     try {
       toggleCreateModal();
       setLoading(true);
-      console.log(details);
+      // console.log(details);
       const response = await createWalletCustomer(customerID, details);
 
       if (response && response.status === 201) {
@@ -97,7 +128,7 @@ const WalletCustomerScreen = ({ navigation }) => {
                   <WalletDetailsScreen
                     navigation={navigation}
                     walletDetails={wallet}
-                    history={true}
+                    transactions={transactions}
                     refreshWallet={() => fetchWallet()}
                   />
                   <FooterMenu navigation={navigation} />

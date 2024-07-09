@@ -25,11 +25,12 @@ import {
   addMoneyWalletCustomer,
   withdrawMoneyWalletCustomer,
 } from "../../utils/APIs/customerApi";
+import TransactionScreen from "./transactionScreen";
 
 const WalletDetailsScreen = ({
   navigation,
   walletDetails,
-  history,
+  transactions,
   refreshWallet,
 }) => {
   //gloabal states
@@ -37,7 +38,7 @@ const WalletDetailsScreen = ({
   const customerID = authState.authData._id;
   const walletID = walletDetails.walletID;
   // console.log(walletDetails);
-
+  // console.log(transactions);
   //states
 
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,11 @@ const WalletDetailsScreen = ({
   // const [wallet, setWallet] = useState([]);
 
   //functions
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    // StatusBar.setBackgroundColor(styles.container.backgroundColor);
+  }, []);
+
   const handleAddMoney = async (amount, pin) => {
     // Add money logic here
     try {
@@ -104,7 +110,8 @@ const WalletDetailsScreen = ({
               Hello,{" "}
             </Text>
             <Text style={styles.nameTxt}>
-              {walletDetails.firstName} {walletDetails.lastName}
+              {walletDetails.firstName}
+              {walletDetails.lastName}
             </Text>
           </View>
           <View style={styles.amountBox}>
@@ -170,11 +177,8 @@ const WalletDetailsScreen = ({
             onWithdrawMoney={handleWithdrawMoney}
           />
 
-          {history ? (
-            <View style={styles.transactionBox}>
-              <Text style={styles.transactionBoxTxt}>Transaction History</Text>
-              <ScrollView style={styles.transactionContentBox}></ScrollView>
-            </View>
+          {transactions ? (
+            <TransactionScreen transactions={transactions} />
           ) : null}
         </>
       )}

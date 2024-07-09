@@ -15,7 +15,7 @@ import RightButton from "../../components/shared/RightButton";
 import { skipSubOrder } from "../../utils/APIs/customerApi";
 const SubscriptionOrderCard = ({ orderItem, subDetails, refreshOrders }) => {
   // console.log(subDetails);
-
+  // console.log(orderItem);
   //   const statusMessage = renderStatusMessage(
   //     subscriptionItem.Subscription.subscriptionStatus
   //   );
@@ -159,7 +159,9 @@ const SubscriptionOrderCard = ({ orderItem, subDetails, refreshOrders }) => {
             style={[styles.msgBox, { backgroundColor: "rgba(255,0,0,0.3)" }]}
           >
             <Text style={styles.msgTxt}>
-              You have skipped this tiffin on [date].
+              You have skipped this tiffin on{"\n"}
+              {formatDate(orderItem.optedOutDate)} at{" "}
+              {formatTime(orderItem.optedOutDate)}.
             </Text>
           </View>
         )}
@@ -333,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(128,128,128,0.2)",
     borderRadius: windowWidth * 0.02,
     justifyContent: "center",
-    paddingVertical: windowHeight * 0.008,
+    paddingVertical: windowHeight * 0.007,
     paddingHorizontal: windowWidth * 0.03,
     marginVertical: windowHeight * 0.005,
   },

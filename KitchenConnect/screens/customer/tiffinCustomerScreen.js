@@ -98,6 +98,12 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
   const [originalTiffins, setOriginalTiffins] = useState([]);
 
   //functions
+
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor(styles.container.backgroundColor);
+  });
+
   const fetchTiffins = async (kitchenId) => {
     try {
       const response = await getTiffinCustomer(kitchenId);
@@ -279,7 +285,7 @@ export default TiffinCustomerScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffff",
+    backgroundColor: "#f8f8f8",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
     alignContent: "center",
   },
