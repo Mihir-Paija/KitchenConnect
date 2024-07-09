@@ -1,33 +1,44 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
-const transactionSchema = new Schema({
+const transactionSchema = new Schema(
+  {
     orderID: {
-        type: Schema.Types.ObjectId,
-        required: [true, "Please enter the order ID"],
+      type: Schema.Types.ObjectId,
+      // Assuming orderID is optional
     },
 
-    payerID: {
-        type: Schema.Types.ObjectId,
-        required: [true, "Please enter the payer ID"],
+    walletID: {
+      // This can act as either payerID or receiverID
+      type: Schema.Types.ObjectId,
+      required: [true, "Please enter the wallet ID"],
     },
 
-    recieverID: {
-        type: Schema.Types.ObjectId,
-        required: [true, "Please enter the reciever ID"],
+    counterpartyID: {
+      // Optional, used only for transfers
+      type: Schema.Types.ObjectId,
+      // Assuming counterpartyID is optional
     },
 
-    amountPaid:{
-        type: Number,
-        required: [true, "Please enter the amount paid"],
+    amount: {
+      type: Number,
+      required: [true, "Please enter the amount"],
     },
 
-    amountRecieved:{
-        type: Number,
-        required: [true, "Please enter the amount recieved"],
-    }
-    
-}, {timestamps: true})
+    transactionType: {
+      type: String,
+      enum: [
+        "SubscriptionOrder",
+        "SingleOrder",
+        "Withdraw",
+        "Deposit",
+        "Transfer",
+      ],
+      required: [true, "Please specify the transaction type"],
+    },
+  },
+  { timestamps: true }
+);
 
 const transaction = mongoose.model("Transaction", transactionSchema);
 

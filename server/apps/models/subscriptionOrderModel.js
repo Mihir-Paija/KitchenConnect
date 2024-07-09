@@ -11,15 +11,19 @@ const subOrderSchema = new Schema(
       type: String,
       enum: ["Completed", "Upcoming", "OptedOut"],
     },
+    optedOutDate: {
+      type: Date,
+      default: null,
+    },
     otp: {
       type: String,
     },
     amountPaid: {
       type: Number,
     },
-    amountRecieved:{
+    amountRecieved: {
       type: Number,
-    }
+    },
   },
   { timestamps: true }
 );

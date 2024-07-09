@@ -23,6 +23,9 @@ import SubmitButton from "../../components/shared/forms/submitButton";
 import LoadingScreen from "@/screens/shared/loadingScreen";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
 import { getOrderDetails } from "../../utils/APIs/customerApi";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import FeedBackModalCustomer from "../../components/customer/feedBackModalCustomer";
+import FeedBackButton from "../../components/customer/feedBackButton";
 
 const OrderDetailsScreen = ({ navigation, route }) => {
   //global state
@@ -33,6 +36,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
   //   console.log(OrderID);
   const [loading, setLoading] = useState(true);
   const [OrderDetails, setOrderDetails] = useState({ Tiffin });
+  const [feedbackModalvisible, setFeedbackModalvisible] = useState(false);
 
   //functions
 
@@ -61,6 +65,10 @@ const OrderDetailsScreen = ({ navigation, route }) => {
   useEffect(() => {
     fetchOrderDetails(OrderID);
   }, [OrderID]);
+
+  // useEffect(() => {
+  //   console.log(feedbackModalvisible);
+  // }, [feedbackModalvisible]);
 
   //   const renderStatusMessage = (status, delivery) => {
   //     if (status == "Pending")
@@ -142,26 +150,6 @@ const OrderDetailsScreen = ({ navigation, route }) => {
 
                 <View style={styles.bookingBox}>
                   <Text style={styles.bookingTitleTxt}>Order Details</Text>
-                  {/* <View
-                style={[
-                  styles.bookingDetialBox,
-                  { flexDirection: "row", justifyContent: "space-between" },
-                ]}
-              >
-                <View style={styles.DateContent}>
-                  <Text style={styles.DateText}> Start Date </Text>
-                  <Text style={styles.DateValueText}>
-                    {" "}
-                    {formatDate(subDetails.Subscription.startDate)}{" "}
-                  </Text>
-                </View>
-                <View style={styles.DateContent}>
-                  <Text style={[styles.DateText]}>End Date</Text>
-                  <Text style={[styles.DateValueText]}>
-                    {formatDate(subDetails.Subscription.endDate)}
-                  </Text>
-                </View>
-              </View> */}
 
                   <View
                     style={[
@@ -391,6 +379,14 @@ const OrderDetailsScreen = ({ navigation, route }) => {
                   </View> */}
                 </View>
               </ScrollView>
+              <FeedBackButton
+                setFeedbackModalvisible={setFeedbackModalvisible}
+              />
+
+              <FeedBackModalCustomer
+                visible={feedbackModalvisible}
+                onClose={() => setFeedbackModalvisible(false)}
+              />
             </>
           )}
         </>
