@@ -25,7 +25,7 @@ const tiffinSchema = new Schema(
 
     providerID: {
       type: Schema.Types.ObjectId,
-      ref: "Provider", 
+      ref: "Provider",
       required: true,
     },
 
@@ -57,26 +57,35 @@ const tiffinSchema = new Schema(
       required: [true, "Please Enter The Time Tiffin Will Be Ready"],
     },
 
+    rating: {
+      type: Number,
+      default: null,
+    },
+
+    ratingsize: {
+      type: Number,
+      default: 0,
+    },
+
     deliveryDetails: {
       type: deliverySchema,
       required: [true, "Please Add Delivery Details"],
     },
 
-    providePacking:{
+    providePacking: {
       type: Boolean,
-      required: [true, 'Please Mention if you will provide packing or not']
+      required: [true, "Please Mention if you will provide packing or not"],
     },
 
-    packingCharge:{
+    packingCharge: {
       type: Number,
-      default: null
+      default: null,
     },
 
     deactivate: {
       type: Boolean,
       default: false,
     },
-
   },
   { timestamps: true }
 );
