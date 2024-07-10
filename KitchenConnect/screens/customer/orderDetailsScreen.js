@@ -34,6 +34,7 @@ const OrderDetailsScreen = ({ navigation, route }) => {
   const OrderID = route.params.OrderID;
   const Tiffin = route.params.Tiffin;
   //   console.log(OrderID);
+  // console.log(Tiffin);
   const [loading, setLoading] = useState(true);
   const [OrderDetails, setOrderDetails] = useState({ Tiffin });
   const [feedbackModalvisible, setFeedbackModalvisible] = useState(false);
@@ -386,6 +387,8 @@ const OrderDetailsScreen = ({ navigation, route }) => {
               <FeedBackModalCustomer
                 visible={feedbackModalvisible}
                 onClose={() => setFeedbackModalvisible(false)}
+                kitchenID={OrderDetails.Kitchen._id}
+                tiffinID={Tiffin._id}
               />
             </>
           )}
