@@ -15,6 +15,7 @@ const foodTypeMapping = {
 };
 
 const HeaderMenuCustomer = ({ tiffin }) => {
+  console.log("tiffin", tiffin);
   const iconKey = foodTypeMapping[tiffin.foodType];
   const iconData = foodTypeIcon[iconKey];
   return (
@@ -25,7 +26,12 @@ const HeaderMenuCustomer = ({ tiffin }) => {
           <Text style={styles.name}>{tiffin.name}</Text>
           <Text style={styles.shortDescription}>{tiffin.shortDescription}</Text>
           <View style={styles.ratingBox}>
-            <RatingComponent rating={3.5} />
+            <RatingComponent
+              rating={tiffin.rating}
+              ratingsize={tiffin.ratingsize > 0 ? tiffin.ratingsize : null}
+              kitchenID={tiffin.providerID}
+              tiffinID={tiffin._id}
+            />
           </View>
           <Text style={styles.price}>Starting from ₹{tiffin.price}</Text>
           <View style={styles.time}>

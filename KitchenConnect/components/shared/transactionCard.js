@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
 
 const TransactionCard = ({ transaction }) => {
-  console.log("transaction:", transaction);
+  // console.log("transaction:", transaction);
   const type = transaction.transactionType;
   const icon = {
     Deposit: {

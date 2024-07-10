@@ -82,7 +82,7 @@ import LoadingScreen from "@/screens/shared/loadingScreen";
 const TiffinCustomerScreen = ({ navigation, route }) => {
   // route params
   const { kitchen } = route.params;
-
+  // console.log(kitchen);
   const [authState, setAuthState] = useContext(AuthContext);
 
   //states
@@ -180,7 +180,7 @@ const TiffinCustomerScreen = ({ navigation, route }) => {
         foodType={item.foodType}
         tiffinType={item.tiffinType}
         description={item.shortDescription}
-        rating={3.5}
+        rating={item.rating}
         onPress={() => tiffinHandler(item, KitchenData)}
       />
     );

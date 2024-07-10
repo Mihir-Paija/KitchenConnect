@@ -9,14 +9,20 @@ import {
   Platform,
   StatusBar,
   SafeAreaView,
+  Alert,
   TextInput,
 } from "react-native";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/Ionicons";
 import SubmitButton from "../shared/forms/submitButton";
+import { AuthContext } from "@/context/authContext";
+import { postFeedBackCustomer } from "../../utils/APIs/customerApi";
 
-const FeedBackModalCustomer = ({ visible, onClose }) => {
+const FeedBackModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
+  //global state
+  const [authState, setAuthState] = useContext(AuthContext);
   //states
+  const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const stars = [1, 2, 3, 4, 5];
@@ -31,8 +37,32 @@ const FeedBackModalCustomer = ({ visible, onClose }) => {
     }
   }, [visible]);
 
-  const sendHandler = () => {
-    console.log("click on submit");
+  const sendHandler = async () => {
+    // console.log("click on submit");
+    const bodyData = {
+      rate: rating,
+      review,
+    };
+    const customerID = authState.authData._id;
+    try {
+      setLoading(true);
+      const response = await postFeedBackCustomer(
+        customerID,
+        kitchenID,
+        tiffinID,
+        bodyData
+      );
+      // console.log(response.data);
+      onClose();
+      Alert.alert("Success", "Review submitted successfully.");
+      setRating(0);
+      setReview("");
+    } catch (error) {
+      console.error("Failed to post feedBack List customer:", error.message);
+      Alert.alert("Error", "Failed to post feedBack. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   //   console.log(visible);
@@ -76,9 +106,10 @@ const FeedBackModalCustomer = ({ visible, onClose }) => {
                 multiline
               />
               <SubmitButton
-                btnTitle={"Send Review"}
+                btnTitle={loading ? "Sending..." : "Send Review"}
                 style={windowHeight * 0.05}
                 handleSubmitBtn={sendHandler}
+                loading={loading}
               />
             </View>
           </SafeAreaView>

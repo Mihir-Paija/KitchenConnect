@@ -773,6 +773,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               <FeedBackModalCustomer
                 visible={feedbackModalvisible}
                 onClose={() => setFeedbackModalvisible(false)}
+                kitchenID={subDetails.Kitchen._id}
+                tiffinID={subDetails.Tiffin._id}
               />
             </>
           )}

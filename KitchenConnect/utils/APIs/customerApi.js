@@ -325,3 +325,49 @@ export const getTransactionHistoryCustomer = async (walletID) => {
     throw error.response.data;
   }
 };
+
+export const postFeedBackCustomer = async (
+  customerID,
+  kitchenID,
+  tiffinID,
+  bodyData
+) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}/${tiffinID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in post feedback customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const getKitchenFeedBackCustomer = async (customerID, kitchenID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in get feedback customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const getTiffinFeedBackCustomer = async (
+  customerID,
+  kitchenID,
+  tiffinID
+) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}/${tiffinID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in get feedback customer API", error.message);
+    throw error.response.data;
+  }
+};

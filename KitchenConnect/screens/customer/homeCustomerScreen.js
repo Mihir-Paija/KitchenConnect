@@ -111,7 +111,7 @@ const HomeCustomerScreen = ({ navigation }) => {
     <KitchenComponent
       title={item.kitchenName}
       subtitle={item.shortDescription}
-      rating={3.5} // Assume a default rating for now
+      rating={item.rating} // Assume a default rating for now
       price={item.basePrice}
       imageSource={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
       delivery={item.provideDelivery}
