@@ -13,6 +13,7 @@ export const getLunchTiffins = async (req, res) => {
 
         const lunch = allLunchDetails.map(item => ({
             id: item._id,
+            providerID: item.providerID,
             name: item.name,
             shortDescription: item.shortDescription,
             tiffinType: 'Lunch',
@@ -21,6 +22,8 @@ export const getLunchTiffins = async (req, res) => {
             hours: item.time[0] + item.time[1],
             mins: item.time[3] + item.time[4],
             deactivated: item.deactivate,
+            rating: item.rating,
+            ratingsize: item.ratingsize,
             deliveryDetails: {
             availability: item.deliveryDetails.availability, 
             deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,
@@ -55,6 +58,7 @@ export const getDinnerTiffins = async (req, res) => {
 
         const dinner = allDinnerDetails.map(item => ({
             id: item._id,
+            providerID: item.providerID,
             name: item.name,
             shortDescription: item.shortDescription,
             tiffinType: 'Dinner',
@@ -63,6 +67,8 @@ export const getDinnerTiffins = async (req, res) => {
             hours: item.time[0] + item.time[1],
             mins: item.time[3] + item.time[4],
             deactivated: item.deactivate,
+            rating: item.rating,
+            ratingsize: item.ratingsize,
             deliveryDetails: {
             availability: item.deliveryDetails.availability, 
             deliveryCharge: item.deliveryDetails.availability ? item.deliveryDetails.deliveryCharge : null,

@@ -2,37 +2,40 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { windowWidth, windowHeight } from '@/utils/dimensions';
 import FoodTypeIcon from '@/components/provider/foodTypeIcon'; // Adjust the import path accordingly
+import RatingComponent from "../shared/ratingComponent";
 
-const TiffinItem = ({ name, description, foodType, price, hours, mins, deactivated, edit, showDelivery, onPress }) => {
+const TiffinItem = ({ name, shortDescription, foodType, price, hours, mins, deactivated, rating, ratingSize, edit, showDelivery, onPress }) => {
   return (
     <TouchableOpacity style={!deactivated ? styles.container : styles.deactivatedContainer} onPress={onPress}>
-      <View style = {styles.infoContainer}>
-        <View style={{flexDirection:'row'}}>
-        <View style={styles.foodTypeIcon}>
-        <FoodTypeIcon foodType={foodType} style={styles.icon} />
+      <View style={styles.infoContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={styles.foodTypeIcon}>
+            <FoodTypeIcon foodType={foodType} style={styles.icon} />
+          </View>
+          <View style={styles.mainContent}>
+            {deactivated ? <Text style={styles.deactivatedText}>Tiffin is Deactivated</Text> : null}
+            <View style={styles.nameContainer}>
+              <Text style={styles.name}>{name}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.details}>
+          <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{shortDescription}</Text>
+          <View style={styles.readyTimeContainer}>
+            <Text style={styles.readyTimeLabel}>Ready Time: </Text>
+            <Text style={styles.readyTimeValue}>{hours}:{mins}</Text>
+          </View>
+          <Text style={styles.price}>Per Tiffin: ₹{price}</Text>
+        </View>
       </View>
-      <View style={styles.mainContent}>
-        {deactivated ? <Text style={styles.deactivatedText}>Tiffin is Deactivated</Text> : null}
-        <View style={styles.nameContainer}>
-          <Text style={styles.name}>{name}</Text>
+      <View style={styles.imageContainer}>
+        <Image 
+          source={require("@assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+          style={styles.photo}
+        />
+        <View style={styles.ratingContainer}>
+          <RatingComponent rating={rating} size={ratingSize} />
         </View>
-       </View>
-       </View>
-       <View style={styles.details}>
-        <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{description}</Text>
-        <View style={styles.readyTimeContainer}>
-          <Text style={styles.readyTimeLabel}>Ready Time: </Text>
-          <Text style={styles.readyTimeValue}>{hours}:{mins}</Text>
-        </View>
-        <Text style={styles.price}>Per Tiffin: ₹{price}</Text>
-        </View>
-    
-      </View>
-      <View style={styles.image}>
-   <Image 
-   source={require("@assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
-   style={styles.photo}
-   />
       </View>
     </TouchableOpacity>
   );
@@ -59,7 +62,6 @@ const styles = StyleSheet.create({
     shadowRadius: windowWidth * 0.02,
     position: 'relative', 
   },
-
   deactivatedContainer: {
     flexDirection: 'row',
     width: windowWidth * 0.95,
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     shadowRadius: windowWidth * 0.02,
     position: 'relative', 
   },
-  deactivatedText:{
+  deactivatedText: {
     fontWeight: 'bold',
   },
   infoContainer: {
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  details:{
+  details: {
     paddingLeft: windowWidth * 0.03,
   },
   text: {
@@ -139,17 +141,20 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: windowWidth * 0.005,
   },
-  image: {
+  imageContainer: {
     flex: 1.5,
-    //width: windowWidth * 0.20,
-    //justifyContent: 'flex-start',
-    marginHorizontal: windowWidth*0.03,
-    marginTop: 0,
-    paddingTop: 0
+    alignItems: 'center',
+    //justifyContent: 'center',
+    marginHorizontal: windowWidth * 0.03,
+    //alignSelf: 'center',
   },
-  photo:{
-    width: 150,
-    height: 250,
-    resizeMode: 'contain'
+  photo: {
+    width: windowWidth * 0.35,
+    height: windowHeight * 0.12,
+    resizeMode: 'contain',
+  },
+  ratingContainer: {
+    marginTop: windowHeight * 0.01,
+    alignItems: 'center',
   },
 });

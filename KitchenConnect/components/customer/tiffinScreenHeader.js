@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, SafeAreaView, Image, StyleSheet } from "react-native";
 import { windowWidth, windowHeight } from "@utils/dimensions";
-import RatingComponent from "./ratingComponent";
+import RatingComponent from "../shared/ratingComponent";
 
 const HeaderTiffinCustomer = ({ kitchen }) => {
   // console.log("kitchen", kitchen);

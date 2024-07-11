@@ -168,16 +168,10 @@ const DinnerScreen = ({navigation}) => {
                 data={tiffins}
                 renderItem={({ item }) => (
                   <TiffinItem
-                    name={item.name}
-                    description={item.shortDescription}
-                    foodType={item.foodType}
-                    hours={item.hours}
-                    mins={item.mins}
-                    price={item.price}
-                    deactivated={item.deactivated}
-                    edit={() => handleEditModal(item)}
-                    showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
-                    onPress={() => handleTiffinPress(item)}
+                  {...item}
+                  edit={() => handleEditModal(item)}
+                  showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
+                  onPress={() => handleTiffinPress(item)}
                   />
                 )}
                 keyExtractor={(item) => item.id.toString()}

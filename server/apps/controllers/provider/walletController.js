@@ -1,6 +1,8 @@
 import provider from "../../models/providerModel.js";
 import wallet from "../../models/walletModel.js";
+import transaction from "../../models/transactionModel.js";
 import { comparePassword, hashPassword } from "../../utils/bcrypt.js";
+import mongoose from "mongoose";
 
 
 export const withdrawMoney = async(req, res) =>{
@@ -37,6 +39,22 @@ export const withdrawMoney = async(req, res) =>{
 
     } catch (error) {
         console.log(`Error In Withdrawing Money `, error)
+        return res.status(500).send({
+            message: `Internal Server Error`
+        })
+    }
+}
+
+export const getTransactions = async(req, res) =>{
+    try {
+        const {walletID} = req.params
+        const allTransactions = await transaction.find({walletID: new mongoose.Types.ObjectId(walletID)})
+        console.log(allTransactions)
+
+        return res.status(200).json(allTransactions)
+
+    } catch (error) {
+        console.log(`Error In Getting Transactions `, error)
         return res.status(500).send({
             message: `Internal Server Error`
         })

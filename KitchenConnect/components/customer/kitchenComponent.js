@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { windowHeight, windowWidth } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import RatingComponent from "./ratingComponent";
+import RatingComponent from "../shared/ratingComponent";
 
 const KitchenComponent = ({
   title,

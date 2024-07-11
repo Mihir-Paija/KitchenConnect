@@ -168,13 +168,7 @@ const LunchScreen = ({navigation}) => {
                 data={tiffins}
                 renderItem={({ item }) => (
                   <TiffinItem
-                    name={item.name}
-                    description={item.shortDescription}
-                    foodType={item.foodType}
-                    hours={item.hours}
-                    mins={item.mins}
-                    price={item.price}
-                    deactivated={item.deactivated}
+                    {...item}
                     edit={() => handleEditModal(item)}
                     showDelivery={() => handleDeliveryModal(item.name, item.deliveryDetails)}
                     onPress={() => handleTiffinPress(item)}

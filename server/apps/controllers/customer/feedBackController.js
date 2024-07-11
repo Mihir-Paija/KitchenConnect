@@ -101,20 +101,20 @@ export const feedBackPost = async (req, res) => {
 
 export const feedBackKitchenGET = async (req, res) => {
   try {
-    const { customerID, kitchenID } = req.params;
-    if (!customerID || !kitchenID) {
+    const { kitchenID } = req.params;
+    if (!kitchenID) {
       return res.status(404).send({
         error: "Invalid URL",
         message: "customerID or kitchenID or tiffinID missing",
       });
     }
     //   Check if _id is a valid ObjectId
-    if (!ObjectId.isValid(customerID)) {
-      return res.status(400).json({
-        error: "Invalid customerID",
-        message: "The provided customerID is not a valid MongoDB ObjectId",
-      });
-    }
+    // if (!ObjectId.isValid(customerID)) {
+    //   return res.status(400).json({
+    //     error: "Invalid customerID",
+    //     message: "The provided customerID is not a valid MongoDB ObjectId",
+    //   });
+    // }
     if (!ObjectId.isValid(kitchenID)) {
       return res.status(400).json({
         error: "Invalid kitchenID",
@@ -159,20 +159,20 @@ export const feedBackKitchenGET = async (req, res) => {
 
 export const feedBackTiffinGET = async (req, res) => {
   try {
-    const { customerID, kitchenID, tiffinID } = req.params;
-    if (!customerID || !kitchenID || !tiffinID) {
+    const {kitchenID, tiffinID } = req.params;
+    if (!kitchenID || !tiffinID) {
       return res.status(404).send({
         error: "Invalid URL",
         message: "customerID or kitchenID or tiffinID missing",
       });
     }
     //   Check if _id is a valid ObjectId
-    if (!ObjectId.isValid(customerID)) {
-      return res.status(400).json({
-        error: "Invalid customerID",
-        message: "The provided customerID is not a valid MongoDB ObjectId",
-      });
-    }
+    // if (!ObjectId.isValid(customerID)) {
+    //   return res.status(400).json({
+    //     error: "Invalid customerID",
+    //     message: "The provided customerID is not a valid MongoDB ObjectId",
+    //   });
+    // }
     if (!ObjectId.isValid(kitchenID)) {
       return res.status(400).json({
         error: "Invalid kitchenID",

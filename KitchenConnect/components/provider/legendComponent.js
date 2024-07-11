@@ -18,12 +18,14 @@ const styles = StyleSheet.create({
   legendContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    margin: 10,
+    margin: 2,
+    marginLeft: 10,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 5,
+    margin: 2,
+    marginHorizontal: 5,
   },
   colorBox: {
     width: 20,

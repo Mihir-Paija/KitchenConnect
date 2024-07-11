@@ -18,9 +18,16 @@ const verifyJwt = (jwtToken) => {
     };
   } catch (err) {
     if (err.name === "TokenExpiredError") {
-      throw new Error("JWT token is expired");
+      console.log('Token Expired')
+      return {
+        valid: true,
+        expired: true
+      }
     } else {
-      throw new Error("JWT token is not valid");
+      console.log('Invalid Token')
+      return {
+        valid: false,
+      }
     }
   }
 };

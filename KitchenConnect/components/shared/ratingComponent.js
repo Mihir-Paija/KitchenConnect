@@ -4,7 +4,7 @@ import { windowHeight, windowWidth } from "@/utils/dimensions";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Touchable } from "react-native";
 import { AuthContext } from "@/context/authContext";
-import ReviewModalCustomer from "./reviewModalCustomer";
+import ReviewModal from './reviewModal'
 
 const RatingComponent = ({ rating, ratingsize, kitchenID, tiffinID }) => {
   //console.log(ratingsize);
@@ -35,7 +35,7 @@ const RatingComponent = ({ rating, ratingsize, kitchenID, tiffinID }) => {
         </TouchableOpacity>
       )}
       {reviewModalVisible && (
-        <ReviewModalCustomer
+        <ReviewModal
           visible={reviewModalVisible}
           onClose={() => setReviewModalVisible(false)}
           kitchenID={kitchenID}
