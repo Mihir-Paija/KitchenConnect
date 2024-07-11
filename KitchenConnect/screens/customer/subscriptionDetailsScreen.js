@@ -12,6 +12,7 @@ import {
   Button,
   Image,
   Modal,
+  Alert,
   ScrollView,
 } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
@@ -23,6 +24,14 @@ import SubmitButton from "../../components/shared/forms/submitButton";
 import { getSubscriptionDetailsCustomer } from "@/utils/APIs/customerApi";
 import LoadingScreen from "@/screens/shared/loadingScreen";
 import { formatDate, formatTime } from "../../utils/formateDateTime";
+import { cancelSubscription, skipSubOrder } from "../../utils/APIs/customerApi";
+import CalendarComponent from "../../components/shared/calendarComponent";
+import Icon from "react-native-vector-icons/Ionicons";
+import RightButton from "../../components/shared/RightButton";
+import { color } from "react-native-elements/dist/helpers";
+import CalendarModal from "../../components/shared/calendarModal";
+import FeedBackModalCustomer from "../../components/customer/feedBackModalCustomer";
+import FeedBackButton from "../../components/customer/feedBackButton";
 
 const SubscriptionDetailsScreen = ({ navigation, route }) => {
   //global state
@@ -36,8 +45,21 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   //state
   const [loading, setLoading] = useState(true);
   const [subDetails, setSubDetails] = useState({});
+  const [earliestDate, setEarliestDate] = useState(null);
+  const [calendar, setCalendar] = useState(false);
+  const [feedbackModalvisible, setFeedbackModalvisible] = useState(false);
 
   //functions
+  useEffect(() => {
+    if (calendar) {
+      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBackgroundColor("rgba(0, 0, 0, 0.5)");
+    } else {
+      StatusBar.setBarStyle("dark-content");
+      StatusBar.setBackgroundColor(styles.container.backgroundColor);
+    }
+  }, [, calendar]);
+
   const fetchSubDetails = async (subscriptionID) => {
     try {
       // console.log("hi");
@@ -64,15 +86,136 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
   const backHandler = () => {
     navigation.goBack();
   };
-  const calculateDiscountedPrice = (price, discount) => {
-    const discountedPrice =
-      parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100;
-    return discountedPrice.toFixed(2);
-  };
 
   const handleSubmitBtn = () => {
     console.log("click on submit");
   };
+
+  const findEarliestDate = () => {
+    const daysRemaining =
+      subDetails.Subscription.subscriptionStatus.daysRemaining;
+
+    // Ensure the array is not empty
+    if (daysRemaining && daysRemaining.length > 0) {
+      // Find the earliest date
+      const earliestDate = new Date(
+        Math.min(...daysRemaining.map((date) => new Date(date)))
+      );
+      // console.log("Earliest Date:", earliestDate);
+      return earliestDate;
+    } else {
+      console.log("No dates available");
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (subDetails.Subscription && subDetails.Subscription.subscriptionStatus) {
+      const date = findEarliestDate();
+      setEarliestDate(date);
+    }
+  }, [subDetails]);
+
+  const skipHandler = async () => {
+    // console.log("click on skip");
+    const bodyData = { subOrderDate: earliestDate };
+    console.log(bodyData);
+    try {
+      // setLoading(true);
+      const response = await skipSubOrder(subscriptionID, bodyData);
+      console.log(response.data);
+      Alert.alert("Success", "Next Order skipped successfully.");
+      fetchSubDetails(subscriptionID);
+    } catch (error) {
+      console.error("Failed to fetch order List customer:", error.message);
+      Alert.alert("Error", "Failed to skip the order. Please try again.");
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const showConfirmationAlert = async () => {
+    return new Promise((resolve, reject) => {
+      Alert.alert(
+        "Confirm Action",
+        "Are you sure you want to skip this order?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => reject("Action cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => resolve(true),
+          },
+        ],
+        { cancelable: false }
+      );
+    });
+  };
+
+  const handleSkip = async () => {
+    try {
+      const confirmed = await showConfirmationAlert();
+      if (confirmed) {
+        await skipHandler(); // Explicitly call skipHandler here
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancel = async () => {
+    console.log("click on cancel");
+    console.log(subscriptionID);
+    try {
+      // setLoading(true);
+      const response = await cancelSubscription(subscriptionID);
+      // console.log(response.data);
+      Alert.alert("Success", "Order skipped successfully.");
+      fetchSubDetails(subscriptionID);
+    } catch (error) {
+      console.error("Failed to fetch order List customer:", error);
+      Alert.alert("Error", "Failed to skip the order. Please try again.");
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const showCancelConfirmationAlert = async (skipHandler) => {
+    return new Promise((resolve, reject) => {
+      Alert.alert(
+        "Confirm Action",
+        "Are you sure you want to cancel this subscription?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => reject("Action cancelled"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => resolve(true),
+          },
+        ],
+        { cancelable: false }
+      );
+    });
+  };
+
+  const cancelSubHandler = async () => {
+    try {
+      const confirmed = await showCancelConfirmationAlert();
+      if (confirmed) {
+        await handleCancel(); // Explicitly call skipHandler here
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleCalendar = () => [setCalendar(!calendar)];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -188,8 +331,185 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                 )}
 
+                {subDetails.Subscription.subscriptionStatus.status !=
+                  "Pending" && (
+                  <View style={[styles.bookingBox]}>
+                    <Text style={styles.bookingTitleTxt}>{}Status</Text>
+                    <View style={styles.statusLineBox}>
+                      <View style={styles.dayBox}>
+                        <View
+                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                        >
+                          <Text style={styles.dayvalueText}>
+                            {
+                              subDetails.Subscription.subscriptionStatus
+                                .daysCompleted.length
+                            }
+                          </Text>
+                          <Text style={styles.dayText}> days</Text>
+                        </View>
+                        <View style={styles.dayTxtBox}>
+                          <Text style={styles.daykeyText}>Completed</Text>
+                        </View>
+                      </View>
+
+                      {subDetails.Subscription.subscriptionStatus.status ===
+                        "Current" && (
+                        <View style={styles.dayBox}>
+                          <View
+                            style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                          >
+                            <Text style={styles.dayvalueText}>
+                              {
+                                subDetails.Subscription.subscriptionStatus
+                                  .daysRemaining.length
+                              }
+                            </Text>
+                            <Text style={styles.dayText}> days</Text>
+                          </View>
+                          <View style={styles.dayTxtBox}>
+                            <Text style={styles.daykeyText}>Remaining</Text>
+                          </View>
+                        </View>
+                      )}
+
+                      <View style={styles.dayBox}>
+                        <View
+                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
+                        >
+                          <Text style={styles.dayvalueText}>
+                            {
+                              subDetails.Subscription.subscriptionStatus
+                                .daysOptedOut.length
+                            }
+                          </Text>
+                          <Text style={styles.dayText}> days</Text>
+                        </View>
+                        <View style={styles.dayTxtBox}>
+                          <Text style={styles.daykeyText}>Opted Out</Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {subDetails.Subscription.subscriptionStatus.status !=
+                      "Pending" && (
+                      <TouchableOpacity
+                        style={styles.statusLineBox}
+                        onPress={toggleCalendar}
+                      >
+                        <Text style={[styles.paymentTxt, { color: "#505050" }]}>
+                          View In Calendar
+                        </Text>
+                        <RightButton
+                          onPress={toggleCalendar}
+                          iconStyle={{ color: "#505050" }}
+                        />
+                      </TouchableOpacity>
+                    )}
+
+                    <View style={styles.statusLineBox}>
+                      <Text style={styles.paymentTxt}>
+                        {subscription.status === "current"
+                          ? "Paid till now"
+                          : "Paid amount"}{" "}
+                        :{" "}
+                      </Text>
+                      <Text style={styles.paymentValueTxt}>₹ 500</Text>
+                    </View>
+                    {subDetails.Subscription.subscriptionStatus.status ===
+                      "Current" && (
+                      <>
+                        <TouchableOpacity
+                          style={styles.submitButton}
+                          onPress={handleSkip}
+                        >
+                          <Text style={styles.submitText}>
+                            Skip Next Tiffin
+                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
+                          </Text>
+                        </TouchableOpacity>
+                        <Text style={styles.nextDelText}>
+                          The next tiffin will be received on{" "}
+                          {formatDate(earliestDate)} at{" "}
+                          {subDetails.Subscription.wantDelivery
+                            ? subDetails.Tiffin.deliveryDetails.deliveryTime
+                            : subDetails.Tiffin.time}
+                          .
+                        </Text>
+                      </>
+                    )}
+                    {subDetails.Subscription.subscriptionStatus.status ===
+                      "Pending" && (
+                      <>
+                        <TouchableOpacity
+                          style={styles.submitButton}
+                          onPress={handleSubmitBtn}
+                        >
+                          <Text style={styles.submitText}>
+                            withdraw request
+                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
+                          </Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                )}
+
                 <View style={styles.bookingBox}>
                   <Text style={styles.bookingTitleTxt}>Booking Details</Text>
+
+                  <View
+                    style={[
+                      styles.bookingDetialBox,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingHorizontal: windowWidth * 0.01,
+                      },
+                    ]}
+                  >
+                    <View style={styles.DateContent}>
+                      <Text style={[styles.DateText]}>First Name</Text>
+                      <Text style={[styles.DateValueText]}>
+                        {subDetails.Subscription.subscriberFirstName}
+                      </Text>
+                    </View>
+                    <View style={styles.DateContent}>
+                      <Text style={[styles.DateText]}>Last Name</Text>
+                      <Text style={[styles.DateValueText]}>
+                        {subDetails.Subscription.subscriberLastName}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={[
+                      styles.bookingDetialBox,
+                      { paddingHorizontal: windowWidth * 0.01 },
+                    ]}
+                  >
+                    <View style={styles.DateContent}>
+                      <Text style={[styles.DateText]}>Subscription Date</Text>
+                      <Text style={[styles.DateValueText]}>
+                        {formatDate(subDetails.Subscription.createdAt)} {" at "}{" "}
+                        {formatTime(subDetails.Subscription.createdAt)}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {subDetails.Subscription.wantDelivery && (
+                    <View
+                      style={[
+                        styles.bookingDetialBox,
+                        { paddingHorizontal: windowWidth * 0.01 },
+                      ]}
+                    >
+                      <Text style={[styles.DateText]}>Delivery At</Text>
+                      <Text style={[styles.DateValueText]}>
+                        {subDetails.Subscription.address}
+                      </Text>
+                    </View>
+                  )}
+
                   <View
                     style={[
                       styles.bookingDetialBox,
@@ -210,16 +530,65 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       </Text>
                     </View>
                   </View>
+
                   <View
                     style={[
                       styles.bookingDetialBox,
-                      { paddingHorizontal: windowWidth * 0.01 },
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingHorizontal: windowWidth * 0.01,
+                      },
                     ]}
                   >
-                    <Text style={styles.detailText}>
-                      {subDetails.Subscription.noOfTiffins} Tiffins
-                    </Text>
+                    <View>
+                      <Text style={styles.DateText}> Tiffins </Text>
+                      <Text style={styles.DateValueText}>
+                        {" "}
+                        {subDetails.Subscription.noOfTiffins}{" "}
+                      </Text>
+                    </View>
+
+                    <View style={{ justifyContent: "flex-end" }}>
+                      <Text style={styles.operationTxt}>x</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.DateText}> Duration </Text>
+                      <Text
+                        style={[styles.DateValueText, { textAlign: "center" }]}
+                      >
+                        {" "}
+                        {subDetails.SubscriptionPlan.days}{" "}
+                      </Text>
+                    </View>
+
+                    <View style={{ justifyContent: "flex-end" }}>
+                      <Text style={styles.operationTxt}>x</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.DateText}> Tiffin Price </Text>
+                      <Text style={styles.DateValueText}>
+                        {" "}
+                        ₹ {subDetails.Subscription.price.tiffinPrice}{" "}
+                      </Text>
+                    </View>
+
+                    <View style={{ justifyContent: "flex-end" }}>
+                      <Text style={styles.operationTxt}>=</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.DateText}> Item Price </Text>
+                      <Text style={styles.DateValueText}>
+                        {" "}
+                        ₹
+                        {
+                          subDetails.Subscription.customerPaymentBreakdown
+                            .subscriptionPrice
+                        }{" "}
+                      </Text>
+                    </View>
                   </View>
+
                   <View style={styles.bookingIDBox}>
                     <Text style={styles.bookingIDText}>
                       Booking ID : {subDetails.Subscription._id}
@@ -235,7 +604,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       { marginTop: windowHeight * 0.01 },
                     ]}
                   >
-                    <Text style={styles.paymentTxt}>Basic Price : </Text>
+                    <Text style={styles.paymentTxt}>Item Price : </Text>
                     <Text style={styles.paymentValueTxt}>
                       {" "}
                       ₹{" "}
@@ -346,111 +715,6 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                 </View>
 
-                {subDetails.Subscription.subscriptionStatus.status !=
-                  "Pending" && (
-                  <View style={[styles.bookingBox]}>
-                    <Text style={styles.bookingTitleTxt}>{}Status</Text>
-                    <View style={styles.statusLineBox}>
-                      <View style={styles.dayBox}>
-                        <View
-                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
-                        >
-                          <Text style={styles.dayvalueText}>
-                            {
-                              subDetails.Subscription.subscriptionStatus
-                                .daysCompleted.length
-                            }
-                          </Text>
-                          <Text style={styles.dayText}> days</Text>
-                        </View>
-                        <View style={styles.dayTxtBox}>
-                          <Text style={styles.daykeyText}>Completed</Text>
-                        </View>
-                      </View>
-
-                      {subDetails.Subscription.subscriptionStatus.status ===
-                        "Current" && (
-                        <View style={styles.dayBox}>
-                          <View
-                            style={[styles.dayTxtBox, { flexDirection: "row" }]}
-                          >
-                            <Text style={styles.dayvalueText}>
-                              {
-                                subDetails.Subscription.subscriptionStatus
-                                  .daysRemaining.length
-                              }
-                            </Text>
-                            <Text style={styles.dayText}> days</Text>
-                          </View>
-                          <View style={styles.dayTxtBox}>
-                            <Text style={styles.daykeyText}>Remaining</Text>
-                          </View>
-                        </View>
-                      )}
-
-                      <View style={styles.dayBox}>
-                        <View
-                          style={[styles.dayTxtBox, { flexDirection: "row" }]}
-                        >
-                          <Text style={styles.dayvalueText}>
-                            {
-                              subDetails.Subscription.subscriptionStatus
-                                .daysOptedOut.length
-                            }
-                          </Text>
-                          <Text style={styles.dayText}> days</Text>
-                        </View>
-                        <View style={styles.dayTxtBox}>
-                          <Text style={styles.daykeyText}>Opted Out</Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    <View style={styles.statusLineBox}>
-                      <Text style={styles.paymentTxt}>
-                        {subscription.status === "current"
-                          ? "Paid till now"
-                          : "Paid amount"}{" "}
-                        :{" "}
-                      </Text>
-                      <Text style={styles.paymentValueTxt}>₹ 500</Text>
-                    </View>
-                    {subDetails.Subscription.subscriptionStatus.status ===
-                      "Current" && (
-                      <>
-                        <TouchableOpacity
-                          style={styles.submitButton}
-                          onPress={handleSubmitBtn}
-                        >
-                          <Text style={styles.submitText}>
-                            Skip Next Tiffin
-                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"} */}
-                          </Text>
-                        </TouchableOpacity>
-                        <Text style={styles.nextDelText}>
-                          The next tiffin will be received on [date] at [time].
-                        </Text>
-                      </>
-                    )}
-                    {subDetails.Subscription.subscriptionStatus.status ===
-                      "Pending" && (
-                      <>
-                        <TouchableOpacity
-                          style={styles.submitButton}
-                          onPress={handleSubmitBtn}
-                        >
-                          <Text style={styles.submitText}>
-                            withdraw request
-                            {/* {loading ? "Please Wait..." : "Opts out Next Tiffin"}  */}
-                          </Text>
-                        </TouchableOpacity>
-                        <Text style={styles.nextDelText}>
-                          The next tiffin will be received on [date] at [time].
-                        </Text>
-                      </>
-                    )}
-                  </View>
-                )}
                 {subDetails.Subscription.subscriptionStatus.status ===
                   "Pending" && (
                   <>
@@ -469,8 +733,11 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   "Current" && (
                   <>
                     <TouchableOpacity
-                      style={styles.submitButton}
-                      onPress={handleSubmitBtn}
+                      style={[
+                        styles.submitButton,
+                        { marginBottom: windowHeight * 0.095 },
+                      ]}
+                      onPress={cancelSubHandler}
                     >
                       <Text style={styles.submitText}>
                         Cancel Subscription
@@ -479,7 +746,36 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                   </>
                 )}
+
+                {calendar ? (
+                  <CalendarModal
+                    visible={calendar}
+                    onClose={toggleCalendar}
+                    startDate={subDetails.Subscription.startDate}
+                    endDate={subDetails.Subscription.endDate}
+                    completed={
+                      subDetails.Subscription.subscriptionStatus.daysCompleted
+                    }
+                    customerOut={
+                      subDetails.Subscription.subscriptionStatus.daysOptedOut
+                    }
+                    providerOut={
+                      subDetails.Subscription.subscriptionStatus
+                        .providerOptedOut
+                    }
+                  />
+                ) : null}
               </ScrollView>
+              <FeedBackButton
+                setFeedbackModalvisible={setFeedbackModalvisible}
+              />
+
+              <FeedBackModalCustomer
+                visible={feedbackModalvisible}
+                onClose={() => setFeedbackModalvisible(false)}
+                kitchenID={subDetails.Kitchen._id}
+                tiffinID={subDetails.Tiffin._id}
+              />
             </>
           )}
         </>
@@ -585,7 +881,7 @@ const styles = StyleSheet.create({
     fontFamily: "NunitoExtraBold",
   },
   bookingDetialBox: {
-    marginVertical: windowHeight * 0.005,
+    // marginVertical: windowHeight * 0.005,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     paddingVertical: windowHeight * 0.01,
@@ -599,15 +895,15 @@ const styles = StyleSheet.create({
     color: "#505050",
     textAlign: "left",
     fontFamily: "NunitoSemiBold",
-    fontSize: windowWidth * 0.035,
-    marginBottom: windowHeight * 0.002,
+    fontSize: windowWidth * 0.033,
+    marginBottom: windowHeight * 0.001,
   },
   DateValueText: {
     color: "#000",
     textAlign: "left",
     fontSize: windowWidth * 0.044,
-    fontFamily: "NunitoBold",
-    marginTop: windowHeight * 0.002,
+    fontFamily: "NunitoSemiBold",
+    // marginTop: windowHeight * 0.002,
   },
   detailText: {
     color: "#000",
@@ -726,5 +1022,19 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.035,
     fontFamily: "NunitoRegular",
     textAlign: "center",
+  },
+  calendarButton: {
+    paddingTop: windowHeight * 0.02,
+    alignItems: "center",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  calendarText: {
+    fontSize: windowWidth * 0.04,
+  },
+  operationTxt: {
+    textAlign: "center",
+    fontSize: windowWidth * 0.06,
+    fontFamily: "NunitoRegular",
   },
 });

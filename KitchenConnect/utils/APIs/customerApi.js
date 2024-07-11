@@ -44,9 +44,24 @@ export const logoutCustomer = async () => {
 export const getKitchenCustomer = async () => {
   try {
     // console.log(API_BASE_URL);
-    const response = await axios.get(`${API_BASE_URL}/customer/kitchen`);
+    const response = await axios.get(`${API_BASE_URL}/customer/kitchen`, {
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+      withCredentials: true,
+    });
     return response;
   } catch (error) {
+    if (error.response) {
+      // The server responded with a status code outside the 2xx range
+      console.log("Error response:", error.response);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log("Error request:", error.request);
+    } else {
+      // Something happened in setting up the request that triggered an error
+      console.log("Error message:", error.message);
+    }
     console.error("Error getKitchen Customer API:", error);
     throw error.response ? error.response.data : error.message;
   }
@@ -171,6 +186,19 @@ export const skipSubOrder = async (subscriptionID, bodyData) => {
   }
 };
 
+export const cancelSubscription = async (subscriptionID) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/customer/subscriptionDetail/cancel/${subscriptionID}`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error cancelSubscription Customer API:", error);
+    console.error("Error cancelSubscription Customer API:", error.message);
+    throw error.response ? error.response.data : error.message;
+  }
+};
+
 // customer -> placeOrder : POST
 export const placeOrder = async (customerID, kitchenID, tiffinID, bodyData) => {
   try {
@@ -282,6 +310,64 @@ export const withdrawMoneyWalletCustomer = async (walletID, bodyData) => {
     return response;
   } catch (error) {
     console.log("Error in withdraw money Wallet customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const getTransactionHistoryCustomer = async (walletID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/wallet/transactionHistory/${walletID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in Get TransactionHistory customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const postFeedBackCustomer = async (
+  customerID,
+  kitchenID,
+  tiffinID,
+  bodyData
+) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}/${tiffinID}`,
+      bodyData
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in post feedback customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const getKitchenFeedBackCustomer = async (customerID, kitchenID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in get feedback customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+export const getTiffinFeedBackCustomer = async (
+  customerID,
+  kitchenID,
+  tiffinID
+) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}/${tiffinID}`
+    );
+    return response;
+  } catch (error) {
+    console.log("Error in get feedback customer API", error.message);
     throw error.response.data;
   }
 };

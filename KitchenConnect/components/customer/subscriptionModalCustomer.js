@@ -52,6 +52,7 @@ const subscriptionPlans = [
 ];
 
 const SubscriptionModalCustomer = ({
+  kitchen,
   tiffin,
   navigation,
   visible,
@@ -100,6 +101,8 @@ const SubscriptionModalCustomer = ({
       subscriptionPlan: item,
       kitchenID: tiffin.providerID,
       tiffinID: tiffin._id,
+      kitchen,
+      tiffin,
     });
   };
 

@@ -4,12 +4,18 @@ import { windowWidth, windowHeight } from "@utils/dimensions";
 import RatingComponent from "./ratingComponent";
 
 const HeaderTiffinCustomer = ({ kitchen }) => {
+  // console.log("kitchen", kitchen);
+
   return (
     <SafeAreaView style={styles.tiffinHeader}>
       <Text style={styles.kitchenName}>{kitchen.kitchenName}</Text>
       <Text style={styles.shortDescription}>{kitchen.shortDescription}</Text>
       <View style={styles.ratingBox}>
-        <RatingComponent rating={3.5} />
+        <RatingComponent
+          rating={kitchen.rating}
+          ratingsize={kitchen.ratingsize ? kitchen.ratingsize : null}
+          kitchenID={kitchen._id}
+        />
       </View>
       <Text style={styles.address}>
         {kitchen.address.flatNumber}, {kitchen.address.street},{" "}

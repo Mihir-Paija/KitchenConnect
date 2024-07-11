@@ -223,6 +223,11 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
 
   // States for each subscription type
   useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor(styles.container.backgroundColor);
+  }, []);
+
+  useEffect(() => {
     setCurrentSubscriptions(
       subList.filter(
         (item) => item.Subscription.subscriptionStatus === "Current"
@@ -249,7 +254,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
       const response = await getSubscriptionsList(customerID);
       // console.log(response);
       setSubList(response.data);
-      // console.log("response data", response.data);
+      console.log("response data", response.data);
     } catch (error) {
       console.error("Failed to fetch sub List customer:", error);
     } finally {

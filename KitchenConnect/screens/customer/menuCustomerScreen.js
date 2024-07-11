@@ -201,6 +201,7 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                     onClose={() => setOrderModalVisible(false)}
                   />
                   <SubscriptionModalCustomer
+                    kitchen={kitchen}
                     tiffin={tiffin}
                     navigation={navigation}
                     visible={subscriptionModalVisible}

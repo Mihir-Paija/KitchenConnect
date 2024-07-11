@@ -237,10 +237,7 @@ export const subscriptionsGet = async (req, res) => {
 
     const subscriptionsList = await subscriber.find({ customerID });
     if (!subscriptionsList) {
-      return res.status(404).json({
-        error: "Not Found",
-        message: "subscriptionsList not found",
-      });
+      return res.status(200).json([]);
     }
 
     const detailedSubscriptionsList = await Promise.all(
@@ -445,7 +442,7 @@ export const skipSubOrder = async (req, res) => {
 
     // Check if subOrder status is "Upcoming"
     if (
-      SubscriptionOrderDetails.subOrders[subOrderIndex].status !== "Upcoming"
+      SubscriptionOrderDetails.subOrders[subOrderIndex].status != "Upcoming"
     ) {
       return res.status(400).json({
         error: "Invalid Status",
@@ -454,7 +451,7 @@ export const skipSubOrder = async (req, res) => {
     }
 
     SubscriptionOrderDetails.subOrders[subOrderIndex].status = "OptedOut";
-
+    SubscriptionOrderDetails.subOrders[subOrderIndex].optedOutDate = new Date();
     // Save the updated subscription order
     await SubscriptionOrderDetails.save();
 
@@ -515,6 +512,15 @@ export const cancelSubscription = async (req, res) => {
     // Update subscription status to "Cancelled"
     subscriberDetails.subscriptionStatus.status = "Cancelled";
     subscriberDetails.subscriptionStatus.cancelDate = new Date(); // Optionally update the cancel date to the cancellation date
+    console.log(subscriberDetails.subscriptionStatus.daysRemaining);
+    // Move all dates from daysRemaining to daysOptedOut
+    subscriberDetails.subscriptionStatus.daysOptedOut.push(
+      ...subscriberDetails.subscriptionStatus.daysRemaining
+    );
+
+    // Clear the daysRemaining array
+    subscriberDetails.subscriptionStatus.daysRemaining = [];
+    console.log(subscriberDetails.subscriptionStatus.daysRemaining);
 
     // Save the updated subscriber details
     await subscriberDetails.save();
@@ -529,6 +535,7 @@ export const cancelSubscription = async (req, res) => {
       subscriptionOrderDetails.subOrders.forEach((subOrder) => {
         if (subOrder.status === "Upcoming") {
           subOrder.status = "OptedOut";
+          subOrder.optedOutDate = new Date();
         }
       });
 

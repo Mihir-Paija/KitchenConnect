@@ -23,36 +23,45 @@ import TiffinTypeComponent from "../../components/customer/tiffinTypeComponent";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import CheckBox from "react-native-check-box";
-import Icon from "react-native-vector-icons/AntDesign";
+import foodTypeIcon from "@/utils/foodTypeIconPath";
 import { subscribeCustomer } from "../../utils/APIs/customerApi";
+import Icon from "react-native-vector-icons/AntDesign";
 
-const subscription = {
-  id: 1,
-  providerName: "Phoenix Kitchen",
-  tiffinName: "Veg Thali",
-  subscriptionName: "Standard Subscription",
-  tiffinType: "Lunch",
-  duration: 15,
-  deliveryIncluded: true,
-  deliveryCharge: 50,
-  price: "2000",
-  discount: "10",
-  priceBreakdown: {
-    subscriptionPrice: 1500,
-    deliveryCharge: 50,
-    totalPrice: 3000,
-  },
-  orderDate: "2024-06-12",
-  orderTime: "12:00",
-  noOfTiffins: 30,
-  startDate: "2024-06-14",
-  endDate: "2024-07-13",
-  pricePerTiffinDelivery: 50,
-  status: "pending",
-  remainingDays: null,
-  daysCompleted: null,
-  daysOptedOut: null,
+const foodTypeMapping = {
+  Veg: "Veg",
+  "Non-Veg": "NonVeg",
+  Swaminarayan: "Swaminarayan",
+  Jain: "Jain",
+  Vegan: "Vegan",
 };
+
+// const subscription = {
+//   id: 1,
+//   providerName: "Phoenix Kitchen",
+//   tiffinName: "Veg Thali",
+//   subscriptionName: "Standard Subscription",
+//   tiffinType: "Lunch",
+//   duration: 15,
+//   deliveryIncluded: true,
+//   deliveryCharge: 50,
+//   price: "2000",
+//   discount: "10",
+//   priceBreakdown: {
+//     subscriptionPrice: 1500,
+//     deliveryCharge: 50,
+//     totalPrice: 3000,
+//   },
+//   orderDate: "2024-06-12",
+//   orderTime: "12:00",
+//   noOfTiffins: 30,
+//   startDate: "2024-06-14",
+//   endDate: "2024-07-13",
+//   pricePerTiffinDelivery: 50,
+//   status: "pending",
+//   remainingDays: null,
+//   daysCompleted: null,
+//   daysOptedOut: null,
+// };
 
 const SubscribeCustomerScreen = ({ navigation, route }) => {
   //global state
@@ -61,24 +70,35 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
   const subscriptionPlan = route.params.subscriptionPlan;
   const tiffinID = route.params.tiffinID;
   const kitchenID = route.params.kitchenID;
-
-  // console.log(subscriptionPlan);
-
+  const tiffin = route.params.tiffin;
+  const kitchen = route.params.kitchen;
+  console.log(subscriptionPlan);
+  const iconKey = foodTypeMapping[tiffin.foodType];
+  const iconData = foodTypeIcon[iconKey];
   // local state
   const [isChecked, setIsChecked] = useState(false);
   const [subscriberFirstName, setSubscriberFirstName] = useState(
     authState.authData.name
   );
   const [subscriberLastName, setSubscriberLastName] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+  );
   // console.log("start date : ", startDate);
   const [endDate, setEndDate] = useState(
-    new Date(new Date().getTime() + subscription.duration * 24 * 60 * 60 * 1000)
+    new Date(new Date().getTime() + subscriptionPlan.days * 24 * 60 * 60 * 1000)
   );
   const [wantDelivery, setWantDelivery] = useState(false);
+  const [wantPacking, setWantPacking] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [noOfTiffins, setNumberOfTiffins] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const nextMonth = new Date();
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
 
   const subscriptionTypes = {
     7: "week",
@@ -137,7 +157,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     ).toFixed(2)
   );
   const updatedDiscountProvider = parseFloat(
-    ((price.kitchenDiscount || 0) * updatedSubscriptionPrice/100).toFixed(2)
+    (((price.kitchenDiscount || 0) * updatedSubscriptionPrice) / 100).toFixed(2)
   );
   const updatedTotalCustomer = parseFloat(
     (
@@ -190,6 +210,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
     wantDelivery,
+    wantPacking,
     noOfTiffins,
     address: "123 Main St, City, State, ZIP",
     subscriptionStatus: { status: "Pending" },
@@ -199,6 +220,10 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
   };
 
   //functions
+  useEffect(() => {
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor(styles.container.backgroundColor);
+  });
   displayDate = (date) => {
     const options = { weekday: "short", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
@@ -219,7 +244,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
 
     setEndDate(
       new Date(
-        currentDate.getTime() + subscription.duration * 24 * 60 * 60 * 1000
+        currentDate.getTime() + subscriptionPlan.days * 24 * 60 * 60 * 1000
       )
     );
   };
@@ -278,11 +303,52 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                   }
                 >
                   ₹
-                  {subscription.discount
+                  {subscriptionPlan.discount
                     ? updatedSubscriptionPrice - updatedDiscountCustomer
                     : updatedSubscriptionPrice}{" "}
                   / {subscriptionTypes[subscriptionPlan.days]}
                 </Text>
+              </View>
+            </View>
+            <View
+              style={[
+                styles.bookingBox,
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignContent: "space-between",
+                },
+              ]}
+            >
+              <View style={styles.tiffinDetails}>
+                <Image source={iconData.path} style={iconData.foodTypeStyle} />
+                <Text style={styles.kitchenName}>{tiffin.name}</Text>
+                <Text style={styles.tiffinName}>{kitchen.kitchenName}</Text>
+                <Text style={styles.price}>
+                  {tiffin.tiffinType} {"Tiffin"}
+                </Text>
+                <Text style={styles.price}>₹{tiffin.price}</Text>
+              </View>
+              <View style={styles.sideBar}>
+                <Image
+                  source={require("@/assets/customer/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
+                  style={styles.tiffinImage}
+                />
+                <View style={styles.bookButton}>
+                  <Icon
+                    name="minus"
+                    type="AntDesign"
+                    style={styles.icon}
+                    onPress={minusTiffin}
+                  />
+                  <Text style={styles.noTiffins}>{noOfTiffins}</Text>
+                  <Icon
+                    name="plus"
+                    type="AntDesign"
+                    style={styles.icon}
+                    onPress={plusTiffin}
+                  />
+                </View>
               </View>
             </View>
             <View style={[styles.bookingBox]}>
@@ -333,6 +399,8 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                         value={startDate}
                         mode="date"
                         display="default"
+                        minimumDate={tomorrow}
+                        maximumDate={nextMonth}
                         onChange={handleDateChange}
                       />
                     )}
@@ -352,33 +420,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                   </View>
                 </View>
               </View>
-              <View style={styles.formLineBox}>
-                <View style={styles.tiffinNoBox}>
-                  <Icon
-                    name="minuscircleo"
-                    type="AntDesign"
-                    style={styles.icon}
-                    onPress={minusTiffin}
-                  />
-                  <Text
-                    style={[
-                      styles.inputvalueTxt,
-                      { alignSelf: "center", marginRight: windowWidth * 0.02 },
-                    ]}
-                  >
-                    {noOfTiffins}
-                  </Text>
-                  <Icon
-                    name="pluscircleo"
-                    type="AntDesign"
-                    style={styles.icon}
-                    onPress={plusTiffin}
-                  />
-                  <Text style={[styles.inputvalueTxt, { alignSelf: "center" }]}>
-                    Tiffins
-                  </Text>
-                </View>
-              </View>
+
               <View style={styles.checkboxContainer}>
                 <CheckBox
                   isChecked={wantDelivery}
@@ -386,8 +428,29 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                   boxType="square" // Optional: to specify box type (square or circle)
                   checkBoxColor="#ffa500"
                 />
-                <Text style={{ marginLeft: windowWidth * 0.01 }}>
+                <Text
+                  style={[
+                    styles.inputLableTxt,
+                    { marginBottom: 0, marginLeft: windowWidth * 0.01 },
+                  ]}
+                >
                   Do you want Delivery?
+                </Text>
+              </View>
+              <View style={styles.checkboxContainer}>
+                <CheckBox
+                  isChecked={wantPacking}
+                  onClick={() => setWantPacking(!wantPacking)}
+                  boxType="square" // Optional: to specify box type (square or circle)
+                  checkBoxColor="#ffa500"
+                />
+                <Text
+                  style={[
+                    styles.inputLableTxt,
+                    { marginBottom: 0, marginLeft: windowWidth * 0.01 },
+                  ]}
+                >
+                  Do you want Disposable Packaging?
                 </Text>
               </View>
             </View>
@@ -462,14 +525,7 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                   ₹ {updatedTotalCustomer}
                 </Text>
               </View>
-              {/* {subscription.deliveryIncluded && (
-                <View style={styles.paymentLineBox}>
-                  <Text style={styles.paymentTxt}>Delivery Charge : </Text>
-                  <Text style={styles.paymentValueTxt}>
-                    ₹ {subscription.priceBreakdown.deliveryCharge} / delivery
-                  </Text>
-                </View>
-              )} */}
+
               <View
                 style={[
                   styles.paymentLineBox,
@@ -527,7 +583,12 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
                   boxType="square" // Optional: to specify box type (square or circle)
                   checkBoxColor="#ffa500"
                 />
-                <Text style={{ marginLeft: windowWidth * 0.01 }}>
+                <Text
+                  style={[
+                    styles.inputLableTxt,
+                    { marginBottom: 0, marginLeft: windowWidth * 0.01 },
+                  ]}
+                >
                   Do you agree with Terms & Conditions?
                 </Text>
               </View>
@@ -577,6 +638,61 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: windowHeight * 0.01,
   },
+  tiffinDetails: {
+    // backgroundColor: "#aaff",
+    alignItems: "flex-start",
+    // width: windowWidth * 0.6,
+    // height: "100%",
+  },
+  kitchenName: {
+    textAlign: "center",
+    fontSize: windowWidth * 0.06,
+    fontFamily: "NunitoBold",
+    marginBottom: windowWidth * 0.013,
+  },
+  tiffinName: {
+    fontSize: windowWidth * 0.044,
+    fontFamily: "NunitoSemiBold",
+    marginBottom: windowWidth * 0.013,
+    color: "#505050",
+  },
+  price: {
+    textAlign: "center",
+    fontSize: windowWidth * 0.04,
+    fontFamily: "NunitoRegular",
+    color: "#505050",
+    marginBottom: windowWidth * 0.013,
+  },
+  sideBar: {
+    // backgroundColor: "#ffaa",
+    // width: windowWidth * 0.35,
+    alignItems: "center",
+    alignContent: "center",
+    justifyContent: "center",
+    // height: "100%",
+  },
+  tiffinImage: {
+    height: windowWidth * 0.2,
+    width: windowWidth * 0.2,
+    borderRadius: windowWidth * 0.03,
+  },
+  tiffinType: {
+    color: "#000",
+    textAlign: "center",
+    fontSize: windowWidth * 0.045,
+    fontFamily: "NunitoRegular",
+  },
+  bookButton: {
+    flexDirection: "row",
+    backgroundColor: "#FFECEC",
+    paddingVertical: windowWidth * 0.005,
+    paddingHorizontal: windowWidth * 0.02,
+    borderRadius: windowWidth * 0.02,
+    borderWidth: 0.5,
+    borderColor: "#ffa500",
+    marginTop: windowHeight * 0.005,
+    alignSelf: "center",
+  },
   priceContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -584,6 +700,12 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     alignSelf: "center",
+  },
+  noTiffins: {
+    fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoBold",
+    textAlign: "center",
+    marginHorizontal: windowWidth * 0.015,
   },
   planPrice: {
     fontSize: windowWidth * 0.04,
@@ -711,7 +833,10 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // marginBottom: windowHeight * 0.02,
+    alignContent: "center",
+    // backgroundColor: "#ffAA",
+    marginVertical: windowHeight * 0.005,
+    paddingHorizontal: windowWidth * 0.02,
     // alignSelf: "center",
   },
   icon: {

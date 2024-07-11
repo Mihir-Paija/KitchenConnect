@@ -1,4 +1,5 @@
 import wallet from "../../models/walletModel.js";
+import transaction from "../../models/transactionModel.js";
 import provider from "../../models/providerModel.js";
 import customer from "../../models/customerModel.js";
 import { hashPassword, comparePassword } from "../../utils/bcrypt.js";
@@ -176,8 +177,20 @@ export const addMoneyCustomer = async (req, res) => {
     // Save the updated wallet details
     await walletDetails.save();
 
+    const TransactionDetails = {
+      walletID,
+      amount,
+      transactionType: "Deposit",
+    };
+
+    const Transaction = await transaction.create(TransactionDetails);
+
+    console.log(Transaction);
+
     return res.status(200).send({
       message: `Moey added to wallet Succesfully`,
+      walletDetails,
+      Transaction,
     });
   } catch (error) {
     console.log("Error in adding money into wallet ", error);
@@ -245,13 +258,65 @@ export const withdrawMoneyCustomer = async (req, res) => {
     // Save the updated wallet details
     await walletDetails.save();
 
+    const TransactionDetails = {
+      walletID,
+      amount,
+      transactionType: "Withdraw",
+    };
+
+    const Transaction = await transaction.create(TransactionDetails);
+
+    console.log(Transaction);
+
     return res.status(200).send({
       message: `Money withdrew from wallet Succesfully`,
+      walletDetails,
+      Transaction,
     });
   } catch (error) {
     console.log("Error in withdrawing money from wallet ", error);
     return res.status(500).send({
       error: "Internal Server Error in withdrawing money from wallet customer",
+      message: error.message,
+    });
+  }
+};
+
+export const transactionHistoryGet = async (req, res) => {
+  try {
+    const { walletID } = req.params;
+
+    if (!walletID) {
+      console.log("walletID is missing");
+      res.status(400).json({
+        error: "Invalid URL",
+        message: "walletID is missing",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(walletID)) {
+      console.log("The provided walletID is not a valid MongoDB ObjectId");
+      return res.status(400).json({
+        error: "Invalid walletID",
+        message: "The provided walletID is not a valid MongoDB ObjectId",
+      });
+    }
+
+    const TransactionList = await transaction
+      .find({
+        $or: [{ walletID: walletID }, { counterpartyID: walletID }],
+      })
+      .sort({ createdAt: -1 });
+
+    if (!TransactionList) {
+      res.status(200).json([]);
+    }
+
+    return res.status(200).json(TransactionList);
+  } catch (error) {
+    console.log("Error fetching Transaction history ", error.message);
+    return res.status(500).json({
+      error: "Internal Server Error in fetching transaction history",
       message: error.message,
     });
   }
