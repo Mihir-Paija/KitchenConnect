@@ -23,9 +23,10 @@ import LineGraph from "@/components/provider/lineGraph";
 import RNPickerSelect from "react-native-picker-select";
 
 import WalletDetailsScreen from '../shared/walletDetailsScreen';
-import { withdrawMoney } from '../../utils/provider/walletAPI';
+import { withdrawMoney, fetchTransactions } from '../../utils/provider/walletAPI';
 import WalletComponent from '../../components/provider/walletComponent';
-import WithdrawModal from './modals/withdrawModal';
+import WithdrawModal from './modals/withdrawModal'
+import TransactionCard from "../../components/shared/transactionCard";
 
 
 const DUMMY_DATA = [
@@ -133,7 +134,7 @@ const WalletScreen = ({ navigation }) => {
   const [screen, setScreen] = useState('Wallet')
   const [wallet, setWallet] = useState([])
   const [withdrawModal, setWithdrawModal] = useState(false);
-  const [transactions, setTransactions] = useState(DUMMY_DATA)
+  const [transactions, setTransactions] = useState([])
 
 
   const [graphData, setGraphData] = useState({
@@ -193,6 +194,17 @@ const WalletScreen = ({ navigation }) => {
         console.log(response.data);
         setIsWallet(response.data.wallet);
         setWallet(response.data);
+
+        if(response.data.wallet){
+          console.log(response.data.wallet)
+          const transactionResponse = await fetchTransactions(authState.authToken, response.data.walletID)
+
+          console.log(transactionResponse)
+          if(transactionResponse && transactionResponse.status === 200)
+            setTransactions(transactionResponse.data)
+          
+          else Alert.alert('An Error Occurred')
+        }
       } else Alert.alert("An Error Occurred");
     } catch (error) {
       console.log("Error Fetching Wallet ", error);
@@ -345,7 +357,7 @@ const WalletScreen = ({ navigation }) => {
     colorMap.set("Total", "#FFA500");
 
     for (const value of transactions) {
-      const orderDate = new Date(value.date);
+      const orderDate = new Date(value.createdAt);
       orderDate.setHours(0, 0, 0, 0);
       orderDateString = orderDate.toISOString();
 
@@ -471,7 +483,7 @@ const WalletScreen = ({ navigation }) => {
 
   const fillBins = (map, orders, flag) => {
     for (const value of orders) {
-      const date = new Date(value.date);
+      const date = new Date(value.createdAt);
       date.setHours(0, 0, 0, 0);
 
       if (
@@ -676,14 +688,18 @@ const WalletScreen = ({ navigation }) => {
                   )}
                 </View>
               </View>
+              <View style={styles.transactionBackground}>
               <View style={styles.transactions}>
                 <Text style={styles.header}>Transactions</Text>
                 <FlatList
                   data={transactions}
                   keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => <TransactionComponent {...item} />}
+                  renderItem={({ item }) => <TransactionCard 
+                  transaction ={item} 
+                  />}
                   contentContainerStyle={styles.flatList}
                 />
+              </View>
               </View>
               {withdrawModal && (
                 <WithdrawModal 
@@ -734,8 +750,9 @@ const styles = StyleSheet.create({
   upperScreen: {
     backgroundColor: '#FFFFFF',
     paddingVertical: 5,
-    marginBottom: 12,
-    height: windowHeight * 0.47,
+    marginBottom: 5,
+    //flex: 1,
+    //height: windowHeight * 0.43,
   },
   header: {
     textAlign: 'center',
@@ -763,7 +780,7 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
-    marginBottom: 3,
+    marginBottom: 1,
 
   },
   tiffinName: {
@@ -784,7 +801,6 @@ const styles = StyleSheet.create({
   },
   filters: {
     flex: 1,
-
     alignItems: 'center',
 
   },
@@ -796,19 +812,36 @@ const styles = StyleSheet.create({
     height: windowHeight * 0.3, 
   },
   transactions: {
+    height: '100%',
+    //flex: 1,
+   //height: windowHeight * 0.57,
+   width: windowWidth * 0.98,
+    backgroundColor: "#fdfdfd",
+    // paddingHorizontal: windowWidth * 0.03,
+    paddingVertical: windowHeight * 0.015,
 
-   height: windowHeight * 0.53,
-
+    // justifyContent: "flex-end",
+    borderTopRightRadius: windowWidth * 0.05,
+    borderTopLeftRadius: windowWidth * 0.05,
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   flatList: {
-    flexGrow: 1,
+    //flexGrow: 1,
     paddingBottom: 30,
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: windowWidth * 0.04,
+    fontSize: windowWidth * 0.03,
     paddingVertical: windowHeight * 0.01,
     paddingHorizontal: windowWidth * 0.03,
     borderWidth: 1,
@@ -819,7 +852,7 @@ const pickerSelectStyles = StyleSheet.create({
     marginBottom: windowHeight * 0.01,
   },
   inputAndroid: {
-    fontSize: windowWidth * 0.035,
+    fontSize: windowWidth * 0.03,
     paddingHorizontal: windowWidth * 0.03,
     paddingVertical: windowHeight * 0.01,
     borderWidth: 1,

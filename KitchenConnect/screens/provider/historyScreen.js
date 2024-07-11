@@ -783,13 +783,14 @@ const HistoryScreen = ({ navigation }) => {
             <Text style={styles.noInsights}>No Insights</Text>
           )}
         </View>
-
+          <View style={styles.history}>
         <Text style={styles.header}>History</Text>
         <FlatList
           data={history}
           renderItem={({ item }) => <HistoryComponent {...item} />}
           contentContainerStyle={styles.flatList}
         />
+        </View>
     </SafeAreaView>
   );
 };
@@ -810,6 +811,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   insights: {
+    
     backgroundColor: '#FFFFFF',
     paddingVertical: 5,
     marginBottom: 5,
@@ -838,6 +840,28 @@ const styles = StyleSheet.create({
   graphContainer: {
     height: windowHeight * 0.3, 
   },
+  history:{
+    height: '100%',
+    //flex: 1,
+   //height: windowHeight * 0.57,
+    width: windowWidth,
+    backgroundColor: "#fdfdfd",
+    // paddingHorizontal: windowWidth * 0.03,
+    paddingVertical: windowHeight * 0.015,
+
+    // justifyContent: "flex-end",
+    borderTopRightRadius: windowWidth * 0.05,
+    borderTopLeftRadius: windowWidth * 0.05,
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  }
 });
 
 const pickerSelectStyles = StyleSheet.create({

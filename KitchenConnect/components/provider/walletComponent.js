@@ -33,7 +33,8 @@ import {
         {loading ? (
           <LoadingScreen />
         ) : (
-          <>      
+          <> 
+          <View style={styles.header}>     
             <View style={styles.headerBox}>
               <Text
                 style={[styles.helloTxt, { marginBottom: windowHeight * 0.001 }]}
@@ -46,6 +47,17 @@ import {
                 {walletDetails.lastName}
               </Text>
             </View>
+            <View>
+              <TouchableOpacity style={styles.operationBox} onPress ={onWithdraw}>
+              <View style={styles.iconBox}>
+                  <Image
+                    style={styles.icon}
+                    source={require("@assets/shared/withdraw_money.png")}
+                  />
+                </View>
+              </TouchableOpacity>
+                            </View>
+                            </View>
             <View style={styles.amountBox}>
               <Text
                 style={[
@@ -63,17 +75,6 @@ import {
                 ₹ {walletDetails.amount.toFixed(2)}
               </Text>
             </View>
-            <View style={styles.operationLineBox}>
-              <TouchableOpacity style={styles.operationBox} onPress ={onWithdraw}>
-                <View style={styles.iconBox}>
-                  <Image
-                    style={styles.icon}
-                    source={require("@assets/shared/withdraw_money.png")}
-                  />
-                </View>
-                <Text style={styles.iconTxt}>Withdraw</Text>
-              </TouchableOpacity>
-            </View>
           </>
         )}
       </SafeAreaView>
@@ -83,8 +84,13 @@ import {
   export default WalletComponent;
   
   const styles = StyleSheet.create({
+    header:{
+      flexDirection: 'row',
+      //backgroundColor: 'blue',
+      width: windowWidth,
+    },
     headerBox: {
-      width: windowWidth * 0.95,
+      width: windowWidth * 0.80,
       alignSelf: "center",
       // backgroundColor: "#faaf",
       paddingHorizontal: windowWidth * 0.03,
@@ -131,8 +137,8 @@ import {
       color: "#ffff",
     },
     operationLineBox: {
-      width: windowWidth * 0.9,
-      flexDirection: "row",
+      //width: windowWidth * 0.9,
+      //flexDirection: "row",
       alignSelf: "center",
       justifyContent: "space-around",
       alignContent: "center",
@@ -144,11 +150,17 @@ import {
       alignSelf: "center",
       justifyContent: "center",
     },
+    withdraw:{
+      justifyContent: 'flex-end',
+      width: '100%',
+      flexDirection: 'row',
+    },
     iconBox: {
-      alignSelf: "center",
+      //alignSelf: "center",
       backgroundColor: "rgba(255,156,0,0.2)",
       borderRadius: windowWidth * 0.025,
-      padding: windowWidth * 0.025,
+      marginVertical: windowHeight * 0.015,
+      //padding: windowWidth * 0.025,
       width: windowWidth * 0.17,
       height: windowWidth * 0.17,
       justifyContent: "center",
