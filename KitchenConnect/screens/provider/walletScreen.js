@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, BackHandler, Alert, TouchableOpacity, StatusBar, FlatList } from 'react-native';
 import activeScreenStyles from '../../styles/shared/activeScreen';
 import { AuthContext } from "@/context/authContext";
-import { windowHeight, windowWidth } from '@/utils/dimensions'
+import { windowHeight, windowWidth } from '@/utils/dimensions';
 import { getWallet, createWallet } from '../../utils/walletAPI';
 import CreateWalletModal from '../shared/createWalletModal';
-import LoadingScreen from '../shared/loadingScreen'
+import LoadingScreen from '../shared/loadingScreen';
 import WalletHeader from '../../components/provider/walletHeader';
 import TransactionComponent from '../../components/provider/transactionComponent';
-import LegendComponent from '@/components/provider/legendComponent'
-import LineGraph from '@/components/provider/lineGraph'
+import LegendComponent from '@/components/provider/legendComponent';
+import LineGraph from '@/components/provider/lineGraph';
 import RNPickerSelect from "react-native-picker-select";
 import WalletDetailsScreen from '../shared/walletDetailsScreen';
 import { withdrawMoney } from '../../utils/provider/walletAPI';
