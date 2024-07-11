@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import {View, StyleSheet, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import { windowWidth, windowHeight } from '@/utils/dimensions';
+import RatingComponent from "../shared/ratingComponent";
 
 const HomeHeader = ({profile, onPress}) =>{
     return (
@@ -9,11 +10,18 @@ const HomeHeader = ({profile, onPress}) =>{
             <View>
                 <Text style={styles.providerName}>{profile.kitchenName} </Text>
                 <Text numberOfLines={1} adjustsFontSizeToFit>{profile.shortDescription}</Text>
+                <View style={styles.ratingBox}>
+        <RatingComponent
+          rating={profile.rating}
+          ratingsize={profile.ratingsize ? profile.ratingsize : null}
+          kitchenID={profile._id}
+        />
+      </View>
             </View>
             <View style={styles.iconContainer}>
                 <TouchableOpacity onPress = {onPress}>
                 <Image
-                source={require("@assets/shared/icons8-male-user-ios-17-outlined/icons8-male-user-50.png")}
+                source={require("@assets/shared/icons8-male-user-ios-17-filled/icons8-male-user-50.png")}
                 style={styles.icon}
               />
               </TouchableOpacity>
@@ -45,6 +53,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    ratingBox: {
+        marginVertical: windowWidth * 0.02,
+      },
 
     iconContainer: {
         position: 'absolute',

@@ -77,3 +77,13 @@ export const setFCMToken = async(authToken, bodyData) =>{
     throw error.response.data;
   }  
 }
+
+export const isExpired = async(authToken) =>{
+  try {
+    const response = await axios.get(`${API_BASE_URL}/provider/${authToken}/expired`);
+    return response
+  } catch (error) {
+    console.error('Error In Checking Token:', error);
+    throw error.response.data;
+  }
+}

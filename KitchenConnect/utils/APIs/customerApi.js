@@ -344,10 +344,10 @@ export const postFeedBackCustomer = async (
   }
 };
 
-export const getKitchenFeedBackCustomer = async (customerID, kitchenID) => {
+export const getKitchenFeedBackCustomer = async (kitchenID) => {
   try {
     const response = await axios.get(
-      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}`
+      `${API_BASE_URL}/customer/feedBack/${kitchenID}`
     );
     return response;
   } catch (error) {
@@ -357,13 +357,13 @@ export const getKitchenFeedBackCustomer = async (customerID, kitchenID) => {
 };
 
 export const getTiffinFeedBackCustomer = async (
-  customerID,
   kitchenID,
   tiffinID
 ) => {
   try {
+    console.log(kitchenID)
     const response = await axios.get(
-      `${API_BASE_URL}/customer/feedBack/${customerID}/${kitchenID}/${tiffinID}`
+      `${API_BASE_URL}/customer/feedBack/${kitchenID}/${tiffinID}`
     );
     return response;
   } catch (error) {

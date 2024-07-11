@@ -228,3 +228,33 @@ export const setFCMToken = async(req, res) =>{
       })
     }
 }
+
+export const isExpired = async(req, res) =>{
+  try {
+      const {id} = req.params
+      if (!id) {
+          return res.status(400).send({
+              message: "Please Login"
+          })
+      }
+
+      const decoded = verifyJwt(id);
+      console.log(decoded)
+
+      if(decoded.valid === false || decoded.expired === true)
+          return res.status(200).send({
+              valid: false
+          })
+      
+      
+      return res.status(200).send({
+          valid: true
+      })
+
+  } catch (error) {
+      console.log('Error in Auth Middleware ', error)
+      return res.status(500).send({
+          message: `Internal Server Error`
+      })
+  }
+}

@@ -23,7 +23,7 @@ import {
 } from "../../utils/APIs/customerApi";
 import ReviewCard from "./reviewCard";
 
-const ReviewModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
+const ReviewModal = ({ visible, onClose, kitchenID, tiffinID }) => {
   //global state
   const [authState, setAuthState] = useContext(AuthContext);
   //states
@@ -52,6 +52,7 @@ const ReviewModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
         // console.log("response.data");
 
         const response = await getTiffinFeedBackCustomer(
+          customerID,
           kitchenID,
           tiffinID
         );
@@ -59,6 +60,7 @@ const ReviewModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
         setReviewList(response.data);
       } else {
         const response = await getKitchenFeedBackCustomer(
+          customerID,
           kitchenID
         );
         console.log(response.data);
@@ -110,7 +112,7 @@ const ReviewModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
   );
 };
 
-export default ReviewModalCustomer;
+export default ReviewModal;
 
 const styles = StyleSheet.create({
   modalBackground: {

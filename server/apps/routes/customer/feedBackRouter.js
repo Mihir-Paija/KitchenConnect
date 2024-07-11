@@ -6,7 +6,8 @@ import {
   feedBackTiffinGET,
 } from "../../controllers/customer/feedBackController.js";
 
+router.route("/:kitchenID").get(feedBackKitchenGET);
+router.route("/:kitchenID/:tiffinID").get(feedBackTiffinGET);
 router.route("/:customerID/:kitchenID/:tiffinID").post(feedBackPost);
-router.route("/:customerID/:kitchenID").get(feedBackKitchenGET);
-router.route("/:customerID/:kitchenID/:tiffinID").get(feedBackTiffinGET);
+
 export default router;

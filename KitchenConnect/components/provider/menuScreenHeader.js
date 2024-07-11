@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 import { SafeAreaView, View, Text, StyleSheet, Image } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons";
 import FoodTypeIcon from "./foodTypeIcon";
@@ -6,8 +6,11 @@ import { windowHeight, windowWidth } from '@/utils/dimensions'
 import Icon2 from "react-native-vector-icons/Octicons";
 import Icon3 from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon4 from "react-native-vector-icons/MaterialIcons"
+import RatingComponent from "../customer/ratingComponent";
+import {AuthContext} from '@/context/authContext'
 
 const MenuScreenHeader = ({ tiffin, onBack, onEdit, showDelivery }) => {
+    //const [authState] = useContext(AuthContext)
     console.log(tiffin)
     return (
 
@@ -21,9 +24,15 @@ const MenuScreenHeader = ({ tiffin, onBack, onEdit, showDelivery }) => {
                 />
             </View>
             <View style={styles.infoContainer}>
+                <RatingComponent 
+                rating={tiffin.rating}
+                ratingsize={tiffin.ratingsize ? tiffin.ratingsize :  null}
+                kitchenID={tiffin.providerID}
+                tiffinID={tiffin.id}
+                />
                 <Text style={styles.providerName} numberOfLines={1} adjustsFontSizeToFit>{tiffin.name}</Text>
                 <Text numberOfLines={1} adjustsFontSizeToFit>{tiffin.shortDescription}</Text>
-                <Text>{tiffin.tiffinType}</Text>
+               
                 <View style={styles.details}>
                     <Text style={styles.price}>₹{tiffin.price}</Text>
                     <View style={styles.dotIconView}>
@@ -37,6 +46,10 @@ const MenuScreenHeader = ({ tiffin, onBack, onEdit, showDelivery }) => {
                         />
                         <Text style={styles.price}> {tiffin.hours}:{tiffin.mins}</Text>
                     </View>
+                    <View style={styles.dotIconView}>
+                        <Icon2 name="dot-fill" type="Octicons" style={styles.dotIcon} />
+                    </View>
+                    <Text>{tiffin.tiffinType}</Text>
                 </View>
                 <View style={styles.buttons}>
                     <Icon3
@@ -53,7 +66,8 @@ const MenuScreenHeader = ({ tiffin, onBack, onEdit, showDelivery }) => {
             <View style={styles.foodType}>
                 <View style={styles.iconView}>
                     <FoodTypeIcon foodType={tiffin.foodType} style={styles.icon} />
-                </View>
+                                </View>
+                
             </View>
         </SafeAreaView>
     )
@@ -80,19 +94,19 @@ const styles = StyleSheet.create({
 
     infoContainer: {
         width: '70%',
-        paddingTop: '5%',
+        paddingTop: '2%',
         //justifyContent: 'center',
         alignItems: 'center',
     },
     providerName: {
         color: 'black',
-        fontSize: windowHeight * 0.04,
+        fontSize: windowHeight * 0.035,
         fontWeight: 'bold',
         textAlign: 'center',
     },
     details: {
         flexDirection: 'row',
-        width: '45%',
+        width: '65%',
         justifyContent: 'space-around'
     },
     buttons:{
@@ -102,7 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     price: {
-        fontSize: windowHeight * 0.02,
+        fontSize: windowHeight * 0.017,
     },
 
     dotIconView: {
