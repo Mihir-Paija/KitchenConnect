@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { View, Text, SafeAreaView, StyleSheet, BackHandler, StatusBar, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Platform } from 'react-native';
 import {windowHeight, windowWidth} from '@/utils/dimensions'
 import { formatDate, formatTime } from '../../utils/formateDateTime';
 
-const HistoryComponent = ({title, tiffinName, customerName, noOfTiffins, transactionID, subscriberFirstName, subscriberLastName, kitchenPaymentBreakdown, orderDate}) =>{
+const HistoryComponent = ({title, tiffinName, tiffinType, customerName, noOfTiffins, amountReceived, createdAt}) =>{
   const dayCount = {
     Weekly: 7,
     Fortnightly: 15,
@@ -11,27 +11,16 @@ const HistoryComponent = ({title, tiffinName, customerName, noOfTiffins, transac
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.itemContainer}>
-        <View style={styles.leftContainer}>
+    <View style={[styles.container, Platform.OS === 'android' ? styles.androidShadow : styles.iosShadow]}>
           <Text style={styles.header}>
-            {tiffinName} - {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' : 'tiffin'}
+            {tiffinName}({tiffinType}) - {noOfTiffins} {noOfTiffins > 1 ? 'tiffins' : 'tiffin'}
           </Text>
           <Text style={styles.title}>{title}</Text>
-          {title == 'Subscription' ?
-          <>
-          <Text style={styles.customer}>Customer: {subscriberFirstName + ' ' + subscriberLastName}</Text>
-          <Text style={styles.amount}>Amount: ₹{kitchenPaymentBreakdown.perOrderPrice}</Text>
-          </> :
-          <>
-          <Text style={styles.customer}>Customer: {customerName}</Text>
-          <Text style={styles.amount}>Amount: ₹{kitchenPaymentBreakdown.total}</Text>
-          </>}
-          <Text>TransacationID: {transactionID}</Text>
-          <Text style={styles.delivery}>Delivered On: {formatDate(orderDate)} at {formatTime(orderDate)}</Text>
           
-        </View>
-      </View>
+          <Text style={styles.customer}>Customer: {customerName}</Text>
+          <Text style={styles.amount}>Amount: ₹{amountReceived}</Text>
+          <Text style={styles.delivery}>Delivered On: {formatDate(createdAt)} at {formatTime(createdAt)}</Text>
+          
     </View>
   );
 }
@@ -45,29 +34,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 2,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ffffff', 
-    borderBottomWidth: 1,
-    width: windowWidth 
+    backgroundColor: '#fff', 
+    //borderBottomWidth: 1,
+    marginTop: windowHeight * 0.007,
+    marginBottom: windowHeight *0.002,
+   // marginHorizontal: windowWidth * 0.03,
+    borderRadius: windowWidth * 0.03,
+    padding: windowWidth * 0.02,
+    width: windowWidth * 0.95,
+
   },
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start', 
-    //width: '100%',
-    marginBottom: 20,
-  },
-  leftContainer: {
-    flex: 1.5,
-    height: '100%',
-  },
-  rightContainer: {
-    flex: 1,
-    height: '100%', 
-    justifyContent: 'center', 
-    alignContent: 'center',
-    alignItems: 'center',
-  },
+  androidShadow: {
+    elevation: 5,
+},
+
+iosShadow: {
+  shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+},
   header: {
     fontSize: 18,
     fontWeight: 'bold',

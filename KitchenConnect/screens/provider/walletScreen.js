@@ -27,6 +27,7 @@ import { withdrawMoney, fetchTransactions } from '../../utils/provider/walletAPI
 import WalletComponent from '../../components/provider/walletComponent';
 import WithdrawModal from './modals/withdrawModal'
 import TransactionCard from "../../components/shared/transactionCard";
+import { LinearGradient } from 'expo-linear-gradient'
 
 
 const DUMMY_DATA = [
@@ -690,7 +691,12 @@ const WalletScreen = ({ navigation }) => {
               </View>
               <View style={styles.transactionBackground}>
               <View style={styles.transactions}>
-                <Text style={styles.header}>Transactions</Text>
+              <LinearGradient
+      colors={['white', 'white','#FFCC99']}
+      style={styles.header}
+    >
+      <Text style={styles.headerText}>Transactions</Text>
+    </LinearGradient>
                 <FlatList
                   data={transactions}
                   keyExtractor={(item) => item._id}
@@ -755,9 +761,16 @@ const styles = StyleSheet.create({
     //height: windowHeight * 0.43,
   },
   header: {
+    //textAlign: 'center',
+    //fontSize: windowHeight * 0.025,
+    marginBottom: 6,
+    paddingBottom: 5,
+    borderColor: 'black',
+    width: windowWidth,
+  },
+  headerText: {
     textAlign: 'center',
     fontSize: windowHeight * 0.025,
-    marginBottom: 8,
   },
   btnView: {
     position: "absolute",

@@ -12,6 +12,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate } from '../../utils/formateDateTime';
 import RNPickerSelect from "react-native-picker-select";
 import LegendComponent from '../../components/provider/legendComponent';
+import { fetchHistory } from '../../utils/provider/historyAPI';
+import { LinearGradient } from 'expo-linear-gradient'
 
 const GRAPH_DATA = [
   {
@@ -32,7 +34,7 @@ const GRAPH_DATA = [
       perOrderPrice: 300
     },
     transactionID: "Z339021GR9S",
-    date: new Date(2024, 6, 5),
+    createdAt: new Date(2024, 6, 5),
   },
   {
     _id: "667babbabe047a6f717c5d2d",
@@ -51,7 +53,7 @@ const GRAPH_DATA = [
       perOrderPrice: 450
     },
     transactionID: "A567723YU0P",
-    date: new Date(2024, 6, 4),
+    createdAt: new Date(2024, 6, 4),
   },
   {
     _id: "667babbabe047a6f717c5d3d",
@@ -70,7 +72,7 @@ const GRAPH_DATA = [
       perOrderPrice: 200
     },
     transactionID: "D348229YE5T",
-    date: new Date(2024, 6, 2),
+    createdAt: new Date(2024, 6, 2),
   },
   {
     _id: "667babbabe047a6f717c5d4d",
@@ -89,7 +91,7 @@ const GRAPH_DATA = [
       perOrderPrice: 400
     },
     transactionID: "D348229YE6T",
-    date: new Date(2024, 6, 2),
+    createdAt: new Date(2024, 6, 2),
   },
   {
     _id: "667babbabe047a6f717c5d5d",
@@ -109,7 +111,7 @@ const GRAPH_DATA = [
       perOrderPrice: 100
     },
     transactionID: "A567723YU1P",
-    date: new Date(2024, 5, 29),
+    createdAt: new Date(2024, 5, 29),
   },
   {
     _id: "667babbabe047a6f717c5d6d",
@@ -128,7 +130,7 @@ const GRAPH_DATA = [
       perOrderPrice: 100
     },
     transactionID: "D348229YE7T",
-    date: new Date(2024, 4, 27),
+    createdAt: new Date(2024, 4, 27),
   },
   {
     _id: "667babbabe047a6f717c5d6d",
@@ -147,7 +149,7 @@ const GRAPH_DATA = [
       perOrderPrice: 100
     },
     transactionID: "D348229YE7T",
-    date: new Date(2024, 4, 25),
+    createdAt: new Date(2024, 4, 25),
   }
 ];
 
@@ -179,7 +181,7 @@ const monthMap = {
   11: 'Dec'
 };
 
-const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+//const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const monthDivision = ['1-5', '6-10', '11-15', '16-20', '21-25', '26-']
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -192,10 +194,10 @@ let tempValueMap = new Map()
 let tempColorMap = new Map()
 
 const HistoryScreen = ({ navigation }) => {
-  //const [authState, setAuthState] = useContext(AuthContext);
+  const [authState, setAuthState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false)
   //const [refresh, setRefresh] = useState(false)
-  const [history, setHistory] = useState(GRAPH_DATA)
+  const [history, setHistory] = useState([])
 
   const [graphData, setGraphData] = useState({
     labels: [],
@@ -220,25 +222,25 @@ const HistoryScreen = ({ navigation }) => {
   //const [graphLabel, setGraphLabel] = useState([])
   const [originalColors, setOriginalColors] = useState([
     `rgba(255, 195, 0, 1)`,     // Vivid Yellow
-  `rgba(199, 0, 57, 1)`,      // Vivid Red
-  `rgba(144, 12, 63, 1)`,     // Vivid Burgundy
-  `rgba(88, 24, 69, 1)`,      // Vivid Purple
-  `rgba(30, 132, 73, 1)`,     // Vivid Green
-  `rgba(52, 152, 219, 1)`,    // Vivid Blue
-  `rgba(155, 89, 182, 1)`,    // Vivid Violet
-  `rgba(243, 156, 18, 1)`,    // Vivid Orange Yellow
-  `rgba(39, 174, 96, 1)`,     // Vivid Green Cyan
-  `rgba(231, 76, 60, 1)`,     // Vivid Red Pink
-  `rgba(255, 105, 180, 1)`,   // Hot Pink
-  `rgba(0, 128, 128, 1)`,     // Teal
-  `rgba(0, 255, 127, 1)`,     // Spring Green
-  `rgba(75, 0, 130, 1)`,      // Indigo
-  `rgba(240, 128, 128, 1)`,   // Light Coral
-  `rgba(0, 191, 255, 1)`,     // Deep Sky Blue
-  `rgba(218, 112, 214, 1)`,   // Orchid
-  `rgba(124, 252, 0, 1)`,     // Lawn Green
-  `rgba(139, 0, 139, 1)`,     // Dark Magenta
-  `rgba(0, 206, 209, 1)`,     // Dark Turquoise
+    `rgba(199, 0, 57, 1)`,      // Vivid Red
+    `rgba(144, 12, 63, 1)`,     // Vivid Burgundy
+    `rgba(88, 24, 69, 1)`,      // Vivid Purple
+    `rgba(30, 132, 73, 1)`,     // Vivid Green
+    `rgba(52, 152, 219, 1)`,    // Vivid Blue
+    `rgba(155, 89, 182, 1)`,    // Vivid Violet
+    `rgba(243, 156, 18, 1)`,    // Vivid Orange Yellow
+    `rgba(39, 174, 96, 1)`,     // Vivid Green Cyan
+    `rgba(231, 76, 60, 1)`,     // Vivid Red Pink
+    `rgba(255, 105, 180, 1)`,   // Hot Pink
+    `rgba(0, 128, 128, 1)`,     // Teal
+    `rgba(0, 255, 127, 1)`,     // Spring Green
+    `rgba(75, 0, 130, 1)`,      // Indigo
+    `rgba(240, 128, 128, 1)`,   // Light Coral
+    `rgba(0, 191, 255, 1)`,     // Deep Sky Blue
+    `rgba(218, 112, 214, 1)`,   // Orchid
+    `rgba(124, 252, 0, 1)`,     // Lawn Green
+    `rgba(139, 0, 139, 1)`,     // Dark Magenta
+    `rgba(0, 206, 209, 1)`,     // Dark Turquoise
   ])
   const [legendMap, setLegendMap] = useState(new Map(colorMap))
 
@@ -257,6 +259,20 @@ const HistoryScreen = ({ navigation }) => {
     { label: 'Subscription', value: 'Subscription' },
     { label: 'One-Time', value: 'One-Time' }
   ]
+
+  const getHistory = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchHistory(authState.authToken)
+      if (response && response.status === 200) {
+        setHistory(response.data)
+      }
+    } catch (error) {
+      Alert.alert('An Error Occured')
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
 
@@ -318,10 +334,10 @@ const HistoryScreen = ({ navigation }) => {
       }
 
       //setDurationSize(7)
-      if(!scroll)
+      if (!scroll)
         setScrollToggle(!scrollToggle)
       else
-      setScroll(false)
+        setScroll(false)
       setGraphData({ ...graphData, labels: graphLabels })
     }
 
@@ -341,10 +357,10 @@ const HistoryScreen = ({ navigation }) => {
 
       //setDurationSize(14)
       setGraphData({ ...graphData, labels: graphLabels })
-      if(scroll)
+      if (scroll)
         setScrollToggle(!scrollToggle)
       else
-      setScroll(true)
+        setScroll(true)
 
     }
 
@@ -355,10 +371,10 @@ const HistoryScreen = ({ navigation }) => {
       }
       //setDurationSize(12)
       setGraphData({ ...graphData, labels: months })
-      if(scroll)
+      if (scroll)
         setScrollToggle(!scrollToggle)
       else
-      setScroll(true)
+        setScroll(true)
     }
     else {
       for (let i = 1; i <= 26; i = i + 5) {
@@ -366,34 +382,34 @@ const HistoryScreen = ({ navigation }) => {
         dateIndexMap.set(i, i / 5)
       }
       setGraphData({ ...graphData, labels: monthDivision })
-      if(!scroll)
+      if (!scroll)
         setScrollToggle(!scrollToggle)
       else
-      setScroll(false)
+        setScroll(false)
     }
 
     console.log(dateSet)
     console.log(dateIndexMap)
   }
 
-  const handleDurationSize = () =>{
+  const handleDurationSize = () => {
     if (duration.label === 'Last 7 days') {
       setDurationSize(7)
-      
+
     }
 
     else if (duration.label === 'Last 14 days') {
 
       setDurationSize(14)
-         }
+    }
 
     else if (duration.label === 'This Year') {
-      
+
       setDurationSize(12)
-      
+
     }
     else {
-  
+
       if (durationSize === 6)
         setDurationToggle(!durationToggle)
       else {
@@ -417,8 +433,9 @@ const HistoryScreen = ({ navigation }) => {
     colorMap.set('All', '#FFA500')
 
     for (const value of history) {
-
-      const orderDate = new Date(value.date)
+      //console.log(value)
+      const orderDate = new Date(value.createdAt)
+      console.log(orderDate)
       orderDate.setHours(0, 0, 0, 0)
       orderDateString = orderDate.toISOString()
 
@@ -483,11 +500,11 @@ const HistoryScreen = ({ navigation }) => {
 
       console.log(finalData.datasets.length)
 
-        setGraphData({
-          ...graphData,
-          datasets: finalData.datasets
-        });
-      
+      setGraphData({
+        ...graphData,
+        datasets: finalData.datasets
+      });
+
 
       setLegendMap(colorMap)
 
@@ -517,17 +534,17 @@ const HistoryScreen = ({ navigation }) => {
       console.log(finalData.datasets.length)
 
       setGraphData({
-          ...graphData,
-          datasets: finalData.datasets
-        });
+        ...graphData,
+        datasets: finalData.datasets
+      });
 
-        setLegendMap(colorMap)
-      
+      setLegendMap(colorMap)
+
     }
     else {
       let colors = [...originalColors]
       tempColorMap.clear();
-      
+
       tempNameSet.clear()
       let flag = false;
       if (tiffinName === 'All') {
@@ -535,7 +552,7 @@ const HistoryScreen = ({ navigation }) => {
         colorMap.set('All', '#FFA500')
         flag = true
       }
-     tempValueMap.clear()
+      tempValueMap.clear()
       const orders = []
       console.log(orderType)
 
@@ -547,16 +564,16 @@ const HistoryScreen = ({ navigation }) => {
         if (tiffinName !== 'All' && value.tiffinName !== tiffinName)
           count = false;
 
-        
+
         if (count && tiffinType !== 'All' && value.tiffinType !== tiffinType)
           count = false
 
-        
+
         if (count && orderType !== 'All' && value.title !== orderType)
           count = false;
 
         if (count) {
-        console.log(value)
+          console.log(value)
           addToSet(tempNameSet, value, orders, colors, tempColorMap)
         }
       }
@@ -598,7 +615,7 @@ const HistoryScreen = ({ navigation }) => {
 
   const fillBins = (map, orders, flag) => {
     for (const value of orders) {
-      const date = new Date(value.date);
+      const date = new Date(value.createdAt);
       date.setHours(0, 0, 0, 0)
 
       if (duration.label === 'Last 7 days' || duration.label === 'Last 14 days') {
@@ -659,19 +676,27 @@ const HistoryScreen = ({ navigation }) => {
 
     console.log(finalData.datasets.length)
 
-      setGraphData({
-        ...graphData,
-        datasets: finalData.datasets
-      });
+    setGraphData({
+      ...graphData,
+      datasets: finalData.datasets
+    });
 
-      setLegendMap(colorMap)
+    setLegendMap(colorMap)
   }
+
+  useEffect(() => {
+    getHistory()
+  }, [])
+
+  useEffect(() => {
+    createDuration()
+  }, [history])
 
   useEffect(() => {
     handleDuration();
   }, [duration.label])
 
-  useEffect(() =>{
+  useEffect(() => {
     handleDurationSize()
   }, [scroll, scrollToggle])
 
@@ -686,10 +711,7 @@ const HistoryScreen = ({ navigation }) => {
     handleTiffins()
   }, [tiffinName, tiffinType, orderType])
 
-  useEffect(() => {
-    //fetchHistory()
-    createDuration();
-  }, [])
+
 
 
 
@@ -716,81 +738,100 @@ const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.insights}>
-          <Text style={styles.header}>Insights</Text>
-          <View style={styles.row}>
-            <View style={styles.filters}>
-              <Text>Tiffins</Text>
-              <RNPickerSelect
-                placeholder={{ label: 'Select Tiffins', value: null }}
-                value={tiffinName}
-                onValueChange={value => setTiffinName(value)}
-                items={tiffinNameOptions}
-                style={pickerSelectStyles}
-                useNativeAndroidPickerStyle={false}
-              />
-            </View>
-            <View style={styles.filters}>
-              <Text>Time</Text>
-              <RNPickerSelect
-                placeholder={{ label: 'Select Time', value: null }}
-                value={tiffinType}
-                onValueChange={value => setTiffinType(value)}
-                items={tiffinTypeOptions}
-                style={pickerSelectStyles}
-                useNativeAndroidPickerStyle={false}
-              />
-            </View>
-            <View style={styles.filters}>
-              <Text>Type</Text>
-              <RNPickerSelect
-                placeholder={{ label: 'Select Order Type', value: null }}
-                value={orderType}
-                onValueChange={value => setOrderType(value)}
-                items={orderTypeOptions}
-                style={pickerSelectStyles}
-                useNativeAndroidPickerStyle={false}
-              />
-            </View>
-            <View style={styles.duration}>
-              <Text>Duration</Text>
-              <RNPickerSelect
-                placeholder={{ label: 'Select Duration', value: null }}
-                value={duration ? duration.label : null}
-                onValueChange={label => {
-                  const selectedOption = findOptionByLabel(label, durationOptions);
-                  setDuration(selectedOption);
-                }}
-                items={durationOptions.map(option => ({
-                  label: option.label,
-                  value: option.label,
-                }))}
-                style={pickerSelectStyles}
-                useNativeAndroidPickerStyle={false}
-              />
-            </View>
-          </View>
-          <LegendComponent colorMap={legendMap} />
-          {graphData.datasets && graphData.datasets.length ? (
-            <View style={styles.graphContainer}>
-              <LineGraph
-                data={graphData}
-                scroll={scroll}
-                value={'No Of Tiffins'}
-              />
-            </View>
+      {authState.authToken ? (
+        <>
+          {loading ? (
+            <LoadingScreen />
           ) : (
-            <Text style={styles.noInsights}>No Insights</Text>
+            <>
+              <View style={styles.insights}>
+                <LinearGradient
+                  colors={['white', 'white', '#FFCC99']}
+                  style={styles.header}
+                >
+                  <Text style={styles.headerText}>Insights</Text>
+                </LinearGradient>
+                <View style={styles.row}>
+                  <View style={styles.filters}>
+                    <Text>Tiffins</Text>
+                    <RNPickerSelect
+                      placeholder={{ label: 'Select Tiffins', value: null }}
+                      value={tiffinName}
+                      onValueChange={value => setTiffinName(value)}
+                      items={tiffinNameOptions}
+                      style={pickerSelectStyles}
+                      useNativeAndroidPickerStyle={false}
+                    />
+                  </View>
+                  <View style={styles.filters}>
+                    <Text>Time</Text>
+                    <RNPickerSelect
+                      placeholder={{ label: 'Select Time', value: null }}
+                      value={tiffinType}
+                      onValueChange={value => setTiffinType(value)}
+                      items={tiffinTypeOptions}
+                      style={pickerSelectStyles}
+                      useNativeAndroidPickerStyle={false}
+                    />
+                  </View>
+                  <View style={styles.filters}>
+                    <Text>Type</Text>
+                    <RNPickerSelect
+                      placeholder={{ label: 'Select Order Type', value: null }}
+                      value={orderType}
+                      onValueChange={value => setOrderType(value)}
+                      items={orderTypeOptions}
+                      style={pickerSelectStyles}
+                      useNativeAndroidPickerStyle={false}
+                    />
+                  </View>
+                  <View style={styles.duration}>
+                    <Text>Duration</Text>
+                    <RNPickerSelect
+                      placeholder={{ label: 'Select Duration', value: null }}
+                      value={duration ? duration.label : null}
+                      onValueChange={label => {
+                        const selectedOption = findOptionByLabel(label, durationOptions);
+                        setDuration(selectedOption);
+                      }}
+                      items={durationOptions.map(option => ({
+                        label: option.label,
+                        value: option.label,
+                      }))}
+                      style={pickerSelectStyles}
+                      useNativeAndroidPickerStyle={false}
+                    />
+                  </View>
+                </View>
+                <LegendComponent colorMap={legendMap} />
+                {graphData.datasets && graphData.datasets.length ? (
+                  <View style={styles.graphContainer}>
+                    <LineGraph data={graphData} scroll={scroll} value={'No Of Tiffins'} />
+                  </View>
+                ) : (
+                  <Text style={styles.noInsights}>No Insights</Text>
+                )}
+              </View>
+              <View style={styles.history}>
+                <LinearGradient
+                  colors={['white', 'white', '#FFCC99']}
+                  style={styles.header}
+                >
+                  <Text style={styles.headerText}>History</Text>
+                </LinearGradient>
+                <FlatList
+                  data={history}
+                  renderItem={({ item }) => <HistoryComponent {...item} />}
+                  contentContainerStyle={styles.flatListContent}
+                  style={styles.flatList}
+                />
+              </View>
+            </>
           )}
-        </View>
-          <View style={styles.history}>
-        <Text style={styles.header}>History</Text>
-        <FlatList
-          data={history}
-          renderItem={({ item }) => <HistoryComponent {...item} />}
-          contentContainerStyle={styles.flatList}
-        />
-        </View>
+        </>
+      ) : (
+        <Text>You are not authorized to access this screen</Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -804,14 +845,18 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight * 1.2,
   },
   header: {
+    //textAlign: 'center',
+    //fontSize: windowHeight * 0.025,
+    marginBottom: 6,
+    paddingBottom: 5,
+    borderColor: 'black',
+    width: windowWidth,
+  },
+  headerText: {
     textAlign: 'center',
     fontSize: windowHeight * 0.025,
-    marginBottom: 8,
-    paddingBottom: 10,
-    borderColor: 'black',
   },
   insights: {
-    
     backgroundColor: '#FFFFFF',
     paddingVertical: 5,
     marginBottom: 5,
@@ -832,28 +877,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: windowHeight * 0.02,
   },
+  flatListContent: {
+    //paddingBottom: 30,
+  },
   flatList: {
     flexGrow: 1,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
   },
   graphContainer: {
-    height: windowHeight * 0.3, 
+    height: windowHeight * 0.3,
+    marginBottom: 7,
   },
-  history:{
-    height: '100%',
-    //flex: 1,
-   //height: windowHeight * 0.57,
+  history: {
+    flex: 1,
+    alignItems: 'center',
     width: windowWidth,
-    backgroundColor: "#fdfdfd",
-    // paddingHorizontal: windowWidth * 0.03,
+    backgroundColor: '#fdfdfd',
+    //paddingHorizontal: windowWidth * 0.01,
     paddingVertical: windowHeight * 0.015,
-
-    // justifyContent: "flex-end",
     borderTopRightRadius: windowWidth * 0.05,
     borderTopLeftRadius: windowWidth * 0.05,
-    alignSelf: "center",
-    shadowColor: "#000",
+    alignSelf: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -861,7 +905,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 10,
-  }
+  },
 });
 
 const pickerSelectStyles = StyleSheet.create({
@@ -875,7 +919,7 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: windowWidth * 0.1,
     marginBottom: windowHeight * 0.01,
-    width: '100%'
+    width: '100%',
   },
   inputAndroid: {
     fontSize: windowWidth * 0.03,
@@ -885,8 +929,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: windowWidth * 0.02,
     color: 'black',
-    //paddingRight: windowWidth * 0.02,
     marginBottom: windowHeight * 0.01,
-    width: '100%'
+    width: '100%',
   },
 });

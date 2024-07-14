@@ -54,7 +54,7 @@ export default AcceptedSubComponent
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
-        //padding: 20,
+        padding: 20,
         marginVertical: 5,
         width: windowWidth *0.95,
         borderRadius: 10,
