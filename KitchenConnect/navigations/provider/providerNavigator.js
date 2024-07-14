@@ -7,7 +7,7 @@ import TiffinScreen from "@/screens/provider/tiffinScreen";
 import OrderTabNavigator from "./orderNavigator";
 import SubscriberNavigator from "./subscriberNavigator";
 import WalletScreen from "@/screens/provider/walletScreen";
-import icons from "@/utils/customerIconpaths";
+import icons from "@/utils/providerFooterIcons";
 import { RefreshProvider } from '@/context/refreshContext';
 import { NavigationContainer } from "@react-navigation/native";
 import HistoryScreen from "../../screens/provider/historyScreen";
