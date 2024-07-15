@@ -9,7 +9,7 @@ const subOrderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["Completed", "Upcoming", "OptedOut"],
+      enum: ["Completed", "Upcoming", "OptedOut", "ProviderOut"],
     },
     optedOutDate: {
       type: Date,

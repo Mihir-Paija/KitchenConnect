@@ -5,88 +5,89 @@ import wallet from '../../models/walletModel.js'
 import mongoose, { Mongoose } from 'mongoose';
 import transaction from '../../models/transactionModel.js';
 import subscriptionOrder from '../../models/subscriptionOrderModel.js';
+import history from '../../models/historyModel.js';
 
 const isDateInArray = (array, date) => {
     return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
 };
 
-const completeTransaction = async(orderID, kitchenID, customerID, customerAmount, kitchenAmount) =>{
+const completeTransaction = async (orderID, kitchenID, customerID, customerAmount, kitchenAmount) => {
     try {
-       const customerWallet = await wallet.findOne({userID: new mongoose.Types.ObjectId(customerID)})
-       
-       if(!customerWallet){
-        return 0;
-      }
+        const customerWallet = await wallet.findOne({ userID: new mongoose.Types.ObjectId(customerID) })
 
-      console.log(customerWallet.amount)
-      console.log(customerAmount)
-      console.log(typeof customerWallet.amount)
-
-      if(parseInt(customerWallet.amount, 10) < customerAmount)
-        return 0;
-      
-      const providerWallet = await wallet.findOne({userID: new mongoose.Types.ObjectId(kitchenID)})
-    console.log(providerWallet)
-      if(!providerWallet){
-        return 0;
-      }
-
-      customerWallet.amount -=customerAmount
-      let updatedCustomerWallet = await customerWallet.save();
-
-      let updatedProviderWallet
-
-      if(updatedCustomerWallet){
-      providerWallet.amount += kitchenAmount
-      updatedProviderWallet = await providerWallet.save();
-      } 
-      else{
-
-      updatedCustomerWallet = null
-      if(!updatedProviderWallet){
-        while(!updatedCustomerWallet){
-            customerWallet.amount +=customerAmount
-            updatedCustomerWallet = await customerWallet.save()
+        if (!customerWallet) {
+            return 0;
         }
 
-        return 0;
-      }
-    }
+        console.log(customerWallet.amount)
+        console.log(customerAmount)
+        console.log(typeof customerWallet.amount)
 
-      const newTransaction ={
-        orderID: orderID,
-        payerID: customerID,
-        recieverID: kitchenID,
-        amountPaid: customerAmount,
-        amountRecieved: kitchenAmount,
-      }
+        if (parseInt(customerWallet.amount, 10) < customerAmount)
+            return 0;
 
-      const record = await transaction.create(newTransaction)
+        const providerWallet = await wallet.findOne({ userID: new mongoose.Types.ObjectId(kitchenID) })
+        console.log(providerWallet)
+        if (!providerWallet) {
+            return 0;
+        }
 
-      if(!record)
-         return 0;
+        customerWallet.amount -= customerAmount
+        let updatedCustomerWallet = await customerWallet.save();
 
-      return 1;
+        let updatedProviderWallet
+
+        if (updatedCustomerWallet) {
+            providerWallet.amount += kitchenAmount
+            updatedProviderWallet = await providerWallet.save();
+        }
+        else {
+
+            updatedCustomerWallet = null
+            if (!updatedProviderWallet) {
+                while (!updatedCustomerWallet) {
+                    customerWallet.amount += customerAmount
+                    updatedCustomerWallet = await customerWallet.save()
+                }
+
+                return 0;
+            }
+        }
+
+        const newTransaction = {
+            orderID: orderID,
+            payerID: customerID,
+            recieverID: kitchenID,
+            amountPaid: customerAmount,
+            amountRecieved: kitchenAmount,
+        }
+
+        const record = await transaction.create(newTransaction)
+
+        if (!record)
+            return 0;
+
+        return 1;
 
     } catch (error) {
         console.log('Error in Completing Transaction ', error)
         return 0;
     }
 }
-  
+
 
 export const getOrders = async (req, res) => {
 
     try {
         const userID = req.user._id;
 
-        const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+        const tiffin = await tiffins.find({ providerID: new mongoose.Types.ObjectId(userID) })
 
         const tiffinMap = new Map();
 
-        for(const value of tiffin){
-          const id = value._id.toString() 
-          tiffinMap.set(id, [value.name, value.tiffinType])
+        for (const value of tiffin) {
+            const id = value._id.toString()
+            tiffinMap.set(id, [value.name, value.tiffinType])
         }
 
         const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
@@ -118,30 +119,30 @@ export const getOrders = async (req, res) => {
 
             const formattedSubscriber = {
                 ...subscriber._doc,
-            tiffinName: tiffinName,
-            tiffinType: tiffinType,
-            title: 'Subscription',
-            providerOut: false,
-            customerOut: false,
+                tiffinName: tiffinName,
+                tiffinType: tiffinType,
+                title: 'Subscription',
+                providerOut: false,
+                customerOut: false,
             }
 
             let out = false;
 
             if (new Date(startDate) <= currentDate && currentDate <= new Date(endDate) && subscriptionStatus.status === 'Current' && !isDateInArray(subscriptionStatus.daysCompleted, currentDate)) {
 
-                if(isDateInArray(subscriptionStatus.daysOptedOut, currentDate)){
+                if (isDateInArray(subscriptionStatus.daysOptedOut, currentDate)) {
                     formattedSubscriber.customerOut = true
                     out = true;
                 }
 
-                if(isDateInArray(subscriptionStatus.providerOptedOut, currentDate)){
+                if (isDateInArray(subscriptionStatus.providerOptedOut, currentDate)) {
                     formattedSubscriber.providerOut = true
                     out = true;
                 }
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
-                
-                if(subscriber._doc.wantDelivery){
+
+                if (subscriber._doc.wantDelivery) {
                     tiffinType === 'Lunch' ? lunchAdresses.push(subscriber._doc.address) : dinnerAdresses(subscriber._doc.address)
                 }
 
@@ -166,8 +167,8 @@ export const getOrders = async (req, res) => {
 
         const toDate = currentDate.setHours(0, 0, 0, 0);
 
-        for(const value of orders){
-            if(value.createdAt >= toDate && value.status === 'Accepted'){
+        for (const value of orders) {
+            if (value.createdAt >= toDate && value.status === 'Accepted') {
                 const tiffinID = value.tiffinID.toString()
                 const tiffinName = tiffinMap.get(tiffinID)[0]
                 const tiffinType = tiffinMap.get(tiffinID)[1]
@@ -180,11 +181,11 @@ export const getOrders = async (req, res) => {
                     providerOut: false,
                     customerOut: false,
 
-                }                
+                }
 
                 const arr = tiffinType === 'Lunch' ? lunch : dinner;
 
-                if(value._doc.wantDelivery){
+                if (value._doc.wantDelivery) {
                     tiffinType === 'Lunch' ? lunchAdresses.push(value._doc.address) : dinnerAdresses(value._doc.address)
                 }
 
@@ -206,6 +207,8 @@ export const getOrders = async (req, res) => {
 
         }
 
+        console.log(lunchAdresses)
+        console.log(dinnerAdresses)
         return res.status(200).send({
             lunch: lunch,
             dinner: dinner,
@@ -221,18 +224,18 @@ export const getOrders = async (req, res) => {
     }
 }
 
-export const getPendingOrders = async(req, res) =>{
+export const getPendingOrders = async (req, res) => {
     try {
         const userID = req.user._id;
 
-        const tiffin = await tiffins.find({providerID: new mongoose.Types.ObjectId(userID) })
+        const tiffin = await tiffins.find({ providerID: new mongoose.Types.ObjectId(userID) })
 
         const tiffinMap = new Map();
 
-        for(const value of tiffin){
-          const id = value._id.toString()
-          tiffinMap.set(id, [value.name, value.tiffinType])
-        } 
+        for (const value of tiffin) {
+            const id = value._id.toString()
+            tiffinMap.set(id, [value.name, value.tiffinType])
+        }
 
         const orders = await order.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
@@ -241,9 +244,9 @@ export const getPendingOrders = async(req, res) =>{
         const toDate = currentDate.setHours(0, 0, 0, 0);
         const pendingOrders = []
 
-        for(const value of orders){
+        for (const value of orders) {
 
-            if(value.createdAt >= toDate && value.status === 'Pending'){
+            if (value.createdAt >= toDate && value.status === 'Pending') {
                 const tiffinID = value.tiffinID.toString()
                 const tiffinName = tiffinMap.get(tiffinID)[0]
                 const tiffinType = tiffinMap.get(tiffinID)[1]
@@ -270,13 +273,13 @@ export const getPendingOrders = async(req, res) =>{
 }
 
 
-export const decideOrderStatus = async(req, res) =>{
+export const decideOrderStatus = async (req, res) => {
     try {
         const userID = req.user._id;
         console.log(userID)
-        const {orderID} = req.params;
+        const { orderID } = req.params;
 
-        const {status} = req.body
+        const { status } = req.body
 
         const current = await order.findById(orderID)
 
@@ -302,40 +305,51 @@ export const decideOrderStatus = async(req, res) =>{
 
 }
 
-export const optOut = async(req, res) =>{
+export const optOut = async (req, res) => {
     try {
         const userID = req.user._id
 
         const orderSet = new Set();
-        
 
-        const {orders, type} = req.body;
 
-        for (const order of orders){
-            for(const value of order.orders){
-            orderSet.add(value._id.toString())
-        }}
+        const { orders, type } = req.body;
+
+        for (const order of orders) {
+            for (const value of order.orders) {
+                orderSet.add(value._id.toString())
+            }
+        }
         console.log(orderSet)
-        
+
         const subscribers = await Subscriber.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
         const currentDate = new Date();
-        currentDate.setUTCHours(0,0,0,0)
+        currentDate.setHours(0, 0, 0, 0);
+        const currentDateString = currentDate.toISOString();
 
-        const bulkOperations = [];
+        const bulkSubscriberOperations = [];
 
-        for(const subscriber of subscribers){
+        for (const subscriber of subscribers) {
             const subscriberData = subscriber._doc
             const orderID = subscriberData._id.toString()
-            if(orderSet.has(orderID)){
-                console.log(orderID)
-                console.log(orderSet)
+            if (orderSet.has(orderID)) {
+                const subOrders = await subscriptionOrder.findOne({subscriptionID: new mongoose.Types.ObjectId(subscriberData._id)})
+
+                let todayOrder = subOrders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+                if(!todayOrder)
+                    return res.status(400).send({
+                        message: `Couldn't Opt Out!`
+                    })
+                todayOrder.status = "ProviderOut"
+
+                subOrders.save();
+                
                 subscriberData.subscriptionStatus.providerOptedOut.push(currentDate)
                 console.log(subscriberData.subscriptionStatus.daysRemaining)
                 console.log(currentDate)
-                //subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item).toDateString !== new Date(currentDate).toDateString)
-                orderSet.delete(orderID)
+                subscriberData.subscriptionStatus.daysRemaining = subscriberData.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
+                //orderSet.delete(orderID)
 
-                bulkOperations.push({
+                bulkSubscriberOperations.push({
                     updateOne: {
                         filter: { _id: subscriberData._id },
                         update: { $set: { 'subscriptionStatus.providerOptedOut': subscriberData.subscriptionStatus.providerOptedOut, 'subscriptionStatus.daysRemaining': subscriberData.subscriptionStatus.daysRemaining } }
@@ -345,9 +359,9 @@ export const optOut = async(req, res) =>{
         }
 
 
-        if (bulkOperations.length > 0) {
+        if (bulkSubscriberOperations.length > 0) {
             try {
-                const result = await Subscriber.bulkWrite(bulkOperations);
+                const result = await Subscriber.bulkWrite(bulkSubscriberOperations);
                 console.log('Bulk update result:', result);
             } catch (error) {
                 console.error('Error during bulk update:', error);
@@ -360,11 +374,11 @@ export const optOut = async(req, res) =>{
         const oneTimeorders = await order.find({ kitchenID: new mongoose.Types.ObjectId(userID) })
 
         const oneTimeOrdersBulkOperations = []
-        for(const value of oneTimeorders){
+        for (const value of oneTimeorders) {
             const orderID = value._id.toString()
 
-            if(orderSet.has(orderID)){
-                
+            if (orderSet.has(orderID)) {
+
                 value.status = 'Rejected'
                 value.comments = 'Provider Opted Out'
                 orderSet.delete(orderID)
@@ -403,23 +417,23 @@ export const optOut = async(req, res) =>{
         console.log('Error in Opting Out ', error)
         return res.status(500).send({
             message: `Internal Server Error`
-        }) 
+        })
     }
 }
 
-export const sendOTP = async(req, res) =>{
-    try{
+export const sendOTP = async (req, res) => {
+    try {
         const userID = req.user._id
-        const {otp, order} = req.body
+        const { otp, order } = req.body
         console.log(otp)
         const customerID = order.customerID;
         console.log(customerID)
 
         const currentDate = new Date()
-        currentDate.setHours(0,0,0,0)
+        currentDate.setHours(0, 0, 0, 0)
         const currentDateString = currentDate.toISOString()
 
-        const orders = await subscriptionOrder.findOne({subscriptionID: order._id})
+        const orders = await subscriptionOrder.findOne({ subscriptionID: order._id })
         const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
         console.log(todayOrder)
         todayOrder.otp = otp;
@@ -427,18 +441,18 @@ export const sendOTP = async(req, res) =>{
         const updatedOrders = orders.save()
 
 
-            if(updatedOrders){
-                return res.status(200).send({
-                    message: 'OTP Generated!'
-                })
-            }
+        if (updatedOrders) {
+            return res.status(200).send({
+                message: 'OTP Generated!'
+            })
+        }
 
 
 
         return res.status(500).send({
             message: `Couldn't Generate OTP`
         })
-    } catch(error){
+    } catch (error) {
         console.log('Error in Sending OTP ', error)
         return res.status(500).send({
             message: 'Internal Server Error'
@@ -446,43 +460,52 @@ export const sendOTP = async(req, res) =>{
     }
 }
 
-export const completeOrder = async(req, res) =>{
-    try{
+export const completeOrder = async (req, res) => {
+    try {
         const userID = req.user._id
-        const {_id, title, customerID, kitchenID, customerPaymentBreakdown, kitchenPaymentBreakdown} = req.body
-        if(title === 'Subscription'){
+        const { _id, title, customerID, kitchenID, customerName, subscriberFirstName, subscriberLastName, customerPaymentBreakdown, kitchenPaymentBreakdown } = req.body
+        if(!_id || !title || !customerID || !kitchenID || !customerPaymentBreakdown || !kitchenPaymentBreakdown)
+            return res.status(400).send({
+                message: `Please Provide All Feilds`
+            })
+        if (title === 'Subscription') {
+
+            if(!subscriberFirstName || !subscriberLastName)
+                return res.status(400).send({
+                    message: `Please Provide All Feilds`
+                })
 
             const subscriber = await Subscriber.findById(_id)
-            if(!subscriber){
+            if (!subscriber) {
                 return res.status(400).send({
                     message: `Subscription Doesn't Exist`
                 })
             }
 
-            console.log(subscriber)
             const currentDate = new Date()
-            currentDate.setHours(0,0,0,0)
+            currentDate.setHours(0, 0, 0, 0)
             const currentDateString = currentDate.toISOString()
 
             const completed = subscriber.subscriptionStatus.daysCompleted.find(item => new Date(item).toISOString() === currentDateString)
-            if(completed)
+            if (completed)
                 return res.status(400).send({
                     message: `Order Already Completed`
                 })
-            
+
             const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
 
-            if(!record)
+            if (!record)
                 return res.status(500).send({
                     message: `Couldn't Complete Payment! Please Try Again!`
                 })
+
 
             subscriber.subscriptionStatus.daysCompleted.push(currentDate);
             subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
 
             const updatedSubscriber = await subscriber.save()
 
-            const orders = await subscriptionOrder.findOne({subscriptionID: _id})
+            const orders = await subscriptionOrder.findOne({ subscriptionID: _id })
             const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
             todayOrder.status = 'Completed';
             todayOrder.amountPaid = customerPaymentBreakdown.perOrderPrice
@@ -490,53 +513,88 @@ export const completeOrder = async(req, res) =>{
 
             const updatedOrders = orders.save()
 
-
-            if(updatedOrders){
-                return res.status(200).send({
-                    message: 'Order Completed'
+            if (!updatedSubscriber || !updatedOrders)
+                return res.status(500).send({
+                    message: `Couldn't Complete the Order! Please fill a query`
                 })
+
+            const newHistory = {
+                orderID: _id,
+                kitchenID: userID,
+                customerID: customerID,
+                customerName: subscriberFirstName + ' ' + subscriberLastName,
+                amountPaid: customerPaymentBreakdown.perOrderPrice,
+                amountReceived: kitchenPaymentBreakdown.perOrderPrice
+
             }
 
-            return res.status(500).send({
-                message: `Couldn't Complete Order`
-            })
+            const createHistory = await history.create(newHistory)
 
+            if (!createHistory)
+                return res.status(500).send({
+                    message: `Couldn't Add A Record! Please fill a query`
+                })
+
+            return res.status(200).send({
+                message: 'Order Completed'
+            })
 
         }
 
-        else{
+        else {
+            if(!customerName)
+                return res.status(400).send({
+                    message: `Please Provide All Feilds`
+                })
+            
             const value = await order.findById(_id)
-            if(!value){
+            if (!value) {
                 return res.status(400).send({
                     message: `Order Doesn't Exist`
                 })
             }
             const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
 
-            if(!record)
+            if (!record)
                 return res.status(500).send({
                     message: `Couldn't Complete Payment! Please Try Again!`
                 })
 
-                
+
             value.status = 'Completed'
             value.orderDate = new Date()
             const updatedOrder = value.save()
 
-            if(updatedOrder){
-                return res.status(200).send({
-                    message: `Order Completed`
+            if (!updatedOrder)
+                return res.status(500).send({
+                    message: `Couldn't Complete the Order! Please fill a query`
                 })
-            }
 
-            return res.status(500).send({
-                message: `Couldn't Complete Order`
+            // const newHistory = {
+            //     orderID: _id,
+            //     title: 'One-Time',
+            //     kitchenID: userID,
+            //     customerID: customerID,
+            //     customerName,
+            //     amountPaid: customerPaymentBreakdown.perOrderPrice,
+            //     amountRecieved: kitchenPaymentBreakdown.perOrderPrice
+
+            // }
+
+            // const createHistory = await history.create(newHistory)
+
+            // if (!createHistory)
+            //     return res.status(500).send({
+            //         message: `Couldn't Add A Record! Please fill a query`
+            //     })
+
+            return res.status(200).send({
+                message: `Order Completed`
             })
 
-
         }
-        
-    } catch(error){
+
+    } catch (error) {
         console.log('Error in Completing Order ', error)
         return res.status(500).send({
             message: 'Internal Server Error'

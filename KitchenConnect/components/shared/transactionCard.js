@@ -70,9 +70,10 @@ const styles = StyleSheet.create({
   transactionBox: {
     flexDirection: "row",
     backgroundColor: "#fff",
+    width: windowWidth * 0.95,
     justifyContent: "space-between",
     marginVertical: windowHeight * 0.005,
-    marginHorizontal: windowWidth * 0.03,
+    //marginHorizontal: windowWidth * 0.03,
     borderRadius: windowWidth * 0.03,
     padding: windowWidth * 0.02,
     // Shadow properties for iOS

@@ -85,6 +85,7 @@ import { subscriptionRouter } from "./provider/subscriptionRouter.js";
 import { subscriberRouter } from "./provider/subscriberRouter.js";
 import { orderRouter } from "./provider/orderRouter.js";
 import { providerWalletRouter } from "./provider/walletRouter.js";
+import { providerHistoryRouter } from "./provider/historyRouter.js";
 router.use("/provider", providerAuthRouter);
 router.use("/provider/profile", profileRouter);
 router.use("/provider/tiffin", tiffinRouter);
@@ -93,6 +94,7 @@ router.use("/provider/subscription", subscriptionRouter);
 router.use("/provider/subscriber", subscriberRouter);
 router.use("/provider/order", orderRouter);
 router.use('/provider/wallet', providerWalletRouter)
+router.use('/provider/history', providerHistoryRouter)
 
 import { walletRouter } from "./shared/walletRouter.js";
 router.use("/wallet", walletRouter);

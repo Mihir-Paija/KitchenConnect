@@ -703,7 +703,8 @@ const WalletScreen = ({ navigation }) => {
                   renderItem={({ item }) => <TransactionCard 
                   transaction ={item} 
                   />}
-                  contentContainerStyle={styles.flatList}
+                  contentContainerStyle={styles.flatListContent}
+                  style={styles.flatList}
                 />
               </View>
               </View>
@@ -754,9 +755,9 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight * 1.2,
   },
   upperScreen: {
-    backgroundColor: '#FFFFFF',
     paddingVertical: 5,
-    marginBottom: 5,
+    paddingBottom: 15,
+    //marginBottom: 10,
     //flex: 1,
     //height: windowHeight * 0.43,
   },
@@ -822,22 +823,21 @@ const styles = StyleSheet.create({
     fontSize: windowHeight * 0.02,
   },
   graphContainer: {
-    height: windowHeight * 0.3, 
+    height: windowHeight * 0.3,
+    marginBottom: 7,
   },
   transactions: {
-    height: '100%',
     //flex: 1,
-   //height: windowHeight * 0.57,
-   width: windowWidth * 0.98,
-    backgroundColor: "#fdfdfd",
-    // paddingHorizontal: windowWidth * 0.03,
+    height: '100%',
+    alignItems: 'center',
+    width: windowWidth,
+    backgroundColor: '#fdfdfd',
+    //paddingHorizontal: windowWidth * 0.01,
     paddingVertical: windowHeight * 0.015,
-
-    // justifyContent: "flex-end",
     borderTopRightRadius: windowWidth * 0.05,
     borderTopLeftRadius: windowWidth * 0.05,
-    alignSelf: "center",
-    shadowColor: "#000",
+    alignSelf: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -845,10 +845,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 10,
+  
   },
-  flatList: {
-    //flexGrow: 1,
-    paddingBottom: 30,
+  flatListContent: {
+    flexGrow: 1,
   },
 });
 

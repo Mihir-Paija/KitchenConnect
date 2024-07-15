@@ -13,6 +13,7 @@ import LoadingScreen from '../shared/loadingScreen'
 import Icon from "react-native-vector-icons/Ionicons";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
+import OptOutModal from './modals/optOutModal';
 
 const addresses = [
   'Suryajyot Lake, Gandhinagar',
@@ -113,7 +114,8 @@ const PreparationScreen = ({ navigation }) => {
       Alert.alert(`Couldn't Get Location`)
       return;
     }
-    //const addresses = type === 'Lunch' ? lunchAdresses : dinnerAdresses
+
+    const addresses = type === 'Lunch' ? lunchAdresses : dinnerAdresses
     const waypoints = addresses.map(address => encodeURIComponent(address)).join('|');
     const origin = `${currentLocation.latitude},${currentLocation.longitude}`;
     console.log(origin)
@@ -190,6 +192,7 @@ const PreparationScreen = ({ navigation }) => {
       const response = await optOut(authState.authToken, bodyData)
 
       if (response && response.status === 200) {
+        toggleOpt()
         Alert.alert(`Opted Out of ${type} Orders`)
         setRefresh(!refresh)
       }
@@ -245,14 +248,6 @@ const PreparationScreen = ({ navigation }) => {
                     )}
                     contentContainerStyle={styles.flatList}
                   />
-                  {optVisible ?
-                    <View style={styles.btnView}>
-                      <TouchableOpacity onPress={() => handleOut('Lunch')} style={styles.btn}>
-                        <Text style={styles.btnText}>Opt Out</Text>
-                        <Text style={styles.btnText}>For Lunch</Text>
-                      </TouchableOpacity>
-                    </View>
-                    : null}
                 </>
                 :
                 <View style={styles.emptyView}>
@@ -272,15 +267,7 @@ const PreparationScreen = ({ navigation }) => {
                     )}
                     contentContainerStyle={styles.flatList}
                   />
-                  {optVisible ?
-                    <View style={styles.btnView}>
-                      <TouchableOpacity onPress={() => handleOut('Dinner')} style={styles.btn}>
-                        <Text style={styles.btnText}>Opt Out</Text>
-                        <Text style={styles.btnText}>For Dinner</Text>
-                      </TouchableOpacity>
-                    </View>
-                    :
-                    null}
+
                 </>
                 :
                 <View style={styles.emptyView}>
@@ -289,31 +276,34 @@ const PreparationScreen = ({ navigation }) => {
               }
             </>
             : null}
-          <TouchableOpacity onPress={handleMaps} style={styles.map}>
+            <View style={styles.functions}>
+              <View style={styles.map}>
+              <TouchableOpacity onPress={handleMaps} style={styles.mapBtn}>
             <Image
               source={require("@assets/shared/google-maps-icon/gMapIcon.png")}
               style={styles.icon}
             />
 
           </TouchableOpacity>
-
-{/*
+              </View>
+          
+          <Icon
+            name="settings-outline"
+            type="ionicon"
+            style={styles.settings}
+            onPress={toggleOpt}
+          />
+          </View>
           {optVisible ?
-            <Icon
-              name="close"
-              type="ionicon"
-              style={styles.settings}
-              onPress={toggleOpt}
+            <OptOutModal
+              isVisible={optVisible}
+              onClose={toggleOpt}
+              optLunch={() => handleOut('Lunch')}
+              optDinner={() => handleOut('Dinner')}
             />
-            :
-            <Icon
-              name="settings-outline"
-              type="ionicon"
-              style={styles.settings}
-              onPress={toggleOpt}
-            />
-          }
-            */}
+            : null}
+
+
           {modalVisible ?
             <OTPModal
               isVisible={modalVisible}
@@ -323,6 +313,28 @@ const PreparationScreen = ({ navigation }) => {
             : null}
         </>
       }
+
+      {/*
+
+      {optVisible ?
+                    <View style={styles.btnView}>
+                      <TouchableOpacity onPress={() => handleOut('Lunch')} style={styles.btn}>
+                        <Text style={styles.btnText}>Opt Out</Text>
+                        <Text style={styles.btnText}>For Lunch</Text>
+                      </TouchableOpacity>
+                    </View>
+                    : null}
+
+      {optVisible ?
+                    <View style={styles.btnView}>
+                      <TouchableOpacity onPress={() => handleOut('Dinner')} style={styles.btn}>
+                        <Text style={styles.btnText}>Opt Out</Text>
+                        <Text style={styles.btnText}>For Dinner</Text>
+                      </TouchableOpacity>
+                    </View>
+                    :
+                    null}
+      */}
     </SafeAreaView>
   );
 };
@@ -347,24 +359,46 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center'
   },
-  map:{
-    position: 'relative',
-    fontSize: windowHeight * 0.04,
-    marginBottom: windowHeight * 0.03,
-    marginLeft: windowWidth * 0.03,
+  functions:{
+    //position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: windowHeight * 0.02,
+    paddingHorizontal: windowWidth * 0.015,
+  },
+  map: {
+    //position: 'relative',
+    width: '90%',
+    //alignItems: 'flex-start',
+    fontSize: windowHeight * 0.035,
+    //marginBottom: windowHeight * 0.03,
+    //marginLeft: windowWidth * 0.03,
+  },
+  mapBtn:{
+    width: '10%',
+  },
+
+  icon: {
+    width: 45,
+    height: 45,
   },
   settings: {
-    position: 'relative',
-    alignItems: 'flex-end',
-    marginBottom: windowHeight * 0.03,
-    marginLeft: windowWidth * 0.87,
+    //position: 'relative',
+    //alignItems: 'flex-end',
+    //marginBottom: windowHeight * 0.03,
+    //marginLeft: windowWidth * 0.87,
     //right: windowWidth * 0.07,
     //bottom: windowHeight * 0.05,
     fontSize: windowHeight * 0.04,
   },
+  emptyView: {
+    flex: 1,
+    marginTop: 20,
+    alignItems: 'center'
+  },
   btnView: {
-    position: 'relative',
-    alignItems: 'flex-end',
+    //position: 'relative',
+    //alignItems: 'flex-end',
     //marginTop: windowHeight * 0.3,
     marginRight: windowWidth * 0.05,
     //alignItems: 'center',
@@ -384,13 +418,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold'
   },
-  icon: {
-    width: 50,
-    height: 50
-  },
-  emptyView: {
-    flex: 1,
-    marginTop: 20,
-    alignItems: 'center'
-  }
+  
 })
