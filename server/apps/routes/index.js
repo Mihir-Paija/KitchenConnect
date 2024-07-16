@@ -99,4 +99,8 @@ router.use('/provider/history', providerHistoryRouter)
 import { walletRouter } from "./shared/walletRouter.js";
 router.use("/wallet", walletRouter);
 
+//admin Routers
+import { adminAuthRouter } from "./admin/authRouter.js";
+router.use('/admin', adminAuthRouter)
+
 export default router;
