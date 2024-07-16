@@ -1,23 +1,23 @@
-import customer from "../../models/customerModel.js";
+import provider from "../../models/providerModel.js"
 
-export const getCustomerCount = async(req, res) =>{
+export const getKitchenCount = async(req, res) =>{
     try {
-       const customers = await customer.find()
+       const kitchens = await provider.find()
        
-       const count = customers.length
+       const count = kitchens.length
 
        return res.status(200).send({
         count: count
        })
     } catch (error) {
-        console.log(`Error in getting customer count `, error)
+        console.log(`Error in getting kitchen count `, error)
         return res.status(500).send({
             message: `Internal Server Error`
         })
     }
 }
 
-export const getCustomerDetails = async(req, res) =>{
+export const getKitchenDetails = async(req, res) =>{
     try {
         const {email} = req.body
         if(!email)
@@ -25,10 +25,10 @@ export const getCustomerDetails = async(req, res) =>{
                 message: `Please Enter Email!`
             })
         
-        const details = await customer.findOne({email: email})
+        const details = await provider.findOne({email: email})
         if(!details)
             return res.status(200).send({
-                message: `Customer Doesn't Exist`
+                message: `Kitchen Doesn't Exist`
             })
         
         const toSend = {
@@ -40,7 +40,7 @@ export const getCustomerDetails = async(req, res) =>{
 
         return res.status(200).json(toSend)
      } catch (error) {
-         console.log(`Error in getting customer count `, error)
+         console.log(`Error in getting kitchen details `, error)
          return res.status(500).send({
              message: `Internal Server Error`
          })
