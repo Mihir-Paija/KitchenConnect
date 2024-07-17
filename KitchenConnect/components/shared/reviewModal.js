@@ -51,18 +51,11 @@ const ReviewModal = ({ visible, onClose, kitchenID, tiffinID }) => {
       if (tiffinID) {
         // console.log("response.data");
 
-        const response = await getTiffinFeedBackCustomer(
-          customerID,
-          kitchenID,
-          tiffinID
-        );
+        const response = await getTiffinFeedBackCustomer(kitchenID, tiffinID);
         console.log(response.data);
         setReviewList(response.data);
       } else {
-        const response = await getKitchenFeedBackCustomer(
-          customerID,
-          kitchenID
-        );
+        const response = await getKitchenFeedBackCustomer(kitchenID);
         console.log(response.data);
         setReviewList(response.data);
       }

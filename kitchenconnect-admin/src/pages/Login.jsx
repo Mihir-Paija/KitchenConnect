@@ -1,21 +1,30 @@
 /* eslint-disable no-unused-vars */
 import { React, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import {login} from '../services/authService'
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
   //state
-  const [email, setEmail] = useState("");
+  const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
+  const { setAuthState } = useAuth();
+  const navigate = useNavigate();
 
   //functions
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const bodyData = {
-        email,
+        id : adminID,
         password,
       };
       console.log(bodyData);
+      const data = await login(bodyData);
+      setAuthState(data);
+      navigate('/');
     } catch (error) {
       console.error("Login failed:", error.message);
       alert("Login failed. Please try again.");
@@ -29,12 +38,12 @@ const Login = () => {
           <h1 className="text-center mb-3">Admin Login</h1>
           <Form onSubmit={submitHandler}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Admin ID</Form.Label>
               <Form.Control
-                type="email"
-                value={email}
-                placeholder="Enter email"
-                onChange={(e) => setEmail(e.target.value)}
+                type="adminID"
+                value={adminID}
+                placeholder="Enter adminID"
+                onChange={(e) => setAdminID(e.target.value)}
                 required
               />
             </Form.Group>

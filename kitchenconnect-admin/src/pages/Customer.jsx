@@ -5,6 +5,7 @@ import NavbarComponent from '../components/NavbarComponent'
 import { useForm } from 'react-hook-form';
 import Container from 'react-bootstrap/Container'; 
 import EmailSearchComponent from '../components/EmailSearchComponent';
+import UserCardComponent from '../components/userCardComponent'
 const Customer = () => {
 
   //functions
@@ -24,7 +25,7 @@ const Customer = () => {
     <>
     <NavbarComponent />
     <EmailSearchComponent submitHandler={submitHandler} title={"Customer"}/>
-    
+    <UserCardComponent />
     </>
   )
 }
