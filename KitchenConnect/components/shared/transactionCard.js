@@ -6,7 +6,8 @@ import { formatDate, formatTime } from "../../utils/formateDateTime";
 
 const TransactionCard = ({ transaction }) => {
   // console.log("transaction:", transaction);
-  const type = transaction.transactionType;
+  var type = transaction.transactionType;
+
   const icon = {
     Deposit: {
       name: "paper-plane",
@@ -20,7 +21,25 @@ const TransactionCard = ({ transaction }) => {
     Withdraw: {
       name: "paper-plane",
       sign: "-",
-      color: "#D22B2B ",
+      color: "#D22B2B",
+      style: {
+        backgroundColor: "#rgba(255,0,0,0.1)",
+        transform: [{ rotate: "180deg" }],
+      },
+    },
+    SubscriptionOrder: {
+      name: "paper-plane",
+      sign: "-",
+      color: "#D22B2B",
+      style: {
+        backgroundColor: "#rgba(255,0,0,0.1)",
+        transform: [{ rotate: "180deg" }],
+      },
+    },
+    SingleOrder: {
+      name: "paper-plane",
+      sign: "-",
+      color: "#D22B2B",
       style: {
         backgroundColor: "#rgba(255,0,0,0.1)",
         transform: [{ rotate: "180deg" }],
@@ -29,7 +48,7 @@ const TransactionCard = ({ transaction }) => {
   };
 
   //functions
-
+  // console.log(icon[transaction.transactionType].color);
   return (
     <View style={styles.transactionBox}>
       <View style={{ flexDirection: "row" }}>
