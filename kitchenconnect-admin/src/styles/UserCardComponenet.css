@@ -1,0 +1,20 @@
+/* UserCardComponent.css */
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 300px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.field {
+  margin-bottom: 8px;
+  color: #555;
+}

@@ -3,6 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import NavbarComponent from '../components/NavbarComponent'
 import EmailSearchComponent from '../components/EmailSearchComponent'
+import UserCardComponent from '../components/userCardComponent'
+
 const Provider = () => {
 
   //functions
@@ -22,6 +24,7 @@ const Provider = () => {
     <>
     <NavbarComponent />
     <EmailSearchComponent submitHandler={submitHandler} title={"Provider"}/>
+    <UserCardComponent />
     </>
   )
 }
