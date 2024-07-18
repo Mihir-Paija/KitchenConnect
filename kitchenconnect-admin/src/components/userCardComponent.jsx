@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import '../styles/UserCardComponenet.css';
+import styles from '../styles/UserCardComponenet.module.css';
 
 // const dummy_data = {
 //     firstName : "xyz",

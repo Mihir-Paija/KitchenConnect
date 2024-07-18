@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom";
 // import PropTypes from 'prop-types';
 
 
-const NavbarComponent = ({ title="KitchenConnect" }) => {
+const NavbarComponent = ({ title="KitchenConnect", id="ID12345" }) => {
   return (
   
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -22,10 +22,12 @@ const NavbarComponent = ({ title="KitchenConnect" }) => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className={`me-auto `}>
+          <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/customer">Customer</Nav.Link>
             <Nav.Link as={NavLink} to="/provider">Provider</Nav.Link>
             <Nav.Link as={NavLink} to="/tiffin">Tiffin</Nav.Link>
+            <Nav.Link as={NavLink} to="/subscription">Subscription</Nav.Link>
+            
             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -38,6 +40,9 @@ const NavbarComponent = ({ title="KitchenConnect" }) => {
               </NavDropdown.Item>
             </NavDropdown> */}
           </Nav>
+          <Nav className="ms-auto">
+            <Nav.Link disabled>{id}</Nav.Link>
+          </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -46,8 +51,7 @@ const NavbarComponent = ({ title="KitchenConnect" }) => {
 
 export default NavbarComponent;
 
-NavbarComponent.prototype = {
-    title : propTypes.string,
-}
-
-
+NavbarComponent.propTypes = {
+    title: propTypes.string,
+    id: propTypes.string,
+};

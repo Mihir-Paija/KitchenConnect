@@ -1,7 +1,7 @@
 import admin from "../../models/adminModel.js";
 import adminSignupValidation from "../../utils/validations/admin/authValidation.js";
 import { comparePassword, hashPassword } from "../../utils/bcrypt.js";
-import { signJwt } from "../../utils/jwt.js";
+import { maxAge, signJwt } from "../../utils/jwt.js";
 
 export const adminSignup = async (req, res) => {
   try {
@@ -47,6 +47,12 @@ export const adminSignup = async (req, res) => {
       return res.status(500).send({
         message: `Couldn't Create User`,
       });
+    res.cookie("Session", authToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).send({
       message: `User Created Successfully`,

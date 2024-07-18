@@ -8,6 +8,8 @@ import Provider from "./pages/Provider";
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import Tiffin from "./pages/Tiffin.jsx";
 import TiffinMenuList from "./pages/TiffinMenuList.jsx";
+import Subscription from "./pages/Subscription";
+
 function App() {
   return (
     <>
@@ -43,6 +45,11 @@ function App() {
             <Route exact path="/tiffin/:tiffinID" element={
               <ProtectedRoute>
                 <Tiffin />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/subscription" element={
+              <ProtectedRoute>
+                <Subscription />
               </ProtectedRoute>
             } />
           </Routes>

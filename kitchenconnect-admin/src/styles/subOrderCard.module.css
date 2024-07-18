@@ -1,0 +1,21 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 700px;
+    margin: auto;
+    margin-top: 0;
+    
+}
+
+.list {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.field {
+    margin-bottom: 2px;
+    flex: 1;
+    text-align: center;
+}

@@ -1,0 +1,46 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 500px;
+    margin: 16px auto;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.status-tag {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.875rem;
+}
+
+.status-tag.current {
+    background-color: #28a745;
+}
+
+.status-tag.completed {
+    background-color: #17a2b8;
+}
+
+.status-tag.rejected {
+    background-color: #dc3545;
+}
+
+.status-tag.cancelled {
+    background-color: #dc3545;
+}
+
+.field {
+    margin-bottom: 8px;
+}
+
+.dates {
+    display: flex;
+    justify-content: space-between;
+}
