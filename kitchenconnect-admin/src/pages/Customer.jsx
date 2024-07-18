@@ -6,28 +6,23 @@ import { useForm } from 'react-hook-form';
 import Container from 'react-bootstrap/Container'; 
 import EmailSearchComponent from '../components/EmailSearchComponent';
 import UserCardComponent from '../components/userCardComponent'
-import { fetchCustomerDetails } from '../services/customerService';
+import { fetchCustomerDetails } from '../services/userService';
 import { useAuth } from '../contexts/AuthContext';
 
-
 const Customer = () => {
-
-  const [details, setDetails] = useState([]);
-  const {authState} = useAuth()
-
+  const [customerData,setCustomerData] = useState([]);
+  const {authState} = useAuth();
+  // console.log(authState);
   //functions
-  const submitHandler = async(data) => {
+  const submitHandler = async (data) => {
     try {
       const bodyData = {
-        email: data.email,
+        email : data.email,
       };
-      console.log(authState)
-      const response = await fetchCustomerDetails(authState, bodyData)
-      if(response && response.status === 200){
-        setDetails(response.data);
-      }else{
-        alert("search failed. Please try again.");
-      }
+      // console.log(bodyData);
+      const response = await fetchCustomerDetails(authState,data.email);
+      // console.log(response);
+      setCustomerData([response.data]);
     } catch (error) {
       console.error("search failed:", error.message);
       alert("search failed. Please try again.");
@@ -37,8 +32,9 @@ const Customer = () => {
   return (
     <>
     <NavbarComponent />
-    <EmailSearchComponent submitHandler={submitHandler} title={"Customer"}/>
-    <UserCardComponent />
+    <EmailSearchComponent submitHandler={submitHandler} placeholder={"Customer Email"}/>
+    {customerData.length>0 && <UserCardComponent userData={customerData[0]}/>}
+    
     </>
   )
 }

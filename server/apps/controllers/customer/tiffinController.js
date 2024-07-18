@@ -4,6 +4,11 @@ import tiffin from "../../models/tiffinModel.js";
 export const tiffinGet = async (req, res) => {
   const { kitchenId } = req.params;
 
+  if (!kitchenId)
+    return res.status(404).send({
+      message: `Invalid URL`,
+    });
+
   //   Check if kitchenId is a valid ObjectId
   if (!ObjectId.isValid(kitchenId)) {
     return res.status(400).json({

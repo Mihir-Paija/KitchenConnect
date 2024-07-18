@@ -1,0 +1,45 @@
+/* TiffinTable.css */
+.tiffin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px; /* Smaller font size */
+  text-align: center;
+}
+
+.tiffin-table th,
+.tiffin-table td {
+  padding: 10px 6px; /* Smaller padding */
+  border: 1px solid #ccc;
+}
+
+.tiffin-table th {
+  background-color: #f4f4f4;
+}
+
+.tiffin-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tiffin-table {
+    font-size: 12px; /* Even smaller font size for mobile */
+  }
+
+  .tiffin-table th,
+  .tiffin-table td {
+    padding: 6px 8px; /* Even smaller padding for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .tiffin-table {
+    font-size: 10px; /* Smallest font size for small screens */
+  }
+
+  .tiffin-table th,
+  .tiffin-table td {
+    padding: 4px 6px; /* Smallest padding for small screens */
+  }
+}

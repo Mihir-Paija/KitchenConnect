@@ -5,7 +5,7 @@ export const menuGet = async (req, res) => {
   const { kitchenID, tiffinID } = req.params;
 
   //   Check if kitchenID is a valid ObjectId
-  if (!ObjectId.isValid(kitchenID)) {
+  if (kitchenID && !ObjectId.isValid(kitchenID)) {
     return res.status(400).json({
       error: "Invalid kitchenID",
       message: "The provided kitchenID is not a valid MongoDB ObjectId",
@@ -19,7 +19,9 @@ export const menuGet = async (req, res) => {
   }
 
   try {
-    const menus = await menu.find({ providerID: kitchenID, tiffinID });
+    const menus = kitchenID
+      ? await menu.find({ providerID: kitchenID, tiffinID })
+      : await menu.find({ tiffinID });
 
     if (menus.length > 0) {
       const menuList = menus[0].menu;
@@ -35,5 +37,3 @@ export const menuGet = async (req, res) => {
     });
   }
 };
-
-
