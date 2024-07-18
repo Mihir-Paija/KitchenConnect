@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
 import Provider from "./pages/Provider";
-
+import ProtectedRoute from './components/ProtectedRoutes.jsx'
 function App() {
   return (
     <>
@@ -13,9 +13,21 @@ function App() {
         <Router>
           <Routes>
             <Route exact path="/login" element={<Login />} />
-            <Route exact path="/" element={<Dashboard />} />
-            <Route exact path="/customer" element={<Customer />} />
-            <Route exact path="/provider" element={<Provider />} />
+            <Route exact path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/customer" element={
+              <ProtectedRoute>
+                <Customer />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/provider" element={
+              <ProtectedRoute>
+                <Provider />
+              </ProtectedRoute>
+            } />
           </Routes>
         </Router>
       </AuthProvider>

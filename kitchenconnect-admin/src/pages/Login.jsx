@@ -21,9 +21,10 @@ const Login = () => {
         id : adminID,
         password,
       };
-      console.log(bodyData);
+      // console.log(bodyData);
       const data = await login(bodyData);
-      setAuthState(data);
+      if(data && data.authToken)
+        setAuthState(data.authToken);
       navigate('/');
     } catch (error) {
       console.error("Login failed:", error.message);

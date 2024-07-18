@@ -4,6 +4,7 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
+import session from "express-session";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { connectDB } from "./configs/dbConnect.js";
@@ -20,11 +21,18 @@ const app = express();
 export const server = createServer(app);
 
 //global middleware
+const corsOptions = {
+  origin: "http://localhost:5173", // Add all necessary ports or domains
+  credentials: true, // This allows cookies to be sent
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
-app.use(cors());
 
+// Handle preflight requests
+app.options("*", cors(corsOptions));
 //use "/KitchenConnect/api" before every back-end api...
 app.use("/KitchenConnect/api", router);
 

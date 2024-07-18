@@ -6,15 +6,23 @@ import { useForm } from 'react-hook-form';
 import Container from 'react-bootstrap/Container'; 
 import EmailSearchComponent from '../components/EmailSearchComponent';
 import UserCardComponent from '../components/userCardComponent'
-const Customer = () => {
+import { fetchCustomerDetails } from '../services/userService';
+import { useAuth } from '../contexts/AuthContext';
 
+const Customer = () => {
+  const [customerData,setCustomerData] = useState([]);
+  const {authState} = useAuth();
+  // console.log(authState);
   //functions
-  const submitHandler = (data) => {
+  const submitHandler = async (data) => {
     try {
       const bodyData = {
-        emailCustomer : data.email,
+        email : data.email,
       };
-      console.log(bodyData);
+      // console.log(bodyData);
+      const response = await fetchCustomerDetails(authState,data.email);
+      // console.log(response);
+      setCustomerData([response.data]);
     } catch (error) {
       console.error("search failed:", error.message);
       alert("search failed. Please try again.");
@@ -25,7 +33,8 @@ const Customer = () => {
     <>
     <NavbarComponent />
     <EmailSearchComponent submitHandler={submitHandler} title={"Customer"}/>
-    <UserCardComponent />
+    {customerData.length>0 && <UserCardComponent userData={customerData[0]}/>}
+    
     </>
   )
 }
