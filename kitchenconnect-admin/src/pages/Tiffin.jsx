@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -7,81 +8,81 @@ import MenuTableComponent from "../components/MenuTableComponent";
 import { fetchMenuList } from "../services/kitchenService";
 import { useParams } from "react-router-dom";
 
-const menuData = [
-  {
-    _id: "665e0f64514ea40e4ae7cde1",
-    day: "Mon",
-    items: [
-      {
-        itemName: "Roti",
-        quantity: 4,
-        unit: "pcs",
-        _id: "665e0f64514ea40e4ae7cde2",
-      },
-      {
-        itemName: "Sabji",
-        quantity: 300,
-        unit: "g",
-        _id: "665e10cf9d3d4b7551e10ce9",
-      },
-      {
-        itemName: "Rice",
-        quantity: 300,
-        unit: "g",
-        _id: "6662185f4dd1b63e22efac94",
-      },
-      {
-        itemName: "Dal",
-        quantity: 200,
-        unit: "ml",
-        _id: "6662186b4dd1b63e22efacb9",
-      },
-    ],
-  },
-  {
-    _id: "665e10e19d3d4b7551e10cf1",
-    day: "Tue",
-    items: [
-      {
-        itemName: "Sabji",
-        quantity: 250,
-        unit: "g",
-        _id: "665e10e19d3d4b7551e10cf2",
-      },
-      {
-        itemName: "Roti",
-        quantity: 2,
-        unit: "pcs",
-        _id: "665e10f69d3d4b7551e10cfc",
-      },
-    ],
-  },
-  {
-    _id: "666201ad567bf36205d76aa8",
-    day: "Sat",
-    items: [
-      {
-        itemName: "Paratha",
-        quantity: 2,
-        unit: "pcs",
-        _id: "666201ad567bf36205d76aa9",
-      },
-    ],
-  },
-  {
-    _id: "6662d7e8d55918f5ff0cbd43",
-    day: "Wed",
-    items: [
-      {
-        itemName: "Paratha",
-        quantity: 2,
-        unit: "pcs",
-        _id: "6662d7e8d55918f5ff0cbd44",
-      },
-    ],
-  },
-  // Add more objects as needed
-];
+// const menuData = [
+//   {
+//     _id: "665e0f64514ea40e4ae7cde1",
+//     day: "Mon",
+//     items: [
+//       {
+//         itemName: "Roti",
+//         quantity: 4,
+//         unit: "pcs",
+//         _id: "665e0f64514ea40e4ae7cde2",
+//       },
+//       {
+//         itemName: "Sabji",
+//         quantity: 300,
+//         unit: "g",
+//         _id: "665e10cf9d3d4b7551e10ce9",
+//       },
+//       {
+//         itemName: "Rice",
+//         quantity: 300,
+//         unit: "g",
+//         _id: "6662185f4dd1b63e22efac94",
+//       },
+//       {
+//         itemName: "Dal",
+//         quantity: 200,
+//         unit: "ml",
+//         _id: "6662186b4dd1b63e22efacb9",
+//       },
+//     ],
+//   },
+//   {
+//     _id: "665e10e19d3d4b7551e10cf1",
+//     day: "Tue",
+//     items: [
+//       {
+//         itemName: "Sabji",
+//         quantity: 250,
+//         unit: "g",
+//         _id: "665e10e19d3d4b7551e10cf2",
+//       },
+//       {
+//         itemName: "Roti",
+//         quantity: 2,
+//         unit: "pcs",
+//         _id: "665e10f69d3d4b7551e10cfc",
+//       },
+//     ],
+//   },
+//   {
+//     _id: "666201ad567bf36205d76aa8",
+//     day: "Sat",
+//     items: [
+//       {
+//         itemName: "Paratha",
+//         quantity: 2,
+//         unit: "pcs",
+//         _id: "666201ad567bf36205d76aa9",
+//       },
+//     ],
+//   },
+//   {
+//     _id: "6662d7e8d55918f5ff0cbd43",
+//     day: "Wed",
+//     items: [
+//       {
+//         itemName: "Paratha",
+//         quantity: 2,
+//         unit: "pcs",
+//         _id: "6662d7e8d55918f5ff0cbd44",
+//       },
+//     ],
+//   },
+//   // Add more objects as needed
+// ];
 
 const Tiffin = () => {
   const [menuData, setMenuData] = useState([]);
@@ -105,7 +106,7 @@ const Tiffin = () => {
   useEffect (() => {
     if(tiffinID)
         submitHandler({email :tiffinID});
-  })
+  }, [tiffinID])
 
   return (
     <>
