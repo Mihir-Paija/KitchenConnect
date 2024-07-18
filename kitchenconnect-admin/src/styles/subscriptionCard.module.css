@@ -20,12 +20,16 @@
     font-size: 0.875rem;
 }
 
-.status-tag.active {
+.status-tag.current {
     background-color: #28a745;
 }
 
 .status-tag.completed {
     background-color: #17a2b8;
+}
+
+.status-tag.rejected {
+    background-color: #dc3545;
 }
 
 .status-tag.cancelled {

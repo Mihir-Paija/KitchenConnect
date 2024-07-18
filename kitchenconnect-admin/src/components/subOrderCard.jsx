@@ -8,7 +8,7 @@ const SubOrderCard = ({orderDate, status, amount}) => {
             <div className={styles.list}>
             <div className={styles.field}>{orderDate}</div>
             <div className={styles.field}>{status}</div>
-            <div className={styles.field}>{amount}</div>
+            <div className={styles.field}>{amount !== null ? amount : '-'}</div>
             </div>
         </div>
     );

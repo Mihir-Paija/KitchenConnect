@@ -103,8 +103,10 @@ router.use("/wallet", walletRouter);
 import { adminAuthRouter } from "./admin/authRouter.js";
 import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
+import {adminSubscriptionRouter} from "./admin/subscriptionRouter.js"
 router.use('/admin', adminAuthRouter)
 router.use('/admin/customer', adminCustomerRouter)
 router.use('/admin/kitchen', adminKitchenRouter)
+router.use('/admin/subscription', adminSubscriptionRouter)
 
 export default router;

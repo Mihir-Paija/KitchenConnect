@@ -3,12 +3,14 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import NavbarComponent from '../components/NavbarComponent'
 import { useForm } from 'react-hook-form';
-import Container from 'react-bootstrap/Container'; 
+import Container from 'react-bootstrap/Container';
 import EmailSearchComponent from '../components/EmailSearchComponent';
 import UserCardComponent from '../components/userCardComponent'
-import SubscriptionCardComponent from '../components/subscriptionCard'
+import SubscriptionCard from '../components/subscriptionCard'
 import IDSearchComponent from '../components/IDSearchComponent';
 import SubOrderCard from '../components/subOrderCard';
+import { fetchSubscriptionDetails, fetchSubOrders } from '../services/subscriptionServices';
+import { useAuth } from '../contexts/AuthContext'
 
 // src/data.js
 const dummyData = [
@@ -32,16 +34,26 @@ const dummyData = [
 
 const Subscription = () => {
 
-  const [subOrders, setSubOrders] = useState(dummyData)
+  const { authState } = useAuth()
+  const [details, setDetails] = useState()
+  const [subOrders, setSubOrders] = useState([])
 
   //functions
-  console.log(`subscription`)
-  const submitHandler = (data) => {
+  const submitHandler = async (data) => {
     try {
       const bodyData = {
-        emailCustomer : data.email,
+        subID: data.id,
       };
-      console.log(bodyData);
+      const response = await fetchSubscriptionDetails(authState, bodyData)
+      if (response && response.status === 200) {
+        setDetails(response.data);
+
+      }
+
+      const orders = await fetchSubOrders(authState, bodyData)
+      if (orders && orders.status === 200)
+        setSubOrders(orders.data)
+
     } catch (error) {
       console.error("search failed:", error.message);
       alert("search failed. Please try again.");
@@ -50,23 +62,39 @@ const Subscription = () => {
 
   return (
     <>
-    <NavbarComponent />
-    <IDSearchComponent submitHandler={submitHandler} title={"Subscription"}/>
-    <SubscriptionCardComponent />
-    
-    <div>
-    <SubOrderCard 
-    orderDate={<strong>Order Date</strong>}
-    status={<strong>Status</strong>}
-    amount={<strong>Amount</strong>} />
-      {subOrders.map((item, index) =>(
-        <SubOrderCard
-        orderDate = {item.orderDate}
-        status = {item.status}
-        amount = {item.amount}/>
-      ))}
-    </div>
-    
+      <NavbarComponent />
+      {authState ?
+        <>
+          <IDSearchComponent submitHandler={submitHandler} title={"Subscription"} />
+          {details ?
+            <>
+              <SubscriptionCard details={details} />
+              {subOrders.length ?
+                <div>
+                  <SubOrderCard
+                    orderDate={<strong>Order Date</strong>}
+                    status={<strong>Status</strong>}
+                    amount={<strong>Amount</strong>} />
+                  {subOrders.map((item, index) => (
+                    <SubOrderCard
+                      orderDate={item.orderDate}
+                      status={item.status}
+                      amount={item.amountPaid} />
+                  ))}
+                </div>
+                :
+                <>
+                </>
+              }
+            </>
+            :
+            <></>
+          }
+        </>
+        :
+        <div>Please Login</div>
+      }
+
     </>
   )
 }
