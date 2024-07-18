@@ -10,7 +10,7 @@ const Login = () => {
   //state
   const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
-  const { setAuthState } = useAuth();
+  const { authSate, setAuthState } = useAuth();
   const navigate = useNavigate();
 
   //functions
@@ -22,9 +22,16 @@ const Login = () => {
         password,
       };
       console.log(bodyData);
-      const data = await login(bodyData);
-      setAuthState(data);
-      navigate('/');
+      const response = await login(bodyData);
+      if(response && response.status === 200){
+        console.log(response)
+        document.cookie = `Session=${response.data.authToken}; path=/; SameSite=None; Secure`;
+        setAuthState(response.data.authToken)
+        navigate('/');
+            
+      } else{
+        alert("Login failed. Please try again.");
+      }
     } catch (error) {
       console.error("Login failed:", error.message);
       alert("Login failed. Please try again.");

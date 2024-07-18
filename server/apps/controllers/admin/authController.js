@@ -1,7 +1,7 @@
 import admin from "../../models/adminModel.js";
 import adminSignupValidation from "../../utils/validations/admin/authValidation.js";
 import { comparePassword, hashPassword } from "../../utils/bcrypt.js";
-import { signJwt } from "../../utils/jwt.js";
+import { maxAge, signJwt } from "../../utils/jwt.js";
 
 export const adminSignup = async(req, res) =>{
     try {
@@ -86,7 +86,12 @@ export const adminLogin = async(req, res) =>{
         const token = {userID: id, role: user.role}
         const authToken = signJwt(token)
 
-        res.cookie('Session', authToken)
+        res.cookie('Session', authToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'None',
+            maxAge: 24 * 60 * 60 * 1000
+        })
 
         return res.status(200).send({
             message: `Successful Login!`,

@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
 import Provider from "./pages/Provider";
+import Subscription from "./pages/Subscription";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route exact path="/" element={<Dashboard />} />
             <Route exact path="/customer" element={<Customer />} />
             <Route exact path="/provider" element={<Provider />} />
+            <Route exact path="/subscription" element={<Subscription />} />
           </Routes>
         </Router>
       </AuthProvider>

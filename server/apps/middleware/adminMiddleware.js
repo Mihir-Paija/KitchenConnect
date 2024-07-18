@@ -3,14 +3,18 @@ import admin from "../models/adminModel.js";
 
 export const adminAuthMiddleware = async(req, res, next) =>{
     try {
-        const session = req.cookies.Session
-        if(!session)
-            return res.status(400).send({
-                expired: true,
-                message: `Session Expired! Please Login`
-            })
+        //const session = req.cookies.Session
+        //console.log(req.cookies)
+    //     if(!session)
+    //         return res.status(400).send({
+    //             expired: true,
+    //             message: `Session Expired! Please Login`
+    //         })
         
-        const token = verifyJwt(session).decoded
+    //    console.log(session)
+    const {id} = req.params
+    const token = verifyJwt(id).decoded
+    console.log(token);
 
         const userID = token.userID
         const role = token.role
@@ -29,7 +33,7 @@ export const adminAuthMiddleware = async(req, res, next) =>{
         next()
 
     } catch (error) {
-        console.log('Error in Auth Middleware ', error)
+        console.log('Error in Admin Auth Middleware ', error)
         return res.status(500).send({
             message: `Internal Server Error`
         })

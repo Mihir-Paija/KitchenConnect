@@ -1,12 +1,11 @@
 import axios from "axios";
-// import dotenv from "dotenv";
-// dotenv.config();
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+//axios.defaults.withCredentials = true;
 
-export const login = async (bodyData) => {
+export const fetchCustomerDetails = async (authState, bodyData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/admin/login/`, bodyData);
+    const response = await axios.post(`${API_BASE_URL}/admin/customer/${authState}/details`, bodyData);
     console.log(response.data)
     return response;
   } catch (error) {
