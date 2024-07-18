@@ -103,6 +103,7 @@ router.use("/wallet", walletRouter);
 import { adminAuthRouter } from "./admin/authRouter.js";
 import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
+import { adminTiffinRouter } from "./admin/tiffinRouter.js";
 import { adminAuthMiddleware } from "../middleware/adminMiddleware.js";
 router.use("/admin", adminAuthRouter);
 router.use(
@@ -111,5 +112,5 @@ router.use(
   adminCustomerRouter
 );
 router.use("/admin/:session/kitchen", adminAuthMiddleware, adminKitchenRouter);
-
+router.use("/admin/:session/tiffin", adminAuthMiddleware, adminTiffinRouter);
 export default router;

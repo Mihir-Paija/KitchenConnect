@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
 import Provider from "./pages/Provider";
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
+import Tiffin from "./pages/Tiffin.jsx";
+import TiffinMenuList from "./pages/TiffinMenuList.jsx";
 function App() {
   return (
     <>
@@ -26,6 +28,21 @@ function App() {
             <Route exact path="/provider" element={
               <ProtectedRoute>
                 <Provider />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/provider/:providerEmail" element={
+              <ProtectedRoute>
+                <Provider />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/tiffin" element={
+              <ProtectedRoute>
+                <Tiffin />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/tiffin/:tiffinID" element={
+              <ProtectedRoute>
+                <Tiffin />
               </ProtectedRoute>
             } />
           </Routes>

@@ -32,7 +32,7 @@ const Customer = () => {
   return (
     <>
     <NavbarComponent />
-    <EmailSearchComponent submitHandler={submitHandler} title={"Customer"}/>
+    <EmailSearchComponent submitHandler={submitHandler} placeholder={"Customer Email"}/>
     {customerData.length>0 && <UserCardComponent userData={customerData[0]}/>}
     
     </>

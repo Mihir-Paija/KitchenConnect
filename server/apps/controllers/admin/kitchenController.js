@@ -39,7 +39,7 @@ export const getKitchenDetails = async (req, res) => {
       city: details.city,
     };
 
-    return res.status(200).json(toSend);
+    return res.status(200).json(details);
   } catch (error) {
     console.log(`Error in getting kitchen details `, error);
     return res.status(500).send({
