@@ -1,9 +1,12 @@
-import Router from 'express'
-import { adminAuthMiddleware } from '../../middleware/adminMiddleware.js';
-import { getKitchenCount, getKitchenDetails } from '../../controllers/admin/kitchenController.js';
+import Router from "express";
+import { adminAuthMiddleware } from "../../middleware/adminMiddleware.js";
+import {
+  getKitchenCount,
+  getKitchenDetails,
+} from "../../controllers/admin/kitchenController.js";
 const router = Router();
 
-router.route('/:id/count').get(adminAuthMiddleware, getKitchenCount)
-router.route('/:id/details').post(adminAuthMiddleware, getKitchenDetails)
+router.route("/count").get(getKitchenCount);
+router.route("/details/:email").get(getKitchenDetails);
 
-export {router as adminKitchenRouter} 
+export { router as adminKitchenRouter };

@@ -19,11 +19,13 @@ firebaseAdmin();
 const app = express();
 export const server = createServer(app);
 
-//global middleware
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
-app.use(cors());
+
+// Handle preflight requests
+// app.options("*", cors(corsOptions));
 
 //use "/KitchenConnect/api" before every back-end api...
 app.use("/KitchenConnect/api", router);

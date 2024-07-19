@@ -21,17 +21,11 @@ const Login = () => {
         id : adminID,
         password,
       };
-      console.log(bodyData);
-      const response = await login(bodyData);
-      if(response && response.status === 200){
-        console.log(response)
-        document.cookie = `Session=${response.data.authToken}; path=/; SameSite=None; Secure`;
-        setAuthState(response.data.authToken)
-        navigate('/');
-            
-      } else{
-        alert("Login failed. Please try again.");
-      }
+      // console.log(bodyData);
+      const data = await login(bodyData);
+      if(data && data.authToken)
+        setAuthState(data.authToken);
+      navigate('/');
     } catch (error) {
       console.error("Login failed:", error.message);
       alert("Login failed. Please try again.");

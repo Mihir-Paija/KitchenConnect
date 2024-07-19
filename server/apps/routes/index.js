@@ -93,8 +93,8 @@ router.use("/provider/menu", menuRouter);
 router.use("/provider/subscription", subscriptionRouter);
 router.use("/provider/subscriber", subscriberRouter);
 router.use("/provider/order", orderRouter);
-router.use('/provider/wallet', providerWalletRouter)
-router.use('/provider/history', providerHistoryRouter)
+router.use("/provider/wallet", providerWalletRouter);
+router.use("/provider/history", providerHistoryRouter);
 
 import { walletRouter } from "./shared/walletRouter.js";
 router.use("/wallet", walletRouter);
@@ -103,10 +103,17 @@ router.use("/wallet", walletRouter);
 import { adminAuthRouter } from "./admin/authRouter.js";
 import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
-import {adminSubscriptionRouter} from "./admin/subscriptionRouter.js"
-router.use('/admin', adminAuthRouter)
-router.use('/admin/customer', adminCustomerRouter)
-router.use('/admin/kitchen', adminKitchenRouter)
-router.use('/admin/subscription', adminSubscriptionRouter)
+import { adminSubscriptionRouter } from "./admin/subscriptionRouter.js";
+import { adminTiffinRouter } from "./admin/tiffinRouter.js";
+import { adminAuthMiddleware } from "../middleware/adminMiddleware.js";
+router.use("/admin", adminAuthRouter);
+router.use(
+  "/admin/:session/customer",
+  adminAuthMiddleware,
+  adminCustomerRouter
+);
+router.use("/admin/:session/kitchen", adminAuthMiddleware, adminKitchenRouter);
+router.use("/admin/:session/tiffin", adminAuthMiddleware, adminTiffinRouter);
+router.use("/admin/subscription", adminSubscriptionRouter);
 
 export default router;
