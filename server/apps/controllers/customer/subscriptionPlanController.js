@@ -8,7 +8,7 @@ export const subscriptionPlansGet = async (req, res) => {
   const { kitchenID, tiffinID } = req.params;
 
   //   Check if kitchenID is a valid ObjectId
-  if (!ObjectId.isValid(kitchenID)) {
+  if (kitchenID && !ObjectId.isValid(kitchenID)) {
     return res.status(400).json({
       error: "Invalid kitchenID",
       message: "The provided kitchenID is not a valid MongoDB ObjectId",
@@ -22,10 +22,14 @@ export const subscriptionPlansGet = async (req, res) => {
   }
 
   try {
-    const SubscriptionPlanData = await subscription.find({
-      providerID: kitchenID,
-      tiffinID,
-    });
+    const SubscriptionPlanData = kitchenID
+      ? await subscription.find({
+          providerID: kitchenID,
+          tiffinID,
+        })
+      : await subscription.find({
+          tiffinID,
+        });
 
     if (SubscriptionPlanData.length > 0) {
       // Filter out only active subscriptions

@@ -3,7 +3,8 @@
 import "../styles/EmailSearchComponent.css";
 import { useForm } from "react-hook-form";
 import Container from "react-bootstrap/Container";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import DropDownButtonComponent from "./DropDownButtonComponent";
 
 const EmailSearchComponent = ({
   submitHandler,
@@ -11,31 +12,31 @@ const EmailSearchComponent = ({
   type = "email",
   inputValue = "",
   localStorageName = null,
+  options = [],
+  selectedOption = "",
+  onSelectOption,
 }) => {
   //state
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm({
     defaultValues: {
-      email: inputValue // Set default value
-    }
+      email: inputValue, // Set default value
+    },
   });
 
   useEffect(() => {
-    if(localStorageName){
-
+    if (localStorageName) {
       const savedInputValue = localStorage.getItem(localStorageName);
-          if (savedInputValue) {
-            const parsedValue = (JSON.parse(savedInputValue));
-            setValue("email", parsedValue);
-          }
+      if (savedInputValue) {
+        const parsedValue = JSON.parse(savedInputValue);
+        setValue("email", parsedValue);
+      }
     }
-    
-  })
-  
+  });
 
   // Determine validation rules and placeholders based on type
   const validationRules =
@@ -55,9 +56,19 @@ const EmailSearchComponent = ({
           },
         };
 
+
+
   return (
     <div className="email-container">
       <form className="email-form" onSubmit={handleSubmit(submitHandler)}>
+        {options.length > 0 && (
+          <DropDownButtonComponent
+            options={options}
+            selectedOption={selectedOption}
+            onOptionSelect={onSelectOption}
+          />
+        )}
+
         <div className="form-group">
           <label htmlFor="email" className="form-label" hidden>
             Customer Email
