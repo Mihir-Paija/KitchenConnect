@@ -5,8 +5,9 @@ import { useAuth } from "../contexts/AuthContext";
 import EmailSearchComponent from "../components/EmailSearchComponent";
 import NavbarComponent from "../components/NavbarComponent";
 import MenuTableComponent from "../components/MenuTableComponent";
-import { fetchMenuList } from "../services/kitchenService";
+import { fetchMenuList, fetchSubPlanList } from "../services/kitchenService";
 import { useParams } from "react-router-dom";
+import SubPlanTableComponent from "../components/SubPlanTableComponent";
 
 // const menuData = [
 //   {
@@ -86,27 +87,35 @@ import { useParams } from "react-router-dom";
 
 const Tiffin = () => {
   const [menuData, setMenuData] = useState([]);
+  const [subPlanData, setSubPlanData] = useState([]);
   const { authState } = useAuth();
   const { tiffinID } = useParams();
-
+  const [selectedOption, setSelectedOption] = useState("Select Option");
   //functions
   const submitHandler = async (data) => {
     try {
-      const tiffinID = data.email;
-      console.log("tiffinID", tiffinID);
-      const menu_response = await fetchMenuList(authState, tiffinID);
-      console.log(menu_response.data);
-      setMenuData(menu_response.data.menu);
+      if (selectedOption === "Menus") {
+        const tiffinID = data.email;
+        // console.log("tiffinID", tiffinID);
+        const menu_response = await fetchMenuList(authState, tiffinID);
+        // console.log(menu_response.data);
+        setMenuData(menu_response.data.menu);
+      } else if (selectedOption === "SubscriptionPlan") {
+        const tiffinID = data.email;
+        // console.log("tiffinID", tiffinID);
+        const subPlan_response = await fetchSubPlanList(authState, tiffinID);
+        console.log(subPlan_response.data);
+        setSubPlanData(subPlan_response.data.subscriptions);
+      }
     } catch (error) {
       console.error("search failed:", error.message);
       alert("search failed. Please try again.");
     }
   };
 
-  useEffect (() => {
-    if(tiffinID)
-        submitHandler({email :tiffinID});
-  }, [tiffinID])
+  useEffect(() => {
+    if (tiffinID) submitHandler({ email: tiffinID });
+  }, [tiffinID]);
 
   return (
     <>
@@ -116,12 +125,13 @@ const Tiffin = () => {
         placeholder={"Tiffin ID"}
         type="ID"
         inputValue={tiffinID ? tiffinID : ""}
+        options={["Menus", "SubscriptionPlan"]}
+        selectedOption={selectedOption}
+        onSelectOption = {setSelectedOption}
       />
       <div style={{ width: "80%", margin: "0 auto" }}>
-        {menuData.length > 0 && (
-          <MenuTableComponent menuData={menuData} />
-        ) 
-    }
+        {menuData.length > 0 && selectedOption==="Menus" && <MenuTableComponent menuData={menuData} />}
+        {subPlanData.length > 0 && selectedOption==="SubscriptionPlan" && <SubPlanTableComponent subPlanData={subPlanData} />}
       </div>
     </>
   );
