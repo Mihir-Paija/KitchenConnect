@@ -26,6 +26,7 @@ const SubscriptionCard = ({details}) => {
             </h2>
             <div className={styles.field}><strong>Customer: </strong>{details.customerName}</div>
             <div className={styles.field}><strong>Provider: </strong>{details.providerName}</div>
+            <div className={styles.field}><strong>Provider ID: </strong>{details.providerID}</div>
             <div>
             <h4> Subscription Details</h4>
                 <div className={styles.field}>{details.tiffinName} ({details.tiffinType}) x {details.noOfTiffins}</div>

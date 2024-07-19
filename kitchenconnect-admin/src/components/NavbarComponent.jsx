@@ -17,7 +17,7 @@ const NavbarComponent = ({ title="KitchenConnect", id="ID12345" }) => {
   
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand as={NavLink} to="/">
+        <Navbar.Brand as={NavLink} to="/dashboard">
            {title}
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

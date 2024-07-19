@@ -1,0 +1,20 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.landingPage {
+    display: flex;
+    flex : 1;
+    background: linear-gradient( #FFD580, #FFA500);
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.title {
+    color: #FFFFFF;
+    font-weight: bold;
+
+}

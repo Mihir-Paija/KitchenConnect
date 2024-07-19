@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
 import Provider from "./pages/Provider";
 import Subscription from "./pages/Subscription";
+import LoadingComponent from "./components/loadingComponent";
+import LandingPage from "./pages/Landing";
 
 function App() {
   return (
@@ -13,8 +15,9 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+            <Route exact path = "/" element ={<LandingPage />} />
             <Route exact path="/login" element={<Login />} />
-            <Route exact path="/" element={<Dashboard />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
             <Route exact path="/customer" element={<Customer />} />
             <Route exact path="/provider" element={<Provider />} />
             <Route exact path="/subscription" element={<Subscription />} />

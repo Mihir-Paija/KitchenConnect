@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import NavbarComponent from '../components/NavbarComponent'
 import { useForm } from 'react-hook-form';
@@ -8,12 +8,19 @@ import EmailSearchComponent from '../components/EmailSearchComponent';
 import UserCardComponent from '../components/userCardComponent'
 import { fetchCustomerDetails } from '../services/customerService';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const Customer = () => {
 
   const [details, setDetails] = useState([]);
   const {authState} = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() =>{
+    if(authState === null)
+      navigate('/login')
+  }, [authState])
 
   //functions
   const submitHandler = async(data) => {

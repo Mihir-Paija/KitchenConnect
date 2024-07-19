@@ -31,6 +31,7 @@ export const getSubscriptionDetails = async(req, res) =>{
         const toSend = {
             customerName: subscriberDetails.subscriberFirstName + ' ' + subscriberDetails.subscriberLastName,
             providerName: providerDetails.kitchenName,
+            providerID: subscriberDetails.kitchenID,
             subscription: specificSub.title,
             tiffinName: tiffinDetails.name,
             tiffinType: tiffinDetails.tiffinType,

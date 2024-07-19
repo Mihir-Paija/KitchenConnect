@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import NavbarComponent from '../components/NavbarComponent'
 import { useForm } from 'react-hook-form';
@@ -11,8 +11,10 @@ import IDSearchComponent from '../components/IDSearchComponent';
 import SubOrderCard from '../components/subOrderCard';
 import { fetchSubscriptionDetails, fetchSubOrders } from '../services/subscriptionServices';
 import { useAuth } from '../contexts/AuthContext'
+import styles from '../styles/subscriptionPage.module.css'
+import LoadingComponent from '../components/loadingComponent';
+import { useNavigate } from 'react-router-dom';
 
-// src/data.js
 const dummyData = [
   {
     orderDate: '2024-07-01',
@@ -37,10 +39,18 @@ const Subscription = () => {
   const { authState } = useAuth()
   const [details, setDetails] = useState()
   const [subOrders, setSubOrders] = useState([])
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+
+  useEffect(() =>{
+    if(authState === null)
+      navigate('/login')
+  }, [authState])
 
   //functions
   const submitHandler = async (data) => {
     try {
+      setLoading(true);
       const bodyData = {
         subID: data.id,
       };
@@ -57,6 +67,8 @@ const Subscription = () => {
     } catch (error) {
       console.error("search failed:", error.message);
       alert("search failed. Please try again.");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -66,11 +78,17 @@ const Subscription = () => {
       {authState ?
         <>
           <IDSearchComponent submitHandler={submitHandler} title={"Subscription"} />
+          {loading ? 
+        <LoadingComponent />
+      :
+      <>
           {details ?
-            <>
+            <div class = {styles.page}>
+              <div class = {styles.details}>
               <SubscriptionCard details={details} />
+              </div>
               {subOrders.length ?
-                <div>
+                <div class = {styles.subOrders}>
                   <SubOrderCard
                     orderDate={<strong>Order Date</strong>}
                     status={<strong>Status</strong>}
@@ -86,13 +104,15 @@ const Subscription = () => {
                 <>
                 </>
               }
-            </>
+            </div>
             :
-            <></>
+            <div className={styles.emptyPage}>Search for a subscription</div>
           }
+          </>
+        }
         </>
         :
-        <div>Please Login</div>
+        <div className={styles.emptyPage}>Please Login</div>
       }
 
     </>

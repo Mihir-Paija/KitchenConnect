@@ -1,0 +1,22 @@
+.page{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.emptyPage {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    margin-top: 40px;
+    font-size: x-large;
+}
+
+.details {
+    flex: 1;
+    
+}
+
+.subOrders {
+    flex: 1;
+}

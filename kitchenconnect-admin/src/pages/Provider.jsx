@@ -1,11 +1,21 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import NavbarComponent from '../components/NavbarComponent'
 import EmailSearchComponent from '../components/EmailSearchComponent'
 import UserCardComponent from '../components/userCardComponent'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const Provider = () => {
+
+  const {authState} = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() =>{
+    if(authState === null)
+      navigate('/login')
+  }, [authState])
 
   //functions
   const submitHandler = (data) => {
