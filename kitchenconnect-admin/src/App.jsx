@@ -9,8 +9,7 @@ import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import Tiffin from "./pages/Tiffin.jsx";
 import TiffinMenuList from "./pages/TiffinMenuList.jsx";
 import Subscription from "./pages/Subscription";
-import LoadingComponent from "./components/loadingComponent";
-import LandingPage from "./pages/Landing";
+import LandingPage from "./pages/Landing.jsx";
 
 function App() {
   return (
@@ -18,15 +17,9 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route exact path = "/" element ={<LandingPage />} />
+          <Route exact path="/" element={<LandingPage />} />
             <Route exact path="/login" element={<Login />} />
-<<<<<<< HEAD
-            <Route exact path="/dashboard" element={<Dashboard />} />
-            <Route exact path="/customer" element={<Customer />} />
-            <Route exact path="/provider" element={<Provider />} />
-            <Route exact path="/subscription" element={<Subscription />} />
-=======
-            <Route exact path="/" element={
+            <Route exact path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
@@ -61,7 +54,6 @@ function App() {
                 <Subscription />
               </ProtectedRoute>
             } />
->>>>>>> b82b2a9ce0b4780ec10d2722fa9d6b76b16ccc72
           </Routes>
         </Router>
       </AuthProvider>

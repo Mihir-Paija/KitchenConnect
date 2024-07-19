@@ -122,12 +122,6 @@ const Provider = () => {
   const navigate = useNavigate(); 
   const {authState} = useAuth()
 
-
-  useEffect(() =>{
-    if(authState === null)
-      navigate('/login')
-  }, [authState])
-
   //functions
   const submitHandler = async (data) => {
     try {

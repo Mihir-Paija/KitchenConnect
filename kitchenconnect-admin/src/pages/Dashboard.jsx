@@ -7,11 +7,7 @@ const Dashboard = () => {
 
   const {authState} = useAuth()
   const navigate = useNavigate()
-  useEffect(() =>{
-    if(authState === null)
-      navigate('/login')
-  }, [authState])
-
+  
   return (
     <>
         <NavbarComponent title={"KitchenConnect"}/>

@@ -42,11 +42,6 @@ const Subscription = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
 
-  useEffect(() =>{
-    if(authState === null)
-      navigate('/login')
-  }, [authState])
-
   //functions
   const submitHandler = async (data) => {
     try {

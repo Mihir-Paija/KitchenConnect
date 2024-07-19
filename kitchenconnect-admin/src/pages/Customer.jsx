@@ -16,11 +16,6 @@ const Customer = () => {
   const {authState} = useAuth();
   // console.log(authState);  const navigate = useNavigate()
 
-  useEffect(() =>{
-    if(authState === null)
-      navigate('/login')
-  }, [authState])
-
   //functions
   const submitHandler = async (data) => {
     try {
