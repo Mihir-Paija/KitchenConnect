@@ -643,6 +643,21 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       }
                     </Text>
                   </View>
+                  {subDetails.Subscription.wantDelivery && (
+                    <View style={styles.paymentLineBox}>
+                      <Text style={styles.paymentTxt}>
+                        Total Delivery Charge :{" "}
+                      </Text>
+                      <Text style={styles.paymentValueTxt}>
+                        ₹{" "}
+                        {
+                          subDetails.Subscription.customerPaymentBreakdown
+                            .deliveryCharge
+                        }
+                      </Text>
+                    </View>
+                  )}
+
                   <View
                     style={[
                       styles.paymentLineBox,
@@ -672,19 +687,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       ₹ {subDetails.Subscription.customerPaymentBreakdown.total}
                     </Text>
                   </View>
-                  {subscription.deliveryIncluded && (
-                    <View style={styles.paymentLineBox}>
-                      <Text style={styles.paymentTxt}>Delivery Charge : </Text>
-                      <Text style={styles.paymentValueTxt}>
-                        ₹{" "}
-                        {
-                          subDetails.Subscription.customerPaymentBreakdown
-                            .deliveryCharge
-                        }{" "}
-                        / delivery
-                      </Text>
-                    </View>
-                  )}
+
                   <View
                     style={[
                       styles.paymentLineBox,

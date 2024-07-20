@@ -1,12 +1,11 @@
 /* MenuTable.css */
 .menu-table {
-  width: 100%;
+  width: 95%;
+  margin: 20px auto; /* Center horizontally with auto margins */
   border-collapse: collapse;
-  margin: 20px 0;
   font-size: 14px; /* Smaller font size */
   text-align: left;
 }
-
 .menu-table th,
 .menu-table td {
   padding: 10px 6px; /* Smaller padding */
