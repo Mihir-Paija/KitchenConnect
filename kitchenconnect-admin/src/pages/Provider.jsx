@@ -6,7 +6,6 @@ import EmailSearchComponent from "../components/EmailSearchComponent";
 import UserCardComponent from "../components/userCardComponent";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchProviderDetails } from "../services/userService";
-import TiffinComponent from "../components/TiffinComponent";
 import TiffinTableComponent from "../components/TiffinTableComponent";
 import { fetchTiffinList } from "../services/tiffinService";
 import { useNavigate } from "react-router-dom";

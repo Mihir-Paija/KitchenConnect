@@ -10,6 +10,7 @@ import Tiffin from "./pages/Tiffin.jsx";
 import TiffinMenuList from "./pages/TiffinMenuList.jsx";
 import Subscription from "./pages/Subscription";
 import LandingPage from "./pages/Landing.jsx";
+import Order from "./pages/Order.jsx";
 
 function App() {
   return (
@@ -47,6 +48,16 @@ function App() {
             <Route exact path="/tiffin/:tiffinID" element={
               <ProtectedRoute>
                 <Tiffin />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/order" element={
+              <ProtectedRoute>
+                <Order />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/order/:orderID" element={
+              <ProtectedRoute>
+                <Order />
               </ProtectedRoute>
             } />
             <Route exact path="/subscription" element={

@@ -7,6 +7,7 @@ import { sendNotification } from "../provider/subscriptionController.js";
 import orderJoiValidate from "../../utils/validations/customer/order.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import customer from "../../models/customerModel.js";
 
 export const placeOrder = async (req, res) => {
   try {
@@ -108,27 +109,34 @@ export const placeOrder = async (req, res) => {
 
 export const orderListGet = async (req, res) => {
   try {
-    const { customerID } = req.params;
-    if (!customerID) {
+    const { customerID, customerEmail } = req.params;
+    if (!customerID && !customerEmail) {
       return res.status(404).send({
         error: "Invalid URL",
-        message: "customerID missing in pramas",
+        message: "customerID or customerEmail missing in pramas",
       });
     }
 
     //   Check if _id is a valid ObjectId
 
-    if (!ObjectId.isValid(customerID)) {
+    if (customerID && !ObjectId.isValid(customerID)) {
       return res.status(400).json({
         error: "Invalid customerID",
         message: "The provided customerID is not a valid MongoDB ObjectId",
       });
     }
 
-    const orderList = await order.find(
-      { customerID },
-      "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total"
-    );
+    const customer = await customer.findOne({ email: customerEmail });
+
+    const orderList = customerID
+      ? await order.find(
+          { customerID },
+          "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total"
+        )
+      : await order.find(
+          { customerEmail },
+          "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total"
+        );
 
     if (!orderList) {
       return res.status(404).json({
