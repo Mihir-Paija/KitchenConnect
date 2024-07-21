@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import Container from "react-bootstrap/Container";
 import React, { useEffect, useState } from "react";
 import DropDownButtonComponent from "./DropDownButtonComponent";
+import AlertComponent from "./AlertComponent";
 
 const EmailSearchComponent = ({
   submitHandler,
@@ -21,12 +22,15 @@ const EmailSearchComponent = ({
     register,
     handleSubmit,
     formState: { errors },
+    trigger,
     setValue,
   } = useForm({
     defaultValues: {
       email: inputValue, // Set default value
     },
   });
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (localStorageName) {
@@ -56,7 +60,13 @@ const EmailSearchComponent = ({
           },
         };
 
-
+  useEffect(() => {
+    // console.log("hi");
+    if (errors.email) {
+      setAlertMessage(errors.email.message);
+      setShowAlert(true);
+    }
+  }, [errors,submitHandler]);
 
   return (
     <div className="email-container">
@@ -80,8 +90,13 @@ const EmailSearchComponent = ({
             placeholder={placeholder}
             {...register("email", validationRules)}
           />
-          {errors.email && (
-            <span className="error-message">{errors.email.message}</span>
+          {(showAlert) && (
+            // <span className="error-message">{errors.email.message}</span>
+            // setShowAlert(true)
+            <AlertComponent
+              AlertMsg={alertMessage}
+              setShowAlert={setShowAlert}
+            />
           )}
         </div>
         <button type="submit" className="form-button">
