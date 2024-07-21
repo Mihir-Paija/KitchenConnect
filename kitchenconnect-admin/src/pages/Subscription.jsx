@@ -49,13 +49,13 @@ const Subscription = () => {
       const bodyData = {
         subID: data.id,
       };
-      const response = await fetchSubscriptionDetails(authState, bodyData)
+      const response = await fetchSubscriptionDetails(authState.authToken, bodyData)
       if (response && response.status === 200) {
         setDetails(response.data);
 
       }
 
-      const orders = await fetchSubOrders(authState, bodyData)
+      const orders = await fetchSubOrders(authState.authToken, bodyData)
       if (orders && orders.status === 200)
         setSubOrders(orders.data)
 
@@ -70,7 +70,7 @@ const Subscription = () => {
   return (
     <>
       <NavbarComponent />
-      {authState ?
+      {authState.authToken ?
         <>
           <IDSearchComponent submitHandler={submitHandler} title={"Subscription"} />
           {loading ? 

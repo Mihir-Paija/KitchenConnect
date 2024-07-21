@@ -94,6 +94,7 @@ export const adminLogin = async (req, res) => {
 
     return res.status(200).send({
       message: `Successful Login!`,
+      id,
       authToken,
     });
   } catch (error) {

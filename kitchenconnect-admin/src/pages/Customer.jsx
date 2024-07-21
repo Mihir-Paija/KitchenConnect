@@ -26,11 +26,11 @@ const Customer = () => {
         email : data.email,
       };
       // console.log(bodyData);
-      const customer_response = await fetchCustomerDetails(authState,data.email);
+      const customer_response = await fetchCustomerDetails(authState.authToken,data.email);
       // console.log(response);
       setCustomerData([customer_response.data]);
       const orderList_response = await fetchCustomerOrderList(
-        authState,
+        authState.authToken,
         data.email
       );
       console.log(orderList_response.data);
