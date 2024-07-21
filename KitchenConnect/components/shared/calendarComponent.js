@@ -17,9 +17,11 @@ const CalendarComponent = ({ startDate, endDate, completed, customerOut, provide
     }
 
     const minDate = new Date(startDate);
+    minDate.setDate(minDate.getDate() + 1);
     setMinCalendarDate(minDate);
 
     const maxDate = new Date(endDate);
+    maxDate.setDate(maxDate.getDate() + 1);
     setMaxCalendarDate(maxDate);
   }, [startDate]);
 

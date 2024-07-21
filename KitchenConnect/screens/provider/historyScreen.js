@@ -745,12 +745,9 @@ const HistoryScreen = ({ navigation }) => {
           ) : (
             <>
               <View style={styles.insights}>
-                <LinearGradient
-                  colors={['white', 'white', '#FFCC99']}
-                  style={styles.header}
-                >
-                  <Text style={styles.headerText}>Insights</Text>
-                </LinearGradient>
+              <View style={styles.header}>
+                                  <Text style={styles.headerText}>Insights</Text>
+                                  </View>
                 <View style={styles.row}>
                   <View style={styles.filters}>
                     <Text>Tiffins</Text>
@@ -813,12 +810,9 @@ const HistoryScreen = ({ navigation }) => {
                 )}
               </View>
               <View style={styles.history}>
-                <LinearGradient
-                  colors={['white', 'white', '#FFCC99']}
-                  style={styles.header}
-                >
+                <View style={styles.header}>
                   <Text style={styles.headerText}>History</Text>
-                </LinearGradient>
+                  </View>
                 <FlatList
                   data={history}
                   renderItem={({ item }) => <HistoryComponent {...item} />}
@@ -849,8 +843,14 @@ const styles = StyleSheet.create({
     //fontSize: windowHeight * 0.025,
     marginBottom: 6,
     paddingBottom: 5,
-    borderColor: 'black',
+    backgroundColor: '#FFDEB3',
     width: windowWidth,
+    //marginHorizontal: windowWidth * 0.1,
+    borderTopRightRadius: windowWidth * 0.05,
+    borderTopLeftRadius: windowWidth * 0.05,
+    paddingTop: windowHeight * 0.007,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerText: {
     textAlign: 'center',
@@ -860,6 +860,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingVertical: 5,
     marginBottom: 5,
+    paddingTop: 0,
   },
   row: {
     flexDirection: 'row',
@@ -896,6 +897,7 @@ const styles = StyleSheet.create({
     paddingVertical: windowHeight * 0.015,
     borderTopRightRadius: windowWidth * 0.05,
     borderTopLeftRadius: windowWidth * 0.05,
+    paddingTop:  0,
     alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: {

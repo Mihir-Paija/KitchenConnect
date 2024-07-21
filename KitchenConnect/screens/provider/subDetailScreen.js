@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Platform, StatusBar, Image, ScrollView, BackHandler} from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Platform, StatusBar, Image, ScrollView, BackHandler } from "react-native";
 import BackButtonComponent from "../../components/shared/BackButton";
 import { AuthContext } from "@/context/authContext";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
@@ -55,13 +55,17 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${day}/${month}/${year}`;
-};
+  };
+
+  const currentDate = new Date()
+  currentDate.setHours(0, 0, 0, 0)
+  const currentDateString = currentDate.toISOString()
 
   useEffect(() => {
     calculatePrice()
   }, [])
 
-  useEffect(() =>{
+  useEffect(() => {
 
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -87,30 +91,30 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </View>
               </View>
               <View style={styles.stampBox}>
-                {subscription.subscriptionStatus.daysRemaining.length == 0?
-              <Image source={require('@/assets/shared/stamps/completed_stamp.png')} 
-              style={styles.stamp}/>
-              : null}
-              {subscription.subscriptionStatus.status == 'Cancelled'?
-              <Image source={require('@/assets/shared/stamps/cancelled_stamp.png')} 
-              style={styles.stamp}/>
-              : null}
+                {new Date(subscription.endDate) < currentDate ?
+                  <Image source={require('@/assets/shared/stamps/completed_stamp.png')}
+                    style={styles.stamp} />
+                  : null}
+                {subscription.subscriptionStatus.status == 'Cancelled' ?
+                  <Image source={require('@/assets/shared/stamps/cancelled_stamp.png')}
+                    style={styles.stamp} />
+                  : null}
 
+              </View>
             </View>
-            </View>
-          
+
 
             <View style={styles.bookingBox}>
               <Text style={styles.bookingTitleTxt}>Subscription Details</Text>
-              <View style={[styles.bookingIDBox,  {backgroundColor: "rgba(256,156,0,0.1)"}]}>
-                    <Text style={styles.bookingIDText}>
-                      Booking ID 
-                    </Text>
-                    <Text style={styles.bookingIDText}>
-                    {subscription._id}
-                    </Text>
-                    
-                  </View>
+              <View style={[styles.bookingIDBox, { backgroundColor: "rgba(256,156,0,0.1)" }]}>
+                <Text style={styles.bookingIDText}>
+                  Booking ID
+                </Text>
+                <Text style={styles.bookingIDText}>
+                  {subscription._id}
+                </Text>
+
+              </View>
               <View
                 style={[
                   styles.bookingDetialBox,
@@ -119,7 +123,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               >
                 <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.001, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
                   <Text style={styles.paymentTxt}>Customer Name: </Text>
-                  <Text style={styles.paymentValueTxt}>{subscription.subscriberFirstName + " " + subscription.subscriberLastName }</Text>
+                  <Text style={styles.paymentValueTxt}>{subscription.subscriberFirstName + " " + subscription.subscriberLastName}</Text>
                 </View>
 
                 <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.002, paddingLeft: windowWidth * 0.01 }]}>
@@ -134,8 +138,8 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                       <Text style={styles.paymentTxt}>{subscription.address}</Text>
                     </>
                     :
-                    <View style={{alignItems:'center'}}>
-                    <Text style={styles.paymentTxt}>No Delivery</Text>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={styles.paymentTxt}>No Delivery</Text>
                     </View>}
                 </View>
 
@@ -162,12 +166,12 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </Text>
                 </View>
               </View>
-              {subscription.subscriptionStatus.status == 'Cancelled'?
-              <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.001, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
-              <Text style={styles.paymentTxt}>Cancelled On: </Text>
-              <Text style={styles.paymentValueTxt}>{formatDate(subscription.subscriptionStatus.cancelDate)}</Text>
-            </View>
-              :null}
+              {subscription.subscriptionStatus.status == 'Cancelled' ?
+                <View style={[styles.paymentLineBox, { paddingVertical: windowHeight * 0.001, paddingLeft: windowWidth * 0.01, marginTop: windowHeight * 0.01, marginBottom: windowHeight * 0.011 }]}>
+                  <Text style={styles.paymentTxt}>Cancelled On: </Text>
+                  <Text style={styles.paymentValueTxt}>{formatDate(subscription.subscriptionStatus.cancelDate)}</Text>
+                </View>
+                : null}
 
             </View>
 
@@ -179,7 +183,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text style={styles.dayvalueText}>
                       {subscription.subscriptionStatus.daysCompleted.length}
                     </Text>
-                    <Text style={styles.dayText}> { subscription.subscriptionStatus.daysCompleted.length === 1 ? 'day' : 'days' }</Text>
+                    <Text style={styles.dayText}> {subscription.subscriptionStatus.daysCompleted.length === 1 ? 'day' : 'days'}</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.daykeyText}>Completed</Text>
@@ -191,7 +195,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                     <Text style={styles.dayvalueText}>
                       {subscription.subscriptionStatus.daysRemaining.length}
                     </Text>
-                    <Text style={styles.dayText}>{ subscription.subscriptionStatus.daysRemaining.length === 1 ? 'day' : 'days' }</Text>
+                    <Text style={styles.dayText}>{subscription.subscriptionStatus.daysRemaining.length === 1 ? 'day' : 'days'}</Text>
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.daykeyText}>Remaining</Text>
@@ -208,7 +212,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.daysOptedOut.length}</Text>
-                    <Text style={styles.dayText}>{ subscription.subscriptionStatus.daysOptedOut.length === 1 ? 'day' : 'days' }</Text>
+                    <Text style={styles.dayText}>{subscription.subscriptionStatus.daysOptedOut.length === 1 ? 'day' : 'days'}</Text>
                   </View>
 
                 </View>
@@ -219,7 +223,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                   </View>
                   <View style={styles.dayTxtBox}>
                     <Text style={styles.dayvalueText}>{subscription.subscriptionStatus.providerOptedOut.length}</Text>
-                    <Text style={styles.dayText}>{subscription.subscriptionStatus.providerOptedOut.length === 1 ? 'day' : 'days' }</Text>
+                    <Text style={styles.dayText}>{subscription.subscriptionStatus.providerOptedOut.length === 1 ? 'day' : 'days'}</Text>
                   </View>
 
                 </View>
@@ -267,17 +271,17 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </Text>
               </View>
               {subscription.wantDelivery ?
-              <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>Delivery: </Text>
-                <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.deliveryCharge}</Text>
-              </View>
-              : null} 
+                <View style={styles.paymentLineBox}>
+                  <Text style={styles.paymentTxt}>Delivery: </Text>
+                  <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.deliveryCharge}</Text>
+                </View>
+                : null}
               {subscription.wantPacking ?
-              <View style={styles.paymentLineBox}>
-                <Text style={styles.paymentTxt}>Packing: </Text>
-                <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.packingCharge}</Text>
-              </View>
-              : null }
+                <View style={styles.paymentLineBox}>
+                  <Text style={styles.paymentTxt}>Packing: </Text>
+                  <Text style={styles.paymentValueTxt}>+ ₹ {subscription.kitchenPaymentBreakdown.packingCharge}</Text>
+                </View>
+                : null}
               <View style={styles.paymentLineBox}>
                 <Text style={styles.paymentTxt}>GST: </Text>
                 <Text style={styles.paymentValueTxt}> + ₹ {subscription.kitchenPaymentBreakdown.tax}</Text>
@@ -293,7 +297,7 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
               <View
                 style={[
                   styles.paymentLineBox,
-                  { borderTopWidth: 1, borderTopColor: "#ccc", paddingVertical: windowHeight *0.015 },
+                  { borderTopWidth: 1, borderTopColor: "#ccc", paddingVertical: windowHeight * 0.015 },
                 ]}
               >
                 <Text
@@ -317,32 +321,32 @@ const SubscriptionDetailsScreen = ({ navigation, route }) => {
                 </Text>
               </View>
               <View style={[
-                  styles.paymentLineBox,
-                  { borderTopWidth: 1, borderTopColor: "#ccc" },
-                ]}>
+                styles.paymentLineBox,
+                { borderTopWidth: 1, borderTopColor: "#ccc" },
+              ]}>
                 <Text style={styles.paymentTxt}>Recieved Till Now: </Text>
                 <Text style={styles.paymentValueTxt}> ₹ {subscription.kitchenPaymentBreakdown.moneyTransferTillNow}</Text>
               </View>
-              {subscription.subscriptionStatus.daysRemaining.length !== 0 && subscription.subscriptionStatus.status !== 'Cancelled' ?
-              <View
-                style={[
-                  styles.paymentLineBox,
-                  {
-                    backgroundColor: "rgba(256,156,0,0.1)",
-                    borderRadius: windowWidth * 0.02,
-                  },
-                ]}
-              >
-                <Text
-                  style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
+              {new Date(subscription.endDate) >= currentDate  && subscription.subscriptionStatus.status !== 'Cancelled' ?
+                <View
+                  style={[
+                    styles.paymentLineBox,
+                    {
+                      backgroundColor: "rgba(256,156,0,0.1)",
+                      borderRadius: windowWidth * 0.02,
+                    },
+                  ]}
                 >
-                  ₹ {subscription.kitchenPaymentBreakdown.perOrderPrice} will be
-                  automatically credited to your wallet for each delivered tiffin.
-                </Text>
-              </View>
-              : null}
+                  <Text
+                    style={[styles.paymentTxt, { fontSize: windowWidth * 0.035 }]}
+                  >
+                    ₹ {subscription.kitchenPaymentBreakdown.perOrderPrice} will be
+                    automatically credited to your wallet for each delivered tiffin.
+                  </Text>
+                </View>
+                : null}
             </View>
-            
+
 
           </ScrollView>
         </>
@@ -362,7 +366,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
     alignContent: "center",
   },
-  header:{
+  header: {
     flexDirection: 'row',
   },
   kitchenBox: {
@@ -406,11 +410,11 @@ const styles = StyleSheet.create({
     marginVertical: windowHeight * 0.002,
     color: "#505050",
   },
-  stampBox:{
-    flex:1,
+  stampBox: {
+    flex: 1,
     justifyContent: 'center',
   },
-  stamp:{
+  stamp: {
     width: windowWidth * 0.3,
     height: windowWidth * 0.3,
   },
