@@ -8,7 +8,7 @@ const LandingPage = () =>{
     const { authState, setAuthState } = useAuth();
     const navigate = useNavigate();  
         useEffect(() =>{
-            if(authState !== null)
+            if(authState.authToken)
                 navigate('/dashboard')
         }, [])
 

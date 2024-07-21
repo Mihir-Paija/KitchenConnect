@@ -23,9 +23,10 @@ const Login = () => {
       };
       // console.log(bodyData);
       const data = await login(bodyData);
-      if(data && data.authToken)
-        setAuthState(data.authToken);
+      if(data && data.id && data.authToken){
+        setAuthState({...authState, id: data.id, authToken: data.authToken})
       navigate('/');
+      } else alert("Login failed. Please try again.");
     } catch (error) {
       console.error("Login failed:", error.message);
       alert("Login failed. Please try again.");

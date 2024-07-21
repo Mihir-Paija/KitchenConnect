@@ -97,13 +97,13 @@ const Tiffin = () => {
       if (selectedOption === "Menus") {
         const tiffinID = data.email;
         // console.log("tiffinID", tiffinID);
-        const menu_response = await fetchMenuList(authState, tiffinID);
+        const menu_response = await fetchMenuList(authState.authToken, tiffinID);
         // console.log(menu_response.data);
         setMenuData(menu_response.data.menu);
       } else if (selectedOption === "SubscriptionPlan") {
         const tiffinID = data.email;
         // console.log("tiffinID", tiffinID);
-        const subPlan_response = await fetchSubPlanList(authState, tiffinID);
+        const subPlan_response = await fetchSubPlanList(authState.authToken, tiffinID);
         console.log(subPlan_response.data);
         setSubPlanData(subPlan_response.data.subscriptions);
       }

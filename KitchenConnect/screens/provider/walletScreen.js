@@ -196,14 +196,14 @@ const WalletScreen = ({ navigation }) => {
         setIsWallet(response.data.wallet);
         setWallet(response.data);
 
-        if(response.data.wallet){
+        if (response.data.wallet) {
           console.log(response.data.wallet)
           const transactionResponse = await fetchTransactions(authState.authToken, response.data.walletID)
 
           console.log(transactionResponse)
-          if(transactionResponse && transactionResponse.status === 200)
+          if (transactionResponse && transactionResponse.status === 200)
             setTransactions(transactionResponse.data)
-          
+
           else Alert.alert('An Error Occurred')
         }
       } else Alert.alert("An Error Occurred");
@@ -215,22 +215,22 @@ const WalletScreen = ({ navigation }) => {
     }
   };
 
-  const toggleWithdrawModal = () =>{
+  const toggleWithdrawModal = () => {
     setWithdrawModal(!withdrawModal)
   }
 
-  const finalWithdraw = async(amount, PIN) =>{
+  const finalWithdraw = async (amount, PIN) => {
     try {
-    console.log(amount)
-    console.log(PIN)
-    console.log(wallet.walletID)
+      console.log(amount)
+      console.log(PIN)
+      console.log(wallet.walletID)
       const bodyData = {
         amount,
         PIN,
       }
 
       const response = await withdrawMoney(authState.authToken, wallet.walletID, bodyData)
-      if(response && response.status === 200){
+      if (response && response.status === 200) {
         toggleWithdrawModal()
         Alert.alert(`Withdraw Successfull`)
         setRefresh(!refresh)
@@ -560,11 +560,11 @@ const WalletScreen = ({ navigation }) => {
     fetchWallet();
     //fetchTransactions()
 
-    
+
   }, [, refresh])
 
 
-  useEffect(() =>{
+  useEffect(() => {
     createDuration()
   }, [])
 
@@ -679,7 +679,7 @@ const WalletScreen = ({ navigation }) => {
                       {graphData.datasets && graphData.datasets.length ? (
 
                         <View style={styles.graphContainer}>
-                        <LineGraph data={graphData} scroll={scroll} value={'Amount'} />
+                          <LineGraph data={graphData} scroll={scroll} value={'Amount'} />
                         </View>
 
                       ) : (
@@ -690,26 +690,23 @@ const WalletScreen = ({ navigation }) => {
                 </View>
               </View>
               <View style={styles.transactionBackground}>
-              <View style={styles.transactions}>
-              <LinearGradient
-      colors={['white', 'white','#FFCC99']}
-      style={styles.header}
-    >
-      <Text style={styles.headerText}>Transactions</Text>
-    </LinearGradient>
-                <FlatList
-                  data={transactions}
-                  keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => <TransactionCard 
-                  transaction ={item} 
-                  />}
-                  contentContainerStyle={styles.flatListContent}
-                  style={styles.flatList}
-                />
-              </View>
+                <View style={styles.transactions}>
+                  <View style={styles.header}>
+                    <Text style={styles.headerText}>Transactions</Text>
+                  </View>
+                  <FlatList
+                    data={transactions}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => <TransactionCard
+                      transaction={item}
+                    />}
+                    contentContainerStyle={styles.flatListContent}
+                    style={styles.flatList}
+                  />
+                </View>
               </View>
               {withdrawModal && (
-                <WithdrawModal 
+                <WithdrawModal
                   isVisible={withdrawModal}
                   onClose={toggleWithdrawModal}
                   onWithdraw={finalWithdraw}
@@ -766,8 +763,14 @@ const styles = StyleSheet.create({
     //fontSize: windowHeight * 0.025,
     marginBottom: 6,
     paddingBottom: 5,
-    borderColor: 'black',
+    backgroundColor: '#FFDEB3',
     width: windowWidth,
+    //marginHorizontal: windowWidth * 0.1,
+    borderTopRightRadius: windowWidth * 0.05,
+    borderTopLeftRadius: windowWidth * 0.05,
+    paddingTop: windowHeight * 0.007,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerText: {
     textAlign: 'center',
@@ -836,6 +839,7 @@ const styles = StyleSheet.create({
     paddingVertical: windowHeight * 0.015,
     borderTopRightRadius: windowWidth * 0.05,
     borderTopLeftRadius: windowWidth * 0.05,
+    paddingTop: 0,
     alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -845,7 +849,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 10,
-  
+
   },
   flatListContent: {
     flexGrow: 1,

@@ -35,24 +35,33 @@ const CalendarModal = ({
     }
 
     const minDate = new Date(startDate);
+    minDate.setDate(minDate.getDate() + 1);
     setMinCalendarDate(minDate);
 
     const maxDate = new Date(endDate);
+    maxDate.setDate(maxDate.getDate() + 1);
     setMaxCalendarDate(maxDate);
   }, [startDate]);
 
   const createMarkedDates = (datesArray, color) => {
     return datesArray.reduce((acc, date) => {
-      const formattedDate = date.substring(0, 10);
-      acc[formattedDate] = {
-        customStyles: {
-          container: { backgroundColor: color },
-          text: { color: "white" },
-        },
-      };
+      const newDate = new Date(date)
+      const currentYear = newDate.getFullYear().toString();
+      let currentMonth = newDate.getMonth() + 1;
+      currentMonth = currentMonth.toString();
+      let currentDay = newDate.getDate().toString();
+      if(currentMonth.length == 1)
+        currentMonth = '0' + currentMonth
+      if(currentDay.length == 1)
+        currentDay = '0' + currentDay
+
+      const formattedDate = currentYear + '-'+ currentMonth + '-' + currentDay;
+      //console.log(formattedDate)
+      acc[formattedDate] = { customStyles: { container: { backgroundColor: color }, text: { color: 'white' } } };
       return acc;
     }, {});
   };
+
 
   const markedCompleted =
     completed.length !== 0 ? createMarkedDates(completed, "green") : {};

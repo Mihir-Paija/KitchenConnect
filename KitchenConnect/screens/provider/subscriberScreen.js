@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   },
 
   flatList: {
-    paddingBottom: 30,
+    paddingBottom: 60,
     alignItems: 'center'
   },
 

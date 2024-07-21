@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import {windowWidth, windowHeight} from '@/utils/dimensions'
 
-const PendingSubComponent = ({ _id, title, subscriberFirstName, subscriberLastName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate, kitchenPaymentBreakdown, onAccept, onReject, }) => {
+const PendingSubComponent = ({ _id, title, subscriberFirstName, subscriberLastName, tiffinName, tiffinType, noOfTiffins, price, formattedStartDate, formattedEndDate, wantDelivery, address, kitchenPaymentBreakdown, onAccept, onReject, }) => {
 
     const dayCount = {
         'Weekly': 7,
@@ -41,6 +41,7 @@ const PendingSubComponent = ({ _id, title, subscriberFirstName, subscriberLastNa
               <Text style={styles.tiffinName}>Customer: {subscriberFirstName + " " + subscriberLastName }</Text>
               <Text style={styles.detail}>{noOfTiffins} {noOfTiffins > 1 ? 'tiffins' :  'tiffin'}</Text>
               <Text style ={styles.price}>Price: ₹{kitchenPaymentBreakdown.total}</Text>
+
             </View>
           </View>
           <View style={styles.tiffinTypeBox}>
@@ -60,9 +61,13 @@ const PendingSubComponent = ({ _id, title, subscriberFirstName, subscriberLastNa
             <Text style={[styles.dateValueText, { textAlign: "right" }]}>
               {formattedEndDate}
             </Text>
+            
           </View>
+          
         </View>
-
+        <View style={styles.delivery}>
+        <Text style={styles.detail}>{wantDelivery ? 'Deliver to: ' +  address : 'No Delivery'}</Text>
+        </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>
                     <Text style={styles.buttonText}>Accept</Text>
@@ -111,7 +116,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     titleBox: {
-        flexDirection: "row",
+        //flexDirection: "row",
+        //flexWrap: 'wrap'
       },
     titleContent: {
         // backgroundColor: "#ffaa",
@@ -190,6 +196,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 2,
+    },
+    delivery:{
+      paddingLeft : windowWidth * 0.04,
     },
 
     buttonContainer: {
