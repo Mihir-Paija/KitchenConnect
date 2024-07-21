@@ -42,3 +42,17 @@ export const fetchCustomerOrderDetails = async (authState, orderID) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+export const fetchCustomerSubscriptionList = async (authState, customerID) => {
+  console.log(customerID);
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/admin/${authState}/customer/subscription/list/${customerID}`
+    );
+    // console.log(response.data);
+    return response;
+  } catch (error) {
+    // console.log(error);
+    throw error.response ? error.response.data : error.message;
+  }
+};

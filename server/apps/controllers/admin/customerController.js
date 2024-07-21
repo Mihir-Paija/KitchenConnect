@@ -40,7 +40,7 @@ export const getCustomerDetails = async (req, res) => {
       city: details.city,
     };
 
-    return res.status(200).json(toSend);
+    return res.status(200).json(details);
   } catch (error) {
     console.log(`Error in getting customer count `, error);
     return res.status(500).send({
