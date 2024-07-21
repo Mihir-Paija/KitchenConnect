@@ -8,7 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 const ProtectedRoute = ({ children }) => {
   const { authState } = useAuth();
 
-  if (!authState) {
+  if (!authState.authToken) {
     return <Navigate to="/login" />;
   }
 

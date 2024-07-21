@@ -19,7 +19,7 @@ const TiffinMenuList = () => {
     const fetchTiffin = async () => {
         try {
             console.log("tiffinID", tiffinID);
-            const menu_response = await fetchMenuList(authState, tiffinID);
+            const menu_response = await fetchMenuList(authState.authToken, tiffinID);
           //   console.log(menu_response.data);
             setMenuData(menu_response.data.menu);
           } catch (error) {
@@ -34,7 +34,7 @@ const TiffinMenuList = () => {
     try {
       const tiffinID = data.email;
       console.log("tiffinID", tiffinID);
-      const menu_response = await fetchMenuList(authState, tiffinID);
+      const menu_response = await fetchMenuList(authState.authToken, tiffinID);
     //   console.log(menu_response.data);
       setMenuData(menu_response.data.menu);
     } catch (error) {

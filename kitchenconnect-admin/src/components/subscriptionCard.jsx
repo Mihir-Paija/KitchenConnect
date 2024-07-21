@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import styles from '../styles/subscriptionCard.module.css'
-import { formatDate } from '../../../server/apps/utils/formatDate';
+import { formatDate } from '../utils/formateDateTime'
 
 
 const dummy_data = {

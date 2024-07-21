@@ -8,11 +8,13 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import styles from "../styles/NavbarComponent.module.css";
 import { propTypes } from "react-bootstrap/esm/Image";
 import { NavLink } from "react-router-dom";
+import {useAuth} from '../contexts/AuthContext'
 
 // import PropTypes from 'prop-types';
 
 
-const NavbarComponent = ({ title="KitchenConnect", id="ID12345" }) => {
+const NavbarComponent = ({ title="KitchenConnect"}) => {
+  const {authState} = useAuth()
   return (
   
     <Navbar expand="lg" className="bg-body-tertiary">
@@ -26,8 +28,9 @@ const NavbarComponent = ({ title="KitchenConnect", id="ID12345" }) => {
             <Nav.Link as={NavLink} to="/customer">Customer</Nav.Link>
             <Nav.Link as={NavLink} to="/provider">Provider</Nav.Link>
             <Nav.Link as={NavLink} to="/tiffin">Tiffin</Nav.Link>
-            <Nav.Link as={NavLink} to="/order">Order</Nav.Link>
             <Nav.Link as={NavLink} to="/subscription">Subscription</Nav.Link>
+            <Nav.Link as={NavLink} to="/order">Order</Nav.Link>
+            
             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -41,7 +44,7 @@ const NavbarComponent = ({ title="KitchenConnect", id="ID12345" }) => {
             </NavDropdown> */}
           </Nav>
           <Nav className="ms-auto">
-            <Nav.Link disabled>{id}</Nav.Link>
+            <Nav.Link disabled>{authState.id}</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

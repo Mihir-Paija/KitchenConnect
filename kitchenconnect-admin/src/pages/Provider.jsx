@@ -130,13 +130,13 @@ const Provider = () => {
       };
       // console.log(bodyData);
       const kitchen_response = await fetchProviderDetails(
-        authState,
+        authState.authToken,
         data.email
       );
       // console.log(response.data);
       setProviderData([kitchen_response.data]);
       const tiffn_response = await fetchTiffinList(
-        authState,
+        authState.authToken,
         kitchen_response.data._id
       );
       // console.log(response.data);

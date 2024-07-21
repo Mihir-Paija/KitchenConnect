@@ -23,7 +23,7 @@ const Order = () => {
       };
       //   console.log(bodyData);
       const orderData_response = await fetchCustomerOrderDetails(
-        authState,
+        authState.authToken,
         data.email
       );
       // console.log(orderData_response.data);
