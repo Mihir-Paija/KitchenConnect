@@ -199,6 +199,7 @@ const HistoryScreen = ({ navigation }) => {
   //const [refresh, setRefresh] = useState(false)
   const [history, setHistory] = useState([])
 
+  const [initial, setInitial] = useState(true)
   const [graphData, setGraphData] = useState({
     labels: [],
     datasets: []
@@ -308,6 +309,7 @@ const HistoryScreen = ({ navigation }) => {
   }
 
   const handleDuration = () => {
+    setInitial(true)
     setTiffinName('All')
     setTiffinType('All')
     setOrderType('All')
@@ -432,6 +434,9 @@ const HistoryScreen = ({ navigation }) => {
     colorMap.clear();
     colorMap.set('All', '#FFA500')
 
+    console.log('History')
+    console.log(history)
+
     for (const value of history) {
       //console.log(value)
       const orderDate = new Date(value.createdAt)
@@ -476,7 +481,7 @@ const HistoryScreen = ({ navigation }) => {
 
     fillBins(tiffinNameValueMap, initialOrders, true)
     handleGraphData(tiffinNameValueMap, colorMap)
-
+    setInitial(false)
   }
 
   const handleTiffins = () => {
@@ -693,21 +698,27 @@ const HistoryScreen = ({ navigation }) => {
   }, [history])
 
   useEffect(() => {
-    handleDuration();
-  }, [duration.label])
+    if(duration.label){
+      handleDuration();
+    }
+  }, [duration.label, history])
 
   useEffect(() => {
     handleDurationSize()
   }, [scroll, scrollToggle])
 
   useEffect(() => {
-    handleInitialTiffins()
-  }, [durationSize, durationToggle])
+    if((durationSize || durationToggle) && history.length >= 1)
+      handleInitialTiffins()
+  
+  }, [durationSize, durationToggle, history])
 
 
 
   useEffect(() => {
-    console.log('------')
+    if(tiffinName === 'All' && tiffinType === 'All' && orderType === 'All')
+      return;
+
     handleTiffins()
   }, [tiffinName, tiffinType, orderType])
 

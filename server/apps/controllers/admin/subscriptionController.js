@@ -130,7 +130,7 @@ export const getSubscriptionsList = async (req, res) => {
 
         const kitchenData = await provider.findById(
           sub.kitchenID,
-          "kitchenName"
+          "kitchenName email"
         );
         if (!kitchenData) {
           return res.status(404).json({

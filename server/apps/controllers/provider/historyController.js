@@ -5,6 +5,7 @@ import history from "../../models/historyModel.js";
 import tiffins from "../../models/tiffinModel.js";
 
 const insertInHistory = (record, totalHistory, count) =>{
+    //console.log(totalHistory)
     let floor = count-1;
     const currentDate = new Date(record.createdAt);
 
@@ -12,7 +13,9 @@ const insertInHistory = (record, totalHistory, count) =>{
     let high = count-1;
 
     while(low <= high){
-        let mid = (low+high)/2;
+        let mid = Math.floor((low+high)/2);
+        console.log(mid);
+        console.log(totalHistory)
         const midDate = new Date(totalHistory[mid].createdAt)
 
         if(midDate === currentDate){
