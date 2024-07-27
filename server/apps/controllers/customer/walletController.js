@@ -316,7 +316,7 @@ export const transactionHistoryGet = async (req, res) => {
 
     const detailedTransactionList = await Promise.all(
       TransactionList.map(async (transactionElement) => {
-        if (transactionElement.counterpartyID && transactionElement.orderID) {
+        if (transactionElement.counterpartyID || transactionElement.orderID) {
           const Order = await order.findById(
             transactionElement.orderID,
             "_id customerID kitchenID tiffinID"
@@ -359,7 +359,7 @@ export const transactionHistoryGet = async (req, res) => {
       })
     );
 
-    return res.status(200).json(detailedTransactionList);
+    return res.status(200).json(TransactionList);
   } catch (error) {
     console.log("Error fetching Transaction history ", error.message);
     return res.status(500).json({

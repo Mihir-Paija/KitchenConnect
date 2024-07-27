@@ -16,6 +16,32 @@ const deliverySchema = new mongoose.Schema({
   },
 });
 
+const priceDetailsSchema = new mongoose.Schema({
+  price: {
+    type: Number,
+    default: 0,
+    required: [true, "Please Enter The Tiffin Price"],
+  },
+
+  commission: {
+    type: Number,
+    default: 0,
+    required: [true, "commision missing"],
+  },
+
+  kitchenDiscount: {
+    type: Number,
+    default: 0,
+    required: [true, "kitchenDiscount missing"],
+  },
+
+  serviceDiscount: {
+    type: Number,
+    default: 0,
+    required: [true, "serviceDiscount missing"],
+  },
+});
+
 const tiffinSchema = new Schema(
   {
     name: {
@@ -40,10 +66,9 @@ const tiffinSchema = new Schema(
       required: [true, "Please Enter The Food Type"],
     },
 
-    price: {
-      type: Number,
-      default: 0,
-      required: [true, "Please Enter The Tiffin Price"],
+    priceDetails: {
+      type: priceDetailsSchema,
+      required: [true, "Please Add price Details"],
     },
 
     tiffinType: {

@@ -23,12 +23,22 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true
     },
+    "notification": {
+      "icon": "./assets/adaptive-icon.png",
+      "color": "#ffffff"
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font",
-      "@react-native-firebase/app"
+      "@react-native-firebase/app",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ]
   }
 }

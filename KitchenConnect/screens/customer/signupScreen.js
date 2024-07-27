@@ -47,7 +47,9 @@ const SignupScreen = ({ navigation }) => {
         if (userType === "customer") {
           const responseData = await signupCustomer(bodyData);
           // alert(responseData && responseData.message);
-          navigation.navigate("Login");
+          navigation.navigate("NotificationPermission");
+          // navigation.navigate("LocationSelection");
+          // navigation.navigate("Login");
           console.log("Customer register data => " + JSON.stringify(bodyData));
         }
       }
@@ -59,12 +61,18 @@ const SignupScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboard(true);
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboard(false);
-    });
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboard(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboard(false);
+      }
+    );
 
     return () => {
       keyboardDidHideListener.remove();
@@ -79,13 +87,15 @@ const SignupScreen = ({ navigation }) => {
       }}
     >
       <SafeAreaView style={activeScreenStyles.screen}>
-        <View style={keyboard ?styles.header : authAdStyles.header }>
+        <View style={keyboard ? styles.header : authAdStyles.header}>
           <Text style={authAdStyles.title}>Join KitchenConnect</Text>
           <Text style={authAdStyles.subtitle}>
             Tasty Meals Just A Click Away
           </Text>
         </View>
-        <View style={keyboard ?styles.keyboardFormContainer:  styles.formContainer }>
+        <View
+          style={keyboard ? styles.keyboardFormContainer : styles.formContainer}
+        >
           <InputBox input="Name" value={name} setValue={setName} />
           <InputBox
             input="Email"
@@ -141,7 +151,7 @@ const styles = StyleSheet.create({
     top: windowHeight * 0.35,
     marginBottom: windowHeight * 0.01,
   },
-  header:{
+  header: {
     position: "absolute",
     // backgroundColor: "#ffaa",
     top: windowHeight * 0.1,
@@ -151,7 +161,7 @@ const styles = StyleSheet.create({
   keyboardFormContainer: {
     flex: 1,
     width: windowWidth * 0.9,
-    top: windowHeight * 0.20,
+    top: windowHeight * 0.2,
     marginBottom: windowHeight * 0.02,
   },
   loginNavText: {

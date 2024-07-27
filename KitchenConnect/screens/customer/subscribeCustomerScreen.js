@@ -258,20 +258,31 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
   const minusTiffin = () => {
     if (noOfTiffins > 1) setNumberOfTiffins(noOfTiffins - 1);
   };
-  const handleSubmitBtn = () => {
+  const handleSubmitBtn = async () => {
     if (agreed) {
-      console.log("click on submit");
-      console.log(bodyData);
+      try {
+        console.log("click on submit");
+        console.log(bodyData);
 
-      subscribeCustomer(
-        customerID,
-        kitchenID,
-        tiffinID,
-        subscriptionID,
-        bodyData
-      );
+        await subscribeCustomer(
+          customerID,
+          kitchenID,
+          tiffinID,
+          subscriptionID,
+          bodyData
+        );
+
+        // Navigate to SuccessScreen on successful subscription
+        navigation.navigate("SuccessScreen", {
+          msg: "Subscribe successfully!!",
+          navigationScreen: "SubscriptionCustomerNavigator",
+        });
+      } catch (error) {
+        console.error("Error subscribing customer:", error);
+        Alert.alert("Error", error.message);
+      }
     } else {
-      alert("Please agree to the terms and conditions.");
+      Alert.alert("Warning", "Please agree to the terms and conditions.");
     }
   };
 

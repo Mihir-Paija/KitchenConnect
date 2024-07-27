@@ -126,7 +126,7 @@ export const orderListGet = async (req, res) => {
       });
     }
 
-    const customer = await customer.findOne({ email: customerEmail });
+    // const customer = await customer.findOne({ email: customerEmail });
 
     const orderList = customerID
       ? await order.find(

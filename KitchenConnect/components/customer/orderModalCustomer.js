@@ -46,7 +46,9 @@ const OrderModalCustomer = ({
   // states
   const [noOfTiffins, setNumberOfTiffins] = useState(1);
   const [tiffinPrice, setTiffinPrice] = useState(
-    tiffin && tiffin.price ? parseFloat(tiffin.price.toFixed(2)) : 0
+    tiffin && tiffin.priceDetails.price
+      ? parseFloat(tiffin.priceDetails.price.toFixed(2))
+      : 0
   );
   const [wantDelivery, setWantDelivery] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -62,11 +64,17 @@ const OrderModalCustomer = ({
   const price = {
     tiffinPrice: tiffin.price,
     deliveryCharge: tiffin.deliveryDetails.deliveryCharge,
-    platformCommission: 0.02,
+    platformCommission: tiffin.priceDetails.commission
+      ? tiffin.priceDetails.commission
+      : 0,
     GST_on_tiffin: 0.05,
     GST_on_service: 0.18,
-    serviceDiscount: 0,
-    kitchenDiscount: 0,
+    serviceDiscount: tiffin.priceDetails.serviceDiscount
+      ? tiffin.priceDetails.serviceDiscount
+      : 0,
+    kitchenDiscount: tiffin.priceDetails.kitchenDiscount
+      ? tiffin.priceDetails.kitchenDiscount
+      : 0,
   };
 
   const updatedOrderPrice = parseFloat(
@@ -159,27 +167,37 @@ const OrderModalCustomer = ({
   }, [visible]);
 
   const handleSubmitBtn = () => {
-    //priamry IDs
-    const customerID = customerData.customerID;
-    const kitchenID = kitchen.kitchenID;
-    const tiffinID = tiffin._id;
-    // console.log({ customerID, kitchenID, tiffinID });
-    //body Data
-    const bodyData = {
-      customerName: customerData.customerName,
-      orderDate: new Date().toISOString(),
-      wantDelivery,
-      noOfTiffins,
-      address: "123 Main St, City, State, ZIP",
-      status: "Pending",
-      price,
-      customerPaymentBreakdown,
-      kitchenPaymentBreakdown,
-    };
-    // console.log("click on submit");
-    // console.log(bodyData);
-    placeOrder(customerID, kitchenID, tiffinID, bodyData);
-    onClose();
+    try {
+      //priamry IDs
+      const customerID = customerData.customerID;
+      const kitchenID = kitchen.kitchenID;
+      const tiffinID = tiffin._id;
+      // console.log({ customerID, kitchenID, tiffinID });
+      //body Data
+      const bodyData = {
+        customerName: customerData.customerName,
+        orderDate: new Date().toISOString(),
+        wantDelivery,
+        noOfTiffins,
+        address: "123 Main St, City, State, ZIP",
+        status: "Pending",
+        price,
+        customerPaymentBreakdown,
+        kitchenPaymentBreakdown,
+      };
+      // console.log("click on submit");
+      // console.log(bodyData);
+      placeOrder(customerID, kitchenID, tiffinID, bodyData);
+      // Navigate to SuccessScreen on successful subscription
+      onClose();
+      navigation.navigate("SuccessScreen", {
+        msg: "Order successfully!!",
+        navigationScreen: "HistoryCustomer",
+      });
+    } catch (error) {
+      onsole.error("Error subscribing customer:", error);
+      Alert.alert("Error", error.message);
+    }
   };
 
   return (

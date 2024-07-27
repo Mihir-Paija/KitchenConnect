@@ -9,6 +9,9 @@ import { AuthContext } from "@/context/authContext";
 
 import Choose from "@/screens/shared/choosingScreen";
 import CustomerMenuNavigator from "./customerMenuNavigator";
+import LocationSelectionScreen from "../../screens/shared/LocationSelectionScreen";
+import ManualLoactionScreen from "../../screens/shared/ManualLoactionScreen";
+import NotificationPermissionScreen from "../../screens/customer/notificationPermissionScreen";
 const authStack = createStackNavigator();
 
 const CustomerAuthNavigator = () => {
@@ -42,6 +45,21 @@ const CustomerAuthNavigator = () => {
           <authStack.Screen
             name="Signup"
             component={SignupScreen}
+            options={{ presentation: "transparentModal" }}
+          />
+          <authStack.Screen
+            name="NotificationPermission"
+            component={NotificationPermissionScreen}
+            options={{ presentation: "transparentModal" }}
+          />
+          <authStack.Screen
+            name="LocationSelection"
+            component={LocationSelectionScreen}
+            options={{ presentation: "transparentModal" }}
+          />
+          <authStack.Screen
+            name="ManualLoaction"
+            component={ManualLoactionScreen}
             options={{ presentation: "transparentModal" }}
           />
         </>

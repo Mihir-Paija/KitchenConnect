@@ -76,6 +76,8 @@ const LoginScreen = ({ navigation }) => {
           // );
           // getLocalStorageData();
           // // alert(responseData && responseData.message);
+
+          // navigation.navigate("LocationSelection");
           navigation.navigate("MenuCustomerNavigator");
           console.log("Customer login data => " + JSON.stringify(bodyData));
         } else if (userType === "provider") {

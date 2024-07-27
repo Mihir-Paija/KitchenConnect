@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
+import Modal from 'react-modal';
 import '../styles/OrderDetailsComponent.css';
 
 const OrderDetailsComponent = ({ orderData }) => {
   const { order, Kitchen, Tiffin } = orderData;
+  
 
   return (
     <div className="order-details">
@@ -22,7 +24,10 @@ const OrderDetailsComponent = ({ orderData }) => {
       </div>
 
       <div className="price-section">
-        <h3>Price Details</h3>
+        <div className="section-heading">
+          <h3>Price Details</h3>
+          
+        </div>
         <p><strong>Tiffin Price:</strong> ₹{order.price.tiffinPrice}</p>
         <p><strong>Delivery Charge:</strong> ₹{order.price.deliveryCharge}</p>
         <p><strong>Platform Commission:</strong> {order.price.platformCommission * 100}%</p>
@@ -33,7 +38,7 @@ const OrderDetailsComponent = ({ orderData }) => {
         {/* <p><strong>Total:</strong> ₹{order.customerPaymentBreakdown.total}</p> */}
       </div>
 
-      <div className="price-section">
+      <div className="order-section">
         <h3>Customer Payement BreakDown</h3>
         <p><strong>Order Price:</strong> ₹{order.customerPaymentBreakdown.orderPrice}</p>
         <p><strong>Platform Charge :</strong> ₹{order.customerPaymentBreakdown.platformCharge}</p>
@@ -45,7 +50,7 @@ const OrderDetailsComponent = ({ orderData }) => {
         <p><strong>Total:</strong> ₹{order.customerPaymentBreakdown.total}</p> */}
       </div>
 
-      <div className="price-section">
+      <div className="order-section">
         <h3>Provider Payement BreakDown</h3>
         <p><strong>Order Price:</strong> ₹{order.kitchenPaymentBreakdown.orderPrice}</p>
         <p><strong>Platform Charge :</strong> - ₹{order.kitchenPaymentBreakdown.platformCharge}</p>
@@ -73,7 +78,13 @@ const OrderDetailsComponent = ({ orderData }) => {
         <p><strong>Time:</strong> {Tiffin.time}</p>
         <p><strong>Delivery Time:</strong> {Tiffin.deliveryDetails.deliveryTime}</p>
       </div>
+      
+     
+
     </div>
+
+
+
   );
 };
 
