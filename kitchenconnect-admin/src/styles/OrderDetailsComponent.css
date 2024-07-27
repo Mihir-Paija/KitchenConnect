@@ -21,14 +21,24 @@
   margin-bottom: 20px;
 }
 
+.section-heading,
 .order-section h3,
-.price-section h3,
 .kitchen-section h3,
 .tiffin-section h3 {
   color: #555;
   border-bottom: 2px solid #ddd;
   padding-bottom: 5px;
   margin-bottom: 10px;
+}
+
+.section-heading {
+  color: #555;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
 
 .order-details p {

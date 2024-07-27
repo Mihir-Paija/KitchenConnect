@@ -77,6 +77,10 @@ router.use("/customer/wallet", walletCustomerRouter);
 import feedBackRouter from "./customer/feedBackRouter.js";
 router.use("/customer/feedBack", feedBackRouter);
 
+//feedBackRouter -> customer (GET)(POST)
+import notificationRouter from "./customer/notificationRouter.js";
+router.use("/customer/pushToken", notificationRouter);
+
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
 import { tiffinRouter } from "./provider/tiffinRouter.js";

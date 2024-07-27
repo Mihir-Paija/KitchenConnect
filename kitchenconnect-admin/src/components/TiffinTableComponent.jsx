@@ -18,11 +18,12 @@ const TiffinTableComponent = ({ tiffinData }) => {
           <th>TakeAway Time</th>
           <th>Delivery Charge</th>
           <th>Delivery Time</th>
-          <th>PackingCharge</th>
+          {/* <th>PackingCharge</th> */}
           <th>rating</th>
           <th>review</th>
           <th>createdAt</th>
           <th>updatedAt</th>
+          <th>PriceDetails</th>
         </tr>
       </thead>
       <tbody>

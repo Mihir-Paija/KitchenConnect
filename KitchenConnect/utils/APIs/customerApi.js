@@ -356,18 +356,28 @@ export const getKitchenFeedBackCustomer = async (kitchenID) => {
   }
 };
 
-export const getTiffinFeedBackCustomer = async (
-  kitchenID,
-  tiffinID
-) => {
+export const getTiffinFeedBackCustomer = async (kitchenID, tiffinID) => {
   try {
-    console.log(kitchenID)
+    console.log(kitchenID);
     const response = await axios.get(
       `${API_BASE_URL}/customer/feedBack/${kitchenID}/${tiffinID}`
     );
     return response;
   } catch (error) {
     console.log("Error in get feedback customer API", error.message);
+    throw error.response.data;
+  }
+};
+
+// customer -> pushToken : POST
+export const pushTokenCustomer = async (customerID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/pushToken/${customerID}`,
+      bodyData
+    );
+    return response.data;
+  } catch (error) {
     throw error.response.data;
   }
 };

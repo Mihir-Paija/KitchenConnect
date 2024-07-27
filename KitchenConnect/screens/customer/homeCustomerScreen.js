@@ -16,6 +16,7 @@ import LoadingScreen from "../../screens/shared/loadingScreen";
 import { getKitchenCustomer } from "@/utils/APIs/customerApi";
 import HeaderHomeCustomer from "@/components/customer/kitchenScreenHeader";
 import { useRoute, useIsFocused } from "@react-navigation/native";
+import { Button } from "react-native-elements";
 
 const HomeCustomerScreen = ({ navigation }) => {
   const [authState, setAuthState] = useContext(AuthContext);
@@ -129,6 +130,13 @@ const HomeCustomerScreen = ({ navigation }) => {
     navigation.navigate("ProfileCustomer");
   };
 
+  const handlePress = () => {
+    navigation.navigate("SuccessScreen", {
+      msg: "Your custom message",
+      navigationScreen: "SubscriptionCustomerNavigator",
+    });
+  };
+
   return (
     <SafeAreaView style={activeScreenStyles.screen}>
       {authState.authToken ? (
@@ -137,6 +145,7 @@ const HomeCustomerScreen = ({ navigation }) => {
             <LoadingScreen />
           ) : (
             <>
+              {/* <Button title="Test Success Animation" onPress={handlePress} /> */}
               <FlatList
                 ListHeaderComponent={
                   <HeaderHomeCustomer

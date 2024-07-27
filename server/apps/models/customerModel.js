@@ -1,5 +1,21 @@
 import { Schema, model } from "mongoose";
 
+const addressSchema = Schema(
+  {
+    coordinates: {
+      latitude: {
+        type: Number,
+        required: [true, "Please enter your latitude"],
+      },
+      longitude: {
+        type: Number,
+        required: [true, "Please enter your longitude"],
+      },
+    },
+  },
+  { timestamps: true }
+);
+
 const customerSchema = Schema(
   {
     name: {
@@ -28,6 +44,16 @@ const customerSchema = Schema(
       type: String,
       required: [true, "Please enter your city"],
     },
+
+    notificationTokens: [
+      {
+        type: String,
+        // Ensure that each token is unique within the array if desired
+        unique: true,
+      },
+    ],
+
+    address: addressSchema,
   },
   { timestamps: true }
 );
