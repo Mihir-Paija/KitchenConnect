@@ -178,7 +178,9 @@ const WalletDetailsScreen = ({
           />
 
           {transactions ? (
-            <TransactionScreen transactions={transactions} />
+            <View style={{ marginBottom: windowHeight * 0.02 }}>
+              <TransactionScreen transactions={transactions} />
+            </View>
           ) : null}
         </>
       )}

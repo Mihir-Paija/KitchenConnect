@@ -10,10 +10,7 @@ import * as Permissions from "expo-permissions";
 import { AuthContext } from "@/context/authContext";
 import { pushTokenCustomer } from "../../utils/APIs/customerApi";
 import Constants from "expo-constants";
-import {
-  initializeFirebase,
-  requestUserPermission,
-} from "../../utils/firebase";
+import { requestUserPermission } from "../../utils/firebase";
 
 const NotificationPermissionScreen = () => {
   //global state
@@ -28,13 +25,17 @@ const NotificationPermissionScreen = () => {
       setPermissionStatus(authStatus);
 
       if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
-        // Get the FCM token
-        const token = await messaging().getToken();
-        console.log("Push Token:", token);
-        await pushTokenCustomer(customerID, { token });
+        if (!authState.authData.fcmToken) {
+          await requestUserPermission();
+          const token = await messaging().getToken();
+          console.log("FCM Token:", token);
+          await pushTokenCustomer(customerID, { token });
+        }
       }
     } catch (error) {
       console.error("Error checking permissions:", error);
+    } finally {
+      navigation.navigate("LocationSelection");
     }
   };
   useEffect(() => {
@@ -45,7 +46,7 @@ const NotificationPermissionScreen = () => {
     try {
       await requestUserPermission();
       const token = await messaging().getToken();
-      console.log("Push Token:", token);
+      console.log("FCM Token:", token);
       await pushTokenCustomer(customerID, { token });
       navigation.navigate("LocationSelection");
     } catch (error) {

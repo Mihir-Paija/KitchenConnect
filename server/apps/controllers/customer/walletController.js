@@ -7,6 +7,9 @@ import mongoose from "mongoose";
 import { verifyJwt } from "../../utils/jwt.js";
 import order from "../../models/orderModel.js";
 import tiffins from "../../models/tiffinModel.js";
+import subscriptionOrder from "../../models/subscriptionOrderModel.js";
+import subscription from "../../models/subscriptionModel.js";
+import Subscriber from "../../models/subscriberModel.js";
 
 export const getWalletCustomer = async (req, res) => {
   try {
@@ -317,49 +320,105 @@ export const transactionHistoryGet = async (req, res) => {
     const detailedTransactionList = await Promise.all(
       TransactionList.map(async (transactionElement) => {
         if (transactionElement.counterpartyID || transactionElement.orderID) {
-          const Order = await order.findById(
-            transactionElement.orderID,
-            "_id customerID kitchenID tiffinID"
-          );
-          if (!Order) {
-            return res.status(404).json({
-              error: "Not Found",
-              message: "Order not found",
-            });
-          }
+          if (transactionElement.transactionType === "SingleOrder") {
+            const Order = await order.findById(
+              transactionElement.orderID,
+              "_id customerID kitchenID tiffinID"
+            );
+            if (!Order) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "Order not found",
+              });
+            }
+            const kitchenData = await provider.findById(
+              Order.kitchenID,
+              "kitchenName"
+            );
+            if (!kitchenData) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "Kitchen not found",
+              });
+            }
 
-          const kitchenData = await provider.findById(
-            Order.kitchenID,
-            "kitchenName"
-          );
-          if (!kitchenData) {
-            return res.status(404).json({
-              error: "Not Found",
-              message: "Kitchen not found",
-            });
-          }
+            const tiffinData = await tiffins.findById(Order.tiffinID, "name");
+            if (!tiffinData) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "Tiffin not found",
+              });
+            }
 
-          const tiffinData = await tiffins.findById(Order.tiffinID, "name");
-          if (!tiffinData) {
-            return res.status(404).json({
-              error: "Not Found",
-              message: "Tiffin not found",
-            });
-          }
+            return {
+              ...transactionElement.toObject(),
+              Order,
+              Kitchen: kitchenData,
+              Tiffin: tiffinData,
+            };
+          } else if (
+            transactionElement.transactionType === "SubscriptionOrder"
+          ) {
+            const SubOrder = await subscriptionOrder.findOne(
+              {
+                "subOrders._id": transactionElement.orderID,
+              },
+              "subscriptionID orderDate"
+            );
+            if (!SubOrder) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "SubOrder not found",
+              });
+            }
+            const SubscriptionData = await Subscriber.findById(
+              SubOrder.subscriptionID,
+              "customerID kitchenID tiffinID subscriptionID"
+            );
+            if (!SubscriptionData) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "SubOrder not found",
+              });
+            }
+            console.log(SubscriptionData);
 
-          return {
-            ...transactionElement.toObject(),
-            Order,
-            Kitchen: kitchenData,
-            Tiffin: tiffinData,
-          };
+            const kitchenData = await provider.findById(
+              SubscriptionData.kitchenID,
+              "kitchenName"
+            );
+            if (!kitchenData) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "Kitchen not found",
+              });
+            }
+
+            const tiffinData = await tiffins.findById(
+              SubscriptionData.tiffinID,
+              "name"
+            );
+            if (!tiffinData) {
+              return res.status(404).json({
+                error: "Not Found",
+                message: "Tiffin not found",
+              });
+            }
+
+            return {
+              ...transactionElement.toObject(),
+              SubOrder,
+              Kitchen: kitchenData,
+              Tiffin: tiffinData,
+            };
+          }
         } else {
           return transactionElement.toObject();
         }
       })
     );
 
-    return res.status(200).json(TransactionList);
+    return res.status(200).json(detailedTransactionList);
   } catch (error) {
     console.log("Error fetching Transaction history ", error.message);
     return res.status(500).json({

@@ -66,7 +66,7 @@ const TransactionCard = ({ transaction }) => {
             {transaction.transactionType === "Withdraw" ||
             transaction.transactionType === "Deposit"
               ? transaction.transactionType
-              : null}
+              : transaction.Kitchen.kitchenName}
           </Text>
           <Text style={styles.dateTxt}>
             {formatDate(transaction.createdAt)} at{" "}
@@ -87,6 +87,7 @@ export default TransactionCard;
 
 const styles = StyleSheet.create({
   transactionBox: {
+    alignSelf: "center",
     flexDirection: "row",
     backgroundColor: "#fff",
     width: windowWidth * 0.95,

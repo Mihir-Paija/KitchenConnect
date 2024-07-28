@@ -32,10 +32,10 @@ export default function App() {
 
   //first render
   useEffect(() => {
-    // initializeFirebase();
-    //requestUserPermission();
-    //handleBackgroundMessages();
-    //handleForegroundMessages()
+    initializeFirebase();
+    requestUserPermission();
+    handleBackgroundMessages();
+    handleForegroundMessages();
     loadFonts().then(() => setIsAppReady(true));
   }, []);
 
