@@ -23,10 +23,6 @@
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true
     },
-    "notification": {
-      "icon": "./assets/adaptive-icon.png",
-      "color": "#ffffff"
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     },

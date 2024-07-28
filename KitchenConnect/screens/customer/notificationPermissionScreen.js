@@ -6,16 +6,17 @@ import { Button } from "react-native-elements";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import * as Notifications from "expo-notifications";
-import * as Permissions from "expo-permissions";
+//import * as Permissions from "expo-permissions";
 import { AuthContext } from "@/context/authContext";
 import { pushTokenCustomer } from "../../utils/APIs/customerApi";
 import Constants from "expo-constants";
 import { requestUserPermission } from "../../utils/firebase";
+import messaging from '@react-native-firebase/messaging';
 
-const NotificationPermissionScreen = () => {
+const NotificationPermissionScreen = ({navigation}) => {
   //global state
   const [authState, setAuthState] = useContext(AuthContext);
-  const customerID = authState.authData._id;
+  //const customerID = authState.authData._id;
 
   const [permissionStatus, setPermissionStatus] = useState(null);
 
@@ -25,11 +26,11 @@ const NotificationPermissionScreen = () => {
       setPermissionStatus(authStatus);
 
       if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
-        if (!authState.authData.fcmToken) {
+        if (!authState.authData?.fcmToken) {
           await requestUserPermission();
           const token = await messaging().getToken();
           console.log("FCM Token:", token);
-          await pushTokenCustomer(customerID, { token });
+          //await pushTokenCustomer(customerID, { token });
         }
       }
     } catch (error) {
@@ -47,7 +48,7 @@ const NotificationPermissionScreen = () => {
       await requestUserPermission();
       const token = await messaging().getToken();
       console.log("FCM Token:", token);
-      await pushTokenCustomer(customerID, { token });
+      //await pushTokenCustomer(customerID, { token });
       navigation.navigate("LocationSelection");
     } catch (error) {
       console.error(error);
