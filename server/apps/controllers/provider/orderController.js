@@ -516,21 +516,29 @@ export const completeOrder = async (req, res) => {
                     message: `Order Already Completed`
                 })
 
-            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'subscription')
+            
+
+
+            
+
+            const orders = await subscriptionOrder.findOne({ subscriptionID: _id })
+            const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+            if(!todayOrder)
+                return res.status(400).send({
+                    message: `Sub Order Doesn't Exist`
+                })
+
+            const record = completeTransaction(todayOrder._id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'subscription')
 
             if (!record)
                 return res.status(500).send({
                     message: `Couldn't Complete Payment! Please Try Again!`
                 })
-
-
+                
             subscriber.subscriptionStatus.daysCompleted.push(currentDate);
             subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
-
+    
             const updatedSubscriber = await subscriber.save()
-
-            const orders = await subscriptionOrder.findOne({ subscriptionID: _id })
-            const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
             todayOrder.status = 'Completed';
             todayOrder.amountPaid = customerPaymentBreakdown.perOrderPrice
             todayOrder.amountRecieved = kitchenPaymentBreakdown.perOrderPrice

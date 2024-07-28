@@ -187,11 +187,11 @@ const TiffinScreen = ({navigation}) => {
 
             </View>
               
-              <View style={styles.divider} />
+              <View style={styles.divider} /> 
               <View style={styles.menuTabs}>
                 <TiffinTabNavigator />
               </View>
-              <View style={styles.divider} />
+              {/*<View style={styles.divider} /> */}
               <View style={styles.btnView}>
                 <TouchableOpacity style={styles.btn} onPress={toggleModal1}>
                   <Text style={styles.addTiffinText}>Add Tiffin</Text>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1, 
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+    backgroundColor: 'rgba(0, 0, 0, 0)', 
     elevation: 1,
     width: '100%',
     alignSelf: 'center',

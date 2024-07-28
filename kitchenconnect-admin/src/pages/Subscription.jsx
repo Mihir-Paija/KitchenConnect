@@ -14,6 +14,8 @@ import { useAuth } from '../contexts/AuthContext'
 import styles from '../styles/subscriptionPage.module.css'
 import LoadingComponent from '../components/loadingComponent';
 import { useNavigate } from 'react-router-dom';
+import PriceComponent from '../components/priceComponent';
+import PaymentBreakdownComponent from '../components/paymentBreakdownComponent';
 
 const dummyData = [
   {
@@ -52,6 +54,7 @@ const Subscription = () => {
       const response = await fetchSubscriptionDetails(authState.authToken, bodyData)
       if (response && response.status === 200) {
         setDetails(response.data);
+        console.log(response.data.price)
 
       }
 
@@ -80,7 +83,15 @@ const Subscription = () => {
           {details ?
             <div class = {styles.page}>
               <div class = {styles.details}>
+                <div class={styles.row}>
               <SubscriptionCard details={details} />
+              {details && details.price? <PriceComponent price={details.price} /> :  null}
+             
+              </div>
+              <div class={styles.row} >
+              {details && details.kitchenPaymentBreakdown? <PaymentBreakdownComponent title={'Provider'} breakdown={details.kitchenPaymentBreakdown}/> : null}
+              {details && details.customerPaymentBreakdown? <PaymentBreakdownComponent title={'Customer'} breakdown={details.customerPaymentBreakdown}/> : null}
+              </div>
               </div>
               {subOrders.length ?
                 <div class = {styles.subOrders}>

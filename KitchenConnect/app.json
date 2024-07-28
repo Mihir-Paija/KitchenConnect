@@ -7,7 +7,7 @@
     "icon": "./assets/KC_logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/KC_logo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
