@@ -45,12 +45,15 @@ const TransactionScreen = ({ transactions }) => {
               No transactions available
             </Text>
           ) : (
-            <FlatList
-              data={transactions}
-              renderItem={renderItem}
-              keyExtractor={(item) => item._id.toString()}
-              contentContainerStyle={styles.transactionContentBox}
-            />
+            <View style={styles.listBox}>
+              <FlatList
+                data={transactions}
+                renderItem={renderItem}
+                keyExtractor={(item) => item._id.toString()}
+                contentContainerStyle={styles.transactionContentBox}
+                // style={styles.mainComponent}
+              />
+            </View>
           )}
         </>
       )}
@@ -61,14 +64,23 @@ const TransactionScreen = ({ transactions }) => {
 export default TransactionScreen;
 
 const styles = StyleSheet.create({
+  mainComponent: {
+    marginBottom: windowHeight * 0.1,
+  },
+  listBox: {
+    // backgroundColor: "#aaff",
+    marginTop: windowHeight * 0.01,
+    marginBottom: windowHeight * 0.17,
+  },
   transactionBox: {
     // flex: 1,
-    height: windowHeight,
+    height: windowHeight * 0.6,
     width: windowWidth * 0.98,
     backgroundColor: "#fdfdfd",
+
     // paddingHorizontal: windowWidth * 0.03,
     paddingVertical: windowHeight * 0.015,
-
+    // paddingBottom: windowHeight * 0.2,
     // justifyContent: "flex-end",
     borderTopRightRadius: windowWidth * 0.05,
     borderTopLeftRadius: windowWidth * 0.05,
@@ -90,8 +102,8 @@ const styles = StyleSheet.create({
     fontFamily: "NunitoBold",
   },
   transactionContentBox: {
-    marginTop: windowHeight * 0.01,
-    marginBottom: windowHeight * 0.05,
+    // marginTop: windowHeight * 0.01,
+    // marginBottom: windowHeight * 0.2,
   },
   noTransactionsText: {
     textAlign: "center",

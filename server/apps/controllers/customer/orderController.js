@@ -129,14 +129,18 @@ export const orderListGet = async (req, res) => {
     // const customer = await customer.findOne({ email: customerEmail });
 
     const orderList = customerID
-      ? await order.find(
-          { customerID },
-          "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total"
-        )
-      : await order.find(
-          { customerEmail },
-          "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total"
-        );
+      ? await order
+          .find(
+            { customerID },
+            "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total orderDate"
+          )
+          .sort({ orderDate: -1 })
+      : await order
+          .find(
+            { customerEmail },
+            "kitchenID tiffinID status noOfTiffins wantDelivery customerPaymentBreakdown.total orderDate"
+          )
+          .sort({ orderDate: -1 });
 
     if (!orderList) {
       return res.status(404).json({

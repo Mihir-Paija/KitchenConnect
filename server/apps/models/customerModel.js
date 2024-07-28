@@ -45,13 +45,10 @@ const customerSchema = Schema(
       required: [true, "Please enter your city"],
     },
 
-    notificationTokens: [
-      {
-        type: String,
-        // Ensure that each token is unique within the array if desired
-        unique: true,
-      },
-    ],
+    fcmToken: {
+      type: String,
+      // Ensure that each token is unique within the array if desired
+    },
 
     address: addressSchema,
   },

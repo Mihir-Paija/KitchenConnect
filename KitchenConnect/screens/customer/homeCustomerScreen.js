@@ -161,6 +161,7 @@ const HomeCustomerScreen = ({ navigation }) => {
                 keyExtractor={(item, index) =>
                   kitchens.length > 0 ? item._id : index.toString()
                 }
+                showsVerticalScrollIndicator={false}
                 style={styles.mainComponent}
               />
 
@@ -180,7 +181,7 @@ export default HomeCustomerScreen;
 const styles = StyleSheet.create({
   mainComponent: {
     alignContent: "space-between",
-    marginBottom: windowHeight * 0.04,
+    marginBottom: windowHeight * 0.05,
   },
   noKitchenContainer: {
     alignSelf: "center",

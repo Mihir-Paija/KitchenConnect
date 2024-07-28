@@ -16,11 +16,8 @@ export const pushToken = async (req, res) => {
       return res.status(404).json({ message: "Customer not found" });
     }
 
-    // Add token to the pushTokens array if it does not already exist
-    if (!Customer.notificationTokens.includes(token)) {
-      Customer.notificationTokens.push(token);
-      await Customer.save();
-    }
+    Customer.fcmToken = token;
+    await Customer.save();
 
     console.log("Updated customer:", Customer);
     return res.status(200).json({ message: "Token stored successfully" });
