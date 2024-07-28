@@ -53,6 +53,9 @@ export const getSubscriptionDetails = async (req, res) => {
       startDate: subscriberDetails.startDate,
       endDate: subscriberDetails.endDate,
       status,
+      price: subscriberDetails.price,
+      kitchenPaymentBreakdown: subscriberDetails.kitchenPaymentBreakdown,
+      customerPaymentBreakdown: subscriberDetails.customerPaymentBreakdown,
     };
 
     return res.status(200).json(toSend);

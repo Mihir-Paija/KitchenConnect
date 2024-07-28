@@ -7,7 +7,7 @@
     "icon": "./assets/KC_logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/KC_logo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,10 +22,6 @@
       "package": "com.phoenix.kitchenconnect",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true
-    },
-    "notification": {
-      "icon": "./assets/adaptive-icon.png",
-      "color": "#ffffff"
     },
     "web": {
       "favicon": "./assets/favicon.png"

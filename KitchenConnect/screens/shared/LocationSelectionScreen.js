@@ -29,8 +29,9 @@ const LocationSelectionScreen = ({ navigation }) => {
     } catch (error) {
       console.error(error);
       Alert.alert(error);
+    }finally{
+      navigation.navigate("Login");
     }
-    // navigation.navigate("EnterLocationManually");
   };
 
   const handleEnterLocationManually = () => {
