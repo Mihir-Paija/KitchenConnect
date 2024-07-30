@@ -381,3 +381,28 @@ export const pushTokenCustomer = async (customerID, bodyData) => {
     throw error.response.data;
   }
 };
+
+// customer -> addAddressCustomer : POST
+export const addAddressCustomer = async (customerID, bodyData) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/customer/address/${customerID}`,
+      bodyData
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+// customer -> fetchCustomerProfile : GET
+export const fetchCustomerProfile = async (customerID) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/customer/profile/details/${customerID}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};

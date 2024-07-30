@@ -50,6 +50,7 @@ const LoginScreen = ({ navigation }) => {
       console.error("Error saving auth state to AsyncStorage:", error);
     }
   };
+
   const handleLogin = async () => {
     try {
       setLoading(true);
@@ -78,6 +79,14 @@ const LoginScreen = ({ navigation }) => {
           // // alert(responseData && responseData.message);
 
           // navigation.navigate("LocationSelection");
+          // if (!authState.authData.fcmToken) {
+          //   console.log(authState.authData.fcmToken);
+          //   // navigation.replace("NotificationPermission");
+          // } else if (authState.authData.address.length > 0) {
+          //   console.log(authState.authData.fcmToken);
+          //   // navigation.replace("LocationSelection");
+          // } else {
+          // }
           navigation.navigate("MenuCustomerNavigator");
           console.log("Customer login data => " + JSON.stringify(bodyData));
         } else if (userType === "provider") {

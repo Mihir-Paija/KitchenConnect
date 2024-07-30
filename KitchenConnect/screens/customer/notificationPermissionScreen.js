@@ -36,7 +36,11 @@ const NotificationPermissionScreen = ({navigation}) => {
     } catch (error) {
       console.error("Error checking permissions:", error);
     } finally {
-      navigation.navigate("LocationSelection");
+      if (authState.authData.fcmToken.address.length > 0) {
+        navigation.replace("LocationSelection");
+      } else {
+        navigation.navigate("MenuCustomerNavigator");
+      }
     }
   };
   useEffect(() => {

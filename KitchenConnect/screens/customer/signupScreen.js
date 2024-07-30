@@ -47,9 +47,9 @@ const SignupScreen = ({ navigation }) => {
         if (userType === "customer") {
           const responseData = await signupCustomer(bodyData);
           // alert(responseData && responseData.message);
-          navigation.navigate("NotificationPermission");
+          // navigation.navigate("NotificationPermission");
           // navigation.navigate("LocationSelection");
-          // navigation.navigate("Login");
+          navigation.navigate("Login");
           console.log("Customer register data => " + JSON.stringify(bodyData));
         }
       }

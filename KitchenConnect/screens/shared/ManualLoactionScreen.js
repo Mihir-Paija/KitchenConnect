@@ -17,16 +17,19 @@ import SubmitButton from "@components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
+import { addAddressCustomer } from "../../utils/APIs/customerApi";
+import { AuthContext } from "@/context/authContext";
 
 const ManualLoactionScreen = ({ navigation }) => {
+  const [authState, setAuthState] = useContext(AuthContext);
+  const customerID = authState.authData._id;
+
   //states
   const [flatNumber, setflatNumber] = useState("");
-  const [appartment, setAppartment] = useState("");
+  const [apartment, setApartment] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState("");
   const [pinCode, setPinCode] = useState("");
-  const [country, setCountry] = useState("");
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -36,25 +39,41 @@ const ManualLoactionScreen = ({ navigation }) => {
   const addAddress = async () => {
     console.log("add");
     try {
-      const response = await axios.get(
-        "https://maps.googleapis.com/maps/api/geocode/json",
-        {
-          params: {
-            address: `${street}, ${city}, ${state}, ${pinCode}, "India"`,
-            key: "YOUR_GOOGLE_API_KEY", // Replace with your Google API key
-          },
-        }
-      );
+      // const response = await axios.get(
+      //   "https://maps.googleapis.com/maps/api/geocode/json",
+      //   {
+      //     params: {
+      //       address: `${street}, ${city}, ${state}, ${pinCode}, "India"`,
+      //       key: "YOUR_GOOGLE_API_KEY", // Replace with your Google API key
+      //     },
+      //   }
+      // );
 
-      const location = response.data.results[0].geometry.location;
-      setLatitude(location.lat);
-      setLongitude(location.lng);
+      // const location = response.data.results[0].geometry.location;
+      // setLatitude(location.lat);
+      // setLongitude(location.lng);
 
       // Update the database with the location
-      await updateUserLocation(location.lat, location.lng);
+      // await updateUserLocation(location.lat, location.lng);
+
+      const bodyData = {
+        flatNumber,
+        apartment,
+        street,
+        city,
+        pinCode,
+      };
+
+      const response = await addAddressCustomer(customerID, bodyData);
+
+      // Navigate to SuccessScreen on successful subscription
+      navigation.navigate("SuccessScreen", {
+        msg: "Address added successfully!!",
+        navigationScreen: "MenuCustomerNavigator",
+      });
 
       // Navigate back or show a success message
-      navigation.goBack();
+      // navigation.replace("MenuCustomerNavigator");
     } catch (error) {
       console.error("Error fetching location", error);
       Alert.alert("Error", "Unable to fetch location. Please try again.");
@@ -104,9 +123,9 @@ const ManualLoactionScreen = ({ navigation }) => {
               inputBoxStyle={styles.inputBoxStyle}
             />
             <InputBox
-              input="Appartment"
-              value={appartment}
-              setValue={setAppartment}
+              input="Apartment"
+              value={apartment}
+              setValue={setApartment}
               label={true}
               inputBoxStyle={styles.inputBoxStyle}
             />
@@ -121,13 +140,6 @@ const ManualLoactionScreen = ({ navigation }) => {
               input="City"
               value={city}
               setValue={setCity}
-              label={true}
-              inputBoxStyle={styles.inputBoxStyle}
-            />
-            <InputBox
-              input="State"
-              value={state}
-              setValue={setState}
               label={true}
               inputBoxStyle={styles.inputBoxStyle}
             />

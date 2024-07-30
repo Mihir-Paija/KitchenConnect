@@ -6,33 +6,31 @@ import SubmitButton from "../../components/shared/forms/submitButton";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import * as Location from "expo-location";
 
-const LocationSelectionScreen = ({ navigation }) => {
+const LocationSelectionScreen = ({ navigation, route }) => {
   //states
-
   //functions
 
   // Request location
-  const handleAllowLocationAccess = async () => {
-    console.log("allow");
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission denied",
-          "Permission to access location was denied"
-        );
-        return;
-      }
+  // const handleAllowLocationAccess = async () => {
+  //   console.log("allow");
+  //   try {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       Alert.alert(
+  //         "Permission denied",
+  //         "Permission to access location was denied"
+  //       );
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      console.log(location);
-    } catch (error) {
-      console.error(error);
-      Alert.alert(error);
-    }finally{
-      navigation.navigate("Login");
-    }
-  };
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     console.log(location);
+  //   } catch (error) {
+  //     console.error(error);
+  //     Alert.alert(error);
+  //   }
+  //   // navigation.navigate("EnterLocationManually");
+  // };
 
   const handleEnterLocationManually = () => {
     console.log("manual");
@@ -45,12 +43,12 @@ const LocationSelectionScreen = ({ navigation }) => {
         <Text style={styles.title}>Choose Location Option</Text>
       </View>
       <View style={styles.btnBox}>
-        <SubmitButton
+        {/* <SubmitButton
           btnTitle={"Allow Location Access"}
           style={styles.FilledBtnStyle}
           txtStyle={styles.FilledBtnTextStyle}
           handleSubmitBtn={handleAllowLocationAccess}
-        />
+        /> */}
         <SubmitButton
           btnTitle={"Enter Location Manually"}
           style={styles.OutLinedBtnStyle}
