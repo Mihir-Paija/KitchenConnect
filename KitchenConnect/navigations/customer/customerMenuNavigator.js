@@ -10,11 +10,14 @@ import HomeCustomerNavigator from "./customerHomeNavigator";
 import SubscriptionCustomerNavigator from "./subscriptionNavigator";
 import OrderDetailsScreen from "../../screens/customer/orderDetailsScreen";
 import SuccessScreen from "../../screens/shared/SuceessScreen";
+import { AuthContext } from "@/context/authContext";
+
 const menuStack = createStackNavigator();
 
 const CustomerMenuNavigator = ({ route }) => {
   //global states
   const [userType] = useContext(UserTypeContext);
+  const [authState] = useContext(AuthContext);
 
   return (
     <menuStack.Navigator

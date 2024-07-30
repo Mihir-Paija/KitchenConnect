@@ -47,7 +47,7 @@ const CustomerAuthNavigator = () => {
             component={SignupScreen}
             options={{ presentation: "transparentModal" }}
           />
-          <authStack.Screen
+          {/* <authStack.Screen
             name="NotificationPermission"
             component={NotificationPermissionScreen}
             options={{ presentation: "transparentModal" }}
@@ -61,14 +61,16 @@ const CustomerAuthNavigator = () => {
             name="ManualLoaction"
             component={ManualLoactionScreen}
             options={{ presentation: "transparentModal" }}
-          />
+          /> */}
         </>
       ) : (
-        <authStack.Screen
-          name="MenuCustomerNavigator"
-          component={CustomerMenuNavigator}
-          options={{ presentation: "transparentModal" }}
-        />
+        <>
+          <authStack.Screen
+            name="MenuCustomerNavigator"
+            component={CustomerMenuNavigator}
+            options={{ presentation: "transparentModal" }}
+          />
+        </>
       )}
     </authStack.Navigator>
   );

@@ -7,6 +7,10 @@ import ProfileDetailsCustomerScreen from "../../screens/customer/profileDetailsC
 import SettingCustomerScreen from "../../screens/customer/settingCustomerScreen";
 import AboutScreen from "../../screens/shared/aboutScreen";
 import SubscribeCustomerScreen from "../../screens/customer/subscribeCustomerScreen";
+import LocationSelectionScreen from "../../screens/shared/LocationSelectionScreen";
+import ManualLoactionScreen from "../../screens/shared/ManualLoactionScreen";
+import NotificationPermissionScreen from "../../screens/customer/notificationPermissionScreen";
+import SuccessScreen from "../../screens/shared/SuceessScreen";
 
 const HomeStack = createStackNavigator();
 
@@ -24,6 +28,21 @@ const HomeCustomerNavigator = () => {
         },
       }}
     >
+      <HomeStack.Screen
+        name="NotificationPermission"
+        component={NotificationPermissionScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <HomeStack.Screen
+        name="LocationSelection"
+        component={LocationSelectionScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <HomeStack.Screen
+        name="ManualLoaction"
+        component={ManualLoactionScreen}
+        options={{ presentation: "transparentModal" }}
+      />
       <HomeStack.Screen
         name="HomeCustomer"
         component={HomeCustomerScreen}
@@ -62,6 +81,11 @@ const HomeCustomerNavigator = () => {
       <HomeStack.Screen
         name="SubscribeCustomer"
         component={SubscribeCustomerScreen}
+        options={{ presentation: "transparentModal" }}
+      />
+      <HomeStack.Screen
+        name="SuccessScreen"
+        component={SuccessScreen}
         options={{ presentation: "transparentModal" }}
       />
     </HomeStack.Navigator>

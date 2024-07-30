@@ -77,9 +77,13 @@ router.use("/customer/wallet", walletCustomerRouter);
 import feedBackRouter from "./customer/feedBackRouter.js";
 router.use("/customer/feedBack", feedBackRouter);
 
-//feedBackRouter -> customer (GET)(POST)
+//notificationRouter -> customer (GET)(POST)
 import notificationRouter from "./customer/notificationRouter.js";
-router.use("/customer/pushToken", notificationRouter);
+router.use("/customer/notification", notificationRouter);
+
+//addressRouter -> customer (GET)(POST)
+import addressRouter from "./customer/addressRouter.js";
+router.use("/customer/address", addressRouter);
 
 import { providerAuthRouter } from "./provider/authRouter.js";
 import { profileRouter } from "./provider/profileRouter.js";
@@ -107,7 +111,6 @@ router.use("/wallet", walletRouter);
 import { adminAuthRouter } from "./admin/authRouter.js";
 import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
-import { adminSubscriptionRouter } from "./admin/subscriptionRouter.js";
 import { adminTiffinRouter } from "./admin/tiffinRouter.js";
 import { adminAuthMiddleware } from "../middleware/adminMiddleware.js";
 router.use("/admin", adminAuthRouter);
@@ -118,6 +121,4 @@ router.use(
 );
 router.use("/admin/:session/kitchen", adminAuthMiddleware, adminKitchenRouter);
 router.use("/admin/:session/tiffin", adminAuthMiddleware, adminTiffinRouter);
-router.use("/admin/subscription", adminSubscriptionRouter);
-
 export default router;

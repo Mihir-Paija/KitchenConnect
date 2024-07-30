@@ -2,14 +2,34 @@ import { Schema, model } from "mongoose";
 
 const addressSchema = Schema(
   {
+    flatNumber: {
+      type: String,
+    },
+
+    apartment: {
+      type: String,
+    },
+
+    street: {
+      type: String,
+    },
+
+    city: {
+      type: String,
+    },
+
+    pinCode: {
+      type: Number,
+    },
+
     coordinates: {
       latitude: {
         type: Number,
-        required: [true, "Please enter your latitude"],
+        // required: [true, "Please enter your latitude"],
       },
       longitude: {
         type: Number,
-        required: [true, "Please enter your longitude"],
+        // required: [true, "Please enter your longitude"],
       },
     },
   },
@@ -50,7 +70,7 @@ const customerSchema = Schema(
       // Ensure that each token is unique within the array if desired
     },
 
-    address: addressSchema,
+    address: [addressSchema],
   },
   { timestamps: true }
 );

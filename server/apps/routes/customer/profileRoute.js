@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { editPersonalDetails } from "../../controllers/customer/profileController.js";
+import {
+  editPersonalDetails,
+  getCustomerProfile,
+} from "../../controllers/customer/profileController.js";
 
 const router = Router();
 
-router.route("/details/:customerID").patch(editPersonalDetails);
+router
+  .route("/details/:customerID")
+  .patch(editPersonalDetails)
+  .get(getCustomerProfile);
 
 export default router;
