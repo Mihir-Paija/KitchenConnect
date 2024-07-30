@@ -53,6 +53,9 @@ export const getSubscriptionDetails = async (req, res) => {
       startDate: subscriberDetails.startDate,
       endDate: subscriberDetails.endDate,
       status,
+      price: subscriberDetails.price,
+      kitchenPaymentBreakdown: subscriberDetails.kitchenPaymentBreakdown,
+      customerPaymentBreakdown: subscriberDetails.customerPaymentBreakdown,
     };
 
     return res.status(200).json(toSend);
@@ -130,7 +133,7 @@ export const getSubscriptionsList = async (req, res) => {
 
         const kitchenData = await provider.findById(
           sub.kitchenID,
-          "kitchenName"
+          "kitchenName email"
         );
         if (!kitchenData) {
           return res.status(404).json({

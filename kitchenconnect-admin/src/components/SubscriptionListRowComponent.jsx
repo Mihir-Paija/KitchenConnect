@@ -5,6 +5,7 @@ import { formatDate, formatTime } from "../../../server/apps/utils/formatDate";
 import { Link } from "react-router-dom";
 
 const SubscriptionListRowComponent = ({subData}) => {
+  console.log(subData.Kitchen)
   return (
     <tr key={subData.Subscription._id}>
           <td>
@@ -13,7 +14,7 @@ const SubscriptionListRowComponent = ({subData}) => {
           </td>
           <td>
             {/* {subData.Kitchen.kitchenName} */}
-            <Link to={`/provider/${subData.Kitchen._id}`}>{subData.Kitchen.kitchenName}</Link>
+            <Link to={`/provider/${subData.Kitchen.email}`}>{subData.Kitchen.kitchenName}</Link>
             </td>
           <td>
             {/* {subData.Tiffin.name}  */}

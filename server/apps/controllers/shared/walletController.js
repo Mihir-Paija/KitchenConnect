@@ -54,24 +54,25 @@ export const getWallet = async(req, res) =>{
 export const createWallet = async(req, res) =>{
     try {
         const {id} = req.params
-        const {firstName, lastName, PIN, type, cardNumber} = req.body
-        const userID = verifyJwt(id).decoded.userID
+        const {firstName, lastName, PIN, cardNumber} = req.body
+        //const userID = verifyJwt(id).decoded.userID
+        const userID = id;
 
-        if(!userID || PIN.toString().length === 0 || !firstName || !lastName || !type)
+        if(!userID || PIN.toString().length === 0 || !firstName || !lastName )
             return res.status(400).send({
                 message: `Please Fill All Feilds`
             })
 
         let user;
     
-        if(type === 'provider')
-            user = await provider.findById(userID);
-        else user = await customer.findById(userID)
+        // if(type === 'provider')
+        //     user = await provider.findById(userID);
+        // else user = await customer.findById(userID)
     
-        if(!user)
-            return res.status(400).send({
-                message: `User Doesn't Exist`
-            })
+        // if(!user)
+        //     return res.status(400).send({
+        //         message: `User Doesn't Exist`
+        //     })
         
         const exists = await wallet.findOne({ userID: new mongoose.Types.ObjectId(userID) })
 

@@ -11,17 +11,15 @@ const isDateInArray = (array, date) => {
     return array.some(d => new Date(d).toISOString() === new Date(date).toISOString());
 };
 
-const completeTransaction = async (orderID, kitchenID, customerID, customerAmount, kitchenAmount) => {
+const completeTransaction = async (orderID, kitchenID, customerID, customerAmount, kitchenAmount, type) => {
     try {
+
+        const adminWallet = await wallet.findById("669fa3176f5e2f1f9af996dd")
         const customerWallet = await wallet.findOne({ userID: new mongoose.Types.ObjectId(customerID) })
 
         if (!customerWallet) {
             return 0;
         }
-
-        console.log(customerWallet.amount)
-        console.log(customerAmount)
-        console.log(typeof customerWallet.amount)
 
         if (parseInt(customerWallet.amount, 10) < customerAmount)
             return 0;
@@ -35,37 +33,63 @@ const completeTransaction = async (orderID, kitchenID, customerID, customerAmoun
         customerWallet.amount -= customerAmount
         let updatedCustomerWallet = await customerWallet.save();
 
-        let updatedProviderWallet
-
-        if (updatedCustomerWallet) {
-            providerWallet.amount += kitchenAmount
-            updatedProviderWallet = await providerWallet.save();
-        }
-        else {
-
-            updatedCustomerWallet = null
-            if (!updatedProviderWallet) {
-                while (!updatedCustomerWallet) {
-                    customerWallet.amount += customerAmount
-                    updatedCustomerWallet = await customerWallet.save()
-                }
-
-                return 0;
-            }
-        }
-
-        const newTransaction = {
-            orderID: orderID,
-            payerID: customerID,
-            recieverID: kitchenID,
-            amountPaid: customerAmount,
-            amountRecieved: kitchenAmount,
-        }
-
-        const record = await transaction.create(newTransaction)
-
-        if (!record)
+        if(!updatedCustomerWallet){
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
             return 0;
+        }
+
+        adminWallet.amount += customerAmount
+        let updatedAdminWallet = await adminWallet.save();
+        updatedCustomerWallet = null;
+        if(!updatedAdminWallet){
+            while(!updatedCustomerWallet){
+                customerWallet.amount += customerAmount;
+                updatedCustomerWallet = await customerWallet.save();
+            }
+
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
+            return 0;
+        }
+
+        const customerTransaction = {
+            walletID: customerWallet._id,
+            amount: customerAmount,
+            transactionType: type === 'order' ? 'SingleOrder' : 'SubscriptionOrder',
+            orderID,
+        }
+        const transaction1 = await transaction.create(customerTransaction);
+        if(!transaction1){
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
+            return 0;
+        }
+
+        adminWallet.amount -= kitchenAmount
+        updatedAdminWallet = await adminWallet.save();
+        
+        if(!updatedAdminWallet){
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
+            return 0;
+        }
+
+        providerWallet.amount += kitchenAmount
+        let updatedProviderWallet = await providerWallet.save()
+
+        if(!updatedProviderWallet){
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
+            return 0;
+        }
+
+        const kitchenTransaction = {
+            walletID: providerWallet._id,
+            amount: kitchenAmount,
+            transactionType: type === 'order' ? 'SingleOrder' : 'SubscriptionOrder',
+            orderID,
+        }
+        const transaction2 = await transaction.create(kitchenTransaction);
+        if(!transaction1){
+            console.log(`Couldn't Complete Transaction! Please Try Again`)
+            return 0;
+        }        
 
         return 1;
 
@@ -492,21 +516,29 @@ export const completeOrder = async (req, res) => {
                     message: `Order Already Completed`
                 })
 
-            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
+            
+
+
+            
+
+            const orders = await subscriptionOrder.findOne({ subscriptionID: _id })
+            const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+            if(!todayOrder)
+                return res.status(400).send({
+                    message: `Sub Order Doesn't Exist`
+                })
+
+            const record = completeTransaction(todayOrder._id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'subscription')
 
             if (!record)
                 return res.status(500).send({
                     message: `Couldn't Complete Payment! Please Try Again!`
                 })
-
-
+                
             subscriber.subscriptionStatus.daysCompleted.push(currentDate);
             subscriber.subscriptionStatus.daysRemaining = subscriber.subscriptionStatus.daysRemaining.filter(item => new Date(item).toISOString() !== currentDateString)
-
+    
             const updatedSubscriber = await subscriber.save()
-
-            const orders = await subscriptionOrder.findOne({ subscriptionID: _id })
-            const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
             todayOrder.status = 'Completed';
             todayOrder.amountPaid = customerPaymentBreakdown.perOrderPrice
             todayOrder.amountRecieved = kitchenPaymentBreakdown.perOrderPrice
@@ -553,7 +585,7 @@ export const completeOrder = async (req, res) => {
                     message: `Order Doesn't Exist`
                 })
             }
-            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice)
+            const record = completeTransaction(_id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'order')
 
             if (!record)
                 return res.status(500).send({
