@@ -112,6 +112,7 @@ import { adminAuthRouter } from "./admin/authRouter.js";
 import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
 import { adminTiffinRouter } from "./admin/tiffinRouter.js";
+import { adminSubPlanRouter } from "./admin/subscriptonPlanRouter.js";
 import { adminAuthMiddleware } from "../middleware/adminMiddleware.js";
 router.use("/admin", adminAuthRouter);
 router.use(
@@ -121,4 +122,5 @@ router.use(
 );
 router.use("/admin/:session/kitchen", adminAuthMiddleware, adminKitchenRouter);
 router.use("/admin/:session/tiffin", adminAuthMiddleware, adminTiffinRouter);
+router.use("/admin/:session/subPlan", adminAuthMiddleware, adminSubPlanRouter);
 export default router;

@@ -31,16 +31,16 @@ const ReviewModal = ({ visible, onClose, kitchenID, tiffinID }) => {
   const [reviewList, setReviewList] = useState([]);
 
   //functions
-  useEffect(() => {
-    if (visible) {
-      StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor("rgba(0, 0, 0, 0.5)");
-    } else {
-      console.log("hi");
-      StatusBar.setBarStyle("dark-content");
-      StatusBar.setBackgroundColor("#ffffff");
-    }
-  }, [visible]);
+  // useEffect(() => {
+  //   if (visible) {
+  //     StatusBar.setBarStyle("dark-content");
+  //     StatusBar.setBackgroundColor("rgba(0, 0, 0, 0.5)");
+  //   } else {
+  //     console.log("hi");
+  //     StatusBar.setBarStyle("dark-content");
+  //     StatusBar.setBackgroundColor("#ffffff");
+  //   }
+  // }, [visible]);
 
   const customerID = authState.authData._id;
   // console.log(customerID);

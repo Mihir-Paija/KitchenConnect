@@ -58,8 +58,8 @@ const FeedBackModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
       setRating(0);
       setReview("");
     } catch (error) {
-      console.error("Failed to post feedBack List customer:", error.message);
-      Alert.alert("Error", "Failed to post feedBack. Please try again.");
+      console.log("Failed to post feedBack List customer:", error.message);
+      Alert.alert("Error", error.message);
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ const FeedBackModalCustomer = ({ visible, onClose, kitchenID, tiffinID }) => {
             />
             <View style={styles.modalContainer}>
               <View style={styles.sectionHeadingBox}>
-                <Text style={styles.sectionHeadingTxt}>What is your rate?</Text>
+                <Text style={styles.sectionHeadingTxt}>Rate the tiffin</Text>
               </View>
               <View style={styles.starContainer}>
                 {stars.map((star) => (

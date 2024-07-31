@@ -112,16 +112,18 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
 
   // Calculate prices
   const price = {
-    tiffinPrice: subscriptionPlan.price,
+    tiffinPrice: subscriptionPlan.priceDetails.price,
     deliveryCharge: subscriptionPlan.deliveryCharge,
-    platformCommission: 2,
-    GST_on_tiffin: 5,
-    GST_on_service: 18,
-    serviceDiscount: 0,
-    kitchenDiscount: subscriptionPlan.discount,
+    platformCommission: subscriptionPlan.priceDetails.commission,
+    GST_on_tiffin: 0.05,
+    GST_on_service: 0.18,
+    serviceDiscount: subscriptionPlan.priceDetails.serviceDiscount,
+    kitchenDiscount: subscriptionPlan.priceDetails.kitchenDiscount,
     lowerLimit: parseFloat(
       (
-        (subscriptionPlan.price * subscriptionPlan.days * noOfTiffins) /
+        (subscriptionPlan.priceDetails.price *
+          subscriptionPlan.days *
+          noOfTiffins) /
         2
       ).toFixed(2)
     ),
@@ -130,20 +132,18 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     (noOfTiffins * subscriptionPlan.days * price.tiffinPrice).toFixed(2)
   );
   const updatedServicePrice = parseFloat(
-    ((price.platformCommission / 100) * updatedSubscriptionPrice).toFixed(2)
+    (price.platformCommission * updatedSubscriptionPrice).toFixed(2)
   );
   const updatedTaxPriceCustomer = parseFloat(
     (
-      (price.GST_on_tiffin * updatedSubscriptionPrice +
-        price.GST_on_service * updatedServicePrice) /
-      100
+      price.GST_on_tiffin * updatedSubscriptionPrice +
+      price.GST_on_service * updatedServicePrice
     ).toFixed(2)
   );
   const updatedTaxPriceProvider = parseFloat(
     (
-      (price.GST_on_tiffin * updatedSubscriptionPrice -
-        price.GST_on_service * updatedServicePrice) /
-      100
+      price.GST_on_tiffin * updatedSubscriptionPrice -
+      price.GST_on_service * updatedServicePrice
     ).toFixed(2)
   );
   const updatedDeliveryCharge = wantDelivery
@@ -151,13 +151,12 @@ const SubscribeCustomerScreen = ({ navigation, route }) => {
     : 0;
   const updatedDiscountCustomer = parseFloat(
     (
-      (((price.serviceDiscount || 0) + (price.kitchenDiscount || 0)) *
-        updatedSubscriptionPrice) /
-      100
+      ((price.serviceDiscount || 0) + (price.kitchenDiscount || 0)) *
+      updatedSubscriptionPrice
     ).toFixed(2)
   );
   const updatedDiscountProvider = parseFloat(
-    (((price.kitchenDiscount || 0) * updatedSubscriptionPrice) / 100).toFixed(2)
+    ((price.kitchenDiscount || 0) * updatedSubscriptionPrice).toFixed(2)
   );
   const updatedTotalCustomer = parseFloat(
     (

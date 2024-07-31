@@ -83,12 +83,13 @@ const styles = StyleSheet.create({
     // backgroundColor: "#aaff",
     borderBottomWidth: windowWidth * 0.005,
     // paddingVertical: windowHeight * 0.002,
+    marginBottom: windowHeight * 0.01,
   },
   firstBox: {
     // backgroundColor: "#aaff",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: windowHeight * 0.01,
+    marginBottom: windowHeight * 0.005,
     justifyContent: "space-between",
   },
   iconImage: {
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
     marginRight: windowWidth * 0.025,
     borderRadius: windowWidth * 0.1,
     padding: 0,
+    alignSelf: "center",
   },
   customerBox: { flexDirection: "row" },
   customerNameTxt: {
