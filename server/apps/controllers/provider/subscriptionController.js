@@ -227,8 +227,15 @@ const getAccessToken = async () => {
 export const sendNotification = async (token, title, body) => {
    
     try {
+
+        if(!token){
+            console.log(`Couldn't Send  Message, no token`)
+            return
+        }
         const fcmToken = token
         console.log(fcmToken)
+
+        
 
         const message = {
             notification: {

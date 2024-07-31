@@ -30,6 +30,7 @@ const NavbarComponent = ({ title="KitchenConnect"}) => {
             <Nav.Link as={NavLink} to="/tiffin">Tiffin</Nav.Link>
             <Nav.Link as={NavLink} to="/subscription">Subscription</Nav.Link>
             <Nav.Link as={NavLink} to="/order">Order</Nav.Link>
+            <Nav.Link as={NavLink} to="/transactions">Transactions</Nav.Link>
             
             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

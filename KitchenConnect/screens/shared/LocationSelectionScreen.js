@@ -1,10 +1,11 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Alert, StyleSheet, Text, View, BackHandler } from "react-native";
+import React, {useEffect, useState} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "react-native-elements";
 import SubmitButton from "../../components/shared/forms/submitButton";
 import { windowWidth, windowHeight } from "@/utils/dimensions";
 import * as Location from "expo-location";
+import { useIsFocused } from "@react-navigation/native";
 
 const LocationSelectionScreen = ({ navigation, route }) => {
   //states
@@ -31,6 +32,31 @@ const LocationSelectionScreen = ({ navigation, route }) => {
   //   }
   //   // navigation.navigate("EnterLocationManually");
   // };
+
+  const isFocused = useIsFocused();
+
+  const backAction = () => {
+    // if (isFocused) {
+    //   console.log('focused')
+    //   // navigation.navigate("HomeCustomer")
+    //   return true;
+    // }
+
+    // console.log('not focused')
+
+    return true;
+  };
+
+  useEffect(() => {
+    console.log('useEffect')
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  });
+
 
   const handleEnterLocationManually = () => {
     console.log("manual");

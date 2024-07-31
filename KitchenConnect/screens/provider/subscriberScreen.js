@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight * 1.1
+    // paddingTop: StatusBar.currentHeight * 1.1
 
   },
   filterSortContainer: {

@@ -20,6 +20,7 @@ import { Button } from "react-native-elements";
 import { fetchCustomerProfile } from "../../utils/APIs/customerApi";
 
 const HomeCustomerScreen = ({ navigation }) => {
+  // console.log('Home')
   const [authState, setAuthState] = useContext(AuthContext);
   const isFocused = useIsFocused();
 
@@ -34,6 +35,7 @@ const HomeCustomerScreen = ({ navigation }) => {
 
   // Fetch user profile and check for FCM token and address
   const fetchProfile = async () => {
+    setHasCheckedAuth(true);
     try {
       const profile = await fetchCustomerProfile(authState.authData._id);
       setAuthState((prevState) => ({
@@ -45,26 +47,32 @@ const HomeCustomerScreen = ({ navigation }) => {
         },
       }));
       console.log("profile", profile);
+      console.log(profile.address.length)
       if (!profile.fcmToken) {
         console.log("fcm token");
-        // navigation.replace("NotificationPermission");
+        navigation.replace("NotificationPermission");
       }
-      if (profile.address.length === 0) {
+      
+      else if (profile.address.length === 0) {
         navigation.replace("LocationSelection");
       } else {
-        setHasCheckedAuth(true); // Set the flag after performing checks
+         // Set the flag after performing checks
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
+    }finally{
+      //setHasCheckedAuth(true); 
     }
   };
 
   // Check for FCM token and address, navigate if necessary
   useEffect(() => {
+    console.log(hasCheckedAuth)
     if (authState.authToken && !hasCheckedAuth) {
+      console.log('profuile')
       fetchProfile();
     }
-  }, []); // Run only once when the component mounts
+  }, [hasCheckedAuth]); // Run only once when the component mounts
 
   const fetchKitchens = async () => {
     try {

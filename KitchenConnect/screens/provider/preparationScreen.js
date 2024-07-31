@@ -31,6 +31,8 @@ import LoadingScreen from "../shared/loadingScreen";
 import Icon from "react-native-vector-icons/Ionicons";
 import { PermissionsAndroid } from "react-native";
 import OptOutModal from "./modals/optOutModal";
+import Geolocation from 'react-native-geolocation-service';
+
 
 const addresses = [
   "Suryajyot Lake, Gandhinagar",
@@ -80,8 +82,15 @@ const PreparationScreen = ({ navigation }) => {
 
   const handleMaps = () => {
     requestPermission();
-    openMaps();
   };
+
+  useEffect(() =>{
+    if(currentLocation){
+      console.log('Opening Maps')
+      openMaps()
+    }
+
+  }, [currentLocation])
 
   const requestPermission = async () => {
     if (Platform.OS === "android") {
@@ -96,6 +105,7 @@ const PreparationScreen = ({ navigation }) => {
           buttonPositive: "OK",
         }
       );
+      console.log(granted)
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         getCurrentLocation();
       } else {
@@ -110,6 +120,7 @@ const PreparationScreen = ({ navigation }) => {
     try {
       Geolocation.getCurrentPosition(
         (position) => {
+          console.log(position)
           setCurrentLocation(position.coords);
         },
         (error) => {
@@ -118,6 +129,7 @@ const PreparationScreen = ({ navigation }) => {
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
       );
     } catch (error) {
+      console.log('Location in fetching position ', error)
       Alert.alert(`Couldn't Get Location`);
     }
   };
@@ -142,6 +154,7 @@ const PreparationScreen = ({ navigation }) => {
 
     Linking.openURL(url);
   };
+
   const generateOTP = async (item) => {
     const OTP = Math.floor(Math.random() * 9000) + 1000;
     console.log(OTP);
@@ -214,6 +227,8 @@ const PreparationScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     const backAction = () => {

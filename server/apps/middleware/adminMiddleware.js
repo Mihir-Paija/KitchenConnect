@@ -11,6 +11,7 @@ export const adminAuthMiddleware = async (req, res, next) => {
     // console.log(req.params);
     // console.log("session", session);
     if (!session) {
+      console.log('expired')
       return res.status(400).send({
         expired: true,
         message: `Session Expired! Please Login`,

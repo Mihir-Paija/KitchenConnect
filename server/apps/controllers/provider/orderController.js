@@ -13,7 +13,7 @@ const isDateInArray = (array, date) => {
 
 const completeTransaction = async (orderID, kitchenID, customerID, customerAmount, kitchenAmount, type) => {
     try {
-
+        
         const adminWallet = await wallet.findById("669fa3176f5e2f1f9af996dd")
         const customerWallet = await wallet.findOne({ userID: new mongoose.Types.ObjectId(customerID) })
 
@@ -86,7 +86,7 @@ const completeTransaction = async (orderID, kitchenID, customerID, customerAmoun
             orderID,
         }
         const transaction2 = await transaction.create(kitchenTransaction);
-        if(!transaction1){
+        if(!transaction2){
             console.log(`Couldn't Complete Transaction! Please Try Again`)
             return 0;
         }        
@@ -459,6 +459,10 @@ export const sendOTP = async (req, res) => {
 
         const orders = await subscriptionOrder.findOne({ subscriptionID: order._id })
         const todayOrder = orders.subOrders.find(item => new Date(item.orderDate).toISOString() === currentDateString)
+        if(!todayOrder)
+            return res.status(400).send({
+                message: `SubOrder Doesn't Exist`
+            })
         console.log(todayOrder)
         todayOrder.otp = otp;
 
@@ -528,8 +532,8 @@ export const completeOrder = async (req, res) => {
                     message: `Sub Order Doesn't Exist`
                 })
 
-            const record = completeTransaction(todayOrder._id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'subscription')
-
+            const record = await completeTransaction(todayOrder._id, kitchenID, customerID, customerPaymentBreakdown.perOrderPrice, kitchenPaymentBreakdown.perOrderPrice, 'subscription')
+            console.log(record)
             if (!record)
                 return res.status(500).send({
                     message: `Couldn't Complete Payment! Please Try Again!`
