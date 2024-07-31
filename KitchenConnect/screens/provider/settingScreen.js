@@ -167,7 +167,7 @@ import {RefreshContext} from '@/context/refreshContext'
     container: {
       flex: 1,
       backgroundColor: "#f8f8f8",
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+      //paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
     },
     lineBox: {
       width: windowWidth * 0.95,

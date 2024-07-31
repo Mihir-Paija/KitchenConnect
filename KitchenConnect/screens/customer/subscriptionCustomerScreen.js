@@ -195,7 +195,7 @@ const SubscriptionCustomerScreen = ({ navigation }) => {
   // global states
   const [authState] = useContext(AuthContext);
 
-  const customerID = authState.authData._id;
+  const customerID = authState.authData?._id;
   // states
   //state
   const [currentSubscriptions, setCurrentSubscriptions] = useState([]);
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   header: {
     flexDirection: "row",

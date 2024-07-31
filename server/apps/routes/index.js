@@ -113,12 +113,16 @@ import { adminCustomerRouter } from "./admin/customerRouter.js";
 import { adminKitchenRouter } from "./admin/kitchenRouter.js";
 import { adminTiffinRouter } from "./admin/tiffinRouter.js";
 import { adminAuthMiddleware } from "../middleware/adminMiddleware.js";
+import { adminWalletRouter } from "./admin/walletRouter.js";
+import {adminSubscriptionRouter} from "./admin/subscriptionRouter.js"
 router.use("/admin", adminAuthRouter);
 router.use(
   "/admin/:session/customer",
   adminAuthMiddleware,
   adminCustomerRouter
 );
+router.use('/admin/:session/subscription', adminAuthMiddleware, adminSubscriptionRouter)
 router.use("/admin/:session/kitchen", adminAuthMiddleware, adminKitchenRouter);
-router.use("/admin/:session/tiffin", adminAuthMiddleware, adminTiffinRouter);
+router.use("/admin/:session/tiffin", adminAuthMiddleware,  adminTiffinRouter);
+router.use("/admin/:session/wallet", adminAuthMiddleware, adminWalletRouter)
 export default router;

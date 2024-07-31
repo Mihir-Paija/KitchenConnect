@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, BackHandler } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,13 +12,41 @@ import { pushTokenCustomer } from "../../utils/APIs/customerApi";
 import Constants from "expo-constants";
 import { requestUserPermission } from "../../utils/firebase";
 import messaging from '@react-native-firebase/messaging';
+import { useIsFocused } from "@react-navigation/native";
 
-const NotificationPermissionScreen = ({navigation}) => {
+const NotificationPermissionScreen = ({ navigation }) => {
+  console.log('Notification')
   //global state
   const [authState, setAuthState] = useContext(AuthContext);
-  //const customerID = authState.authData._id;
+  const customerID = authState.authData._id;
+  const isFocused = useIsFocused();
 
   const [permissionStatus, setPermissionStatus] = useState(null);
+
+  const backAction = () => {
+    // if (isFocused) {
+    //   console.log('focused')
+    //   navigation.navigate("MenuCustomerNavigator")
+    //   return true;
+    // }
+
+    // console.log('not focused')
+
+    // return false;
+
+    return true;
+  };
+
+  useEffect(() => {
+    console.log('useEffect')
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  });
+
 
   const checkPermissions = async () => {
     try {
@@ -30,37 +58,65 @@ const NotificationPermissionScreen = ({navigation}) => {
           await requestUserPermission();
           const token = await messaging().getToken();
           console.log("FCM Token:", token);
-          //await pushTokenCustomer(customerID, { token });
+          await pushTokenCustomer(customerID, { token });
         }
       }
     } catch (error) {
       console.error("Error checking permissions:", error);
     } finally {
-      if (authState.authData.fcmToken.address.length > 0) {
+      if (authState.authData.address.length === 0) {
         navigation.replace("LocationSelection");
       } else {
         navigation.navigate("MenuCustomerNavigator");
       }
     }
   };
-  useEffect(() => {
-    checkPermissions();
-  }, []);
+  // useEffect(() => {
+  //   checkPermissions();
+  // }, []);
 
   const handleAllowNotification = async () => {
     try {
-      await requestUserPermission();
-      const token = await messaging().getToken();
-      console.log("FCM Token:", token);
-      //await pushTokenCustomer(customerID, { token });
-      navigation.navigate("LocationSelection");
+      const authStatus = await messaging().hasPermission();
+      setPermissionStatus(authStatus);
+      console.log('auth', authStatus)
+
+      if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+        if (!authState.authData?.fcmToken) {
+          await requestUserPermission();
+          const token = await messaging().getToken();
+          console.log("FCM Token:", token);
+          await pushTokenCustomer(customerID, { token });
+
+          // navigation.navigate("SuccessScreen", {
+          //   msg: "Permission Granted",
+          //   navigationScreen: "MenuCustomerNavigator",
+          // });
+
+        }
+      }
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "An error occurred while requesting permissions.");
+      console.error("Error checking permissions:", error);
+    } finally {
+      if (authState.authData.address.length === 0) {
+        navigation.navigate("SuccessScreen", {
+          msg: "Permission Granted",
+          navigationScreen: "LocationSelection",
+        });
+
+        //navigation.replace("LocationSelection");
+      } else {
+        navigation.navigate("SuccessScreen", {
+          msg: "Permission Granted",
+          navigationScreen: "MenuCustomerNavigator",
+        });
+        //navigation.navigate("MenuCustomerNavigator");
+      }
     }
   };
 
   return (
+
     <SafeAreaView style={styles.container}>
       <View style={styles.detailsBox}>
         <Text style={styles.title}>Choose Location Option</Text>

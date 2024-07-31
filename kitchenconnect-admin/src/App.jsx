@@ -11,6 +11,7 @@ import TiffinMenuList from "./pages/TiffinMenuList.jsx";
 import Subscription from "./pages/Subscription";
 import LandingPage from "./pages/Landing.jsx";
 import Order from "./pages/Order.jsx";
+import Transactions from "./pages/Transaction.jsx";
 
 function App() {
   return (
@@ -63,6 +64,11 @@ function App() {
             <Route exact path="/subscription" element={
               <ProtectedRoute>
                 <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route exact path="/transactions" element={
+              <ProtectedRoute>
+                <Transactions />
               </ProtectedRoute>
             } />
           </Routes>

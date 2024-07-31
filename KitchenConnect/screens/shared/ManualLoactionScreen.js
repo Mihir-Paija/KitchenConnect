@@ -9,6 +9,7 @@ import {
   Keyboard,
   Platform,
   StatusBar,
+  BackHandler
 } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import { windowWidth, windowHeight } from "@utils/dimensions";
@@ -17,6 +18,7 @@ import SubmitButton from "@components/shared/forms/submitButton";
 import authAdStyles from "@/styles/shared/authAd";
 import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 import { addAddressCustomer } from "../../utils/APIs/customerApi";
 import { AuthContext } from "@/context/authContext";
 
@@ -34,10 +36,36 @@ const ManualLoactionScreen = ({ navigation }) => {
   const [longitude, setLongitude] = useState(null);
   const [loading, setLoading] = useState(false);
   const [keyboard, setKeyboard] = useState(false);
+  const isFocused = useIsFocused();
+
+  const backAction = () => {
+  //   if(isFocused){
+  //     console.log('focused')
+  //       navigation.navigate("MenuCustomerNavigator")
+  //     return true;
+  // }
+
+  // console.log('not focused')
+
+  // return false;
+
+  return true;
+  };
+
+   useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  })
+
 
   //functions
   const addAddress = async () => {
     console.log("add");
+
     try {
       // const response = await axios.get(
       //   "https://maps.googleapis.com/maps/api/geocode/json",
@@ -170,7 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffff",
     alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
   },
   formContainer: {
     flex: 1,

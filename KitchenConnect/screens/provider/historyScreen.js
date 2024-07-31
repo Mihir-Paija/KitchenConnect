@@ -847,7 +847,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight * 1.2,
+    //paddingTop: StatusBar.currentHeight * 1.2,
   },
   header: {
     //textAlign: 'center',

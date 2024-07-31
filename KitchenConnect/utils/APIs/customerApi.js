@@ -373,7 +373,7 @@ export const getTiffinFeedBackCustomer = async (kitchenID, tiffinID) => {
 export const pushTokenCustomer = async (customerID, bodyData) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/customer/pushToken/${customerID}`,
+      `${API_BASE_URL}/customer/notification/${customerID}`,
       bodyData
     );
     return response.data;

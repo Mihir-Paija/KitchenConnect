@@ -98,7 +98,7 @@ const TiffinScreen = ({navigation}) => {
    
   };
 
-  const fetchProfile = async () => {
+  const fetchProviderProfile = async () => {
     try {
       const response = await getProfile(authState.authToken);
       
@@ -154,7 +154,7 @@ const TiffinScreen = ({navigation}) => {
 
   useEffect(() => {
     setLoading(true);
-    fetchProfile();
+    fetchProviderProfile();
 
     if(!socket){
       const newSocket = connectSocket(authState.authToken, authState.authType)  
@@ -191,7 +191,7 @@ const TiffinScreen = ({navigation}) => {
               <View style={styles.menuTabs}>
                 <TiffinTabNavigator />
               </View>
-              {/*<View style={styles.divider} /> */}
+              <View style={styles.divider} /> 
               <View style={styles.btnView}>
                 <TouchableOpacity style={styles.btn} onPress={toggleModal1}>
                   <Text style={styles.addTiffinText}>Add Tiffin</Text>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: StatusBar.currentHeight * 1.2
+    // paddingTop: StatusBar.currentHeight * 1.2
   },
   providerInfo: {
     flex: 2, 

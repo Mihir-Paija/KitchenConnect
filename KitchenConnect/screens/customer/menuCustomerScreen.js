@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+    //paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
     alignContent: "center",
   },
   mealList: {

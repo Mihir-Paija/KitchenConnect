@@ -18,6 +18,15 @@ const TransactionCard = ({ transaction }) => {
         transform: [{ rotate: "0deg" }],
       },
     },
+    Orders: {
+      name: "paper-plane",
+      sign: "+",
+      color: "#008000",
+      style: {
+        backgroundColor: "rgba(0,255,0,0.1)",
+        transform: [{ rotate: "0deg" }],
+      },
+    },
     Withdraw: {
       name: "paper-plane",
       sign: "-",
@@ -66,7 +75,7 @@ const TransactionCard = ({ transaction }) => {
             {transaction.transactionType === "Withdraw" ||
             transaction.transactionType === "Deposit"
               ? transaction.transactionType
-              : transaction.Kitchen.kitchenName}
+              : 'Orders'}
           </Text>
           <Text style={styles.dateTxt}>
             {formatDate(transaction.createdAt)} at{" "}
