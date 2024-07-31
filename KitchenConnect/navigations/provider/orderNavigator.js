@@ -14,7 +14,7 @@ const OrderTabNavigator = ({}) => {
     initialRouteName='Preparations'
     screenOptions={{
         tabBarStyle: {
-            paddingTop: StatusBar.currentHeight * 1.1
+            //paddingTop: StatusBar.currentHeight * 1.1
         },
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor: 'gray',

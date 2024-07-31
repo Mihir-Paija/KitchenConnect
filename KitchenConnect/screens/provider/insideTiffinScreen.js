@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: StatusBar.currentHeight * 1.2,
+    // paddingTop: StatusBar.currentHeight * 1.2,
   },
   backButtonContainer: {
     position: 'absolute',

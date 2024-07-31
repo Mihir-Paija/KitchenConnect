@@ -26,7 +26,7 @@ import WalletDetailsScreen from '../shared/walletDetailsScreen';
 import { withdrawMoney, fetchTransactions } from '../../utils/provider/walletAPI';
 import WalletComponent from '../../components/provider/walletComponent';
 import WithdrawModal from './modals/withdrawModal'
-import TransactionCard from "../../components/shared/transactionCard";
+import TransactionCard from "../../components/provider/transactionCard";
 import { LinearGradient } from 'expo-linear-gradient'
 
 
@@ -548,11 +548,15 @@ const WalletScreen = ({ navigation }) => {
   }, [duration.label]);
 
   useEffect(() => {
-    handleInitialRecords();
-  }, [durationSize, durationToggle]);
+    if ((durationSize || durationToggle) && transactions.length >= 1)
+      handleInitialRecords()
+
+  }, [durationSize, durationToggle, transactions])
 
   useEffect(() => {
-    console.log("------");
+    if (tiffinName === 'Total')
+      return;
+
     handleRecords();
   }, [tiffinName]);
 
@@ -611,6 +615,7 @@ const WalletScreen = ({ navigation }) => {
   };
 
   return (
+
     <SafeAreaView style={styles.container}>
       {loading ? (
         <LoadingScreen />
@@ -637,6 +642,7 @@ const WalletScreen = ({ navigation }) => {
                   ) : (
                     <View>
                       <View style={styles.row}>
+                        {/*
                         <View style={styles.filters}>
                           <Text>Tiffins</Text>
                           <RNPickerSelect
@@ -651,6 +657,7 @@ const WalletScreen = ({ navigation }) => {
                             useNativeAndroidPickerStyle={false}
                           />
                         </View>
+                        */}
                         <View style={styles.duration}>
                           <Text>Duration</Text>
                           <RNPickerSelect
@@ -675,7 +682,7 @@ const WalletScreen = ({ navigation }) => {
                           />
                         </View>
                       </View>
-                      <LegendComponent colorMap={legendMap} />
+                      {/*<LegendComponent colorMap={legendMap} />*/}
                       {graphData.datasets && graphData.datasets.length ? (
 
                         <View style={styles.graphContainer}>
@@ -696,7 +703,7 @@ const WalletScreen = ({ navigation }) => {
                   </View>
                   <FlatList
                     data={transactions}
-                    keyExtractor={(item) => item._id}
+                    keyExtractor={(item) => item._id.toString()}
                     renderItem={({ item }) => <TransactionCard
                       transaction={item}
                     />}
@@ -749,7 +756,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight * 1.2,
+    //paddingTop: StatusBar.currentHeight * 1.2,
   },
   upperScreen: {
     paddingVertical: 5,
@@ -831,7 +838,7 @@ const styles = StyleSheet.create({
   },
   transactions: {
     //flex: 1,
-    height: '100%',
+   // height: '100%',
     alignItems: 'center',
     width: windowWidth,
     backgroundColor: '#fdfdfd',
@@ -852,6 +859,10 @@ const styles = StyleSheet.create({
 
   },
   flatListContent: {
+    flexGrow: 1,
+  },
+
+  flatList: {
     flexGrow: 1,
   },
 });

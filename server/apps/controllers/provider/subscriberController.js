@@ -1,10 +1,14 @@
 import Subscriber from "../../models/subscriberModel.js";
+import customer from "../../models/customerModel.js";
 import tiffins from "../../models/tiffinModel.js";
 import subscription from "../../models/subscriptionModel.js";
 import mongoose from "mongoose";
 import { formatDate } from "../../utils/formatDate.js";
 import subscriptionOrder from "../../models/subscriptionOrderModel.js";
 import generateOrdersForSubscription from "../../utils/subscriptionOrderGenerator.js";
+import {sendNotification} from './subscriptionController.js'
+import provider from "../../models/providerModel.js";
+
 export const getSubscribers = async (req, res) => {
   try {
     const userID = req.user._id;
@@ -106,6 +110,7 @@ export const decideStatus = async (req, res) => {
 
     current._doc.subscriptionStatus.status = status;
     current._doc.subscriptionStatus.comments = comments ? comments : null;
+    
     await current.save();
 
     if (status == "Current") {
@@ -122,6 +127,27 @@ export const decideStatus = async (req, res) => {
         subOrders,
       });
       //   console.log(SubscriptionOrder);
+
+      process.nextTick(async () => {
+        try {
+          const customerID = current._doc.customerID;
+          const customerDetails = await customer.findById(customerID)
+          const kitchenName = req.user.kitchenName
+          if (customerDetails && customerDetails.fcmToken) {
+            const heading = "Subscription Accepted";
+            const body = `${kitchenName} has accepted your subscription request`;
+            await sendNotification(customerDetails.fcmToken, heading, body);
+            console.log("Notification sent successfully");
+          } else {
+            console.error("Kitchen or FCM token not found");
+          }
+        } catch (error) {
+          console.error(
+            "Error fetching kitchen or sending notification:",
+            error
+          );
+        }
+      });
     }
 
     return res.status(200).send({
