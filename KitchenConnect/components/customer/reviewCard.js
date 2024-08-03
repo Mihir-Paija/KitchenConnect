@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#aaff",
     borderBottomWidth: windowWidth * 0.005,
     // paddingVertical: windowHeight * 0.002,
-    marginBottom: windowHeight * 0.005,
+    marginBottom: windowHeight * 0.01,
   },
   firstBox: {
     // backgroundColor: "#aaff",

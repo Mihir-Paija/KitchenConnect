@@ -16,6 +16,7 @@ const SubPlanTableComponent = ({subPlanData}) => {
           <th>discount</th>
           <th>Delivery Charge</th>
           <th>activated?</th>
+          <th>PriceDetails</th>
         </tr>
       </thead>
       <tbody>

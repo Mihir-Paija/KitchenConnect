@@ -1,62 +1,88 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const { Schema, model } = mongoose;
+const priceDetailsSchema = new mongoose.Schema({
+  price: {
+    type: Number,
+    default: 0,
+    required: [true, "Please Enter The Tiffin Price"],
+  },
+
+  commission: {
+    type: Number,
+    default: 0,
+    required: [true, "commision missing"],
+  },
+
+  kitchenDiscount: {
+    type: Number,
+    default: 0,
+    required: [true, "kitchenDiscount missing"],
+  },
+
+  serviceDiscount: {
+    type: Number,
+    default: 0,
+    required: [true, "serviceDiscount missing"],
+  },
+});
 
 const detailsSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        enum: ["Weekly", "Fortnightly", "Monthly"],
-        required: [true, "Please Enter Title"],
-    },
+  title: {
+    type: String,
+    enum: ["Weekly", "Fortnightly", "Monthly"],
+    required: [true, "Please Enter Title"],
+  },
 
-    price: {
-        type: Number,
-        required: [true, "Please Enter Price"]
-    },
+  priceDetails: {
+    type: priceDetailsSchema,
+    required: [true, "Please Add price Details"],
+  },
 
-    discount:{
-        type: Number,
-        default: 0,
-    },
+  discount: {
+    type: Number,
+    default: 0,
+  },
 
-    deliveryCharge:{
-        type: Number,
-        default: 0,
-    },
+  deliveryCharge: {
+    type: Number,
+    default: 0,
+  },
 
-    days: {
-        type: Number,
-        required: [true, "Please Enter Number of Days"]
-    },
+  days: {
+    type: Number,
+    required: [true, "Please Enter Number of Days"],
+  },
 
-    description: {
-        type: String,
-        required: false
-    },
+  description: {
+    type: String,
+    required: false,
+  },
 
-    activated:{
-        type: Boolean,
-        default: true
-    }
+  activated: {
+    type: Boolean,
+    default: true,
+  },
+});
 
-})
-
-const subscriptionSchema = new Schema({
+const subscriptionSchema = new Schema(
+  {
     providerID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Provider',  
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "Provider",
+      required: true,
     },
-    
+
     tiffinID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Tiffins',  
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "Tiffins",
+      required: true,
     },
 
     subscriptions: [detailsSchema],
+  },
+  { timestamps: true }
+);
 
-}, { timestamps: true });
+const subscription = mongoose.model("Subscription", subscriptionSchema);
 
-const subscription = mongoose.model('Subscription', subscriptionSchema);
-
-export default  subscription;
+export default subscription;

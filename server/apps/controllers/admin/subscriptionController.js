@@ -191,3 +191,70 @@ export const getSubscriptionsList = async (req, res) => {
     });
   }
 };
+
+export const SubscriptionPriceChange = async (req, res) => {
+  try {
+    const { subscriptionID } = req.params;
+    const { priceDetails } = req.body;
+
+    if (!subscriptionID)
+      return res.status(404).send({
+        message: `Invalid URL : subscriptionID missing`,
+      });
+
+    //   Check if kitchenId is a valid ObjectId
+    if (!ObjectId.isValid(subscriptionID)) {
+      return res.status(400).json({
+        error: "Invalid subscriptionID",
+        message: "The provided subscriptionID is not a valid MongoDB ObjectId",
+      });
+    }
+
+    const SubData = await subscription.findOne({
+      "subscriptions._id": subscriptionID,
+    });
+
+    if (!SubData) {
+      return res.status(400).json({
+        error: "Subscription Not found",
+        message: "There is no Subscription found with the given subscriptionID",
+      });
+    }
+    // console.log(priceDetails);
+    // Update the priceDetails
+    // Find the specific subscription within the subscriptions array
+    const subIndex = SubData.subscriptions.findIndex(
+      (sub) => sub._id.toString() === subscriptionID
+    );
+
+    if (subIndex === -1) {
+      return res.status(400).json({
+        error: "Subscription Not found",
+        message: "There is no Subscription found with the given subscriptionID",
+      });
+    }
+
+    // Update the priceDetails of the specific subscription
+    SubData.subscriptions[subIndex].priceDetails = {
+      ...SubData.subscriptions[subIndex].priceDetails,
+      ...priceDetails,
+    };
+    // console.log(SubData.priceDetails);
+
+    // Save the updated tiffin
+    await SubData.save();
+
+    return res.status(200).json({
+      message: "Subscription price details updated successfully",
+      SubData,
+    });
+  } catch (error) {
+    console.log(
+      "Internal Server Error in POST Subscription Price change\n" + error
+    );
+    return res.status(500).send({
+      error: "Internal Server Error in POST Subscription Price change\n",
+      message: error.message,
+    });
+  }
+};
