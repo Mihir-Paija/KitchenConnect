@@ -27,52 +27,132 @@ const Customer = () => {
   const [inputValue, setInputValue] = useState("");
   const [selectedOption, setSelectedOption] = useState("Select Option");
   const [showAlert, setShowAlert] = useState(false);
+  const[alertMsg,setAlertMsg] = useState("");
   // const { providerEmail } = useParams();
   //functions
+  // const submitHandler = async (data) => {
+  //   if (selectedOption === "Select Option") {
+  //     console.log("ji");
+  //     setShowAlert(true);
+  //     return;
+  //   }
+  //   setShowAlert(false);
+  //   try {
+  //     const bodyData = {
+  //       email: data.email,
+  //     };
+  //     console.log(selectedOption);
+  //     const customer_response = await fetchCustomerDetails(
+  //       authState.authToken,
+  //       data.email
+  //     );
+  //     const customer = customer_response.data;
+  //     console.log(customer);
+  //     if(customer.message){
+  //       setCustomerData([]);
+  //       setOrderList([]);
+  //       setSubList([]);
+  //       return; 
+  //     }
+  //     setCustomerData([customer_response.data]);
+  //     if (selectedOption === "Orders") {
+  //       const orderList_response = await fetchCustomerOrderList(
+  //         authState.authToken,
+  //         data.email
+  //       );
+  //       // console.log(orderList_response.data);
+  //       setOrderList(orderList_response.data);
+  //     } else if (selectedOption === "Subscriptions") {
+  //       console.log(customer);
+  //       const subList_response = await fetchCustomerSubscriptionList(
+  //         authState.authToken,
+  //         customer._id
+  //       );
+  //       // console.log(subList_response.data);
+  //       setSubList(subList_response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("search failed:", error.message);
+  //     alert("search failed. Please try again.");
+  //   }
+  // };
+  const handleCustomerDetails = async (authToken, email) => {
+    try {
+      const customer_response = await fetchCustomerDetails(authToken, email);
+      return customer_response.data;
+    } catch (error) {
+      console.error("Failed to fetch customer details:", error.message);
+      throw error;
+    }
+  };
+  
+  const handleOrderList = async (authToken, email) => {
+    try {
+      const orderList_response = await fetchCustomerOrderList(authToken, email);
+      return orderList_response.data;
+    } catch (error) {
+      console.error("Failed to fetch order list:", error.message);
+      throw error;
+    }
+  };
+  
+  const handleSubscriptionList = async (authToken, customerId) => {
+    try {
+      const subList_response = await fetchCustomerSubscriptionList(authToken, customerId);
+      return subList_response.data;
+    } catch (error) {
+      console.error("Failed to fetch subscription list:", error.message);
+      throw error;
+    }
+  };
+  
   const submitHandler = async (data) => {
     if (selectedOption === "Select Option") {
       console.log("ji");
       setShowAlert(true);
+      setAlertMsg("Please select an option before submitting.");
       return;
     }
     setShowAlert(false);
+  
     try {
-      const bodyData = {
-        email: data.email,
-      };
+      const { email } = data;
       console.log(selectedOption);
-      const customer_response = await fetchCustomerDetails(
-        authState.authToken,
-        data.email
-      );
-      const customer = customer_response.data;
-      setCustomerData([customer_response.data]);
+  
+      const customer = await handleCustomerDetails(authState.authToken, email);
+      console.log(customer);
+  
+      if (customer.message) {
+        setCustomerData([]);
+        setOrderList([]);
+        setSubList([]);
+        setAlertMsg(customer.message);
+      setShowAlert(true);
+        return;
+      }
+  
+      setCustomerData([customer]);
+  
       if (selectedOption === "Orders") {
-        const orderList_response = await fetchCustomerOrderList(
-          authState.authToken,
-          data.email
-        );
-        // console.log(orderList_response.data);
-        setOrderList(orderList_response.data);
+        const orderList = await handleOrderList(authState.authToken, email);
+        setOrderList(orderList);
       } else if (selectedOption === "Subscriptions") {
-        console.log(customer);
-        const subList_response = await fetchCustomerSubscriptionList(
-          authState.authToken,
-          customer._id
-        );
-        // console.log(subList_response.data);
-        setSubList(subList_response.data);
+        const subList = await handleSubscriptionList(authState.authToken, customer._id);
+        setSubList(subList);
       }
     } catch (error) {
-      console.error("search failed:", error.message);
-      alert("search failed. Please try again.");
+      console.log("Search failed:", error.message);
+      // alert("Search failed. Please try again.");
+      setAlertMsg("Search failed. Please try again.");
+    setShowAlert(true);
     }
   };
+  
 
   return (
     <>
       {showAlert && (
-        <AlertComponent AlertMsg={"Please select an option before submitting."} setShowAlert={setShowAlert}/>
+        <AlertComponent AlertMsg={alertMsg} setShowAlert={setShowAlert}/>
       )}
       <NavbarComponent />
       <EmailSearchComponent
