@@ -36,9 +36,8 @@ app.get("/", (req, res) => {
 });
 
 // Specify the port number
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
-// Start the server and listen on the specified port
 server.listen(port, () => {
   console.log(`Server for KitchenConnect is listening on port ${port}...`);
 });
@@ -61,8 +60,6 @@ io.on("connection", (socket) => {
     console.log(providerID, " registered with ", socket.id);
   });
 
-  //socket.on('check-connection', (data))
-
   socket.on("disconnect-provider", () => {
     for (let providerID in providers) {
       if (providers[providerID] === socket.id) {
@@ -71,6 +68,16 @@ io.on("connection", (socket) => {
       }
     }
     console.log("Provider Disconnected!");
+  });
+
+  socket.on("disconnect", () => {
+    for (let providerID in providers) {
+      if (providers[providerID] === socket.id) {
+        delete providers[providerID];
+        break;
+      }
+    }
+    console.log("Socket Disconnected!");
   });
 });
 

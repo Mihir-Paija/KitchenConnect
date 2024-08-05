@@ -18,7 +18,7 @@ export const getLunchTiffins = async (req, res) => {
             shortDescription: item.shortDescription,
             tiffinType: 'Lunch',
             foodType: item.foodType,
-            price: item.price,
+            price: item.priceDetails.price,
             hours: item.time[0] + item.time[1],
             mins: item.time[3] + item.time[4],
             deactivated: item.deactivate,
@@ -63,7 +63,7 @@ export const getDinnerTiffins = async (req, res) => {
             shortDescription: item.shortDescription,
             tiffinType: 'Dinner',
             foodType: item.foodType,
-            price: item.price,
+            price: item.priceDetails.price,
             hours: item.time[0] + item.time[1],
             mins: item.time[3] + item.time[4],
             deactivated: item.deactivate,
@@ -102,6 +102,8 @@ export const addTiffins = async (req, res) => {
                 message: "Please Enter All Required Fields"
             })
         
+        
+        
         if(providePacking){
             if(!packingCharge)
                 return res.status(400).send({
@@ -124,13 +126,20 @@ export const addTiffins = async (req, res) => {
             deliveryTime: deliveryTime === undefined ? null : deliveryTime,
         }
 
+        const priceDetails ={
+            price,
+            commission: 0,
+            kitchenDiscount: 0,
+            serviceDiscount: 0,
+        }
+
         const readyTime = hours + ':' + mins
         const tiffin = {
             name,
             providerID: userID,
             shortDescription,
             foodType,
-            price,
+            priceDetails,
             tiffinType,
             time: readyTime,
             deliveryDetails,
@@ -185,13 +194,20 @@ export const editTiffin = async (req, res) => {
             deliveryTime: deliveryTime === undefined ? null : deliveryTime,
         }
 
+        const priceDetails ={
+            price,
+            commission: 0,
+            kitchenDiscount: 0,
+            serviceDiscount: 0,
+        }
+
         const readyTime = hours + ':' + mins
         const updatedTiffin = {
             name,
             providerID: userID,
             shortDescription,
             foodType,
-            price,
+            priceDetails,
             tiffinType,
             time: readyTime,
             deliveryDetails

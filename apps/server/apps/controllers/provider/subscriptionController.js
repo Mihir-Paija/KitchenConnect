@@ -42,9 +42,16 @@ export const addSubscription = async (req, res) => {
                 message: "Please Enter All Required Fields"
             })
         }
+
+        const priceDetails = {
+            price,
+            commission: 0,
+            kitchenDiscount: 0,
+            serviceDiscount: discount,
+        }
         const details = {
             title,
-            price,
+            priceDetails,
             deliveryCharge,
             discount,
             days,
@@ -132,6 +139,8 @@ export const editSubscription = async (req, res) => {
         }
 
         titleExists.description = description
+        titleExists.priceDetails.price = price
+        titleExists.priceDetails.kitchenDiscount = discount
         titleExists.deliveryCharge = deliveryCharge
         titleExists.discount = discount
 
@@ -143,7 +152,7 @@ export const editSubscription = async (req, res) => {
                 message: `Subscription Edited Succesfully`
             })
         }
-        return res.status(500).send({
+        return res.status(200).send({
             message: "Couldn't Edit Subscription! Please Try Again"
         })
 
