@@ -33,6 +33,15 @@ export const withdrawMoney = async(req, res) =>{
         providerWallet.amount -= amount;
         providerWallet.save();
 
+        const newTransaction= {
+            walletID,
+            amount,
+            transactionType: "Withdraw",
+            //orderID,
+        }
+
+        const transaction1 = await transaction.create(newTransaction);
+        
         return res.status(200).send({
             message: `Money Withdrawn`
         })
