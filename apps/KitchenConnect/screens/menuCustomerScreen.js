@@ -177,16 +177,27 @@ const MenuCustomerScreen = ({ navigation, route }) => {
                     )}
                     contentContainerStyle={styles.mealList}
                   />
-                  <SubmitButton
-                    btnTitle={"Order"}
-                    handleSubmitBtn={orderHandler}
-                    loading={loading}
-                  />
-                  <SubmitButton
-                    btnTitle={"Subscriptions"}
-                    handleSubmitBtn={subscriptionHandler}
-                    loading={loading}
-                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <SubmitButton
+                      btnTitle={"Subscribe"}
+                      style={styles.FilledBtnStyle}
+                      txtStyle={styles.FilledBtnTextStyle}
+                      handleSubmitBtn={subscriptionHandler}
+                      loading={loading}
+                    />
+                    <SubmitButton
+                      btnTitle={"Order"}
+                      style={styles.OutLinedBtnStyle}
+                      txtStyle={styles.OutLinedBtnTextStyle}
+                      handleSubmitBtn={orderHandler}
+                      loading={loading}
+                    />
+                  </View>
                   <OrderModalCustomer
                     kitchen={kitchen}
                     tiffin={tiffin}
@@ -235,6 +246,30 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: windowWidth * 0.05,
+    fontFamily: "NunitoSemiBold",
+  },
+  OutLinedBtnStyle: {
+    marginVertical: windowHeight * 0.005,
+    width: windowWidth * 0.48,
+    height: windowHeight * 0.06,
+    backgroundColor: "#ffff",
+    borderColor: "#ffa500",
+    borderWidth: 1,
+  },
+  OutLinedBtnTextStyle: {
+    color: "#ffa500",
+    fontSize: windowWidth * 0.054,
+    fontFamily: "NunitoSemiBold",
+  },
+  FilledBtnStyle: {
+    marginVertical: windowHeight * 0.005,
+    width: windowWidth * 0.48,
+    height: windowHeight * 0.06,
+    borderColor: "#ffa500",
+    borderWidth: 1,
+  },
+  FilledBtnTextStyle: {
+    fontSize: windowWidth * 0.054,
     fontFamily: "NunitoSemiBold",
   },
 });
