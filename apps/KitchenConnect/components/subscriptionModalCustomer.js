@@ -188,7 +188,8 @@ const SubscriptionModalCustomer = ({
           { opacity },
         ]}
       >
-        {item.discount && (
+        {item.priceDetails.kitchenDiscount ||
+        item.priceDetails.serviceDiscount ? (
           <View style={styles.discountBox}>
             <Text style={styles.discountText}>
               {(item.priceDetails.kitchenDiscount +
@@ -197,13 +198,18 @@ const SubscriptionModalCustomer = ({
               % OFF
             </Text>
           </View>
+        ) : (
+          <></>
         )}
         <Text style={styles.planTitle}>{item.title}</Text>
         <View style={styles.priceContainer}>
-          {item.discount && (
+          {item.priceDetails.kitchenDiscount ||
+          item.priceDetails.serviceDiscount ? (
             <Text style={styles.originalPrice}>
               ₹{item.priceDetails.price * item.days}
             </Text>
+          ) : (
+            <></>
           )}
           <Text
             style={
@@ -214,7 +220,8 @@ const SubscriptionModalCustomer = ({
             }
           >
             ₹
-            {item.discount
+            {item.priceDetails.kitchenDiscount ||
+            item.priceDetails.serviceDiscount
               ? calculateDiscountedPrice(
                   item.priceDetails.price,
                   item.priceDetails.kitchenDiscount +
@@ -307,7 +314,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: windowWidth,
-    // height: windowHeight * 0.5,
+    height: windowHeight * 0.45,
     // backgroundColor: "#aaff",
     borderRadius: 10,
     padding: windowWidth * 0.04,
@@ -320,7 +327,7 @@ const styles = StyleSheet.create({
     color: "#ffa500",
   },
   title: {
-    fontSize: 24,
+    fontSize: windowWidth * 0.045,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#ffff",
@@ -338,7 +345,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: windowWidth * 0.7,
-    height: windowHeight * 0.45,
+    height: windowHeight * 0.35,
     backgroundColor: "#ffff",
     borderRadius: windowWidth * 0.05,
     padding: windowWidth * 0.05,
@@ -378,24 +385,25 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: windowWidth * 0.02,
   },
 
   planPrice: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: windowHeight * 0.032,
+    fontFamily: "NunitoBold",
     color: "#ffa500",
-    marginBottom: 20,
+    marginBottom: windowWidth * 0.01,
   },
   originalPrice: {
-    fontSize: 16,
-    color: "gray",
+    fontSize: windowHeight * 0.02,
+    fontFamily: "NunitoSemiBold",
     textDecorationLine: "line-through",
     marginRight: 5,
   },
   discountedPrice: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: windowHeight * 0.02,
+    fontFamily: "NunitoSemiBold",
+
     color: "#ffa500",
     marginBottom: 5,
   },
@@ -405,17 +413,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   getStartedButton: {
-    marginTop: windowHeight * 0.35,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    alignSelf: "center",
+    marginTop: windowHeight * 0.1,
+    paddingVertical: windowWidth * 0.03,
+    paddingHorizontal: windowWidth * 0.045,
     backgroundColor: "#ffa500",
-    borderRadius: 5,
-    position: "absolute",
+    borderRadius: windowWidth * 0.02,
+    // position: "absolute",
   },
   getStartedText: {
     color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: windowWidth * 0.045,
+    fontFamily: "NunitoBold",
   },
   dotContainer: {
     flexDirection: "row",
