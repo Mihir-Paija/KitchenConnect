@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffff",
     alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
   },
   formContainer: {
     flex: 1,

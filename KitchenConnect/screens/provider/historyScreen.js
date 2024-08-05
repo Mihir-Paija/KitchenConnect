@@ -193,6 +193,7 @@ let tempNameSet = new Set()
 let tempValueMap = new Map()
 let tempColorMap = new Map()
 
+// handle duration - get unique tiffins - create map - fill Values - setGraph data
 const HistoryScreen = ({ navigation }) => {
   const [authState, setAuthState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false)

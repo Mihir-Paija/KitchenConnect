@@ -25,7 +25,7 @@ const HistoryCustomerScreen = ({ navigation }) => {
   //gloabal states
   const [authState, setAuthState] = useContext(AuthContext);
 
-  const customerID = authState.authData._id;
+  const customerID = authState.authData?._id;
 
   //states
   const [loading, setLoading] = useState(true);
@@ -85,7 +85,7 @@ const HistoryCustomerScreen = ({ navigation }) => {
             <LoadingScreen />
           ) : (
             <>
-              <ScrollView style={styles.ScrollContent}>
+            {orderList.length>0 ? <ScrollView style={styles.ScrollContent}>
                 <View style={styles.section}>
                   {pendingOrders.length > 0 && (
                     <View>
@@ -144,7 +144,8 @@ const HistoryCustomerScreen = ({ navigation }) => {
                     </View>
                   )}
                 </View>
-              </ScrollView>
+              </ScrollView> : <View style={styles.emptyView}><Text style={{fontSize: windowWidth * 0.05}}>No order available</Text></View>}
+              
               <FooterMenu navigation={navigation} />
             </>
           )}
@@ -164,7 +165,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  emptyView:{
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    
   },
   header: {
     flexDirection: "row",

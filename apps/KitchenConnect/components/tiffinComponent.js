@@ -50,7 +50,7 @@ const TiffinComponent = ({
             source={require("@/assets/sam-moqadam-Oxpa8sZwGNU-unsplash 1.png")}
             style={styles.tiffinImage}
           />
-          <TouchableOpacity style={styles.bookButton}>
+          <TouchableOpacity style={styles.bookButton} onPress={onPress}>
             <Text style={styles.bookButtonText}>Book</Text>
           </TouchableOpacity>
         </View>

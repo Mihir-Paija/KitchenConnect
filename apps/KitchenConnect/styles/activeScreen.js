@@ -6,7 +6,7 @@ const activeScreenStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffff",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
+    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight * 1.2 : 0,
   },
 });
 
