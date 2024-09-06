@@ -1,5 +1,7 @@
 # KitchenConnect
 
+check out documentation : [KitchenConnect](https://drive.google.com/file/d/1w-kdBO6AksVSXCvYwo804pIGQelUn81X/view)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
